@@ -20,6 +20,7 @@ GtPagerWrapperElement >> initialize [
 GtPagerWrapperElement >> initializeElement [
 	self 
 		clipChildren: false;
+		layout: BlFrameLayout new;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical matchParent ].
@@ -33,11 +34,6 @@ GtPagerWrapperElement >> initializeViewModel [
 { #category : #accessing }
 GtPagerWrapperElement >> model: anObject [
 	self viewModel model: anObject
-]
-
-{ #category : #accessing }
-GtPagerWrapperElement >> stencil: aStencil [
-	self tool: aStencil asElement
 ]
 
 { #category : #accessing }

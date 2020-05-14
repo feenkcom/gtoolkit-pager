@@ -100,7 +100,12 @@ GtPager class >> openWrappedOn: anElement title: aTitle from: aSourceElement [
 { #category : #utility }
 GtPager class >> wrapped: anElement [
 	^ GtPagerWrapperElement new
-		stencil: anElement
+		tool: anElement
+]
+
+{ #category : #'api - adding / removing' }
+GtPager >> addWrapped: anElement [
+	self addPage: (self class wrapped: anElement)
 ]
 
 { #category : #asserting }
