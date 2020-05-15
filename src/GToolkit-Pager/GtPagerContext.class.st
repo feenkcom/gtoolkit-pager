@@ -1,7 +1,7 @@
 Class {
 	#name : #GtPagerContext,
-	#superclass : #GtPagerProtoContext,
-	#traits : 'TGtOptions',
-	#classTraits : 'TGtOptions classTrait',
+	#superclass : #Object,
+	#traits : 'TBlDebug + TGtOptions',
+	#classTraits : 'TBlDebug classTrait + TGtOptions classTrait',
 	#category : #'GToolkit-Pager-Contexts'
 }

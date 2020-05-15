@@ -1,6 +1,6 @@
 Class {
 	#name : #GtPagerPageNullSelectionContext,
-	#superclass : #GtPagerPageProtoSelectionContext,
+	#superclass : #GtPagerPageAbstractSelectionContext,
 	#traits : 'TGtUniqueInstance',
 	#classTraits : 'TGtUniqueInstance classTrait',
 	#category : #'GToolkit-Pager-Contexts'
@@ -8,5 +8,10 @@ Class {
 
 { #category : #converting }
 GtPagerPageNullSelectionContext >> asElementDo: aOneArgBlock [
+	"do nothing"
+]
+
+{ #category : #enumerating }
+GtPagerPageNullSelectionContext >> ifDefinedDo: aBlock [
 	"do nothing"
 ]

@@ -1,8 +1,12 @@
+"
+I keep common elements that are accessed (and modified) during a ${$class:GtPagerPageModel}$ widget creation.
+I am used by ${class:GtPagerPageEmbellisher}$ as an internal object that is passed among methods.
+"
 Class {
 	#name : #GtPagerPageCreationContext,
-	#superclass : #GtPagerPageProtoCreationContext,
-	#traits : 'TGtContentElementAccessors',
-	#classTraits : 'TGtContentElementAccessors classTrait',
+	#superclass : #Object,
+	#traits : 'TBlDebug + TGtContentElementAccessors',
+	#classTraits : 'TBlDebug classTrait + TGtContentElementAccessors classTrait',
 	#instVars : [
 		'embellisher',
 		'pageElement',
@@ -10,11 +14,6 @@ Class {
 	],
 	#category : #'GToolkit-Pager-Contexts'
 }
-
-{ #category : #factory }
-GtPagerPageCreationContext class >> null [ 
-	^ GtPagerPageNullCreationContext default
-]
 
 { #category : #accessing }
 GtPagerPageCreationContext >> embellisher [
@@ -36,9 +35,9 @@ GtPagerPageCreationContext >> maximizePageContentInPager: aGtPager [
 	aGtPager maximizePageContentIn: self contentElement
 ]
 
-{ #category : #convenience }
-GtPagerPageCreationContext >> model [
-	^ self contentElement viewModel model
+{ #category : #accessing }
+GtPagerPageCreationContext >> object [
+	^ self contentElement tool object
 ]
 
 { #category : #accessing }
