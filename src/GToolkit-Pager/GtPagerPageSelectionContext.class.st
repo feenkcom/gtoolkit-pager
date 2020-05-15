@@ -32,7 +32,7 @@ GtPagerPageSelectionContext >> afterPage: anElement [
 { #category : #converting }
 GtPagerPageSelectionContext >> asElementDo: aOneArgBlock [
 	"Create a tool element and execute the block"
-	self tool asElementDo: aOneArgBlock context: self.
+	self tool asElementDo: aOneArgBlock
 ]
 
 { #category : #initialization }
