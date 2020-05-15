@@ -111,7 +111,6 @@ GtPagerPageEmbellisher >> createResizerForPage: aPageElement [
 GtPagerPageEmbellisher >> createSelectionContextFromEvent: anEvent [
 	| aContext |
 	aContext := self newSelectionContext
-		object: anEvent object;
 		tool: anEvent tool;
 		afterPage: self contentElement.
 	self selectionContext: aContext.
