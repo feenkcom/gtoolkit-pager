@@ -36,11 +36,6 @@ GtPagerPageCreationContext >> maximizePageContentInPager: aGtPager [
 ]
 
 { #category : #accessing }
-GtPagerPageCreationContext >> object [
-	^ self contentElement tool object
-]
-
-{ #category : #accessing }
 GtPagerPageCreationContext >> pageElement [
 	^ pageElement
 ]
