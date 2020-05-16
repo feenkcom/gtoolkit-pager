@@ -1,5 +1,7 @@
 Trait {
 	#name : #TGtPagerWindowOpener,
+	#traits : 'TGtPagerPageInstantiator',
+	#classTraits : 'TGtPagerPageInstantiator classTrait',
 	#category : #'GToolkit-Pager-UI'
 }
 
@@ -8,11 +10,6 @@ TGtPagerWindowOpener classSide >> createOn: anObject [
 	| aWrapper |
 	aWrapper := self newWrapperOn: anObject.
 	^ GtPager createOn: aWrapper.
-]
-
-{ #category : #'private - instance creation' }
-TGtPagerWindowOpener classSide >> newEmbelisher [
-	^ GtPagerPageEmbellisher new
 ]
 
 { #category : #'instance creation' }
@@ -28,10 +25,7 @@ TGtPagerWindowOpener classSide >> newTitleFrom: anObject [
 
 { #category : #'private - instance creation' }
 TGtPagerWindowOpener classSide >> newWrapperOn: anObject [
-	^ GtPagerWrapperElement new
-		tool: (self newOn: anObject);
-		model: anObject;
-		embellisher: self newEmbelisher
+	^ (self newOn: anObject) asPagerPageElement
 ]
 
 { #category : #'window creation' }

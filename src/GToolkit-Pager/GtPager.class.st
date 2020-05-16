@@ -158,9 +158,10 @@ GtPager >> newPagerModel [
 
 { #category : #'api - scrolling' }
 GtPager >> select: aGtPagerPageSelectionContext [
-	self assertToolElement: aGtPagerPageSelectionContext afterPage.
-	(self hasPageAfter: aGtPagerPageSelectionContext afterPage) ifTrue: [
-		self spawn: aGtPagerPageSelectionContext ]
+	aGtPagerPageSelectionContext ifDefinedDo: [ 
+		self assertToolElement: aGtPagerPageSelectionContext afterPage.
+		(self hasPageAfter: aGtPagerPageSelectionContext afterPage) ifTrue: [
+			self spawn: aGtPagerPageSelectionContext ] ]
 ]
 
 { #category : #'api - scrolling' }
