@@ -8,15 +8,15 @@ TGtPagerPageInstantiator >> asPagerPageElement [
 	<return: #GtPagerWrapperElement>
 	^ GtPagerWrapperElement new
 		tool: self;
-		embellisher: self newEmbelisher
+		embellisher: self newEmbellisher
 ]
 
 { #category : #'instance creation' }
-TGtPagerPageInstantiator >> newEmbelisher [
-	^ GtPagerPageEmbellisher new extension: self newEmbelisherExtension
+TGtPagerPageInstantiator >> newEmbellisher [
+	^ GtPagerPageEmbellisher new extension: self newEmbellisherExtension
 ]
 
 { #category : #'instance creation' }
-TGtPagerPageInstantiator >> newEmbelisherExtension [
+TGtPagerPageInstantiator >> newEmbellisherExtension [
 	^ GtPagerPageEmbellisherExtension null
 ]
