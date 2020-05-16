@@ -134,6 +134,16 @@ GtPagerPageEmbellisher >> defaultPageWidthNumber [
 	^ 0.5
 ]
 
+{ #category : #accessing }
+GtPagerPageEmbellisher >> extension [
+	^ extension
+]
+
+{ #category : #accessing }
+GtPagerPageEmbellisher >> extension: anObject [
+	extension := anObject
+]
+
 { #category : #'widget configuration' }
 GtPagerPageEmbellisher >> fillContentWrapperIn: aCreationContext [
 	aCreationContext wrapperElement
