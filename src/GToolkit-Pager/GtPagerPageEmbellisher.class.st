@@ -4,7 +4,8 @@ Class {
 	#traits : 'TGtPagerSelectionContextAccessor + TGtPagerHolderAccessors',
 	#classTraits : 'TGtPagerSelectionContextAccessor classTrait + TGtPagerHolderAccessors classTrait',
 	#instVars : [
-		'pageWidth'
+		'pageWidth',
+		'extension'
 	],
 	#category : #'GToolkit-Pager-Stencils and Builders'
 }
@@ -43,6 +44,7 @@ GtPagerPageEmbellisher >> create [
 		contentElement: self contentElement.
 	self fillContentWrapperIn: aCreationContext.
 	self fillPageElementIn: aCreationContext.
+	self fillWithExtensionIn: aCreationContext.
 	^ aCreationContext pageElement
 ]
 
@@ -117,6 +119,11 @@ GtPagerPageEmbellisher >> createSelectionContextFromEvent: anEvent [
 	^ aContext
 ]
 
+{ #category : #defaults }
+GtPagerPageEmbellisher >> defaultExtension [
+	^ GtPagerPageEmbellisherExtension null
+]
+
 { #category : #initialization }
 GtPagerPageEmbellisher >> defaultPageWidth [
 	^ GtPagerPageWidth weighted
@@ -125,6 +132,16 @@ GtPagerPageEmbellisher >> defaultPageWidth [
 { #category : #defaults }
 GtPagerPageEmbellisher >> defaultPageWidthNumber [
 	^ 0.5
+]
+
+{ #category : #accessing }
+GtPagerPageEmbellisher >> extension [
+	^ extension
+]
+
+{ #category : #accessing }
+GtPagerPageEmbellisher >> extension: anObject [
+	extension := anObject
 ]
 
 { #category : #'widget configuration' }
@@ -146,12 +163,23 @@ GtPagerPageEmbellisher >> fillPageElementIn: aCreationContext [
 		addChild: aTriangleElement.
 ]
 
+{ #category : #'widget configuration' }
+GtPagerPageEmbellisher >> fillWithExtensionIn: aCreationContext [
+	self extension fillToolWidgetIn: aCreationContext. 
+]
+
 { #category : #initialization }
 GtPagerPageEmbellisher >> initialize [
 	super initialize.
 	pageWidth := self defaultPageWidth.
 	self initializePagerHolder.
 	self initializeSelectionContext.
+	self initializeExtension.
+]
+
+{ #category : #initialization }
+GtPagerPageEmbellisher >> initializeExtension [
+	extension := self defaultExtension.
 ]
 
 { #category : #'instance creation' }

@@ -1,3 +1,8 @@
+"
+I am an initial ${class:GtPagerPageSelectionContext}$ that is used until ${class:GtPhlowObjectToSelect}$ or ${class:GtPhlowObjectToSpawn}$ is received.
+I am used by ${class:GtPagerPageEmbellisher}$.
+
+"
 Class {
 	#name : #GtPagerPageNullSelectionContext,
 	#superclass : #GtPagerPageAbstractSelectionContext,
