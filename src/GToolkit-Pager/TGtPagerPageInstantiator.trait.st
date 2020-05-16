@@ -13,5 +13,10 @@ TGtPagerPageInstantiator >> asPagerPageElement [
 
 { #category : #'instance creation' }
 TGtPagerPageInstantiator >> newEmbelisher [
-	^ GtPagerPageEmbellisher new
+	^ GtPagerPageEmbellisher new extension: self newEmbelisherExtension
+]
+
+{ #category : #'instance creation' }
+TGtPagerPageInstantiator >> newEmbelisherExtension [
+	^ GtPagerPageEmbellisherExtension null
 ]
