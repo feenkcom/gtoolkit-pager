@@ -7,9 +7,9 @@ Trait {
 
 { #category : #'window creation' }
 TGtPagerWindowOpener classSide >> createOn: anObject [
-	| aWrapper |
-	aWrapper := self newWrapperOn: anObject.
-	^ GtPager createOn: aWrapper.
+	| aTool |
+	aTool :=  self newOn: anObject.
+	^ aTool createInPager
 ]
 
 { #category : #'instance creation' }
@@ -18,44 +18,30 @@ TGtPagerWindowOpener classSide >> newOn: anObject [
 	^ self explicitRequirement
 ]
 
-{ #category : #'private - instance creation' }
-TGtPagerWindowOpener classSide >> newTitleFrom: anObject [
-	^ anObject printString
-]
-
-{ #category : #'private - instance creation' }
-TGtPagerWindowOpener classSide >> newWrapperOn: anObject [
-	^ (self newOn: anObject) asPagerPageElement
-]
-
 { #category : #'window creation' }
 TGtPagerWindowOpener classSide >> openOn: anObject [
-	^ self openOn: anObject title: (self newTitleFrom: anObject).
+	| aTool |
+	aTool :=  self newOn: anObject.
+	^ aTool openInPager
 ]
 
 { #category : #'window creation' }
 TGtPagerWindowOpener classSide >> openOn: anObject from: aSourceElement [
-	^ self 
-		openOn: anObject 
-		title: (self newTitleFrom: anObject) 
-		from: aSourceElement
+	| aTool |
+	aTool :=  self newOn: anObject.
+	^ aTool openInPagerFrom: aSourceElement
 ]
 
 { #category : #'window creation' }
 TGtPagerWindowOpener classSide >> openOn: anObject title: aTitle [
 	| aTool |
-	aTool := self newWrapperOn: anObject.
-	^ GtPager 
-		openOn: aTool 
-		title: aTitle
+	aTool :=  self newOn: anObject.
+	^ aTool openInPagerWithTitle: aTitle
 ]
 
 { #category : #'window creation' }
 TGtPagerWindowOpener classSide >> openOn: anObject title: aTitle from: aSourceElement [
 	| aTool |
-	aTool :=  self newWrapperOn: anObject.
-	^ GtPager 
-		openOn: aTool 
-		title: aTitle
-		from: aSourceElement.
+	aTool :=  self newOn: anObject.
+	^ aTool openInPagerWithTitle: aTitle from: aSourceElement
 ]
