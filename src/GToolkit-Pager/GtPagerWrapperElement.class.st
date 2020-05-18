@@ -14,16 +14,29 @@ GtPagerWrapperElement >> initialize [
 	super initialize.
 	self initializeViewModel.
 	self initializeElement.
+	self initializeToolAreaElement.
 ]
 
 { #category : #initialization }
 GtPagerWrapperElement >> initializeElement [
 	self 
 		clipChildren: false;
+		layout: BlLinearLayout vertical;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical matchParent ].
+]
+
+{ #category : #initialization }
+GtPagerWrapperElement >> initializeToolAreaElement [
+	| anElement |
+	anElement := BlElement new 
+		clipChildren: false;
 		layout: BlFrameLayout new;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical matchParent ].
+	self addChild: anElement as: self toolAreaIdentifier.
 ]
 
 { #category : #initialization }
@@ -39,14 +52,25 @@ GtPagerWrapperElement >> model: anObject [
 { #category : #accessing }
 GtPagerWrapperElement >> tool [
 	<return: #BlElement>
-	^ self childNamed: self toolIdentificator.
+	^ self toolArea childNamed: self toolIdentificator.
 ]
 
 { #category : #accessing }
 GtPagerWrapperElement >> tool: anElement [
-	self 
+	self toolArea
 		addChild: anElement asElement 
 		as: self toolIdentificator.
+]
+
+{ #category : #accessing }
+GtPagerWrapperElement >> toolArea [
+	<return: #BlElement>
+	^ self childNamed: self toolAreaIdentifier.
+]
+
+{ #category : #accessing }
+GtPagerWrapperElement >> toolAreaIdentifier [
+	^ #toolArea
 ]
 
 { #category : #accessing }
