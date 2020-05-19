@@ -1,6 +1,8 @@
 Class {
 	#name : #GtPagerPageEmbellisherExtension,
 	#superclass : #Object,
+	#traits : 'TBlDebug',
+	#classTraits : 'TBlDebug classTrait',
 	#category : #'GToolkit-Pager-Stencils and Builders'
 }
 
