@@ -1,53 +1,53 @@
 Class {
-	#name : #GtPagerProtoHolder,
+	#name : #GtPagerAbstractHolder,
 	#superclass : #Object,
 	#category : #'GToolkit-Pager-Strategies'
 }
 
 { #category : #'api - actions' }
-GtPagerProtoHolder >> close: aPageElement [
+GtPagerAbstractHolder >> close: aPageElement [
 	"Close/remove a page from a pager"
 	self subclassResponsibility
 ]
 
 { #category : #testing }
-GtPagerProtoHolder >> isFirstPageEqualTo: aPageElement [
+GtPagerAbstractHolder >> isFirstPageEqualTo: aPageElement [
 	<return: #Boolean>
 	^ self subclassResponsibility
 ]
 
 { #category : #testing }
-GtPagerProtoHolder >> isLastPageEqualTo: aPageElement [
+GtPagerAbstractHolder >> isLastPageEqualTo: aPageElement [
 	<return: #Boolean>
 	^ self subclassResponsibility
 ]
 
 { #category : #'api - actions' }
-GtPagerProtoHolder >> maximizeIn: aCreationContext [
+GtPagerAbstractHolder >> maximizeIn: aCreationContext [
 	"maximize a page"
 	self subclassResponsibility
 ]
 
 { #category : #'api - actions' }
-GtPagerProtoHolder >> select: aGtPagerPageSelectionContext [
+GtPagerAbstractHolder >> select: aGtPagerPageSelectionContext [
 	"Select a new page in a pager"
 	self subclassResponsibility
 ]
 
 { #category : #'api - actions' }
-GtPagerProtoHolder >> smoothScrollToLast [
+GtPagerAbstractHolder >> smoothScrollToLast [
 	"Scroll to the last page"
 	self subclassResponsibility
 ]
 
 { #category : #'api - actions' }
-GtPagerProtoHolder >> spawn: aGtPagerPageSelectionContext [
+GtPagerAbstractHolder >> spawn: aGtPagerPageSelectionContext [
 	"Spawn a new page in a pager"
 	self subclassResponsibility
 ]
 
 { #category : #'announcer - subscription' }
-GtPagerProtoHolder >> when: anEvent do: aBlock [
+GtPagerAbstractHolder >> when: anEvent do: aBlock [
 	"Register an event handler"
 	^ self subclassResponsibility
 ]

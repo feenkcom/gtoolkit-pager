@@ -12,16 +12,16 @@ GtPagerPageExactWidth >> defaultWidth [
 	^ GtPager defaultExtent x // 2
 ]
 
-{ #category : #'api - embellising' }
-GtPagerPageExactWidth >> embellishPage: aPageElement [
-	"Configure the page element"
-	aPageElement width: self width
-]
-
 { #category : #initialization }
 GtPagerPageExactWidth >> initialize [
 	super initialize.
 	width := self defaultWidth.
+]
+
+{ #category : #'api - size' }
+GtPagerPageExactWidth >> onElement: aPageElement [
+	"Configure the page element"
+	aPageElement width: self width
 ]
 
 { #category : #printing }

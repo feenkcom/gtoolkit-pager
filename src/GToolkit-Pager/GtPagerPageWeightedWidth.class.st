@@ -12,18 +12,18 @@ GtPagerPageWeightedWidth >> defaultWeight [
 	^ 0.5
 ]
 
-{ #category : #'api - embellising' }
-GtPagerPageWeightedWidth >> embellishPage: aPageElement [
-	"Configure the page element"
-	aPageElement
-		weight: self weight;
-		constraintsDo: [ :c | c horizontal matchParent ].
-]
-
 { #category : #initialization }
 GtPagerPageWeightedWidth >> initialize [
 	super initialize.
 	weight := self defaultWeight.
+]
+
+{ #category : #'api - size' }
+GtPagerPageWeightedWidth >> onElement: aPageElement [
+	"Configure the page element"
+	aPageElement
+		weight: self weight;
+		constraintsDo: [ :c | c horizontal matchParent ].
 ]
 
 { #category : #printing }

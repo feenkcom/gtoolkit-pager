@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'context'
 	],
-	#category : #'GToolkit-Pager-UI'
+	#category : #'GToolkit-Pager-! Core'
 }
 
 { #category : #'instance creation' }
