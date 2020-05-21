@@ -1,6 +1,8 @@
 Class {
 	#name : #GtPagerPageWidth,
-	#superclass : #GtPagerPageProtoWidth,
+	#superclass : #Object,
+	#traits : 'TBlDebug',
+	#classTraits : 'TBlDebug classTrait',
 	#category : #'GToolkit-Pager-Strategies'
 }
 
@@ -27,4 +29,10 @@ GtPagerPageWidth class >> weight: aNumber [
 { #category : #'instance creation' }
 GtPagerPageWidth class >> weighted [
 	^ GtPagerPageWeightedWidth new
+]
+
+{ #category : #'api - size' }
+GtPagerPageWidth >> onElement: aPageElement [
+	"Configure the page element"
+	^ self subclassResponsibility
 ]

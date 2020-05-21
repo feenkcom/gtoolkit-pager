@@ -1,6 +1,6 @@
 Class {
 	#name : #GtPagerHolder,
-	#superclass : #GtPagerProtoHolder,
+	#superclass : #GtPagerAbstractHolder,
 	#traits : 'TGtPagerAccessors',
 	#classTraits : 'TGtPagerAccessors classTrait',
 	#category : #'GToolkit-Pager-Strategies'

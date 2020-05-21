@@ -273,7 +273,7 @@ GtPagerPageEmbellisher >> newPageElement [
 		margin: (BlInsets all: 0);
 		constraintsDo: [ :c | c vertical matchParent ].		
 
-	self pageWidth embellishPage: aPageElement.
+	self pageWidth onElement: aPageElement.
 	
 	^ aPageElement
 ]
@@ -292,14 +292,14 @@ GtPagerPageEmbellisher >> newResizer [
 { #category : #'instance creation' }
 GtPagerPageEmbellisher >> newResizerHandrail [
 	^ BlElement new
-		background: ((Color fromHexString: #BDBDBD) alpha: 0.5);
-		geometry: (BlRectangle cornerRadius: 2);
-		constraintsDo: [ :c | 
-			c vertical matchParent.
-			c horizontal exact: 3.
-			c frame vertical weight: 0.2.
-			c frame horizontal alignLeft.
-			c frame vertical alignCenter ]
+			background: ((Color fromHexString: #BDBDBD) alpha: 0.5);
+			geometry: (BlRectangle cornerRadius: 2);
+			constraintsDo: [ :c | 
+				c vertical matchParent.
+				c horizontal exact: 3.
+				c frame vertical weight: 0.2.
+				c frame horizontal alignLeft.
+				c frame vertical alignCenter ]
 ]
 
 { #category : #'instance creation' }
