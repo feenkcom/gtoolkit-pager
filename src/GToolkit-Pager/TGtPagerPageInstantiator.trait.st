@@ -14,12 +14,6 @@ TGtPagerPageInstantiator >> asPagerPageElement [
 { #category : #opening }
 TGtPagerPageInstantiator >> createInPager [
 	<return: #GtPager>
-	^ self createInPagerWithTitle: self pagerWindowTitle
-]
-
-{ #category : #opening }
-TGtPagerPageInstantiator >> createInPagerWithTitle: aTitle [
-	<return: #GtPager>
 	^ GtPager createOn: self asPagerPageElement
 ]
 
