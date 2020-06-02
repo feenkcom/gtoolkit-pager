@@ -15,6 +15,7 @@ GtPagerWrapperElement >> initialize [
 	self initializeViewModel.
 	self initializeElement.
 	self initializeToolAreaElement.
+	self beInSeparateCompositionLayer
 ]
 
 { #category : #initialization }
