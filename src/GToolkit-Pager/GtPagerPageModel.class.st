@@ -1,6 +1,9 @@
 Class {
 	#name : #GtPagerPageModel,
 	#superclass : #GtPagerPageProtoModel,
+	#instVars : [
+		'eventHandlers'
+	],
 	#category : #'GToolkit-Pager-View Model'
 }
 
@@ -12,6 +15,12 @@ GtPagerPageModel >> contentElement [
 { #category : #defaults }
 GtPagerPageModel >> defaultEmbellisher [
 	^ GtPagerPageEmbellisher new
+]
+
+{ #category : #initialization }
+GtPagerPageModel >> initialize [ 
+	super initialize.
+	eventHandlers := OrderedCollection new.
 ]
 
 { #category : #notifying }
@@ -38,15 +47,23 @@ GtPagerPageModel >> notifyPageRemoved: aPage from: aPager [
 GtPagerPageModel >> pager: aPager [
 	super pager: aPager.
 	self embellisher pager: aPager.
-	aPager
-		when: BrPagerPageAddedEvent
-			do: [ :anEvent | self notifyPageAdded: anEvent page in: aPager ];
-		when: BrPagerPageRemovedEvent
-			do: [ :anEvent | self notifyPageRemoved: anEvent page from: aPager ]
+	
+	eventHandlers add: (BlEventHandler 
+		on: BrPagerPageAddedEvent 
+		do: [ :anEvent | self notifyPageAdded: anEvent page in: aPager ]).
+	eventHandlers add: (BlEventHandler 
+		on: BrPagerPageRemovedEvent 
+		do: [ :anEvent | self notifyPageRemoved: anEvent page from: aPager ]).
+	eventHandlers do: [ :anEventHandler |
+		aPager addEventHandler: anEventHandler ].
+	
 ]
 
 { #category : #configuration }
 GtPagerPageModel >> removePager: aPager [
 	super removePager: aPager.
 	self embellisher removePager: aPager.
+	eventHandlers do: [ :anEventHandler |
+		aPager removeEventHandler: anEventHandler ].
+	eventHandlers removeAll.
 ]

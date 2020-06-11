@@ -11,6 +11,11 @@ GtPagerHolder class >> null [
 	^ GtPagerNullHolder default
 ]
 
+{ #category : #'announcer - subscription' }
+GtPagerHolder >> addEventHandler: anEventHandler [
+	self pager addEventHandler: anEventHandler
+]
+
 { #category : #'api - actions' }
 GtPagerHolder >> close: aPageElement [
 	"Close/remove a page from a pager"
@@ -34,6 +39,11 @@ GtPagerHolder >> maximizeIn: aCreationContext [
 	aCreationContext maximizePageContentInPager: self pager
 ]
 
+{ #category : #'announcer - subscription' }
+GtPagerHolder >> removeEventHandler: anEventHandler [
+	self pager removeEventHandler: anEventHandler
+]
+
 { #category : #'api - actions' }
 GtPagerHolder >> select: aGtPagerPageSelectionContext [
 	"Select a new page in a pager"
@@ -49,10 +59,4 @@ GtPagerHolder >> smoothScrollToLast [
 GtPagerHolder >> spawn: aGtPagerPageSelectionContext [
 	"Spawn a new page in a pager"
 	self pager spawn: aGtPagerPageSelectionContext
-]
-
-{ #category : #'announcer - subscription' }
-GtPagerHolder >> when: anEvent do: aBlock [
-	"Register an event handler"
-	self pager when: anEvent do: aBlock
 ]
