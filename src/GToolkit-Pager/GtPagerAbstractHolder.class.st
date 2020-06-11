@@ -4,6 +4,12 @@ Class {
 	#category : #'GToolkit-Pager-Strategies'
 }
 
+{ #category : #'announcer - subscription' }
+GtPagerAbstractHolder >> addEventHandler: anEventHandler [
+	"Register an event handler"
+	^ self subclassResponsibility
+]
+
 { #category : #'api - actions' }
 GtPagerAbstractHolder >> close: aPageElement [
 	"Close/remove a page from a pager"
@@ -28,6 +34,12 @@ GtPagerAbstractHolder >> maximizeIn: aCreationContext [
 	self subclassResponsibility
 ]
 
+{ #category : #'announcer - subscription' }
+GtPagerAbstractHolder >> removeEventHandler: anEventHandler [
+	"Register an event handler"
+	^ self subclassResponsibility
+]
+
 { #category : #'api - actions' }
 GtPagerAbstractHolder >> select: aGtPagerPageSelectionContext [
 	"Select a new page in a pager"
@@ -44,10 +56,4 @@ GtPagerAbstractHolder >> smoothScrollToLast [
 GtPagerAbstractHolder >> spawn: aGtPagerPageSelectionContext [
 	"Spawn a new page in a pager"
 	self subclassResponsibility
-]
-
-{ #category : #'announcer - subscription' }
-GtPagerAbstractHolder >> when: anEvent do: aBlock [
-	"Register an event handler"
-	^ self subclassResponsibility
 ]

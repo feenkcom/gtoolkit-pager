@@ -72,18 +72,29 @@ GtPagerPageEmbellisher >> createNextPageButtonOnContentWrapper: aContentWrapper 
 ]
 
 { #category : #'widget configuration' }
-GtPagerPageEmbellisher >> createPageCloseButton [
-	| aCloseButton |
+GtPagerPageEmbellisher >> createPageCloseButtonIn: aCreationContext [
+	| aCloseButton eventHandlers |
 	aCloseButton := self newPageCloseButton.
-	self pagerHolder
-		when: BrPagerPageAddedEvent
-		do: [ :anEvent | self updateCloseButtonVisiblity: aCloseButton ].
-	self pagerHolder
-		when: BrPagerPageRemovedEvent
-		do: [ :anEvent | self updateCloseButtonVisiblity: aCloseButton ].
-	self pagerHolder
-		when: BrPagerPagesChanged
-		do: [ :anEvent | self updateCloseButtonVisiblity: aCloseButton ].
+	eventHandlers := OrderedCollection new.
+	
+	eventHandlers add: (BlEventHandler 
+		on: BrPagerPageAddedEvent 
+		do: [ :anEvent | self updateCloseButtonVisiblity: aCloseButton ]).
+	eventHandlers add: (BlEventHandler 
+		on: BrPagerPagesChanged 
+		do: [ :anEvent | self updateCloseButtonVisiblity: aCloseButton ]).
+	eventHandlers add: (BlEventHandler 
+		on: BrPagerPageRemovedEvent 
+		do: [ :anEvent |  
+			anEvent page = aCreationContext contentElement viewModel 
+				ifTrue: [ 
+					eventHandlers do: [ :anEventHandler |
+						self pagerHolder removeEventHandler: anEventHandler ] ]
+				ifFalse: [
+					 self updateCloseButtonVisiblity: aCloseButton ] ]).
+	
+	eventHandlers do: [ :anEventHandler |
+		self pagerHolder addEventHandler: anEventHandler ].
 	self updateCloseButtonVisiblity: aCloseButton.
 	^ aCloseButton
 ]
@@ -148,7 +159,7 @@ GtPagerPageEmbellisher >> extension: anObject [
 GtPagerPageEmbellisher >> fillContentWrapperIn: aCreationContext [
 	aCreationContext wrapperElement
 		addChild: self contentElement;
-		addChild: self createPageCloseButton;
+		addChild: (self createPageCloseButtonIn: aCreationContext);
 		addChild: (self createMaximizeButtonIn: aCreationContext).
 ]
 

@@ -6,6 +6,11 @@ Class {
 	#category : #'GToolkit-Pager-Strategies'
 }
 
+{ #category : #'announcer - subscription' }
+GtPagerNullHolder >> addEventHandler: anEventHandler [
+	"Do nothing"
+]
+
 { #category : #'api - actions' }
 GtPagerNullHolder >> close: aPageElement [
 	"do nothing"
@@ -26,6 +31,11 @@ GtPagerNullHolder >> maximizeIn: aCreationContext [
 	"do nothing"
 ]
 
+{ #category : #'announcer - subscription' }
+GtPagerNullHolder >> removeEventHandler: anEventHandler [
+	"Do nothing"
+]
+
 { #category : #'api - actions' }
 GtPagerNullHolder >> select: aGtPagerPageSelectionContext [
 	"do nothing"
@@ -39,9 +49,4 @@ GtPagerNullHolder >> smoothScrollToLast [
 { #category : #'api - actions' }
 GtPagerNullHolder >> spawn: aGtPagerPageSelectionContext [
 	"do nothing"
-]
-
-{ #category : #'announcer - subscription' }
-GtPagerNullHolder >> when: anEvent do: aBlock [
-	"Do nothing"
 ]
