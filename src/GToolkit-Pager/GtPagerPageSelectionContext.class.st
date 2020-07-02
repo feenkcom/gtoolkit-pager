@@ -36,7 +36,8 @@ GtPagerPageSelectionContext >> afterPage: anElement [
 { #category : #converting }
 GtPagerPageSelectionContext >> asElementDo: aOneArgBlock [
 	"Create a tool element and execute the block"
-	self tool asElementDo: aOneArgBlock
+	self tool asElementDo: [ :anElement | 
+		aOneArgBlock cull: (GtPagerWrapperElement forElement: anElement) ]		
 ]
 
 { #category : #enumerating }
