@@ -38,7 +38,8 @@ GtPagerWrapperElement >> initializeElement [
 { #category : #initialization }
 GtPagerWrapperElement >> initializeToolAreaElement [
 	| anElement |
-	anElement := BlElement new 
+	anElement := BlElement new
+		labeled: 'Tool Container';
 		clipChildren: false;
 		layout: BlFrameLayout new;
 		constraintsDo: [ :c |
