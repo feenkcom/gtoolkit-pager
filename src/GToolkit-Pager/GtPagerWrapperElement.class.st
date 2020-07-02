@@ -4,6 +4,12 @@ Class {
 	#category : #'GToolkit-Pager-UI'
 }
 
+{ #category : #factory }
+GtPagerWrapperElement class >> forElement: aToolElement [
+	(aToolElement isKindOf: self) ifTrue: [ ^ aToolElement ].
+	^ self new tool: aToolElement
+]
+
 { #category : #accessing }
 GtPagerWrapperElement >> embellisher: aStencil [
 	self viewModel embellisher: aStencil
@@ -20,6 +26,7 @@ GtPagerWrapperElement >> initialize [
 { #category : #initialization }
 GtPagerWrapperElement >> initializeElement [
 	self 
+		labeled: 'Tool Wrapper';
 		clipChildren: false;
 		layout: BlLinearLayout vertical;
 		constraintsDo: [ :c |
@@ -30,7 +37,8 @@ GtPagerWrapperElement >> initializeElement [
 { #category : #initialization }
 GtPagerWrapperElement >> initializeToolAreaElement [
 	| anElement |
-	anElement := BlElement new 
+	anElement := BlElement new
+		labeled: 'Tool Container';
 		clipChildren: false;
 		layout: BlFrameLayout new;
 		constraintsDo: [ :c |
