@@ -24,8 +24,8 @@ GtPagerMaximizer >> assertPreMximizeConditions [
 	
 ]
 
-{ #category : #'api - actions' }
-GtPagerMaximizer >> maximize [
+{ #category : #private }
+GtPagerMaximizer >> basicMaximize [
 	self assertPreMximizeConditions.
 	originalParent := self contentElement parent.
 	self contentElement removeFromParent.
@@ -33,6 +33,21 @@ GtPagerMaximizer >> maximize [
 	overlayElement addChild: self newOverlayContent.
 	self pager addChild: overlayElement.
 	self notifyMaximized
+]
+
+{ #category : #private }
+GtPagerMaximizer >> enqueueMaximize [
+	self pager enqueueTask: (BlTaskAction new
+		action: [ self basicMaximize ])
+]
+
+{ #category : #'api - actions' }
+GtPagerMaximizer >> maximize [
+	BlUseAsyncFeatures 
+		ifEnabledDo: [ 
+			self enqueueMaximize ] 
+		otherwise: [ 
+			self basicMaximize ]
 ]
 
 { #category : #private }
