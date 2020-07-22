@@ -11,7 +11,7 @@ Class {
 }
 
 { #category : #asserting }
-GtPagerMaximizer >> assertPreMximizeConditions [
+GtPagerMaximizer >> assertPreMaximizeConditions [
 	self 
 		assert: [ self contentElement hasParent ]
 		description: [ 'Content element must have a parent' ].
@@ -25,20 +25,9 @@ GtPagerMaximizer >> assertPreMximizeConditions [
 ]
 
 { #category : #private }
-GtPagerMaximizer >> basicMaximize [
-	self assertPreMximizeConditions.
-	originalParent := self contentElement parent.
-	self contentElement removeFromParent.
-	overlayElement := self newOverlay.
-	overlayElement addChild: self newOverlayContent.
-	self pager addChild: overlayElement.
-	self notifyMaximized
-]
-
-{ #category : #private }
 GtPagerMaximizer >> enqueueMaximize [
 	self pager enqueueTask: (BlTaskAction new
-		action: [ self basicMaximize ])
+		action: [ self syncMaximize ])
 ]
 
 { #category : #'api - actions' }
@@ -47,7 +36,7 @@ GtPagerMaximizer >> maximize [
 		ifEnabledDo: [ 
 			self enqueueMaximize ] 
 		otherwise: [ 
-			self basicMaximize ]
+			self syncMaximize ]
 ]
 
 { #category : #private }
@@ -104,4 +93,16 @@ GtPagerMaximizer >> notifyMinimized [
 		dispatchEvent: (GtPagerPageMinimizedEvent new
 			pager: self pager;
 			page: self contentElement viewModel)
+]
+
+{ #category : #'api - actions' }
+GtPagerMaximizer >> syncMaximize [
+	"I must be called in a UI process"
+	self assertPreMaximizeConditions.
+	originalParent := self contentElement parent.
+	self contentElement removeFromParent.
+	overlayElement := self newOverlay.
+	overlayElement addChild: self newOverlayContent.
+	self pager addChild: overlayElement.
+	self notifyMaximized
 ]

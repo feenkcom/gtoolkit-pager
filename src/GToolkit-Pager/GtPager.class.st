@@ -141,7 +141,7 @@ GtPager >> maximizePageContentIn: anElement [
 	GtPagerEventPassingMaximizer new 
 		pager: self;
 		contentElement: anElement;
-		maximize
+		syncMaximize
 ]
 
 { #category : #'api - requests' }
