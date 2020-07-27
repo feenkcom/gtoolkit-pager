@@ -304,7 +304,7 @@ GtPagerPageEmbellisher >> newResizer [
 GtPagerPageEmbellisher >> newResizerHandrail [
 	^ BlElement new
 			background: ((Color fromHexString: #BDBDBD) alpha: 0.5);
-			geometry: (BlRectangle cornerRadius: 2);
+			geometry: (BlRoundedRectangleGeometry cornerRadius: 2);
 			constraintsDo: [ :c | 
 				c vertical matchParent.
 				c horizontal exact: 3.
