@@ -1,6 +1,11 @@
 Class {
 	#name : #GtPagerWrapperElement,
 	#superclass : #BlElement,
+	#traits : 'TGtPhlowToolVolumeAdjustable',
+	#classTraits : 'TGtPhlowToolVolumeAdjustable classTrait',
+	#instVars : [
+		'volumeModel'
+	],
 	#category : #'GToolkit-Pager-UI'
 }
 
@@ -20,7 +25,7 @@ GtPagerWrapperElement >> initialize [
 	super initialize.
 	self initializeViewModel.
 	self initializeElement.
-	self initializeToolAreaElement
+	self initializeToolAreaElement.
 ]
 
 { #category : #initialization }
@@ -49,7 +54,8 @@ GtPagerWrapperElement >> initializeToolAreaElement [
 
 { #category : #initialization }
 GtPagerWrapperElement >> initializeViewModel [
-	self viewModel: GtPagerPageModel new
+	self viewModel: GtPagerPageModel new.
+	self addInteractiveModelState: GtPhlowToolContainerVolumeModel new beUndefinedTool.
 ]
 
 { #category : #accessing }

@@ -42,9 +42,9 @@ GtPagerMaximizer >> maximize [
 { #category : #private }
 GtPagerMaximizer >> minimize [
 	self contentElement removeFromParent.
+	self contentElement beNormalTool.
 	originalParent addChildFirst: self contentElement.
 	overlayElement removeFromParent.
-	^ self notifyMinimized
 ]
 
 { #category : #'instance creation' }
@@ -62,6 +62,7 @@ GtPagerMaximizer >> newMinimizeIcon [
 { #category : #'instance creation' }
 GtPagerMaximizer >> newOverlay [
 	^ BlOverlayElement new
+		labeled: 'Maximized Pager Page';
 		background: (Color white alpha: 0.8);
 		padding: (BlInsets all: 20);
 		attachTo: self pager;
@@ -76,23 +77,7 @@ GtPagerMaximizer >> newOverlayContent [
 		constraintsDo: [ :c | c horizontal matchParent. c vertical matchParent ];
 		clipChildren: false;
 		addChild: self contentElement;
-		addChild: self newMinimizeIcon
-]
-
-{ #category : #notifying }
-GtPagerMaximizer >> notifyMaximized [
-	self contentElement tool 
-		dispatchEvent: (GtPagerPageMaximizedEvent new
-			pager: self pager;
-			page: self contentElement viewModel)
-]
-
-{ #category : #notifying }
-GtPagerMaximizer >> notifyMinimized [
-	self contentElement tool 
-		dispatchEvent: (GtPagerPageMinimizedEvent new
-			pager: self pager;
-			page: self contentElement viewModel)
+		addChild: self newMinimizeIcon.
 ]
 
 { #category : #'api - actions' }
@@ -101,8 +86,8 @@ GtPagerMaximizer >> syncMaximize [
 	self assertPreMaximizeConditions.
 	originalParent := self contentElement parent.
 	self contentElement removeFromParent.
+	self contentElement beDetailedTool.
 	overlayElement := self newOverlay.
 	overlayElement addChild: self newOverlayContent.
 	self pager addChild: overlayElement.
-	self notifyMaximized
 ]
