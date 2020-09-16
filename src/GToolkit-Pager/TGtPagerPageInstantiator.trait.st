@@ -3,15 +3,6 @@ Trait {
 	#category : #'GToolkit-Pager-UI'
 }
 
-{ #category : #accessing }
-TGtPagerPageInstantiator classSide >> gtUsersFor: aView [
-	<gtView>
-	<gtClassView>
-	^ aView list
-		title: 'Users';
-		items: [ self users asOrderedCollection ]
-]
-
 { #category : #converting }
 TGtPagerPageInstantiator >> asPagerPageElement [
 	<return: #GtPagerWrapperElement>
