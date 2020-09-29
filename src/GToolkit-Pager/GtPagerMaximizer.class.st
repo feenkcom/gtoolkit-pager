@@ -42,7 +42,7 @@ GtPagerMaximizer >> maximize [
 { #category : #private }
 GtPagerMaximizer >> minimize [
 	self contentElement removeFromParent.
-	self contentElement beNormalTool.
+	self contentElement beNormalLevel.
 	originalParent addChildFirst: self contentElement.
 	overlayElement removeFromParent.
 ]
@@ -86,7 +86,7 @@ GtPagerMaximizer >> syncMaximize [
 	self assertPreMaximizeConditions.
 	originalParent := self contentElement parent.
 	self contentElement removeFromParent.
-	self contentElement beDetailedTool.
+	self contentElement beDetailedLevel.
 	overlayElement := self newOverlay.
 	overlayElement addChild: self newOverlayContent.
 	self pager addChild: overlayElement.
