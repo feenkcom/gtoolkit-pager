@@ -55,7 +55,7 @@ GtPagerWrapperElement >> initializeToolAreaElement [
 { #category : #initialization }
 GtPagerWrapperElement >> initializeViewModel [
 	self viewModel: GtPagerPageModel new.
-	self addInteractiveModelState: GtPhlowToolContainerDetailModel new beUndefinedTool.
+	self addInteractiveModelState: GtPhlowToolContainerDetailModel new beUndefinedLevel.
 ]
 
 { #category : #accessing }
