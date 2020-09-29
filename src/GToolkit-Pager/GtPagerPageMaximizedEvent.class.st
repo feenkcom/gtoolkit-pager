@@ -1,5 +1,5 @@
 "
-Use ${class:GtPhlowToolVolumeModel}$ instead.
+Use ${class:GtPhlowToolDetailModel}$ instead.
 "
 Class {
 	#name : #GtPagerPageMaximizedEvent,
