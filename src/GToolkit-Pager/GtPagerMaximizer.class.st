@@ -63,7 +63,7 @@ GtPagerMaximizer >> newMinimizeIcon [
 GtPagerMaximizer >> newOverlay [
 	^ BlOverlayElement new
 		labeled: 'Maximized Pager Page';
-		background: (Color white alpha: 0.8);
+		background: BrGlamorousColors backdropColor;
 		padding: (BlInsets all: 20);
 		attachTo: self pager;
 		layout: BlLinearLayout horizontal
@@ -73,7 +73,7 @@ GtPagerMaximizer >> newOverlay [
 GtPagerMaximizer >> newOverlayContent [
 	^ BlElement new
 		background: (Color white);
-		look: BrShadowLook new;
+		look: BrShadowLook new beLarge;
 		constraintsDo: [ :c | c horizontal matchParent. c vertical matchParent ];
 		clipChildren: false;
 		addChild: self contentElement;

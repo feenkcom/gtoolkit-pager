@@ -263,7 +263,7 @@ GtPagerPageEmbellisher >> newPageContentWrapper [
 		clipChildren: false;
 		background: Color white;
 		viewModel: (BrInteractiveModel new addState: BrFocusModel new);
-		look: BrGlamorousFocusableShadowLook new;
+		look: BrGlamorousFocusableShadowLook new beLarge;
 		layout: BlLinearLayout vertical;
 		margin:
 			(BlInsets
