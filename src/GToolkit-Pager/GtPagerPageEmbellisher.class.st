@@ -263,13 +263,13 @@ GtPagerPageEmbellisher >> newPageContentWrapper [
 		clipChildren: false;
 		background: Color white;
 		viewModel: (BrInteractiveModel new addState: BrFocusModel new);
-		look: BrGlamorousFocusableShadowLook new;
+		look: BrGlamorousFocusableShadowLook new beLarge;
 		layout: BlLinearLayout vertical;
 		margin:
 			(BlInsets
 				top: 15
 				right: 0
-				bottom: 10
+				bottom: 15
 				left: 15);
 		constraintsDo: [ :c | 
 			c horizontal matchParent.
