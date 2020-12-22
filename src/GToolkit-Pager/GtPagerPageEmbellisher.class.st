@@ -269,7 +269,7 @@ GtPagerPageEmbellisher >> newPageContentWrapper [
 			(BlInsets
 				top: 15
 				right: 0
-				bottom: 10
+				bottom: 15
 				left: 15);
 		constraintsDo: [ :c | 
 			c horizontal matchParent.
