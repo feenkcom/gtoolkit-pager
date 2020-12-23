@@ -90,4 +90,5 @@ GtPagerMaximizer >> syncMaximize [
 	overlayElement := self newOverlay.
 	overlayElement addChild: self newOverlayContent.
 	self pager addChild: overlayElement.
+	self contentElement requestFocus.
 ]
