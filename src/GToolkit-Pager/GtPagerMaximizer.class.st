@@ -73,7 +73,7 @@ GtPagerMaximizer >> newOverlay [
 GtPagerMaximizer >> newOverlayContent [
 	^ BlElement new
 		background: (Color white);
-		look: BrShadowLook new beLarge;
+		look: BrGlamorousFocusableShadowLook new beLarge;
 		constraintsDo: [ :c | c horizontal matchParent. c vertical matchParent ];
 		clipChildren: false;
 		addChild: self contentElement;
@@ -90,5 +90,4 @@ GtPagerMaximizer >> syncMaximize [
 	overlayElement := self newOverlay.
 	overlayElement addChild: self newOverlayContent.
 	self pager addChild: overlayElement.
-	self contentElement requestFocus.
 ]
