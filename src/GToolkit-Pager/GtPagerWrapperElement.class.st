@@ -20,6 +20,19 @@ GtPagerWrapperElement >> embellisher: aStencil [
 	self viewModel embellisher: aStencil
 ]
 
+{ #category : #testing }
+GtPagerWrapperElement >> hasTool [
+	<return: #Boolean>
+	^ self 
+		childNamed: self toolAreaIdentifier
+		ifFound: [ :aToolAreaElement |
+			aToolAreaElement
+				childNamed: self toolIdentificator 
+				ifFound: [ :aToolElement | true ] 
+				ifNone: [ false ] ]
+		ifNone: [ false ]
+]
+
 { #category : #initialization }
 GtPagerWrapperElement >> initialize [
 	super initialize.
@@ -61,6 +74,13 @@ GtPagerWrapperElement >> initializeViewModel [
 { #category : #accessing }
 GtPagerWrapperElement >> model: anObject [
 	self viewModel model: anObject
+]
+
+{ #category : #'focus requesting' }
+GtPagerWrapperElement >> requestFocus [
+	self hasTool
+		ifTrue: [ self tool requestFocus ]
+		ifFalse: [ super requestFocus ]
 ]
 
 { #category : #accessing }
