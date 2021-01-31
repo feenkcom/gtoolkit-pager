@@ -35,7 +35,7 @@ GtPager class >> defaultExtent [
 GtPager class >> newSpaceWith: anElement title: aTitle [
 	| aSpace |
 	aSpace := BlSpace new.
-	aSpace withHalos.
+	aSpace withSceneDriller.
 	aSpace title: aTitle asString.
 	aSpace extent: self defaultExtent.
 	aSpace root addChild: anElement.
