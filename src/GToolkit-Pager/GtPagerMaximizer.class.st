@@ -62,7 +62,7 @@ GtPagerMaximizer >> newMinimizeIcon [
 { #category : #'instance creation' }
 GtPagerMaximizer >> newOverlay [
 	^ BlOverlayElement new
-		labeled: 'Maximized Pager Page';
+		id: GtPagerMaximizedPageElementId;
 		background: BrGlamorousColors backdropColor;
 		padding: (BlInsets all: 20);
 		attachTo: self pager;

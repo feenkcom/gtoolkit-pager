@@ -202,15 +202,11 @@ GtPagerPageEmbellisher >> newCreationContext [
 { #category : #'instance creation' }
 GtPagerPageEmbellisher >> newMaximizeButton [
 	^ GtInspectorRoundButtonStencil normal asElement
-		icon: GtInspectorPlusIconStencil add asElement;
+		icon: BrPlusIconStencil add asElement;
+		id: GtPagerMaximizeButtonElementId;
 		constraintsDo: [ :c | 
 			c ignoreByLayout.
-			c margin:
-					(BlInsets
-						top: -10
-						left: -10
-						bottom: 0
-						right: 0).
+			c margin: (BlInsets top: -10 left: -10).
 			c ignored horizontal alignLeft.
 			c ignored vertical alignTop ]
 ]
@@ -281,6 +277,7 @@ GtPagerPageEmbellisher >> newPageElement [
 	| aPageElement |
 
 	aPageElement := BrPagerPageElement new
+		id: GtPagerPageElementId;
 		layout: BlLinearLayout horizontal;
 		margin: (BlInsets all: 0);
 		constraintsDo: [ :c | c vertical matchParent ].		
