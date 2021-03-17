@@ -44,7 +44,7 @@ GtPagerWrapperElement >> initialize [
 { #category : #initialization }
 GtPagerWrapperElement >> initializeElement [
 	self 
-		labeled: 'Tool Wrapper';
+		id: GtPagerToolWrapperElementId;
 		clipChildren: false;
 		layout: BlLinearLayout vertical;
 		constraintsDo: [ :c |
