@@ -1,5 +1,7 @@
 "
 An element that wraps a tool
+
+
 "
 Class {
 	#name : #GtPagerToolWrapperElementId,
