@@ -1,5 +1,7 @@
 "
 An overlay element that contains a maximized page
+
+
 "
 Class {
 	#name : #GtPagerMaximizedPageElementId,

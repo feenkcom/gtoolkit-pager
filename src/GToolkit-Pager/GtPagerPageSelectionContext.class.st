@@ -1,6 +1,7 @@
 "
-I keep information that is passed to ${class:GtPager}$ when there are ${method:GtPager>>#select:}$ and ${method:GtPager>>#spawn:}$ requests.
-I am created by ${class:GtPagerPageEmbellisher}$.
+I keep information that is passed to {{gtClass:GtPager}} when there are {{gtMethod:GtPager>>#select:}} and {{gtMethod:GtPager>>#spawn:}} requests.
+I am created by {{gtClass:GtPagerPageEmbellisher}}.
+
 
 "
 Class {

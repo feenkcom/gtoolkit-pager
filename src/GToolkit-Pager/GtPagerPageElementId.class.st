@@ -1,5 +1,7 @@
 "
-A page inside of the ${class:BrPager}$
+A page inside of the {{gtClass:BrPager}}
+
+
 "
 Class {
 	#name : #GtPagerPageElementId,

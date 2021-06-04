@@ -1,5 +1,7 @@
 "
 A button to maximize a page
+
+
 "
 Class {
 	#name : #GtPagerMaximizeButtonElementId,

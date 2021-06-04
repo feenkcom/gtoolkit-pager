@@ -1,6 +1,7 @@
 "
-I keep common elements that are accessed (and modified) during a ${class:name=GtPagerPageModel}$ widget creation.
-I am used by ${class:GtPagerPageEmbellisher}$ as an internal object that is passed among methods.!
+I keep common elements that are accessed (and modified) during a {{gtClass:name=GtPagerPageModel}} widget creation.
+I am used by {{gtClass:GtPagerPageEmbellisher}} as an internal object that is passed among methods.!
+
 
 "
 Class {

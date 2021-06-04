@@ -1,6 +1,7 @@
 "
-I am an initial ${class:GtPagerPageSelectionContext}$ that is used until ${class:GtPhlowObjectToSelect}$ or ${class:GtPhlowObjectToSpawn}$ is received.
-I am used by ${class:GtPagerPageEmbellisher}$.
+I am an initial {{gtClass:GtPagerPageSelectionContext}} that is used until {{gtClass:GtPhlowObjectToSelect}} or {{gtClass:GtPhlowObjectToSpawn}} is received.
+I am used by {{gtClass:GtPagerPageEmbellisher}}.
+
 
 "
 Class {
