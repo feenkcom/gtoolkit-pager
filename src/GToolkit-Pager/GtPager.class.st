@@ -134,6 +134,17 @@ GtPager >> defaultContext [
 GtPager >> initialize [
 	super initialize.
 	context := self defaultContext.
+	self
+		addShortcut:
+			(BlShortcutWithAction new
+				repeatable: true;
+				combination: BlKeyCombination primaryW;
+				action: [ :aShortcutEvent | 
+					self pages size > 1 
+						ifTrue: [
+							self removePageAt: self pages size.
+							aShortcutEvent consumed: true ]
+						ifFalse: [ aShortcutEvent consumed: false ] ] ).
 ]
 
 { #category : #'api - requests' }
