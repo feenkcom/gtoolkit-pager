@@ -1,1 +1,1 @@
-Package { #name : #BaselineOfGToolkitPager }
+Package { #name : 'BaselineOfGToolkitPager' }
