@@ -17,7 +17,6 @@ GtPagerExamples >> basicPager [
 GtPagerExamples >> pageOne [
 	<gtExample>
 	^ BrLabel new 
-		aptitude: BrGlamorousLabelAptitude;
 		text: self pageOneText;
 		constraintsDo: [ :c | 
 			c frame vertical alignCenter.
@@ -46,7 +45,6 @@ GtPagerExamples >> pageTextFromString: aString [
 GtPagerExamples >> pageTwo [
 	<gtExample>
 	^ BrLabel new 
-		aptitude: BrGlamorousLabelAptitude;
 		text: self pageTwoText;
 		constraintsDo: [ :c | 
 			c frame vertical alignCenter.
