@@ -274,10 +274,14 @@ GtPagerPageEmbellisher >> newPageContentWrapper [
 
 { #category : #'instance creation' }
 GtPagerPageEmbellisher >> newPageElement [
-	| aPageElement |
-
+	| aPageElement anElementId |
+	anElementId := self index 
+		ifNil: [ GtPagerPageElementId ] 
+		ifNotNil: [ :anIndex | 
+			GtPagerPageElementId indexed: anIndex ].
+	
 	aPageElement := BrPagerPageElement new
-		id: GtPagerPageElementId;
+		id: anElementId;
 		layout: BlLinearLayout horizontal;
 		margin: (BlInsets all: 0);
 		constraintsDo: [ :c | c vertical matchParent ].		
