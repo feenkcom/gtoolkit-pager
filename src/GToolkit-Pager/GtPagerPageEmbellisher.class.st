@@ -50,7 +50,7 @@ GtPagerPageEmbellisher >> create [
 
 { #category : #'widget configuration' }
 GtPagerPageEmbellisher >> createMaximizeButtonIn: aCreationContext [
-	^ self newMaximizeButton
+	aCreationContext wrapperElement maximizeButton
 		action: [ self pagerHolder maximizeIn: aCreationContext ]
 ]
 
@@ -75,7 +75,9 @@ GtPagerPageEmbellisher >> createNextPageButtonOnContentWrapper: aContentWrapper 
 { #category : #'widget configuration' }
 GtPagerPageEmbellisher >> createPageCloseButtonIn: aCreationContext [
 	| aCloseButton eventHandlers |
-	aCloseButton := self newPageCloseButton.
+	aCloseButton := aCreationContext wrapperElement closeButton.
+	aCloseButton action: [ self pagerHolder close: self contentElement ].
+	
 	eventHandlers := OrderedCollection new.
 	
 	eventHandlers add: (BlEventHandler 
@@ -97,6 +99,7 @@ GtPagerPageEmbellisher >> createPageCloseButtonIn: aCreationContext [
 	eventHandlers do: [ :anEventHandler |
 		self pagerHolder addEventHandler: anEventHandler ].
 	self updateCloseButtonVisiblity: aCloseButton.
+
 	^ aCloseButton
 ]
 
@@ -159,20 +162,23 @@ GtPagerPageEmbellisher >> extension: anObject [
 { #category : #'widget configuration' }
 GtPagerPageEmbellisher >> fillContentWrapperIn: aCreationContext [
 	aCreationContext wrapperElement
-		addChild: self contentElement;
-		addChild: (self createPageCloseButtonIn: aCreationContext);
-		addChild: (self createMaximizeButtonIn: aCreationContext).
+		addChild: self contentElement.
+
+	self createPageCloseButtonIn: aCreationContext.
+	self createMaximizeButtonIn: aCreationContext
 ]
 
 { #category : #'widget configuration' }
 GtPagerPageEmbellisher >> fillPageElementIn: aCreationContext [
 	| aTriangleElement aPageResizer |
+
 	aTriangleElement := self createNextPageButtonOnContentWrapper: aCreationContext wrapperElement.
 	aPageResizer := self createResizerForPage: aCreationContext pageElement.
+
 	aCreationContext pageElement 
 		addChild: aCreationContext wrapperElement;
 		addChild: aPageResizer;
-		addChild: aTriangleElement.
+		addChild: aTriangleElement
 ]
 
 { #category : #'widget configuration' }
@@ -200,18 +206,6 @@ GtPagerPageEmbellisher >> newCreationContext [
 ]
 
 { #category : #'instance creation' }
-GtPagerPageEmbellisher >> newMaximizeButton [
-	^ GtInspectorRoundButtonStencil normal asElement
-		icon: BrPlusIconStencil add asElement;
-		id: GtPagerMaximizeButtonElementId;
-		constraintsDo: [ :c | 
-			c ignoreByLayout.
-			c margin: (BlInsets top: -10 left: -10).
-			c ignored horizontal alignLeft.
-			c ignored vertical alignTop ]
-]
-
-{ #category : #'instance creation' }
 GtPagerPageEmbellisher >> newNextPageButton [
 	^ BrPagerNextButton new
 		size: 16 @ 32;
@@ -236,40 +230,8 @@ GtPagerPageEmbellisher >> newNextPageButton [
 ]
 
 { #category : #'instance creation' }
-GtPagerPageEmbellisher >> newPageCloseButton [
-	^ GtInspectorRoundButtonStencil normal asElement
-		icon: GtInspectorPlusIconStencil close asElement;
-		constraintsDo: [ :c | 
-			c ignoreByLayout.
-			c
-				margin:
-					(BlInsets
-						top: -10
-						left: 0
-						bottom: 0
-						right: -10).
-			c ignored horizontal alignRight.
-			c ignored vertical alignTop ];
-		action: [ self pagerHolder close: self contentElement ]
-]
-
-{ #category : #'instance creation' }
 GtPagerPageEmbellisher >> newPageContentWrapper [
-	^ BrPagerPageContentElement new
-		clipChildren: false;
-		background: Color white;
-		viewModel: (BrInteractiveModel new addState: BrFocusModel new);
-		aptitude: BrGlamorousFocusableShadowAptitude new beLarge;
-		layout: BlLinearLayout vertical;
-		margin:
-			(BlInsets
-				top: 15
-				right: 0
-				bottom: 15
-				left: 15);
-		constraintsDo: [ :c | 
-			c horizontal matchParent.
-			c vertical matchParent ]
+	^ GtPagerPageContentElement new
 ]
 
 { #category : #'instance creation' }
@@ -279,12 +241,9 @@ GtPagerPageEmbellisher >> newPageElement [
 		ifNil: [ GtPagerPageElementId ] 
 		ifNotNil: [ :anIndex | 
 			GtPagerPageElementId indexed: anIndex ].
-	
-	aPageElement := BrPagerPageElement new
-		id: anElementId;
-		layout: BlLinearLayout horizontal;
-		margin: (BlInsets all: 0);
-		constraintsDo: [ :c | c vertical matchParent ].		
+
+	aPageElement := GtPagerPageElement new
+		id: anElementId.		
 
 	self pageWidth onElement: aPageElement.
 	
