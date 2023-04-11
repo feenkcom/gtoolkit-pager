@@ -65,5 +65,5 @@ GtPagerPageModel >> removePager: aPager [
 	self embellisher removePager: aPager.
 	eventHandlers do: [ :anEventHandler |
 		aPager removeEventHandler: anEventHandler ].
-	eventHandlers removeAll.
+	eventHandlers removeAll
 ]
