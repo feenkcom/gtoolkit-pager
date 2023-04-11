@@ -8,11 +8,6 @@ Class {
 	#category : #'GToolkit-Pager-UI'
 }
 
-{ #category : #'private - futures' }
-GtPagerPageContentElement >> cancelPendingFuturePromises [
-	"futurePromises asArray do: [ :eachFuturePromise | eachFuturePromise cancelHard ]"
-]
-
 { #category : #accessing }
 GtPagerPageContentElement >> closeButton [
 	^ closeButton
@@ -64,25 +59,10 @@ GtPagerPageContentElement >> initialize [
 	maximizeButton := self createMaximizeButton.
 
 	self addChild: closeButton.
-	self addChild: maximizeButton.
-	
-	self
-		when: BrAsyncElementFutureScheduledEvent
-		do: [ :anEvent |
-			self
-				privateRegisterFuturePromise: anEvent futurePromise
-				comingFrom: anEvent target ]
+	self addChild: maximizeButton
 ]
 
 { #category : #accessing }
 GtPagerPageContentElement >> maximizeButton [
 	^ maximizeButton
-]
-
-{ #category : #'private - futures' }
-GtPagerPageContentElement >> privateRegisterFuturePromise: aFuturePromise comingFrom: anElement [
-	"futurePromises add: aFuturePromise.
-	aFuturePromise
-		then: [ futurePromises remove: aFuturePromise ]
-		otherwise: [ futurePromises remove: aFuturePromise ]"
 ]
