@@ -207,7 +207,9 @@ GtPagerPageEmbellisher >> newCreationContext [
 
 { #category : #'instance creation' }
 GtPagerPageEmbellisher >> newNextPageButton [
-	^ BrPagerNextButton new
+	| aButton |
+	aButton := BrPagerNextButton new.
+	aButton
 		size: 16 @ 32;
 		geometry:
 			(BlPolygon
@@ -215,7 +217,7 @@ GtPagerPageEmbellisher >> newNextPageButton [
 					{(0 @ 0).
 					(16 @ 16).
 					(0 @ 32)});
-		background: ((Color fromHexString: #BDBDBD) alpha: 0.5);
+		aptitude: BrGlamorousFadedButtonExteriourAptitude;
 		visibility: BlVisibility hidden;
 		constraintsDo: [ :c | 
 			c linear horizontal alignRight.
@@ -226,7 +228,9 @@ GtPagerPageEmbellisher >> newNextPageButton [
 				anEvent consumed: true.
 				self pagerHolder spawn: self selectionContext.
 				anEvent modifiers isShift
-					ifTrue: [ self pagerHolder smoothScrollToLast ] ]
+					ifTrue: [ self pagerHolder smoothScrollToLast ] ].
+					
+	^ aButton
 ]
 
 { #category : #'instance creation' }
