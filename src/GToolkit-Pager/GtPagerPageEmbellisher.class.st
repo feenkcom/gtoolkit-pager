@@ -42,6 +42,7 @@ GtPagerPageEmbellisher >> create [
 		pageElement: self newPageElement;
 		wrapperElement: self newPageContentWrapper;
 		contentElement: self contentElement.
+		
 	self fillContentWrapperIn: aCreationContext.
 	self fillPageElementIn: aCreationContext.
 	self fillWithExtensionIn: aCreationContext.
@@ -163,6 +164,11 @@ GtPagerPageEmbellisher >> extension: anObject [
 GtPagerPageEmbellisher >> fillContentWrapperIn: aCreationContext [
 	aCreationContext wrapperElement
 		addChild: self contentElement.
+		
+	aCreationContext pageElement
+		addEventHandler: (BlEventDelegator
+			delegate: BrPagerPageBoundEvent
+			to: self contentElement).
 
 	self createPageCloseButtonIn: aCreationContext.
 	self createMaximizeButtonIn: aCreationContext
