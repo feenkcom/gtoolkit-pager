@@ -144,7 +144,7 @@ GtPager >> initialize [
 						ifTrue: [
 							self removePageAt: self pages size.
 							aShortcutEvent consumed: true ]
-						ifFalse: [ aShortcutEvent consumed: false ] ] ).
+						ifFalse: [ aShortcutEvent beNotConsumed ] ] ).
 ]
 
 { #category : #'api - requests' }
