@@ -142,7 +142,7 @@ GtPagerPageEmbellisher >> defaultExtension [
 
 { #category : #initialization }
 GtPagerPageEmbellisher >> defaultPageWidth [
-	^ GtPagerPageWidth weighted
+	^ GtPagerPageWidth weight: self defaultPageWidthNumber
 ]
 
 { #category : #defaults }
