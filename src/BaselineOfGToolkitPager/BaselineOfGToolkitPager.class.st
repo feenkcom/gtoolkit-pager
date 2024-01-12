@@ -10,10 +10,10 @@ BaselineOfGToolkitPager >> baseline: spec [
 	spec for: #'common' do: [
 		spec
 			baseline: 'GToolkitPhlow' with: [
-				spec repository: 'github://feenkcom/gtoolkit-phlow:v0.8.1167/src' ].
+				spec repository: 'github://feenkcom/gtoolkit-phlow:v0.8.1168/src' ].
 		spec
 			baseline: 'GToolkitBasicUtility' with: [
-				spec repository: 'github://feenkcom/gtoolkit-utility:v0.8.254/src' ].
+				spec repository: 'github://feenkcom/gtoolkit-utility:v0.8.255/src' ].
 
 		spec package: 'GToolkit-Pager' with: [
 			spec requires: #('GToolkitPhlow' 'GToolkitBasicUtility') ].
