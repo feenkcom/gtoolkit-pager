@@ -3,9 +3,6 @@ Class {
 	#superclass : #BlElement,
 	#traits : 'TGtPhlowToolDetailAdjustable',
 	#classTraits : 'TGtPhlowToolDetailAdjustable classTrait',
-	#instVars : [
-		'volumeModel'
-	],
 	#category : #'GToolkit-Pager-UI'
 }
 
@@ -13,6 +10,15 @@ Class {
 GtPagerWrapperElement class >> forElement: aToolElement [
 	(aToolElement isKindOf: self) ifTrue: [ ^ aToolElement ].
 	^ self new tool: aToolElement
+]
+
+{ #category : #initialization }
+GtPagerWrapperElement >> createToolAreaElement [
+	^ BrFrame new
+		labeled: 'Tool Container';
+		id: self toolAreaIdentifier;
+		clipChildren: false;
+		matchParent
 ]
 
 { #category : #accessing }
@@ -23,11 +29,12 @@ GtPagerWrapperElement >> embellisher: aStencil [
 { #category : #testing }
 GtPagerWrapperElement >> hasTool [
 	<return: #Boolean>
+
 	^ self 
-		childNamed: self toolAreaIdentifier
+		childWithId: self toolAreaIdentifier
 		ifFound: [ :aToolAreaElement |
 			aToolAreaElement
-				childNamed: self toolIdentificator 
+				childWithId: self toolIdentificator 
 				ifFound: [ :aToolElement | true ] 
 				ifNone: [ false ] ]
 		ifNone: [ false ]
@@ -36,39 +43,17 @@ GtPagerWrapperElement >> hasTool [
 { #category : #initialization }
 GtPagerWrapperElement >> initialize [
 	super initialize.
-	self initializeViewModel.
-	self initializeElement.
-	self initializeToolAreaElement.
-]
-
-{ #category : #initialization }
-GtPagerWrapperElement >> initializeElement [
+	
 	self 
 		id: GtPagerToolWrapperElementId;
 		clipChildren: false;
 		layout: BlLinearLayout vertical;
 		constraintsDo: [ :c |
 			c horizontal matchParent.
-			c vertical matchParent ].
-]
+			c vertical matchParent ];
+		viewModel: GtPagerPageModel new.
 
-{ #category : #initialization }
-GtPagerWrapperElement >> initializeToolAreaElement [
-	| anElement |
-	anElement := BlElement new
-		labeled: 'Tool Container';
-		clipChildren: false;
-		layout: BlFrameLayout new;
-		constraintsDo: [ :c |
-			c horizontal matchParent.
-			c vertical matchParent ].
-	self addChild: anElement as: self toolAreaIdentifier.
-]
-
-{ #category : #initialization }
-GtPagerWrapperElement >> initializeViewModel [
-	self viewModel: GtPagerPageModel new.
-	self addInteractiveModelState: GtPhlowToolContainerDetailModel new beUndefinedLevel.
+	self addChild: self createToolAreaElement
 ]
 
 { #category : #accessing }
@@ -86,20 +71,22 @@ GtPagerWrapperElement >> requestFocus [
 { #category : #accessing }
 GtPagerWrapperElement >> tool [
 	<return: #BlElement>
-	^ self toolArea childNamed: self toolIdentificator.
+
+	^ self toolArea childWithId: self toolIdentificator
 ]
 
 { #category : #accessing }
 GtPagerWrapperElement >> tool: anElement [
 	self toolArea
 		addChild: anElement asElement 
-		as: self toolIdentificator.
+		as: self toolIdentificator
 ]
 
 { #category : #accessing }
 GtPagerWrapperElement >> toolArea [
 	<return: #BlElement>
-	^ self childNamed: self toolAreaIdentifier.
+
+	^ self childWithId: self toolAreaIdentifier
 ]
 
 { #category : #accessing }

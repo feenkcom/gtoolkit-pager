@@ -41,10 +41,11 @@ GtPagerMaximizer >> maximize [
 
 { #category : #private }
 GtPagerMaximizer >> minimize [
-	self contentElement removeFromParent.
 	self contentElement beNormalLevel.
-	originalParent addChildFirst: self contentElement.
-	overlayElement removeFromParent.
+	originalParent ifNotNil: [ :aParent |
+		self contentElement removeFromParent.
+		aParent addChildFirst: self contentElement ].
+	overlayElement ifNotNil: [ :anOverlay | anOverlay removeFromParent ].
 ]
 
 { #category : #'instance creation' }

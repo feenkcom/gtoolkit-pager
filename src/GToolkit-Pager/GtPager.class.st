@@ -162,6 +162,21 @@ GtPager >> maximized [
 	self maximizePageContentIn: self pages last contentElement.
 ]
 
+{ #category : #'api - requests' }
+GtPager >> minimizePageContentIn: anElement [
+	GtPagerEventPassingMaximizer new 
+		pager: self;
+		contentElement: anElement;
+		minimize
+]
+
+{ #category : #'api - requests' }
+GtPager >> minimized [
+	"Minimize the last page"
+	self pages ifEmpty: [ ^ self ].
+	self minimizePageContentIn: self pages last contentElement.
+]
+
 { #category : #'instance creation' }
 GtPager >> newPagerModel [
 	^ GtPagerModel new
