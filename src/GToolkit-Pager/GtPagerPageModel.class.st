@@ -50,10 +50,22 @@ GtPagerPageModel >> pager: aPager [
 	
 	eventHandlers add: (BlEventHandler 
 		on: BrPagerPageAddedEvent 
-		do: [ :anEvent | self notifyPageAdded: anEvent page in: aPager ]).
+		do: [ :anEvent | 
+			anEvent page = self ifTrue: [
+				self widgetDo: [ :aWrapper | 
+					aPager context toolSelectionStatesHandler 
+						applySelectionStateTo: aWrapper tool ] ].
+						
+			self notifyPageAdded: anEvent page in: aPager ]).
 	eventHandlers add: (BlEventHandler 
 		on: BrPagerPageRemovedEvent 
-		do: [ :anEvent | self notifyPageRemoved: anEvent page from: aPager ]).
+		do: [ :anEvent | 
+			anEvent page = self ifTrue: [
+				self widgetDo: [ :aWrapper | 
+					aPager context toolSelectionStatesHandler 
+						storeSelectionStateFrom: aWrapper tool ] ].
+		
+			self notifyPageRemoved: anEvent page from: aPager ]).
 	eventHandlers do: [ :anEventHandler |
 		aPager addEventHandler: anEventHandler ].
 	
