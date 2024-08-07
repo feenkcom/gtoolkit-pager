@@ -18,6 +18,7 @@ GtPagerPageContentElement >> createCloseButton [
 	^ GtInspectorRoundButtonStencil normal asElement
 		icon: BrPlusIconStencil close asElement;
 		zIndex: 10;
+		id: GtPagerClosePageButtonElementId;
 		constraintsDo: [ :c | 
 			c ignoreByLayout.
 			c
