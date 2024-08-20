@@ -192,11 +192,15 @@ GtPager >> select: aGtPagerPageSelectionContext [
 
 { #category : #'api - scrolling' }
 GtPager >> spawn: aGtPagerPageSelectionContext [
-	aGtPagerPageSelectionContext asElementDo: [ :aToolElement | 
-		self assertToolElement: aToolElement.
+	aGtPagerPageSelectionContext asElementDo: [ :aWrapperElement | 
+		self assertToolElement: aWrapperElement.
 		self assertToolElement: aGtPagerPageSelectionContext afterPage.
 		self removePagesAfter: aGtPagerPageSelectionContext afterPage.
-		self addPage: aToolElement.
+		
+		self context toolSelectionStatesHandler 
+						applySelectionStateTo: aWrapperElement tool.
+		
+		self addPage: aWrapperElement.
 		self smoothScrollToLast
 	] 
 ]
