@@ -51,3 +51,9 @@ GtPagerPageSelectionContext >> initialize [
 	super initialize.
 	self initializeTool.
 ]
+
+{ #category : #accessing }
+GtPagerPageSelectionContext >> prepareForReusedNavigation [
+	self tool ifNotNil: [ :aTool |
+		aTool prepareForReusedNavigation ]
+]
