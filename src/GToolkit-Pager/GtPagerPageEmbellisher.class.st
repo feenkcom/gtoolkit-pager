@@ -231,8 +231,13 @@ GtPagerPageEmbellisher >> newNextPageButton [
 		margin: (BlInsets all: 2);
 		when: BlClickEvent
 			do: [ :anEvent | 
+				| currentSelectionContext |
 				anEvent consumed: true.
-				self pagerHolder spawn: self selectionContext.
+				
+				currentSelectionContext := self selectionContext.
+				currentSelectionContext prepareForReusedNavigation.
+				self pagerHolder spawn: currentSelectionContext.
+				
 				anEvent modifiers isShift
 					ifTrue: [ self pagerHolder smoothScrollToLast ] ].
 					
