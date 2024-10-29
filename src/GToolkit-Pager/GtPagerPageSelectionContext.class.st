@@ -10,7 +10,8 @@ Class {
 	#traits : 'TGtPhlowToolAccessors',
 	#classTraits : 'TGtPhlowToolAccessors classTrait',
 	#instVars : [
-		'afterPage'
+		'afterPage',
+		'navigationContext'
 	],
 	#category : #'GToolkit-Pager-Contexts'
 }
@@ -22,7 +23,7 @@ GtPagerPageSelectionContext class >> null [
 
 { #category : #accessing }
 GtPagerPageSelectionContext >> afterPage [
-	<return: #BlElement>
+	<return: #GtPagerWrapperElement>
 	^ afterPage
 ]
 
@@ -37,8 +38,25 @@ GtPagerPageSelectionContext >> afterPage: anElement [
 { #category : #converting }
 GtPagerPageSelectionContext >> asElementDo: aOneArgBlock [
 	"Create a tool element and execute the block"
-	self tool asToolElementDo:  [ :anElement | 
-		aOneArgBlock cull: (GtPagerWrapperElement forElement: anElement) ]		
+
+	self tool context: self phlowContext.
+	self tool
+		asToolElementDo: [ :anElement | 
+			| aWrapper |
+			aWrapper := GtPagerWrapperElement forElement: anElement.
+			aWrapper navigationContext: self navigationContext.
+			aOneArgBlock cull: aWrapper ]
+]
+
+{ #category : #'api - initialization' }
+GtPagerPageSelectionContext >> createNavigationContextWithPager: aGtPager [
+	| aPreviousContext aFollowingContext |
+	aPreviousContext := self afterPage navigationContext.
+	aFollowingContext := GtPagerPageNavigationContext new.
+	aFollowingContext previousContext: aPreviousContext.
+	aFollowingContext pager: aGtPager.
+	aFollowingContext object: self object.
+	self navigationContext: aFollowingContext
 ]
 
 { #category : #enumerating }
@@ -52,8 +70,32 @@ GtPagerPageSelectionContext >> initialize [
 	self initializeTool.
 ]
 
+{ #category : #'api - initialization' }
+GtPagerPageSelectionContext >> navigationContext [
+	<return: #GtPagerPageNavigationContext>
+	^ navigationContext
+]
+
+{ #category : #accessing }
+GtPagerPageSelectionContext >> navigationContext: anObject [
+	navigationContext := anObject
+]
+
+{ #category : #accessing }
+GtPagerPageSelectionContext >> phlowContext [
+	<return: #GtPhlowContext>
+	^ GtPhlowContext new 
+		navigationContext: self navigationContext
+]
+
 { #category : #accessing }
 GtPagerPageSelectionContext >> prepareForReusedNavigation [
 	self tool ifNotNil: [ :aTool |
 		aTool prepareForReusedNavigation ]
+]
+
+{ #category : #'as yet unclassified' }
+GtPagerPageSelectionContext >> toolElement [
+	<return: #BlElement>
+	^ self afterPage tool
 ]

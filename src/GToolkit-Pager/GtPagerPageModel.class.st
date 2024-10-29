@@ -2,7 +2,8 @@ Class {
 	#name : #GtPagerPageModel,
 	#superclass : #GtPagerPageProtoModel,
 	#instVars : [
-		'eventHandlers'
+		'eventHandlers',
+		'navigationContext'
 	],
 	#category : #'GToolkit-Pager-View Model'
 }
@@ -21,6 +22,20 @@ GtPagerPageModel >> defaultEmbellisher [
 GtPagerPageModel >> initialize [ 
 	super initialize.
 	eventHandlers := OrderedCollection new.
+]
+
+{ #category : #accessing }
+GtPagerPageModel >> navigationContext [
+	<return: #GtPagerPageNavigationContext>
+	^ navigationContext ifNil: [ 
+		navigationContext := GtPagerPageNavigationContext new 
+			pagerPageModel: self ]
+]
+
+{ #category : #accessing }
+GtPagerPageModel >> navigationContext: aNavigationContext [
+	aNavigationContext pagerPageModel: self.
+	navigationContext := aNavigationContext
 ]
 
 { #category : #notifying }
