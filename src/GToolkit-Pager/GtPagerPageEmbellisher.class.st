@@ -127,6 +127,7 @@ GtPagerPageEmbellisher >> createResizerForPage: aPageElement [
 
 { #category : #'widget configuration' }
 GtPagerPageEmbellisher >> createSelectionContextFromEvent: anEvent [
+	<return: #GtPagerPageSelectionContext>
 	| aContext |
 	aContext := self newSelectionContext
 		tool: anEvent tool;

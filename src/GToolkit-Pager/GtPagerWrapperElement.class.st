@@ -61,6 +61,17 @@ GtPagerWrapperElement >> model: anObject [
 	self viewModel model: anObject
 ]
 
+{ #category : #accessing }
+GtPagerWrapperElement >> navigationContext [
+	<return: #GtPagerPageNavigationContext>
+	^ self viewModel navigationContext
+]
+
+{ #category : #accessing }
+GtPagerWrapperElement >> navigationContext: aNavigationContext [
+	^ self viewModel navigationContext: aNavigationContext
+]
+
 { #category : #'focus requesting' }
 GtPagerWrapperElement >> requestFocus [
 	self hasTool

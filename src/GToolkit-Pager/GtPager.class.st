@@ -192,6 +192,8 @@ GtPager >> select: aGtPagerPageSelectionContext [
 
 { #category : #'api - scrolling' }
 GtPager >> spawn: aGtPagerPageSelectionContext [
+	aGtPagerPageSelectionContext createNavigationContextWithPager: self.
+
 	aGtPagerPageSelectionContext asElementDo: [ :aWrapperElement | 
 		self assertToolElement: aWrapperElement.
 		self assertToolElement: aGtPagerPageSelectionContext afterPage.
