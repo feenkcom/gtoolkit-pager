@@ -109,3 +109,9 @@ GtPagerWrapperElement >> toolAreaIdentifier [
 GtPagerWrapperElement >> toolIdentificator [
 	^ #tool
 ]
+
+{ #category : #'api - accessing' }
+GtPagerWrapperElement >> toolViewModel [
+	<return: #TGtPhlowToolViewModel>
+	^ self tool phlow toolViewModel
+]
