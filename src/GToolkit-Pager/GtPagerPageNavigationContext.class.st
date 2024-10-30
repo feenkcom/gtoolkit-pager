@@ -17,13 +17,21 @@ GtPagerPageNavigationContext >> allPreviousContextsDo: aBlock [
 ]
 
 { #category : #'gt - extensions' }
+GtPagerPageNavigationContext >> gtDepth [
+	| aDepth |
+	aDepth := 0.
+	self withAllNavigationContextsDo: [ aDepth := aDepth + 1 ].
+	^ aDepth
+]
+
+{ #category : #'gt - extensions' }
 GtPagerPageNavigationContext >> gtNavigationContextsFor: aView [
 	<gtView>
 	^ aView columnedList
 		title: 'Navigations';
 		items: [ self withAllNavigationContexts ];
 		column: 'Index'
-			text: [ :_ :anIndex | anIndex ]
+			text: [ :anItem :anIndex | anItem gtDepth ]
 			width: 40;
 		column: 'Type' text: #toolType weight: 0.5;
 		column: 'Tool' text: #toolElement;

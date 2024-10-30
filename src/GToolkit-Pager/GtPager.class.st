@@ -130,6 +130,21 @@ GtPager >> defaultContext [
 	^ GtPagerContext new
 ]
 
+{ #category : #'gt - extensions' }
+GtPager >> gtNavigationContextFor: aView [
+	<gtView>
+	self pages ifEmpty: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Navigation contexts';
+		priority: 3;
+		object: [ self navigationContext ];
+		view: #gtNavigationContextsFor:;
+		actionButtonIcon: BrGlamorousVectorIcons inspect
+			tooltip: 'Inspect navigation context'
+			action: [ :aButton | aButton phlow spawnObject: self navigationContext ]
+]
+
 { #category : #initialization }
 GtPager >> initialize [
 	super initialize.
@@ -175,6 +190,17 @@ GtPager >> minimized [
 	"Minimize the last page"
 	self pages ifEmpty: [ ^ self ].
 	self minimizePageContentIn: self pages last contentElement.
+]
+
+{ #category : #'gt - extensions' }
+GtPager >> navigationContext [
+	<return: #GtPagerPageNavigationContext>
+	self pages
+		reverseDo: [ :eachPageModel | 
+			eachPageModel
+				widgetDo: [ :aWidget | 
+					^ aWidget navigationContext ] ].
+	^ nil
 ]
 
 { #category : #'instance creation' }
