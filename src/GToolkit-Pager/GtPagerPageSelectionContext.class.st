@@ -39,7 +39,7 @@ GtPagerPageSelectionContext >> afterPage: anElement [
 GtPagerPageSelectionContext >> asElementDo: aOneArgBlock [
 	"Create a tool element and execute the block"
 
-	self tool context: self phlowContext.
+	self tool contextWithNavigationContext: self navigationContext.
 	self tool
 		asToolElementDo: [ :anElement | 
 			| aWrapper |
@@ -55,7 +55,6 @@ GtPagerPageSelectionContext >> createNavigationContextWithPager: aGtPager [
 	aFollowingContext := GtPagerPageNavigationContext new.
 	aFollowingContext previousContext: aPreviousContext.
 	aFollowingContext pager: aGtPager.
-	aFollowingContext object: self object.
 	self navigationContext: aFollowingContext
 ]
 
@@ -79,13 +78,6 @@ GtPagerPageSelectionContext >> navigationContext [
 { #category : #accessing }
 GtPagerPageSelectionContext >> navigationContext: anObject [
 	navigationContext := anObject
-]
-
-{ #category : #accessing }
-GtPagerPageSelectionContext >> phlowContext [
-	<return: #GtPhlowContext>
-	^ GtPhlowContext new 
-		navigationContext: self navigationContext
 ]
 
 { #category : #accessing }
