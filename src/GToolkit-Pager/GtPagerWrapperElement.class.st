@@ -26,6 +26,19 @@ GtPagerWrapperElement >> embellisher: aStencil [
 	self viewModel embellisher: aStencil
 ]
 
+{ #category : #'gt - extensions' }
+GtPagerWrapperElement >> gtNavigationContextFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Navigation contexts';
+		priority: 3;
+		object: [ self navigationContext ];
+		view: #gtNavigationContextsFor:;
+		actionButtonIcon: BrGlamorousVectorIcons inspect
+			tooltip: 'Inspect navigation context'
+			action: [ :aButton | aButton phlow spawnObject: self navigationContext ]
+]
+
 { #category : #testing }
 GtPagerWrapperElement >> hasTool [
 	<return: #Boolean>
