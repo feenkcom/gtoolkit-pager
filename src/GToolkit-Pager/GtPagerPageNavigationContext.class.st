@@ -131,6 +131,15 @@ GtPagerPageNavigationContext >> previousObjectDo: aDoBlock ifAbsent: anAbsentBlo
 	^ anAbsentBlock value
 ]
 
+{ #category : #'api - accessing' }
+GtPagerPageNavigationContext >> previousObjectSuchThat: aConditionBlock do: aDoBlock ifAbsent: anAbsentBlock [
+	self allPreviousContextsDo: [ :aContext | 
+		(aConditionBlock cull: aContext object cull: aContext)
+			ifTrue: [ ^ aDoBlock cull: aContext object cull: aContext ] ].
+
+	^ anAbsentBlock value
+]
+
 { #category : #accessing }
 GtPagerPageNavigationContext >> toolElement [
 	^ self phlowViewModel ifNotNil: #element
