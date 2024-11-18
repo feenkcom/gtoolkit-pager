@@ -4,8 +4,7 @@ Class {
 	#instVars : [
 		'pagerPageModel',
 		'previousContext',
-		'pager',
-		'object'
+		'pager'
 	],
 	#category : #'GToolkit-Pager-Contexts'
 }
@@ -72,14 +71,9 @@ GtPagerPageNavigationContext >> gtOverviewFor: aView [
 		send: #value
 ]
 
-{ #category : #accessing }
+{ #category : #'api - phlow' }
 GtPagerPageNavigationContext >> object [
 	^ self phlowViewModel ifNotNil: #object
-]
-
-{ #category : #accessing }
-GtPagerPageNavigationContext >> object: anObject [
-	object := anObject
 ]
 
 { #category : #accessing }
@@ -124,6 +118,15 @@ GtPagerPageNavigationContext >> previousContext: anObject [
 ]
 
 { #category : #'api - accessing' }
+GtPagerPageNavigationContext >> previousContextSuchThat: aConditionBlock do: aDoBlock ifAbsent: anAbsentBlock [
+	self allPreviousContextsDo: [ :aContext | 
+		(aConditionBlock cull: aContext cull: aContext phlowViewModel)
+			ifTrue: [ ^ aDoBlock cull: aContext cull: aContext phlowViewModel ] ].
+
+	^ anAbsentBlock value
+]
+
+{ #category : #'api - accessing' }
 GtPagerPageNavigationContext >> previousObjectDo: aDoBlock ifAbsent: anAbsentBlock [
 	self allPreviousContextsDo: [ :aContext | 
 		^ aDoBlock cull: aContext object cull: aContext ].
@@ -140,17 +143,17 @@ GtPagerPageNavigationContext >> previousObjectSuchThat: aConditionBlock do: aDoB
 	^ anAbsentBlock value
 ]
 
-{ #category : #accessing }
+{ #category : #'api - phlow' }
 GtPagerPageNavigationContext >> toolElement [
 	^ self phlowViewModel ifNotNil: #element
 ]
 
-{ #category : #accessing }
+{ #category : #'api - phlow' }
 GtPagerPageNavigationContext >> toolType [
 	^ self phlowViewModel ifNotNil: #type
 ]
 
-{ #category : #accessing }
+{ #category : #'api - phlow' }
 GtPagerPageNavigationContext >> toolViewModel [
 	^ self phlowViewModel ifNotNil: #viewModel
 ]
