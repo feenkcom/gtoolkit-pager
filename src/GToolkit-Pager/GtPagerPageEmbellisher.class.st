@@ -219,7 +219,7 @@ GtPagerPageEmbellisher >> newNextPageButton [
 	aButton
 		size: 16 @ 32;
 		geometry:
-			(BlPolygon
+			(BlPolygonGeometry
 				vertices:
 					{(0 @ 0).
 					(16 @ 16).

@@ -33,7 +33,7 @@ GtInspectorMinusIconStencil >> create [
 
 	^ BlElement new
 		size: (aRadius + aRadius) @ (aRadius + aRadius);
-		geometry: (BlPolygon vertices: { 
+		geometry: (BlPolygonGeometry vertices: { 
 			0@(aRadius + aThickness). 0@(aRadius - aThickness). (aRadius + aRadius)@(aRadius - aThickness). (aRadius + aRadius)@(aRadius + aThickness). 0@(aRadius + aThickness) } );
 		background: Color gray;
 		transformDo: [ :t | t rotateBy: self angle ]
