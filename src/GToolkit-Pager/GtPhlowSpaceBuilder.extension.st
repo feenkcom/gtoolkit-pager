@@ -30,3 +30,22 @@ GtPhlowSpaceBuilder >> objectInPager: anObject [
 
 	self inPager: [ anObject gtDefaultInspectorTool asElementDo: [ :e | e ] ] asStencil
 ]
+
+{ #category : #'*GToolkit-Pager' }
+GtPhlowSpaceBuilder >> spawnTool: aPhlowToolBlock [
+	"A Phlow tool is either:
+	- spawned to the next GtPager pane, or
+	- displayed as a new GtWorld tab, or
+	- opened in a new window."
+
+	<return: #BlSpace or: nil>
+	self fromElement ifNil: [ ^ self show ].
+	aPhlowToolBlock ifNil: [ ^ self show ].
+
+	^ self fromElement
+		allParentsDetect: [ :aParent | aParent isKindOf: GtPager ]
+		ifFound: [ :aParent | 
+			self fromElement phlow spawnTool: aPhlowToolBlock value.
+			nil ]
+		ifNone: [ self show ]
+]
