@@ -39,13 +39,11 @@ GtPhlowSpaceBuilder >> spawnTool: aPhlowToolBlock [
 	- opened in a new window."
 
 	<return: #BlSpace or: nil>
+	| anEvent |
 	self fromElement ifNil: [ ^ self show ].
 	aPhlowToolBlock ifNil: [ ^ self show ].
 
-	^ self fromElement
-		allParentsDetect: [ :aParent | aParent isKindOf: GtPager ]
-		ifFound: [ :aParent | 
-			self fromElement phlow spawnTool: aPhlowToolBlock value.
-			nil ]
-		ifNone: [ self show ]
+	anEvent := self fromElement phlow spawnTool: aPhlowToolBlock value.
+	anEvent isConsumed ifTrue: [ ^ nil ].
+	^ self show.
 ]

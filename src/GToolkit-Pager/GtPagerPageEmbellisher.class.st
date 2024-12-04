@@ -62,6 +62,7 @@ GtPagerPageEmbellisher >> createNextPageButtonOnContentWrapper: aContentWrapper 
 	aContentWrapper
 		when: GtPhlowObjectToSelect
 		do: [ :anEvent | 
+			anEvent consumed: true.
 			aTriangleElement visibility: BlVisibility visible.
 			self pagerHolder select: (self createSelectionContextFromEvent: anEvent) ].
 	aContentWrapper
