@@ -64,9 +64,11 @@ GtPagerWrapperElement >> initialize [
 		constraintsDo: [ :c |
 			c horizontal matchParent.
 			c vertical matchParent ];
-		viewModel: GtPagerPageModel new.
+		viewModel: GtPagerPageModel new;
+		when: BrMenuWhoToPinToEvent do: [ :anEvent | 
+			self onMenuWhoToPinToEvent: anEvent ].
 
-	self addChild: self createToolAreaElement
+	self addChild: self createToolAreaElement.
 ]
 
 { #category : #accessing }
@@ -83,6 +85,12 @@ GtPagerWrapperElement >> navigationContext [
 { #category : #accessing }
 GtPagerWrapperElement >> navigationContext: aNavigationContext [
 	^ self viewModel navigationContext: aNavigationContext
+]
+
+{ #category : #'event handling' }
+GtPagerWrapperElement >> onMenuWhoToPinToEvent: anEvent [ 
+	anEvent consumed: true.
+	anEvent anchorElement: self.
 ]
 
 { #category : #'focus requesting' }
