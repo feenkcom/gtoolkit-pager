@@ -143,6 +143,33 @@ GtPagerPageNavigationContext >> previousObjectSuchThat: aConditionBlock do: aDoB
 	^ anAbsentBlock value
 ]
 
+{ #category : #'api - accessing' }
+GtPagerPageNavigationContext >> previousProcessContextSuchThat: aConditionBlock do: aDoBlock ifAbsent: anAbsentBlock [
+	"Find debugger context or exception suspended context"
+	
+	| aProcessContextBlock |
+	aProcessContextBlock := [ :anObject | 
+		| aProcessContext |
+		aProcessContext := nil.
+		(anObject isKindOf: DebugSession) ifTrue: [ aProcessContext := anObject context ].
+		((anObject isKindOf: Exception) and: [ anObject signalContext isNotNil ]) 
+			ifTrue: [ aProcessContext := anObject signalContext ].
+		(anObject isKindOf: Context) ifTrue: [ aProcessContext := anObject ].
+		aProcessContext ].
+	
+	^ self 
+		previousObjectSuchThat: [ :anObject :aNavigationContext |
+			| aProcessContext |
+			aProcessContext := aProcessContextBlock value: anObject.
+			aProcessContext isNotNil and: [
+				aConditionBlock cull: aProcessContext cull: aNavigationContext cull: anObject ] ] 
+		do: [ :anObject :aNavigationContext |
+			| aProcessContext |
+			aProcessContext := aProcessContextBlock value: anObject.
+			aDoBlock cull: aProcessContext cull: aNavigationContext cull: anObject ] 
+		ifAbsent: anAbsentBlock.
+]
+
 { #category : #'api - phlow' }
 GtPagerPageNavigationContext >> toolElement [
 	^ self phlowViewModel ifNotNil: #element
