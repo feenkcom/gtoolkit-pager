@@ -4,12 +4,28 @@ Class {
 	#instVars : [
 		'weight'
 	],
+	#classVars : [
+		'GtPagerPageDefaultWeight'
+	],
 	#category : #'GToolkit-Pager-Strategies'
 }
 
 { #category : #defaults }
+GtPagerPageWeightedWidth class >> defaultWeight [
+	^ GtPagerPageDefaultWeight ifNil: [ GtPagerPageDefaultWeight := 0.5 ]
+]
+
+{ #category : #defaults }
+GtPagerPageWeightedWidth class >> defaultWeight: aNumberBetween0And0dot5 [
+	self
+		assert: (aNumberBetween0And0dot5 > 0 and: [ aNumberBetween0And0dot5 <= 0.5 ])
+		description: 'The weight must be higher than 0 and less or equal to 0.5'.
+	GtPagerPageDefaultWeight := aNumberBetween0And0dot5
+]
+
+{ #category : #'as yet unclassified' }
 GtPagerPageWeightedWidth >> defaultWeight [
-	^ 0.5
+	^ self class defaultWeight
 ]
 
 { #category : #initialization }
