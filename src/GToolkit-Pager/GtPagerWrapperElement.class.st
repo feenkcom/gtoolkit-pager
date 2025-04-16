@@ -65,7 +65,7 @@ GtPagerWrapperElement >> initialize [
 			c horizontal matchParent.
 			c vertical matchParent ];
 		viewModel: GtPagerPageModel new;
-		when: BrMenuWhoToPinToEvent do: [ :anEvent | 
+		when: BrPopoverWhoToPinToEvent do: [ :anEvent | 
 			self onMenuWhoToPinToEvent: anEvent ].
 
 	self addChild: self createToolAreaElement.
