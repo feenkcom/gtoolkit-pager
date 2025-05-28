@@ -64,7 +64,7 @@ GtPagerMaximizer >> newMinimizeIcon [
 GtPagerMaximizer >> newOverlay [
 	^ BlOverlayElement new
 		id: GtPagerMaximizedPageElementId;
-		background: BrGlamorousColors backdropColor;
+		background: BlTheme default default backdropBackground;
 		padding: (BlInsets all: 20);
 		attachTo: self pager;
 		layout: BlLinearLayout horizontal
