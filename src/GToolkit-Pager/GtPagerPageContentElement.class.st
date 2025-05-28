@@ -52,7 +52,7 @@ GtPagerPageContentElement >> initialize [
 	self
 		matchParent;
 		clipChildren: false;
-		background: Color white;
+		background: self theme default contentBackground;
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 3);
 		addAptitude: BrGlamorousFocusableShadowAptitude new beLarge;
 		margin: (BlInsets top: 15 right: 0 bottom: 15 left: 15).
