@@ -64,7 +64,7 @@ GtPagerMaximizer >> newMinimizeIcon [
 GtPagerMaximizer >> newOverlay [
 	^ BlOverlayElement new
 		id: GtPagerMaximizedPageElementId;
-		background: BrGlamorousColors backdropColor;
+		background: BlTheme default default backdropBackground;
 		padding: (BlInsets all: 20);
 		attachTo: self pager;
 		layout: BlLinearLayout horizontal
@@ -73,7 +73,7 @@ GtPagerMaximizer >> newOverlay [
 { #category : #'instance creation' }
 GtPagerMaximizer >> newOverlayContent [
 	^ BlElement new
-		background: (Color white);
+		background: BlTheme default default contentBackground;
 		aptitude: BrGlamorousFocusableShadowAptitude new beLarge;
 		constraintsDo: [ :c | c horizontal matchParent. c vertical matchParent ];
 		clipChildren: false;
