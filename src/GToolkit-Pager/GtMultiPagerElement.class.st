@@ -2,8 +2,7 @@ Class {
 	#name : #GtMultiPagerElement,
 	#superclass : #GtMultiPagerBasicElement,
 	#instVars : [
-		'pagesListElement',
-		'scrollbarElement'
+		'panesElement'
 	],
 	#category : #'GToolkit-Pager-Multi Pager - Model'
 }
@@ -16,32 +15,15 @@ GtMultiPagerElement >> defaultLayout [
 { #category : #initialization }
 GtMultiPagerElement >> initialize [
 	super initialize.
-	self initializeScrollbarElement.
-	self initializePagesListElement.
+	self matchParent.
 
-	self addChild: scrollbarElement as: #scrollbar.
-	self addChild: pagesListElement as: #list.
-	self matchParent
-]
-
-{ #category : #initialization }
-GtMultiPagerElement >> initializePagesListElement [
-	pagesListElement := GtMultiPagerInfiniteElement new.
-
-	self addAptitude: (BrLayoutResizerAptitude new inherit: pagesListElement).
-	pagesListElement
-		addAptitude: (BrLayoutResizerAptitude new inherit: [ pagesListElement children ])
-]
-
-{ #category : #initialization }
-GtMultiPagerElement >> initializeScrollbarElement [
-	scrollbarElement := GtMultiPagerScrollbarElement new.
-
-	self addAptitude: (BrLayoutResizerAptitude new hInherit: scrollbarElement)
+	panesElement := GtMultiPagerPanesElement new matchParent.
+	self addChild: panesElement
 ]
 
 { #category : #'api - pager model' }
 GtMultiPagerElement >> onPagerModelChanged [
-	pagesListElement pagerModel: self pagerModel.
-	scrollbarElement pagerModel: self pagerModel
+	super onPagerModelChanged.
+
+	panesElement pagerModel: self pagerModel
 ]

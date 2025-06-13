@@ -112,9 +112,17 @@ GtMultiPagerToolModel >> followingTools: aCollection [
 
 { #category : #printing }
 GtMultiPagerToolModel >> gtDisplayOn: stream [
-	stream nextPutAll: 'Tool model: '.
+	stream nextPutAll: 'Pane: '.
 	stream nextPutAll: self title asString.
-	self isCollapsed ifTrue: [ stream nextPutAll: ' (collapsed)' ]
+	(self isCollapsed or: [ self isFastened ]) ifFalse: [ ^ self ].
+
+	stream nextPutAll: ' ('.
+	self isCollapsed ifTrue: [ stream nextPutAll: 'collapsed' ].
+	self isFastened
+		ifTrue: [ self isCollapsed
+				ifTrue: [ stream nextPutAll: ', ' ]
+				ifFalse: [ stream nextPutAll: 'fastened' ] ].
+	stream nextPut: $)
 ]
 
 { #category : #views }

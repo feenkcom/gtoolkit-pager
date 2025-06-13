@@ -36,6 +36,15 @@ GtMultiPagerModelExamples >> assertPager: aPager paneToolTitles: aPanesCollectio
 					self assert: aTool title equals: eachToolTitle ] ]
 ]
 
+{ #category : #'examples - pager ui' }
+GtMultiPagerModelExamples >> basicPagerElement [
+	<gtExample>
+	| aPagerElement |
+	aPagerElement := GtMultiPagerElement new.
+
+	^ aPagerElement
+]
+
 { #category : #'examples - pager' }
 GtMultiPagerModelExamples >> basicPagerModel [
 	<gtExample>
@@ -61,6 +70,17 @@ GtMultiPagerModelExamples >> basicToolModel [
 	aModel := GtMultiPagerToolModel new.
 
 	^ aModel
+]
+
+{ #category : #'examples - pager ui' }
+GtMultiPagerModelExamples >> pagerElementWithFivePanes [
+	<gtExample>
+	| aPagerElement aPagerModel |
+	aPagerElement := self basicPagerElement.
+	aPagerModel := self pagerWithFivePanes.
+	aPagerElement pagerModel: aPagerModel.
+
+	^ aPagerElement
 ]
 
 { #category : #'examples - pager' }

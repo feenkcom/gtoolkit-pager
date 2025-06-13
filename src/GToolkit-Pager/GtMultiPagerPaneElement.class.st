@@ -1,6 +1,8 @@
 Class {
 	#name : #GtMultiPagerPaneElement,
-	#superclass : #GtMultiPagerPaneBasicElement,
+	#superclass : #BrPagerPageElement,
+	#traits : 'TGtMultiPagerWithPaneModel + TBrLayoutResizable',
+	#classTraits : 'TGtMultiPagerWithPaneModel classTrait + TBrLayoutResizable classTrait',
 	#instVars : [
 		'toolsContainer',
 		'followersContainer'
@@ -17,6 +19,7 @@ GtMultiPagerPaneElement >> defaultLayout [
 GtMultiPagerPaneElement >> initialize [
 	super initialize.
 	self matchParent.
+	self padding: (BlInsets all: 10).
 
 	self initializeToolsContainer.
 	self initializeFollowingToolsContainer.
@@ -31,7 +34,7 @@ GtMultiPagerPaneElement >> initializeFollowingToolsContainer [
 
 { #category : #initialization }
 GtMultiPagerPaneElement >> initializeToolsContainer [
-	toolsContainer := GtMultiPagerPaneToolsElement new.
+	toolsContainer := GtMultiPagerPaneToolsElement new
 ]
 
 { #category : #'api - pane model' }

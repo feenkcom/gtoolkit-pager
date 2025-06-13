@@ -12,7 +12,12 @@ GtMultiPagerPaneToolsElement >> defaultLayout [
 { #category : #'api - pane model' }
 GtMultiPagerPaneToolsElement >> onPaneModelChanged [
 	| someToolElements |
-	someToolElements := self paneModel toolModels collect: #asElement.
+	someToolElements := self paneModel toolModels
+			collect: [ :eachToolModel | 
+				GtMultiPagerToolElement new
+					toolModel: eachToolModel;
+					margin: (BlInsets all: 10);
+					addAptitude: BrGlamorousFocusableShadowAptitude new ].
 	self removeChildren.
 	self addChildren: someToolElements
 ]

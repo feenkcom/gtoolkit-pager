@@ -52,7 +52,7 @@ GtMultiPagerPaneModel >> followingExpandedToolModels [
 
 { #category : #printing }
 GtMultiPagerPaneModel >> gtDisplayOn: stream [
-	stream nextPutAll: 'Pane model: '.
+	stream nextPutAll: 'Column: '.
 	self toolModels
 		do: [ :eachTool | stream nextPutAll: eachTool title asString ]
 		separatedBy: [ stream nextPutAll: ', ' ]
