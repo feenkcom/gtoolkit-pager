@@ -1,19 +1,19 @@
 Class {
-	#name : #GtMultiPagerCollapsedPanesElement,
-	#superclass : #GtMultiPagerPaneBasicElement,
+	#name : #GtTreePagerCollapsedPanesElement,
+	#superclass : #GtTreePagerPaneBasicElement,
 	#instVars : [
 		'containerElement'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
-GtMultiPagerCollapsedPanesElement >> defaultLayout [
+GtTreePagerCollapsedPanesElement >> defaultLayout [
 	^ BlFrameLayout new
 ]
 
 { #category : #initialization }
-GtMultiPagerCollapsedPanesElement >> initialize [
+GtTreePagerCollapsedPanesElement >> initialize [
 	super initialize.
 
 	containerElement := BrHorizontalPane new
@@ -26,7 +26,7 @@ GtMultiPagerCollapsedPanesElement >> initialize [
 ]
 
 { #category : #'api - tool model' }
-GtMultiPagerCollapsedPanesElement >> onToolModelChanged [
+GtTreePagerCollapsedPanesElement >> onToolModelChanged [
 	| aCount someElements |
 	aCount := self toolModel collapsedChainCount.
 

@@ -1,23 +1,23 @@
 Class {
-	#name : #GtMultiPagerPaneElement,
-	#superclass : #GtMultiPagerPaneBasicElement,
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#name : #GtTreePagerPaneElement,
+	#superclass : #GtTreePagerPaneBasicElement,
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
-GtMultiPagerPaneElement >> defaultLayout [
+GtTreePagerPaneElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
 { #category : #initialization }
-GtMultiPagerPaneElement >> initialize [
+GtTreePagerPaneElement >> initialize [
 	super initialize.
 	self background: self theme default contentBackground.
 	self matchParent
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneElement >> onToolModelChanged [
+GtTreePagerPaneElement >> onToolModelChanged [
 	self removeChildren.
 	self addChild: self toolModel asElement as: #tool
 ]

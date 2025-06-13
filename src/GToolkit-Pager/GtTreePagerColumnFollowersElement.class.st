@@ -1,16 +1,16 @@
 Class {
-	#name : #GtMultiPagerColumnFollowersElement,
-	#superclass : #GtMultiPagerColumnBasicElement,
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#name : #GtTreePagerColumnFollowersElement,
+	#superclass : #GtTreePagerColumnBasicElement,
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
-GtMultiPagerColumnFollowersElement >> defaultLayout [
+GtTreePagerColumnFollowersElement >> defaultLayout [
 	^ BlLinearLayout vertical
 ]
 
 { #category : #initialization }
-GtMultiPagerColumnFollowersElement >> initialize [
+GtTreePagerColumnFollowersElement >> initialize [
 	super initialize.
 	self hFitContent.
 	self padding: (BlInsets left: 5).
@@ -19,7 +19,7 @@ GtMultiPagerColumnFollowersElement >> initialize [
 ]
 
 { #category : #'instance  creation' }
-GtMultiPagerColumnFollowersElement >> newContainerWith: anElement [
+GtTreePagerColumnFollowersElement >> newContainerWith: anElement [
 	^ BrFrame new
 		hFitContent;
 		vMatchParent;
@@ -27,15 +27,15 @@ GtMultiPagerColumnFollowersElement >> newContainerWith: anElement [
 ]
 
 { #category : #'instance  creation' }
-GtMultiPagerColumnFollowersElement >> newFollowerButton [
-	^ GtMultiPagerFollowingPaneElement new
+GtTreePagerColumnFollowersElement >> newFollowerButton [
+	^ GtTreePagerFollowingPaneElement new
 		constraintsDo: [ :c | 
 			c frame vertical alignCenter.
 			c frame horizontal alignCenter ]
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnFollowersElement >> onColumnModelChanged [
+GtTreePagerColumnFollowersElement >> onColumnModelChanged [
 	| someToolModels someToolElements |
 	someToolModels := self paneModel paneModels flatCollect: #followingPanes.
 	someToolElements := someToolModels

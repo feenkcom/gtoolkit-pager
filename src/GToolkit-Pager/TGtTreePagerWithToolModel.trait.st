@@ -1,26 +1,26 @@
 Trait {
-	#name : #TGtMultiPagerWithToolModel,
+	#name : #TGtTreePagerWithToolModel,
 	#instVars : [
 		'toolModel'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #'api - tool model' }
-TGtMultiPagerWithToolModel >> onToolModelChanged [
+TGtTreePagerWithToolModel >> onToolModelChanged [
 ]
 
 { #category : #'api - tool model' }
-TGtMultiPagerWithToolModel >> subscribeToToolModel [
+TGtTreePagerWithToolModel >> subscribeToToolModel [
 ]
 
 { #category : #'api - tool model' }
-TGtMultiPagerWithToolModel >> toolModel [
+TGtTreePagerWithToolModel >> toolModel [
 	^ toolModel
 ]
 
 { #category : #'api - tool model' }
-TGtMultiPagerWithToolModel >> toolModel: aToolModel [
+TGtTreePagerWithToolModel >> toolModel: aToolModel [
 	toolModel = aToolModel ifTrue: [ ^ self ].
 
 	toolModel ifNotNil: [ self unsubscribeFromToolModel ].
@@ -31,5 +31,5 @@ TGtMultiPagerWithToolModel >> toolModel: aToolModel [
 ]
 
 { #category : #'api - tool model' }
-TGtMultiPagerWithToolModel >> unsubscribeFromToolModel [
+TGtTreePagerWithToolModel >> unsubscribeFromToolModel [
 ]

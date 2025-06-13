@@ -1,28 +1,28 @@
 Class {
-	#name : #GtMultiPagerElement,
-	#superclass : #GtMultiPagerBasicElement,
+	#name : #GtTreePagerElement,
+	#superclass : #GtTreePagerBasicElement,
 	#instVars : [
 		'panesElement'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
-GtMultiPagerElement >> defaultLayout [
+GtTreePagerElement >> defaultLayout [
 	^ BlLinearLayout vertical
 ]
 
 { #category : #initialization }
-GtMultiPagerElement >> initialize [
+GtTreePagerElement >> initialize [
 	super initialize.
 	self matchParent.
 
-	panesElement := GtMultiPagerPanesElement new matchParent.
+	panesElement := GtTreePagerPanesElement new matchParent.
 	self addChild: panesElement
 ]
 
 { #category : #'api - pager model' }
-GtMultiPagerElement >> onPagerModelChanged [
+GtTreePagerElement >> onPagerModelChanged [
 	super onPagerModelChanged.
 
 	panesElement pagerModel: self pagerModel

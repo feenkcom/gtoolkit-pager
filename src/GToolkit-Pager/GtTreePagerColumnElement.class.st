@@ -1,22 +1,22 @@
 Class {
-	#name : #GtMultiPagerColumnElement,
+	#name : #GtTreePagerColumnElement,
 	#superclass : #BrPagerPageElement,
-	#traits : 'TGtMultiPagerWithColumnModel + TBrLayoutResizable',
-	#classTraits : 'TGtMultiPagerWithColumnModel classTrait + TBrLayoutResizable classTrait',
+	#traits : 'TGtTreePagerWithColumnModel + TBrLayoutResizable',
+	#classTraits : 'TGtTreePagerWithColumnModel classTrait + TBrLayoutResizable classTrait',
 	#instVars : [
 		'toolsContainer',
 		'followersContainer'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
-GtMultiPagerColumnElement >> defaultLayout [
+GtTreePagerColumnElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
 { #category : #initialization }
-GtMultiPagerColumnElement >> initialize [
+GtTreePagerColumnElement >> initialize [
 	super initialize.
 	self matchParent.
 	self padding: (BlInsets all: 10).
@@ -28,17 +28,17 @@ GtMultiPagerColumnElement >> initialize [
 ]
 
 { #category : #initialization }
-GtMultiPagerColumnElement >> initializeFollowingToolsContainer [
-	followersContainer := GtMultiPagerColumnFollowersElement new
+GtTreePagerColumnElement >> initializeFollowingToolsContainer [
+	followersContainer := GtTreePagerColumnFollowersElement new
 ]
 
 { #category : #initialization }
-GtMultiPagerColumnElement >> initializeToolsContainer [
-	toolsContainer := GtMultiPagerColumnToolsElement new
+GtTreePagerColumnElement >> initializeToolsContainer [
+	toolsContainer := GtTreePagerColumnToolsElement new
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnElement >> onColumnModelChanged [
+GtTreePagerColumnElement >> onColumnModelChanged [
 	toolsContainer paneModel: self paneModel.
 	followersContainer paneModel: self paneModel
 ]

@@ -1,18 +1,18 @@
 Class {
-	#name : #GtMultiPagerExamples,
+	#name : #GtTreePagerExamples,
 	#superclass : #Object,
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> assertPager: aPager columnCharacterPanes: aPanesCollection [
+GtTreePagerExamples >> assertPager: aPager columnCharacterPanes: aPanesCollection [
 	| aTitlesCollection |
 	aTitlesCollection := aPanesCollection collect: [ :each | each collect: #printString ].
 	self assertPager: aPager columnPaneTitles: aTitlesCollection
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> assertPager: aPager columnPaneTitles: aPanesCollection [
+GtTreePagerExamples >> assertPager: aPager columnPaneTitles: aPanesCollection [
 	"aCollection is an array of arrays. 
 	Each array contains tool titles for a particular pane."
 
@@ -37,43 +37,43 @@ GtMultiPagerExamples >> assertPager: aPager columnPaneTitles: aPanesCollection [
 ]
 
 { #category : #'examples - columns' }
-GtMultiPagerExamples >> basicColumnModel [
+GtTreePagerExamples >> basicColumnModel [
 	<gtExample>
 	| aColumn |
-	aColumn := GtMultiPagerColumnModel new.
+	aColumn := GtTreePagerColumnModel new.
 
 	^ aColumn
 ]
 
 { #category : #'examples - pager ui' }
-GtMultiPagerExamples >> basicPagerElement [
+GtTreePagerExamples >> basicPagerElement [
 	<gtExample>
 	| aPagerElement |
-	aPagerElement := GtMultiPagerElement new.
+	aPagerElement := GtTreePagerElement new.
 
 	^ aPagerElement
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> basicPagerModel [
+GtTreePagerExamples >> basicPagerModel [
 	<gtExample>
 	| aModel |
-	aModel := GtMultiPagerModel new.
+	aModel := GtTreePagerModel new.
 
 	^ aModel
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> basicPaneModel [
+GtTreePagerExamples >> basicPaneModel [
 	<gtExample>
 	| aModel |
-	aModel := GtMultiPagerPaneModel new.
+	aModel := GtTreePagerPaneModel new.
 
 	^ aModel
 ]
 
 { #category : #'examples - columns' }
-GtMultiPagerExamples >> columnModelWithOneElementIndexOnePane [
+GtTreePagerExamples >> columnModelWithOneElementIndexOnePane [
 	<gtExample>
 	| aColumn |
 	aColumn := self basicColumnModel.
@@ -85,7 +85,7 @@ GtMultiPagerExamples >> columnModelWithOneElementIndexOnePane [
 ]
 
 { #category : #'examples - columns' }
-GtMultiPagerExamples >> columnModelWithOneFollowingPane [
+GtTreePagerExamples >> columnModelWithOneFollowingPane [
 	<gtExample>
 	| aPane |
 	aPane := self basicColumnModel.
@@ -97,7 +97,7 @@ GtMultiPagerExamples >> columnModelWithOneFollowingPane [
 ]
 
 { #category : #'examples - columns' }
-GtMultiPagerExamples >> columnModelWithTwoFollowingPanes [
+GtTreePagerExamples >> columnModelWithTwoFollowingPanes [
 	<gtExample>
 	| aColumn |
 	aColumn := self basicColumnModel.
@@ -112,7 +112,7 @@ GtMultiPagerExamples >> columnModelWithTwoFollowingPanes [
 ]
 
 { #category : #'examples - columns' }
-GtMultiPagerExamples >> columnModelWithTwoPanes [
+GtTreePagerExamples >> columnModelWithTwoPanes [
 	<gtExample>
 	| aPane |
 	aPane := self basicColumnModel.
@@ -125,7 +125,7 @@ GtMultiPagerExamples >> columnModelWithTwoPanes [
 ]
 
 { #category : #'examples - pager ui' }
-GtMultiPagerExamples >> pagerElementWithFiveColumns [
+GtTreePagerExamples >> pagerElementWithFiveColumns [
 	<gtExample>
 	| aPagerElement aPagerModel |
 	aPagerElement := self basicPagerElement.
@@ -136,7 +136,7 @@ GtMultiPagerExamples >> pagerElementWithFiveColumns [
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> pagerWithAWithFollowingHPane [
+GtTreePagerExamples >> pagerWithAWithFollowingHPane [
 	<gtExample>
 	| aPager aPaneA aPaneH |
 	aPager := self pagerWithFivePanes.
@@ -154,7 +154,7 @@ GtMultiPagerExamples >> pagerWithAWithFollowingHPane [
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> pagerWithCWithFollowingEFHPanes [
+GtTreePagerExamples >> pagerWithCWithFollowingEFHPanes [
 	<gtExample>
 	| aPager aPaneC aPaneH |
 	aPager := self pagerWithFivePanes.
@@ -175,7 +175,7 @@ GtMultiPagerExamples >> pagerWithCWithFollowingEFHPanes [
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> pagerWithCWithFollowingHFPanes [
+GtTreePagerExamples >> pagerWithCWithFollowingHFPanes [
 	<gtExample>
 	| aPager aPaneC aPaneH aPaneF |
 	aPager := self pagerWithFivePanes.
@@ -200,7 +200,7 @@ GtMultiPagerExamples >> pagerWithCWithFollowingHFPanes [
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> pagerWithCWithFollowingHPane [
+GtTreePagerExamples >> pagerWithCWithFollowingHPane [
 	<gtExample>
 	| aPager aPaneC aPaneH |
 	aPager := self pagerWithFivePanes.
@@ -218,7 +218,7 @@ GtMultiPagerExamples >> pagerWithCWithFollowingHPane [
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> pagerWithCollapsedCNewlyExpandedFPanes [
+GtTreePagerExamples >> pagerWithCollapsedCNewlyExpandedFPanes [
 	<gtExample>
 	| aPager aPaneF |
 	aPager := self pagerWithCollapsedFCPanes.
@@ -236,7 +236,7 @@ GtMultiPagerExamples >> pagerWithCollapsedCNewlyExpandedFPanes [
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> pagerWithCollapsedFCPanes [
+GtTreePagerExamples >> pagerWithCollapsedFCPanes [
 	<gtExample>
 	| aPager aPaneC |
 	aPager := self pagerWithCollapsedFPane.
@@ -252,7 +252,7 @@ GtMultiPagerExamples >> pagerWithCollapsedFCPanes [
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> pagerWithCollapsedFPane [
+GtTreePagerExamples >> pagerWithCollapsedFPane [
 	<gtExample>
 	| aPager aPaneF |
 	aPager := self pagerWithFivePanes.
@@ -271,7 +271,7 @@ GtMultiPagerExamples >> pagerWithCollapsedFPane [
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> pagerWithDWithFollowingHPane [
+GtTreePagerExamples >> pagerWithDWithFollowingHPane [
 	<gtExample>
 	| aPager aPaneD aPaneH |
 	aPager := self pagerWithFivePanes.
@@ -291,7 +291,7 @@ GtMultiPagerExamples >> pagerWithDWithFollowingHPane [
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> pagerWithFivePanes [
+GtTreePagerExamples >> pagerWithFivePanes [
 	<gtExample>
 	| aPager aPane |
 	aPager := self basicPagerModel.
@@ -304,7 +304,7 @@ GtMultiPagerExamples >> pagerWithFivePanes [
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> pagerWithNewlyExpandedFPane [
+GtTreePagerExamples >> pagerWithNewlyExpandedFPane [
 	<gtExample>
 	| aPager aPaneF |
 	aPager := self pagerWithCollapsedFPane.
@@ -323,7 +323,7 @@ GtMultiPagerExamples >> pagerWithNewlyExpandedFPane [
 ]
 
 { #category : #'examples - pager' }
-GtMultiPagerExamples >> pagerWithOnePaneWithTwoTools [
+GtTreePagerExamples >> pagerWithOnePaneWithTwoTools [
 	<gtExample>
 	| aPager aPane |
 	aPager := self basicPagerModel.
@@ -334,7 +334,7 @@ GtMultiPagerExamples >> pagerWithOnePaneWithTwoTools [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> paneElementWithIndex: anInteger [
+GtTreePagerExamples >> paneElementWithIndex: anInteger [
 	<gtExample>
 	^ BrFrame new
 		matchParent;
@@ -350,10 +350,10 @@ GtMultiPagerExamples >> paneElementWithIndex: anInteger [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> paneModelWithColumnedListInspector [
+GtTreePagerExamples >> paneModelWithColumnedListInspector [
 	<gtExample>
 	| aPaneModel |
-	aPaneModel := GtMultiPagerPaneModel new
+	aPaneModel := GtTreePagerPaneModel new
 			toolBuilder: self toolBuilderWithColumnedListInspector.
 
 	self assert: (aPaneModel asElement isKindOf: BlElement).
@@ -363,10 +363,10 @@ GtMultiPagerExamples >> paneModelWithColumnedListInspector [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> paneModelWithElementIndexOne [
+GtTreePagerExamples >> paneModelWithElementIndexOne [
 	<gtExample>
 	| aToolModel |
-	aToolModel := GtMultiPagerPaneModel new
+	aToolModel := GtTreePagerPaneModel new
 			toolBuilder: self toolBuilderWithElementIndexOne.
 
 	self assert: (aToolModel asElement isKindOf: BlElement).
@@ -375,7 +375,7 @@ GtMultiPagerExamples >> paneModelWithElementIndexOne [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> paneModelWithIntegerInspector [
+GtTreePagerExamples >> paneModelWithIntegerInspector [
 	<gtExample>
 	| aToolModel |
 	aToolModel := self basicPaneModel
@@ -388,7 +388,7 @@ GtMultiPagerExamples >> paneModelWithIntegerInspector [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> paneModelWithOneFollowingTool [
+GtTreePagerExamples >> paneModelWithOneFollowingTool [
 	<gtExample>
 	| aToolTwo aToolOne |
 	aToolOne := self paneModelWithColumnedListInspector.
@@ -404,7 +404,7 @@ GtMultiPagerExamples >> paneModelWithOneFollowingTool [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> paneModelWithPhlowBuilderFor: anObject [
+GtTreePagerExamples >> paneModelWithPhlowBuilderFor: anObject [
 	<gtExample>
 	| aToolModel aBuilder |
 	aToolModel := self basicPaneModel.
@@ -419,7 +419,7 @@ GtMultiPagerExamples >> paneModelWithPhlowBuilderFor: anObject [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> paneModelWithThreeFollowingLevels [
+GtTreePagerExamples >> paneModelWithThreeFollowingLevels [
 	<gtExample>
 	| aToolB aToolA aToolC aToolD aToolE aToolF aToolG |
 	aToolA := self paneModelWithPhlowBuilderFor: $A.
@@ -449,7 +449,7 @@ GtMultiPagerExamples >> paneModelWithThreeFollowingLevels [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> paneModelWithTwoFollowingTools [
+GtTreePagerExamples >> paneModelWithTwoFollowingTools [
 	<gtExample>
 	| aToolTwo aToolOne aToolThree |
 	aToolOne := self paneModelWithColumnedListInspector.
@@ -469,10 +469,10 @@ GtMultiPagerExamples >> paneModelWithTwoFollowingTools [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> toolBuilderWithColumnedListInspector [
+GtTreePagerExamples >> toolBuilderWithColumnedListInspector [
 	<gtExample>
 	| aToolBuilder |
-	aToolBuilder := GtMultiPagerPhlowToolBuilder new
+	aToolBuilder := GtTreePagerPhlowToolBuilder new
 			object: BrExamplesShowroom new columnedList.
 
 	self assert: (aToolBuilder asElement isKindOf: BlElement).
@@ -481,10 +481,10 @@ GtMultiPagerExamples >> toolBuilderWithColumnedListInspector [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> toolBuilderWithElementIndexOne [
+GtTreePagerExamples >> toolBuilderWithElementIndexOne [
 	<gtExample>
 	| aToolBuilder |
-	aToolBuilder := GtMultiPagerExplicitToolBuilder new
+	aToolBuilder := GtTreePagerExplicitToolBuilder new
 			stencil: [ self paneElementWithIndex: 1 ].
 
 	self assert: (aToolBuilder asElement isKindOf: BlElement).
@@ -493,10 +493,10 @@ GtMultiPagerExamples >> toolBuilderWithElementIndexOne [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> toolBuilderWithIntegerInspector [
+GtTreePagerExamples >> toolBuilderWithIntegerInspector [
 	<gtExample>
 	| aToolBuilder |
-	aToolBuilder := GtMultiPagerPhlowToolBuilder new
+	aToolBuilder := GtTreePagerPhlowToolBuilder new
 			object: 108.
 
 	self assert: (aToolBuilder asElement isKindOf: BlElement).
@@ -505,10 +505,10 @@ GtMultiPagerExamples >> toolBuilderWithIntegerInspector [
 ]
 
 { #category : #'examples - panes' }
-GtMultiPagerExamples >> toolPhlowBuilderFor: anObject [
+GtTreePagerExamples >> toolPhlowBuilderFor: anObject [
 	<gtExample>
 	| aBuilder |
-	aBuilder := GtMultiPagerPhlowToolBuilder new object: anObject.
+	aBuilder := GtTreePagerPhlowToolBuilder new object: anObject.
 
 	self assert: (aBuilder asElement isKindOf: BlElement).
 

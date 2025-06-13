@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMultiPagerPaneModel,
+	#name : #GtTreePagerPaneModel,
 	#superclass : #Object,
 	#traits : 'TGtAnnouncer',
 	#classTraits : 'TGtAnnouncer classTrait',
@@ -14,38 +14,38 @@ Class {
 		'followingPanes',
 		'previousPane'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #'api - following tools' }
-GtMultiPagerPaneModel >> addFollowingPane: aPaneModel [
+GtTreePagerPaneModel >> addFollowingPane: aPaneModel [
 	self followingPanes: (self followingPanes copyWith: aPaneModel)
 ]
 
 { #category : #announcer }
-GtMultiPagerPaneModel >> announcer [
+GtTreePagerPaneModel >> announcer [
 	<return: #Announcer>
 	^ announcer
 ]
 
 { #category : #converting }
-GtMultiPagerPaneModel >> asElement [
+GtTreePagerPaneModel >> asElement [
 	<return: #BlElement>
 	^ self toolBuilder asElement
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> children [
+GtTreePagerPaneModel >> children [
 	^ self followingPanes
 ]
 
 { #category : #'api - expandable' }
-GtMultiPagerPaneModel >> collapse [
+GtTreePagerPaneModel >> collapse [
 	self collapse: true
 ]
 
 { #category : #'api - expandable' }
-GtMultiPagerPaneModel >> collapse: aBoolean [
+GtTreePagerPaneModel >> collapse: aBoolean [
 	isCollapsed = aBoolean ifTrue: [ ^ self ].
 
 	isCollapsed := aBoolean.
@@ -53,7 +53,7 @@ GtMultiPagerPaneModel >> collapse: aBoolean [
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> collapsedChainCount [
+GtTreePagerPaneModel >> collapsedChainCount [
 	self isCollapsed ifFalse: [ ^ 0 ].
 	self hasFollowingPanes ifFalse: [ ^ 1 ].
 	(self followingPanes allSatisfy: #isCollapsed) ifFalse: [ ^ 1 ].
@@ -63,39 +63,39 @@ GtMultiPagerPaneModel >> collapsedChainCount [
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> columnModel [
+GtTreePagerPaneModel >> columnModel [
 	^ columnModel
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> columnModel: aColumnModel [
+GtTreePagerPaneModel >> columnModel: aColumnModel [
 	columnModel := aColumnModel
 ]
 
 { #category : #'api - expandable' }
-GtMultiPagerPaneModel >> expand [
+GtTreePagerPaneModel >> expand [
 	self expand: true
 ]
 
 { #category : #'api - expandable' }
-GtMultiPagerPaneModel >> expand: aBoolean [
+GtTreePagerPaneModel >> expand: aBoolean [
 	self collapse: aBoolean not
 ]
 
 { #category : #'api - fastening' }
-GtMultiPagerPaneModel >> fasten [
+GtTreePagerPaneModel >> fasten [
 	self fasten: true
 ]
 
 { #category : #'api - fastening' }
-GtMultiPagerPaneModel >> fasten: aBoolean [
+GtTreePagerPaneModel >> fasten: aBoolean [
 	isFastened = aBoolean ifTrue: [ ^ self ].
 
 	isFastened := aBoolean
 ]
 
 { #category : #'api - following tools' }
-GtMultiPagerPaneModel >> followingExpandedPaneModels [
+GtTreePagerPaneModel >> followingExpandedPaneModels [
 	^ Array
 		streamContents: [ :aStream | 
 			self followingPanes
@@ -106,12 +106,12 @@ GtMultiPagerPaneModel >> followingExpandedPaneModels [
 ]
 
 { #category : #'api - following tools' }
-GtMultiPagerPaneModel >> followingPanes [
+GtTreePagerPaneModel >> followingPanes [
 	^ followingPanes
 ]
 
 { #category : #'api - following tools' }
-GtMultiPagerPaneModel >> followingPanes: aCollection [
+GtTreePagerPaneModel >> followingPanes: aCollection [
 	followingPanes = aCollection ifTrue: [ ^ self ].
 
 	aCollection do: [ :each | each previousPane: self ].
@@ -121,7 +121,7 @@ GtMultiPagerPaneModel >> followingPanes: aCollection [
 ]
 
 { #category : #printing }
-GtMultiPagerPaneModel >> gtDisplayOn: stream [
+GtTreePagerPaneModel >> gtDisplayOn: stream [
 	stream nextPutAll: 'Pane: '.
 	stream nextPutAll: self title asString.
 	(self isCollapsed or: [ self isFastened ]) ifFalse: [ ^ self ].
@@ -136,7 +136,7 @@ GtMultiPagerPaneModel >> gtDisplayOn: stream [
 ]
 
 { #category : #views }
-GtMultiPagerPaneModel >> gtFollowingPanesFor: aView [
+GtTreePagerPaneModel >> gtFollowingPanesFor: aView [
 	<gtView>
 	self followingPanes ifNil: [ ^ aView empty ].
 	^ aView columnedTree
@@ -154,31 +154,31 @@ GtMultiPagerPaneModel >> gtFollowingPanesFor: aView [
 ]
 
 { #category : #views }
-GtMultiPagerPaneModel >> gtLiveFor: aView [
+GtTreePagerPaneModel >> gtLiveFor: aView [
 	<gtView>
 	^ aView explicit
 		title: 'Live';
 		priority: 10;
-		stencil: [ GtMultiPagerPaneElement new toolModel: self ]
+		stencil: [ GtTreePagerPaneElement new toolModel: self ]
 ]
 
 { #category : #testing }
-GtMultiPagerPaneModel >> hasFollowingPanes [
+GtTreePagerPaneModel >> hasFollowingPanes [
 	^ self followingPanes isNotEmpty
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> icon [
+GtTreePagerPaneModel >> icon [
 	^ icon ifNil: [ self toolBuilder icon ]
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> icon: anObject [
+GtTreePagerPaneModel >> icon: anObject [
 	icon := anObject
 ]
 
 { #category : #initialization }
-GtMultiPagerPaneModel >> initialize [
+GtTreePagerPaneModel >> initialize [
 	super initialize.
 	announcer := Announcer new.
 	followingPanes := Array empty.
@@ -187,27 +187,27 @@ GtMultiPagerPaneModel >> initialize [
 ]
 
 { #category : #'api - expandable' }
-GtMultiPagerPaneModel >> isCollapsed [
+GtTreePagerPaneModel >> isCollapsed [
 	^ isCollapsed ifNil: [ false ]
 ]
 
 { #category : #'api - expandable' }
-GtMultiPagerPaneModel >> isExpanded [
+GtTreePagerPaneModel >> isExpanded [
 	^ self isCollapsed not
 ]
 
 { #category : #'api - fastening' }
-GtMultiPagerPaneModel >> isFastened [
+GtTreePagerPaneModel >> isFastened [
 	^ isFastened
 ]
 
 { #category : #'api - fastening' }
-GtMultiPagerPaneModel >> isUnfastened [
+GtTreePagerPaneModel >> isUnfastened [
 	^ self isFastened not
 ]
 
 { #category : #'api - expandable' }
-GtMultiPagerPaneModel >> notifyExpansionChanged [
+GtTreePagerPaneModel >> notifyExpansionChanged [
 	self columnModel
 		ifNotNil: [ :aPaneModel | aPaneModel onPaneModelExpansionChanged: self ]
 		ifNil: [ self previousExpandedToolModel
@@ -216,19 +216,19 @@ GtMultiPagerPaneModel >> notifyExpansionChanged [
 						ifNotNil: [ :aPaneModel | aPaneModel onFollowingPaneModelExpansionChanged: self ] ] ].
 
 	self announcer
-		announce: (GtMultiPagerToolModelExpansionChanged new
+		announce: (GtTreePagerToolModelExpansionChanged new
 				toolModel: self;
 				isCollapsed: self isCollapsed)
 ]
 
 { #category : #'private - notifying' }
-GtMultiPagerPaneModel >> notifyFollowingPanesChanged [
+GtTreePagerPaneModel >> notifyFollowingPanesChanged [
 	self columnModel
 		ifNotNil: [ :aPaneModel | aPaneModel onFollowingPaneModelsChanged: self ]
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> paneModel [
+GtTreePagerPaneModel >> paneModel [
 	self
 		deprecated: 'Please use columnModel instead.'
 		transformWith: '`@receiver paneModel' -> '`@receiver columnModel'.
@@ -237,7 +237,7 @@ GtMultiPagerPaneModel >> paneModel [
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> paneModel: aColumnModel [
+GtTreePagerPaneModel >> paneModel: aColumnModel [
 	self
 		deprecated: 'Please use columnModel: instead.'
 		transformWith: '`@receiver paneModel: `@statements1' -> '`@receiver columnModel: `@statements1'.
@@ -246,8 +246,8 @@ GtMultiPagerPaneModel >> paneModel: aColumnModel [
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> previousExpandedToolModel [
-	<return: #GtMultiPagerPaneModel or: nil>
+GtTreePagerPaneModel >> previousExpandedToolModel [
+	<return: #GtTreePagerPaneModel or: nil>
 	^ self previousPane
 		ifNotNil: [ :aPreviousTool | 
 			aPreviousTool isExpanded
@@ -256,17 +256,17 @@ GtMultiPagerPaneModel >> previousExpandedToolModel [
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> previousPane [
+GtTreePagerPaneModel >> previousPane [
 	^ previousPane
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> previousPane: aPaneModel [
+GtTreePagerPaneModel >> previousPane: aPaneModel [
 	previousPane := aPaneModel
 ]
 
 { #category : #'private - updating' }
-GtMultiPagerPaneModel >> replaceFollowingPane: anOldPaneModel by: aNewPaneModel [
+GtTreePagerPaneModel >> replaceFollowingPane: anOldPaneModel by: aNewPaneModel [
 	| anIndex |
 	anIndex := self followingPanes
 			detectIndex: [ :each | each == anOldPaneModel ]
@@ -280,7 +280,7 @@ GtMultiPagerPaneModel >> replaceFollowingPane: anOldPaneModel by: aNewPaneModel 
 ]
 
 { #category : #'api - following tools' }
-GtMultiPagerPaneModel >> replaceFollowingPaneBy: aPaneModel [
+GtTreePagerPaneModel >> replaceFollowingPaneBy: aPaneModel [
 	| anOldPaneModel |
 	anOldPaneModel := self followingPanes reversed
 			detect: #isUnfastened
@@ -293,26 +293,26 @@ GtMultiPagerPaneModel >> replaceFollowingPaneBy: aPaneModel [
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> title [
+GtTreePagerPaneModel >> title [
 	^ title ifNil: [ self toolBuilder title ]
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> title: anObject [
+GtTreePagerPaneModel >> title: anObject [
 	title := anObject
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> toolBuilder [
+GtTreePagerPaneModel >> toolBuilder [
 	^ toolBuilder
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> toolBuilder: anObject [
+GtTreePagerPaneModel >> toolBuilder: anObject [
 	toolBuilder := anObject
 ]
 
 { #category : #'api - fastening' }
-GtMultiPagerPaneModel >> unfasten [
+GtTreePagerPaneModel >> unfasten [
 	self fasten: false
 ]

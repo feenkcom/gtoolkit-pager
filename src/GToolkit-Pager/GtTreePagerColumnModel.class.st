@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMultiPagerColumnModel,
+	#name : #GtTreePagerColumnModel,
 	#superclass : #Object,
 	#traits : 'TGtAnnouncer',
 	#classTraits : 'TGtAnnouncer classTrait',
@@ -10,11 +10,11 @@ Class {
 		'pagerModel',
 		'paneModels'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #'api - hooks' }
-GtMultiPagerColumnModel >> aboutToLeaveExpandedPaneModels: somePaneModels [
+GtTreePagerColumnModel >> aboutToLeaveExpandedPaneModels: somePaneModels [
 	self assert: [ somePaneModels allSatisfy: #isExpanded ].
 	self pagerModel
 		ifNotNil: [ :aPager | 
@@ -23,35 +23,35 @@ GtMultiPagerColumnModel >> aboutToLeaveExpandedPaneModels: somePaneModels [
 ]
 
 { #category : #'api - hooks' }
-GtMultiPagerColumnModel >> aboutToTakeOverPaneModel: aPaneModel [
+GtTreePagerColumnModel >> aboutToTakeOverPaneModel: aPaneModel [
 	| newPaneModels |
 	newPaneModels := aPaneModel followingExpandedPaneModels.
 	self replacePaneModel: aPaneModel withPaneModels: newPaneModels
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnModel >> addPaneModel: aToolModel [
+GtTreePagerColumnModel >> addPaneModel: aToolModel [
 	aToolModel columnModel: self.
 	self paneModels: (self paneModels copyWith: aToolModel)
 ]
 
 { #category : #announcer }
-GtMultiPagerColumnModel >> announcer [
+GtTreePagerColumnModel >> announcer [
 	^ announcer
 ]
 
 { #category : #accessing }
-GtMultiPagerColumnModel >> children [
+GtTreePagerColumnModel >> children [
 	^ self toolModels
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnModel >> followingExpandedPaneModels [
+GtTreePagerColumnModel >> followingExpandedPaneModels [
 	^ self paneModels flatCollect: #followingExpandedPaneModels as: Array
 ]
 
 { #category : #printing }
-GtMultiPagerColumnModel >> gtDisplayOn: stream [
+GtTreePagerColumnModel >> gtDisplayOn: stream [
 	stream nextPutAll: 'Column: '.
 	self paneModels
 		do: [ :eachTool | stream nextPutAll: eachTool title asString ]
@@ -59,16 +59,16 @@ GtMultiPagerColumnModel >> gtDisplayOn: stream [
 ]
 
 { #category : #views }
-GtMultiPagerColumnModel >> gtLiveFor: aView [
+GtTreePagerColumnModel >> gtLiveFor: aView [
 	<gtView>
 	^ aView explicit
 		title: 'Live';
 		priority: 10;
-		stencil: [ GtMultiPagerColumnElement new paneModel: self ]
+		stencil: [ GtTreePagerColumnElement new paneModel: self ]
 ]
 
 { #category : #views }
-GtMultiPagerColumnModel >> gtPanesFor: aView [
+GtTreePagerColumnModel >> gtPanesFor: aView [
 	<gtView>
 	paneModels ifNil: [ ^ aView empty ].
 
@@ -81,17 +81,17 @@ GtMultiPagerColumnModel >> gtPanesFor: aView [
 ]
 
 { #category : #accessing }
-GtMultiPagerColumnModel >> icon [
+GtTreePagerColumnModel >> icon [
 	^ icon
 ]
 
 { #category : #accessing }
-GtMultiPagerColumnModel >> icon: anObject [
+GtTreePagerColumnModel >> icon: anObject [
 	icon := anObject
 ]
 
 { #category : #initialization }
-GtMultiPagerColumnModel >> initialize [
+GtTreePagerColumnModel >> initialize [
 	super initialize.
 	announcer := Announcer new.
 	title := 'Pane'.
@@ -100,18 +100,18 @@ GtMultiPagerColumnModel >> initialize [
 ]
 
 { #category : #'private - notifying' }
-GtMultiPagerColumnModel >> notifyPaneModelsChanged [
+GtTreePagerColumnModel >> notifyPaneModelsChanged [
 	self pagerModel
 		ifNotNil: [ :aPagerModel | aPagerModel onColumnModelToolsChanged: self ].
 
 	self announcer
-		announce: (GtMultiPagerPaneModelToolsChanged new
+		announce: (GtTreePagerPaneModelToolsChanged new
 				paneModel: self;
 				toolModels: self paneModels)
 ]
 
 { #category : #'api - hooks' }
-GtMultiPagerColumnModel >> onFollowingExpandedPaneModel: aPaneModel [
+GtTreePagerColumnModel >> onFollowingExpandedPaneModel: aPaneModel [
 	"The following pane should be displayed here.
 	Let's first find its following expanded tool models."
 
@@ -126,7 +126,7 @@ GtMultiPagerColumnModel >> onFollowingExpandedPaneModel: aPaneModel [
 ]
 
 { #category : #'api - hooks' }
-GtMultiPagerColumnModel >> onFollowingPaneModelExpansionChanged: aPaneModel [
+GtTreePagerColumnModel >> onFollowingPaneModelExpansionChanged: aPaneModel [
 	aPaneModel isCollapsed ifTrue: [ ^ self ].
 	self assert: [ aPaneModel columnModel isNil ].
 
@@ -135,7 +135,7 @@ GtMultiPagerColumnModel >> onFollowingPaneModelExpansionChanged: aPaneModel [
 ]
 
 { #category : #'api - hooks' }
-GtMultiPagerColumnModel >> onFollowingPaneModelsChanged: aPaneModel [
+GtTreePagerColumnModel >> onFollowingPaneModelsChanged: aPaneModel [
 	"Let's push following pane models to a next column."
 
 	self pagerModel
@@ -143,7 +143,7 @@ GtMultiPagerColumnModel >> onFollowingPaneModelsChanged: aPaneModel [
 ]
 
 { #category : #'api - hooks' }
-GtMultiPagerColumnModel >> onPaneModelExpansionChanged: aPaneModel [
+GtTreePagerColumnModel >> onPaneModelExpansionChanged: aPaneModel [
 	| newPaneModels |
 	aPaneModel isExpanded ifTrue: [ ^ self ].
 
@@ -152,27 +152,27 @@ GtMultiPagerColumnModel >> onPaneModelExpansionChanged: aPaneModel [
 ]
 
 { #category : #accessing }
-GtMultiPagerColumnModel >> pagerModel [
+GtTreePagerColumnModel >> pagerModel [
 	^ pagerModel
 ]
 
 { #category : #accessing }
-GtMultiPagerColumnModel >> pagerModel: anObject [
+GtTreePagerColumnModel >> pagerModel: anObject [
 	pagerModel := anObject
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnModel >> paneModel: aPaneModel [
+GtTreePagerColumnModel >> paneModel: aPaneModel [
 	self addPaneModel: aPaneModel
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnModel >> paneModels [
+GtTreePagerColumnModel >> paneModels [
 	^ paneModels
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnModel >> paneModels: aCollection [
+GtTreePagerColumnModel >> paneModels: aCollection [
 	paneModels = aCollection ifTrue: [ ^ self ].
 
 	aCollection do: [ :each | each columnModel: self ].
@@ -182,7 +182,7 @@ GtMultiPagerColumnModel >> paneModels: aCollection [
 ]
 
 { #category : #'private - updating' }
-GtMultiPagerColumnModel >> replacePaneModel: aPaneModel withPaneModels: newPaneModels [
+GtTreePagerColumnModel >> replacePaneModel: aPaneModel withPaneModels: newPaneModels [
 	| newCollection isFound |
 	isFound := false.
 	newCollection := Array
@@ -212,7 +212,7 @@ GtMultiPagerColumnModel >> replacePaneModel: aPaneModel withPaneModels: newPaneM
 ]
 
 { #category : #'private - updating' }
-GtMultiPagerColumnModel >> replacePaneModels: currentPaneModels withPaneModel: aPaneModel [
+GtTreePagerColumnModel >> replacePaneModels: currentPaneModels withPaneModel: aPaneModel [
 	| newCollection isFound |
 	isFound := false.
 	newCollection := Array
@@ -236,7 +236,7 @@ GtMultiPagerColumnModel >> replacePaneModels: currentPaneModels withPaneModel: a
 ]
 
 { #category : #accessing }
-GtMultiPagerColumnModel >> title [
+GtTreePagerColumnModel >> title [
 	^ title
 		ifNil: [ self toolModels
 				ifNotEmpty: [ :aCollection | aCollection anyOne title ]
@@ -244,12 +244,12 @@ GtMultiPagerColumnModel >> title [
 ]
 
 { #category : #accessing }
-GtMultiPagerColumnModel >> title: anObject [
+GtTreePagerColumnModel >> title: anObject [
 	title := anObject
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnModel >> toolModel: aPaneModel [
+GtTreePagerColumnModel >> toolModel: aPaneModel [
 	self
 		deprecated: 'Please use paneModel: instead.'
 		transformWith: '`@receiver toolModel: `@statements1' -> '`@receiver paneModel: `@statements1'.
@@ -257,7 +257,7 @@ GtMultiPagerColumnModel >> toolModel: aPaneModel [
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnModel >> toolModels [
+GtTreePagerColumnModel >> toolModels [
 	self
 		deprecated: 'Please use paneModels instead.'
 		transformWith: '`@receiver toolModels' -> '`@receiver paneModels'.
@@ -266,7 +266,7 @@ GtMultiPagerColumnModel >> toolModels [
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnModel >> toolModels: aCollection [
+GtTreePagerColumnModel >> toolModels: aCollection [
 	self
 		deprecated: 'Please use paneModels: instead.'
 		transformWith: '`@receiver toolModels: `@statements1' -> '`@receiver paneModels: `@statements1'.
@@ -275,6 +275,6 @@ GtMultiPagerColumnModel >> toolModels: aCollection [
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnModel >> toolStencil: aStencil [
-	self toolModel: (GtMultiPagerExplicitToolBuilder new stencil: aStencil asStencil)
+GtTreePagerColumnModel >> toolStencil: aStencil [
+	self toolModel: (GtTreePagerExplicitToolBuilder new stencil: aStencil asStencil)
 ]

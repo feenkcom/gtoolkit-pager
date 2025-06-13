@@ -1,29 +1,29 @@
 Class {
-	#name : #GtMultiPagerModel,
+	#name : #GtTreePagerModel,
 	#superclass : #Object,
 	#instVars : [
 		'columns'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #'api - panes' }
-GtMultiPagerModel >> addPane: aPane [
+GtTreePagerModel >> addPane: aPane [
 	self columns: (self columns copyWith: aPane)
 ]
 
 { #category : #'api - panes' }
-GtMultiPagerModel >> children [
+GtTreePagerModel >> children [
 	^ self panes
 ]
 
 { #category : #'api - panes' }
-GtMultiPagerModel >> columns [
+GtTreePagerModel >> columns [
 	^ columns
 ]
 
 { #category : #'api - panes' }
-GtMultiPagerModel >> columns: aCollection [
+GtTreePagerModel >> columns: aCollection [
 	columns = aCollection ifTrue: [ ^ self ].
 	
 	aCollection do: [ :eachPane | eachPane pagerModel: self ].
@@ -31,7 +31,7 @@ GtMultiPagerModel >> columns: aCollection [
 ]
 
 { #category : #'private - updating' }
-GtMultiPagerModel >> ensureColumnModelAfter: aColumnModel [
+GtTreePagerModel >> ensureColumnModelAfter: aColumnModel [
 	| anIndex |
 	anIndex := self columns
 			identityIndexOf: aColumnModel
@@ -39,16 +39,16 @@ GtMultiPagerModel >> ensureColumnModelAfter: aColumnModel [
 
 	^ anIndex + 1 > self columns size
 		ifTrue: [ | anotherPane |
-			anotherPane := GtMultiPagerColumnModel new.
+			anotherPane := GtTreePagerColumnModel new.
 			self addPane: anotherPane.
 			anotherPane ]
 		ifFalse: [ self columns at: anIndex + 1 ]
 ]
 
 { #category : #'api - panes' }
-GtMultiPagerModel >> fromPaneModel: aPaneModel [
+GtTreePagerModel >> fromPaneModel: aPaneModel [
 	| someColumns |
-	someColumns := GtMultiPagerColumnsBuilder new
+	someColumns := GtTreePagerColumnsBuilder new
 			paneModel: aPaneModel;
 			build.
 
@@ -56,16 +56,16 @@ GtMultiPagerModel >> fromPaneModel: aPaneModel [
 ]
 
 { #category : #views }
-GtMultiPagerModel >> gtLiveFor: aView [
+GtTreePagerModel >> gtLiveFor: aView [
 	<gtView>
 	^ aView explicit
 		title: 'Live';
 		priority: 10;
-		stencil: [ GtMultiPagerElement new pagerModel: self ]
+		stencil: [ GtTreePagerElement new pagerModel: self ]
 ]
 
 { #category : #views }
-GtMultiPagerModel >> gtPanesFor: aView [
+GtTreePagerModel >> gtPanesFor: aView [
 	<gtView>
 	columns ifNil: [ ^ aView empty ].
 	^ aView columnedTree
@@ -77,21 +77,21 @@ GtMultiPagerModel >> gtPanesFor: aView [
 ]
 
 { #category : #initialization }
-GtMultiPagerModel >> initialize [
+GtTreePagerModel >> initialize [
 	super initialize.
 
 	columns := Array empty
 ]
 
 { #category : #'api - hooks' }
-GtMultiPagerModel >> onColumnModelToolsChanged: aPaneModel [
+GtTreePagerModel >> onColumnModelToolsChanged: aPaneModel [
 	aPaneModel paneModels
 		ifEmpty: [ self removeColumnAndAfterColumns: aPaneModel ]
 		ifNotEmpty: [ self onFollowingPaneModelsChangedAfterColumnModel: aPaneModel ]
 ]
 
 { #category : #'api - hooks' }
-GtMultiPagerModel >> onFollowingPaneModel: aPaneModel expandedAfterColumnModel: aColumnModel [
+GtTreePagerModel >> onFollowingPaneModel: aPaneModel expandedAfterColumnModel: aColumnModel [
 	| anotherPaneModel |
 	self assert: [ aPaneModel isExpanded ].
 	anotherPaneModel := self ensureColumnModelAfter: aColumnModel.
@@ -101,7 +101,7 @@ GtMultiPagerModel >> onFollowingPaneModel: aPaneModel expandedAfterColumnModel: 
 ]
 
 { #category : #'api - hooks' }
-GtMultiPagerModel >> onFollowingPaneModelsChangedAfterColumnModel: aColumnModel [
+GtTreePagerModel >> onFollowingPaneModelsChangedAfterColumnModel: aColumnModel [
 	| anotherColumnModel somePaneModels |
 	somePaneModels := aColumnModel followingExpandedPaneModels.
 	somePaneModels
@@ -113,7 +113,7 @@ GtMultiPagerModel >> onFollowingPaneModelsChangedAfterColumnModel: aColumnModel 
 ]
 
 { #category : #'api - panes' }
-GtMultiPagerModel >> panes [
+GtTreePagerModel >> panes [
 	self
 		deprecated: 'Please use #columns instead.'
 		transformWith: '`@receiver panes' -> '`@receiver columns'.
@@ -121,7 +121,7 @@ GtMultiPagerModel >> panes [
 ]
 
 { #category : #'api - panes' }
-GtMultiPagerModel >> panes: aCollection [
+GtTreePagerModel >> panes: aCollection [
 	self
 		deprecated: 'Please use columns: instead.'
 		transformWith: '`@receiver panes: `@statements1' -> '`@receiver columns: `@statements1'.
@@ -130,12 +130,12 @@ GtMultiPagerModel >> panes: aCollection [
 ]
 
 { #category : #'api - panes' }
-GtMultiPagerModel >> removeColumn: aColumn [
+GtTreePagerModel >> removeColumn: aColumn [
 	self columns: (self columns copyWithout: aColumn)
 ]
 
 { #category : #'private - updating' }
-GtMultiPagerModel >> removeColumnAndAfterColumns: aColumnModel [
+GtTreePagerModel >> removeColumnAndAfterColumns: aColumnModel [
 	| anIndex |
 	anIndex := self columns
 			identityIndexOf: aColumnModel
@@ -147,7 +147,7 @@ GtMultiPagerModel >> removeColumnAndAfterColumns: aColumnModel [
 ]
 
 { #category : #'private - updating' }
-GtMultiPagerModel >> removeColumnModelsAfter: aColumnModel [
+GtTreePagerModel >> removeColumnModelsAfter: aColumnModel [
 	| anIndex |
 	anIndex := self columns
 			identityIndexOf: aColumnModel
@@ -159,7 +159,7 @@ GtMultiPagerModel >> removeColumnModelsAfter: aColumnModel [
 ]
 
 { #category : #'api - panes' }
-GtMultiPagerModel >> removePane: aColumnModel [
+GtTreePagerModel >> removePane: aColumnModel [
 	self
 		deprecated: 'Please use removeColumn: instead.'
 		transformWith: '`@receiver removePane: `@statements1'

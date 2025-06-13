@@ -1,19 +1,19 @@
 Class {
-	#name : #GtMultiPagerPanesElement,
-	#superclass : #GtMultiPagerBasicElement,
+	#name : #GtTreePagerPanesElement,
+	#superclass : #GtTreePagerBasicElement,
 	#instVars : [
 		'pagerElement'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
-GtMultiPagerPanesElement >> defaultLayout [
+GtTreePagerPanesElement >> defaultLayout [
 	^ BlLinearLayout vertical
 ]
 
 { #category : #initialization }
-GtMultiPagerPanesElement >> initialize [
+GtTreePagerPanesElement >> initialize [
 	super initialize.
 	self matchParent.
 
@@ -22,12 +22,12 @@ GtMultiPagerPanesElement >> initialize [
 ]
 
 { #category : #'api - pager model' }
-GtMultiPagerPanesElement >> onPagerModelChanged [
+GtTreePagerPanesElement >> onPagerModelChanged [
 	| someElements |
 	super onPagerModelChanged.
 
 	someElements := self pagerModel columns
-			collect: [ :eachPane | GtMultiPagerColumnElement new paneModel: eachPane ].
+			collect: [ :eachPane | GtTreePagerColumnElement new paneModel: eachPane ].
 
 	pagerElement removeAllPages.
 	someElements do: [ :eachElement | pagerElement addPage: eachElement ]

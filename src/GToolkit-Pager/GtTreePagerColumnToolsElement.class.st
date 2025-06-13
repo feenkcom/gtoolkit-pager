@@ -1,20 +1,20 @@
 Class {
-	#name : #GtMultiPagerColumnToolsElement,
-	#superclass : #GtMultiPagerColumnBasicElement,
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#name : #GtTreePagerColumnToolsElement,
+	#superclass : #GtTreePagerColumnBasicElement,
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
-GtMultiPagerColumnToolsElement >> defaultLayout [
+GtTreePagerColumnToolsElement >> defaultLayout [
 	^ BlLinearLayout vertical
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerColumnToolsElement >> onColumnModelChanged [
+GtTreePagerColumnToolsElement >> onColumnModelChanged [
 	| somePaneElements |
 	somePaneElements := self paneModel paneModels
 			collect: [ :eachToolModel | 
-				GtMultiPagerPaneElement new
+				GtTreePagerPaneElement new
 					toolModel: eachToolModel;
 					margin: (BlInsets all: 10);
 					addAptitude: BrGlamorousFocusableShadowAptitude new ].
