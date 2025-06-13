@@ -1,16 +1,16 @@
 Class {
-	#name : #GtMultiPagerPaneFollowersElement,
-	#superclass : #GtMultiPagerPaneBasicElement,
+	#name : #GtMultiPagerColumnFollowersElement,
+	#superclass : #GtMultiPagerColumnBasicElement,
 	#category : #'GToolkit-Pager-Multi Pager - Model'
 }
 
 { #category : #initialization }
-GtMultiPagerPaneFollowersElement >> defaultLayout [
+GtMultiPagerColumnFollowersElement >> defaultLayout [
 	^ BlLinearLayout vertical
 ]
 
 { #category : #initialization }
-GtMultiPagerPaneFollowersElement >> initialize [
+GtMultiPagerColumnFollowersElement >> initialize [
 	super initialize.
 	self hFitContent.
 	self padding: (BlInsets left: 5).
@@ -19,7 +19,7 @@ GtMultiPagerPaneFollowersElement >> initialize [
 ]
 
 { #category : #'instance  creation' }
-GtMultiPagerPaneFollowersElement >> newContainerWith: anElement [
+GtMultiPagerColumnFollowersElement >> newContainerWith: anElement [
 	^ BrFrame new
 		hFitContent;
 		vMatchParent;
@@ -27,17 +27,17 @@ GtMultiPagerPaneFollowersElement >> newContainerWith: anElement [
 ]
 
 { #category : #'instance  creation' }
-GtMultiPagerPaneFollowersElement >> newFollowerButton [
-	^ GtMultiPagerFollowingToolElement new
+GtMultiPagerColumnFollowersElement >> newFollowerButton [
+	^ GtMultiPagerFollowingPaneElement new
 		constraintsDo: [ :c | 
 			c frame vertical alignCenter.
 			c frame horizontal alignCenter ]
 ]
 
 { #category : #'api - pane model' }
-GtMultiPagerPaneFollowersElement >> onPaneModelChanged [
+GtMultiPagerColumnFollowersElement >> onColumnModelChanged [
 	| someToolModels someToolElements |
-	someToolModels := self paneModel toolModels flatCollect: #followingTools.
+	someToolModels := self paneModel paneModels flatCollect: #followingPanes.
 	someToolElements := someToolModels
 			collect: [ :each | self newContainerWith: (self newFollowerButton toolModel: each) ].
 	self removeChildren.

@@ -4,58 +4,153 @@ Class {
 	#traits : 'TGtAnnouncer',
 	#classTraits : 'TGtAnnouncer classTrait',
 	#instVars : [
+		'toolBuilder',
+		'isCollapsed',
 		'title',
 		'icon',
-		'toolModels',
 		'announcer',
-		'pagerModel'
+		'isFastened',
+		'columnModel',
+		'followingPanes',
+		'previousPane'
 	],
 	#category : #'GToolkit-Pager-Multi Pager - Model'
 }
 
-{ #category : #'api - hooks' }
-GtMultiPagerPaneModel >> aboutToLeaveExpandedToolModels: someToolModels [
-	self assert: [ someToolModels allSatisfy: #isExpanded ].
-	self pagerModel
-		ifNotNil: [ :aPager | 
-			someToolModels
-				do: [ :eachToolModel | aPager onFollowingToolModel: eachToolModel expandedAfterPaneModel: self ] ]
-]
-
-{ #category : #'api - hooks' }
-GtMultiPagerPaneModel >> aboutToTakeOverToolModel: aToolModel [
-	| newToolModels |
-	newToolModels := aToolModel followingExpandedToolModels.
-	self replaceToolModel: aToolModel withToolModels: newToolModels
-]
-
-{ #category : #'api - tool model' }
-GtMultiPagerPaneModel >> addToolModel: aToolModel [
-	aToolModel paneModel: self.
-	self toolModels: (self toolModels copyWith: aToolModel)
+{ #category : #'api - following tools' }
+GtMultiPagerPaneModel >> addFollowingPane: aPaneModel [
+	self followingPanes: (self followingPanes copyWith: aPaneModel)
 ]
 
 { #category : #announcer }
 GtMultiPagerPaneModel >> announcer [
+	<return: #Announcer>
 	^ announcer
+]
+
+{ #category : #converting }
+GtMultiPagerPaneModel >> asElement [
+	<return: #BlElement>
+	^ self toolBuilder asElement
 ]
 
 { #category : #accessing }
 GtMultiPagerPaneModel >> children [
-	^ self toolModels
+	^ self followingPanes
 ]
 
-{ #category : #'api - tool model' }
-GtMultiPagerPaneModel >> followingExpandedToolModels [
-	^ self toolModels flatCollect: #followingExpandedToolModels as: Array
+{ #category : #'api - expandable' }
+GtMultiPagerPaneModel >> collapse [
+	self collapse: true
+]
+
+{ #category : #'api - expandable' }
+GtMultiPagerPaneModel >> collapse: aBoolean [
+	isCollapsed = aBoolean ifTrue: [ ^ self ].
+
+	isCollapsed := aBoolean.
+	self notifyExpansionChanged
+]
+
+{ #category : #accessing }
+GtMultiPagerPaneModel >> collapsedChainCount [
+	self isCollapsed ifFalse: [ ^ 0 ].
+	self hasFollowingPanes ifFalse: [ ^ 1 ].
+	(self followingPanes allSatisfy: #isCollapsed) ifFalse: [ ^ 1 ].
+
+	^ (self followingPanes detectMin: [ :each | each collapsedChainCount ])
+		collapsedChainCount
+]
+
+{ #category : #accessing }
+GtMultiPagerPaneModel >> columnModel [
+	^ columnModel
+]
+
+{ #category : #accessing }
+GtMultiPagerPaneModel >> columnModel: aColumnModel [
+	columnModel := aColumnModel
+]
+
+{ #category : #'api - expandable' }
+GtMultiPagerPaneModel >> expand [
+	self expand: true
+]
+
+{ #category : #'api - expandable' }
+GtMultiPagerPaneModel >> expand: aBoolean [
+	self collapse: aBoolean not
+]
+
+{ #category : #'api - fastening' }
+GtMultiPagerPaneModel >> fasten [
+	self fasten: true
+]
+
+{ #category : #'api - fastening' }
+GtMultiPagerPaneModel >> fasten: aBoolean [
+	isFastened = aBoolean ifTrue: [ ^ self ].
+
+	isFastened := aBoolean
+]
+
+{ #category : #'api - following tools' }
+GtMultiPagerPaneModel >> followingExpandedPaneModels [
+	^ Array
+		streamContents: [ :aStream | 
+			self followingPanes
+				do: [ :eachTool | 
+					eachTool isExpanded
+						ifTrue: [ aStream nextPut: eachTool ]
+						ifFalse: [ aStream nextPutAll: eachTool followingExpandedPaneModels ] ] ]
+]
+
+{ #category : #'api - following tools' }
+GtMultiPagerPaneModel >> followingPanes [
+	^ followingPanes
+]
+
+{ #category : #'api - following tools' }
+GtMultiPagerPaneModel >> followingPanes: aCollection [
+	followingPanes = aCollection ifTrue: [ ^ self ].
+
+	aCollection do: [ :each | each previousPane: self ].
+	followingPanes := aCollection.
+	
+	self notifyFollowingPanesChanged
 ]
 
 { #category : #printing }
 GtMultiPagerPaneModel >> gtDisplayOn: stream [
-	stream nextPutAll: 'Column: '.
-	self toolModels
-		do: [ :eachTool | stream nextPutAll: eachTool title asString ]
-		separatedBy: [ stream nextPutAll: ', ' ]
+	stream nextPutAll: 'Pane: '.
+	stream nextPutAll: self title asString.
+	(self isCollapsed or: [ self isFastened ]) ifFalse: [ ^ self ].
+
+	stream nextPutAll: ' ('.
+	self isCollapsed ifTrue: [ stream nextPutAll: 'collapsed' ].
+	self isFastened
+		ifTrue: [ self isCollapsed
+				ifTrue: [ stream nextPutAll: ', ' ]
+				ifFalse: [ stream nextPutAll: 'fastened' ] ].
+	stream nextPut: $)
+]
+
+{ #category : #views }
+GtMultiPagerPaneModel >> gtFollowingPanesFor: aView [
+	<gtView>
+	self followingPanes ifNil: [ ^ aView empty ].
+	^ aView columnedTree
+		title: 'Panes';
+		items: [ {self} ];
+		children: #followingPanes;
+		expandUpTo: 1;
+		column: 'Title' text: [ :each | each title ];
+		column: 'Expanded'
+			text: [ :each | 
+				each isExpanded
+					ifTrue: [ 'yes' ]
+					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
+			width: 70
 ]
 
 { #category : #views }
@@ -64,25 +159,17 @@ GtMultiPagerPaneModel >> gtLiveFor: aView [
 	^ aView explicit
 		title: 'Live';
 		priority: 10;
-		stencil: [ GtMultiPagerPaneElement new paneModel: self ]
+		stencil: [ GtMultiPagerPaneElement new toolModel: self ]
 ]
 
-{ #category : #views }
-GtMultiPagerPaneModel >> gtPanesFor: aView [
-	<gtView>
-	toolModels ifNil: [ ^ aView empty ].
-
-	^ aView columnedTree
-		title: 'Tools';
-		items: [ self toolModels ];
-		children: #children;
-		expandUpTo: 1;
-		column: 'Value' text: [ :each | each gtDisplayString ]
+{ #category : #testing }
+GtMultiPagerPaneModel >> hasFollowingPanes [
+	^ self followingPanes isNotEmpty
 ]
 
 { #category : #accessing }
 GtMultiPagerPaneModel >> icon [
-	^ icon
+	^ icon ifNil: [ self toolBuilder icon ]
 ]
 
 { #category : #accessing }
@@ -94,132 +181,120 @@ GtMultiPagerPaneModel >> icon: anObject [
 GtMultiPagerPaneModel >> initialize [
 	super initialize.
 	announcer := Announcer new.
-	title := 'Pane'.
-	icon := nil.
-	toolModels := Array empty
+	followingPanes := Array empty.
+	isCollapsed := false.
+	isFastened := false.
+]
+
+{ #category : #'api - expandable' }
+GtMultiPagerPaneModel >> isCollapsed [
+	^ isCollapsed ifNil: [ false ]
+]
+
+{ #category : #'api - expandable' }
+GtMultiPagerPaneModel >> isExpanded [
+	^ self isCollapsed not
+]
+
+{ #category : #'api - fastening' }
+GtMultiPagerPaneModel >> isFastened [
+	^ isFastened
+]
+
+{ #category : #'api - fastening' }
+GtMultiPagerPaneModel >> isUnfastened [
+	^ self isFastened not
+]
+
+{ #category : #'api - expandable' }
+GtMultiPagerPaneModel >> notifyExpansionChanged [
+	self columnModel
+		ifNotNil: [ :aPaneModel | aPaneModel onPaneModelExpansionChanged: self ]
+		ifNil: [ self previousExpandedToolModel
+				ifNotNil: [ :aPreviousTool | 
+					aPreviousTool columnModel
+						ifNotNil: [ :aPaneModel | aPaneModel onFollowingPaneModelExpansionChanged: self ] ] ].
+
+	self announcer
+		announce: (GtMultiPagerToolModelExpansionChanged new
+				toolModel: self;
+				isCollapsed: self isCollapsed)
 ]
 
 { #category : #'private - notifying' }
-GtMultiPagerPaneModel >> notifyToolModelsChanged [
-	self pagerModel ifNotNil: [ :aPagerModel | aPagerModel onPaneModelToolsChanged: self ].
-
-	self announcer
-		announce: (GtMultiPagerPaneModelToolsChanged new
-				paneModel: self;
-				toolModels: self toolModels)
-]
-
-{ #category : #'api - hooks' }
-GtMultiPagerPaneModel >> onFollowingExpandedToolModel: aToolModel [
-	"The following tool should be displayed here.
-	Let's first find its following expanded tool models."
-
-	| currentToolModels |
-	self assert: [ aToolModel isExpanded ].
-	self assert: [ aToolModel paneModel isNil ].
-
-	currentToolModels := aToolModel followingExpandedToolModels.
-	currentToolModels
-		ifEmpty: [ self addToolModel: aToolModel ]
-		ifNotEmpty: [ self replaceToolModels: currentToolModels withToolModel: aToolModel ]
-]
-
-{ #category : #'api - hooks' }
-GtMultiPagerPaneModel >> onFollowingToolModelExpansionChanged: aToolModel [
-	aToolModel isCollapsed ifTrue: [ ^ self ].
-	self assert: [ aToolModel paneModel isNil ].
-
-	self pagerModel
-		ifNotNil: [ :aPager | aPager onFollowingToolModel: aToolModel expandedAfterPaneModel: self ]
-]
-
-{ #category : #'api - hooks' }
-GtMultiPagerPaneModel >> onFollowingToolModelsChanged: aToolModel [
-	"Let's push following tool models to a next pane."
-
-	self pagerModel
-		ifNotNil: [ :aPager | aPager onFollowingToolModelsChangedAfterPaneModel: self ]
-]
-
-{ #category : #'api - hooks' }
-GtMultiPagerPaneModel >> onToolModelExpansionChanged: aToolModel [
-	| newToolModels |
-	aToolModel isExpanded ifTrue: [ ^ self ].
-
-	newToolModels := aToolModel followingExpandedToolModels.
-	self replaceToolModel: aToolModel withToolModels: newToolModels
+GtMultiPagerPaneModel >> notifyFollowingPanesChanged [
+	self columnModel
+		ifNotNil: [ :aPaneModel | aPaneModel onFollowingPaneModelsChanged: self ]
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> pagerModel [
-	^ pagerModel
+GtMultiPagerPaneModel >> paneModel [
+	self
+		deprecated: 'Please use columnModel instead.'
+		transformWith: '`@receiver paneModel' -> '`@receiver columnModel'.
+
+	^ self columnModel
 ]
 
 { #category : #accessing }
-GtMultiPagerPaneModel >> pagerModel: anObject [
-	pagerModel := anObject
+GtMultiPagerPaneModel >> paneModel: aColumnModel [
+	self
+		deprecated: 'Please use columnModel: instead.'
+		transformWith: '`@receiver paneModel: `@statements1' -> '`@receiver columnModel: `@statements1'.
+
+	self columnModel: aColumnModel
+]
+
+{ #category : #accessing }
+GtMultiPagerPaneModel >> previousExpandedToolModel [
+	<return: #GtMultiPagerPaneModel or: nil>
+	^ self previousPane
+		ifNotNil: [ :aPreviousTool | 
+			aPreviousTool isExpanded
+				ifTrue: [ aPreviousTool ]
+				ifFalse: [ aPreviousTool previousExpandedToolModel ] ]
+]
+
+{ #category : #accessing }
+GtMultiPagerPaneModel >> previousPane [
+	^ previousPane
+]
+
+{ #category : #accessing }
+GtMultiPagerPaneModel >> previousPane: aPaneModel [
+	previousPane := aPaneModel
 ]
 
 { #category : #'private - updating' }
-GtMultiPagerPaneModel >> replaceToolModel: aToolModel withToolModels: newToolModels [
-	| newCollection isFound |
-	isFound := false.
-	newCollection := Array
-			new: 1
-			streamContents: [ :aStream | 
-				self toolModels
-					do: [ :eachTool | 
-						eachTool == aToolModel
-							ifFalse: [ aStream nextPut: eachTool ]
-							ifTrue: [ self
-									assert: isFound not
-									description: [ 'Tool model can exist in one collection only once.' ].
-								isFound := true.
-								aStream nextPutAll: newToolModels ] ] ].
+GtMultiPagerPaneModel >> replaceFollowingPane: anOldPaneModel by: aNewPaneModel [
+	| anIndex |
+	anIndex := self followingPanes
+			detectIndex: [ :each | each == anOldPaneModel ]
+			ifNone: [ NotFound signalFor: anOldPaneModel in: self followingPanes ].
 
-	self
-		assert: isFound
-		description: [ 'Can replace only tool model that exists in my collection' ].
-
-	newToolModels
-		do: [ :eachTool | 
-			eachTool paneModel
-				ifNotNil: [ :eachPane | eachPane aboutToTakeOverToolModel: eachTool ] ].
-
-	aToolModel paneModel: nil.
-	self toolModels: newCollection
+	aNewPaneModel previousPane: self.
+	anOldPaneModel previousPane: nil.
+	self followingPanes at: anIndex put: aNewPaneModel.
+	
+	self notifyFollowingPanesChanged
 ]
 
-{ #category : #'private - updating' }
-GtMultiPagerPaneModel >> replaceToolModels: currentToolModels withToolModel: aToolModel [
-	| newCollection isFound |
-	isFound := false.
-	newCollection := Array
-			new: 1
-			streamContents: [ :aStream | 
-				self toolModels
-					do: [ :eachTool | 
-						(currentToolModels identityIncludes: eachTool)
-							ifFalse: [ aStream nextPut: eachTool ]
-							ifTrue: [ isFound
-									ifFalse: [ isFound := true.
-										aStream nextPut: aToolModel ] ] ] ].
+{ #category : #'api - following tools' }
+GtMultiPagerPaneModel >> replaceFollowingPaneBy: aPaneModel [
+	| anOldPaneModel |
+	anOldPaneModel := self followingPanes reversed
+			detect: #isUnfastened
+			ifFound: #yourself
+			ifNone: [ nil ].
 
-	self
-		assert: isFound
-		description: [ 'Can replace only tool models that exist in my collection' ].
-
-	currentToolModels do: [ :eachTool | eachTool paneModel: nil ].
-	self aboutToLeaveExpandedToolModels: currentToolModels.
-	self toolModels: newCollection
+	anOldPaneModel
+		ifNil: [ self addFollowingPane: aPaneModel ]
+		ifNotNil: [ self replaceFollowingPane: anOldPaneModel by: aPaneModel ]
 ]
 
 { #category : #accessing }
 GtMultiPagerPaneModel >> title [
-	^ title
-		ifNil: [ self toolModels
-				ifNotEmpty: [ :aCollection | aCollection anyOne title ]
-				ifEmpty: [ nil ] ]
+	^ title ifNil: [ self toolBuilder title ]
 ]
 
 { #category : #accessing }
@@ -227,27 +302,17 @@ GtMultiPagerPaneModel >> title: anObject [
 	title := anObject
 ]
 
-{ #category : #'api - tool model' }
-GtMultiPagerPaneModel >> toolModel: aToolModel [
-	self addToolModel: aToolModel
+{ #category : #accessing }
+GtMultiPagerPaneModel >> toolBuilder [
+	^ toolBuilder
 ]
 
-{ #category : #'api - tool model' }
-GtMultiPagerPaneModel >> toolModels [
-	^ toolModels
+{ #category : #accessing }
+GtMultiPagerPaneModel >> toolBuilder: anObject [
+	toolBuilder := anObject
 ]
 
-{ #category : #'api - tool model' }
-GtMultiPagerPaneModel >> toolModels: aCollection [
-	toolModels = aCollection ifTrue: [ ^ self ].
-
-	aCollection do: [ :each | each paneModel: self ].
-	toolModels := aCollection.
-	
-	self notifyToolModelsChanged
-]
-
-{ #category : #'api - tool model' }
-GtMultiPagerPaneModel >> toolStencil: aStencil [
-	self toolModel: (GtMultiPagerExplicitToolBuilder new stencil: aStencil asStencil)
+{ #category : #'api - fastening' }
+GtMultiPagerPaneModel >> unfasten [
+	self fasten: false
 ]

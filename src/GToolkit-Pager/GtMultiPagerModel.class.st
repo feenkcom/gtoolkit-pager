@@ -2,14 +2,14 @@ Class {
 	#name : #GtMultiPagerModel,
 	#superclass : #Object,
 	#instVars : [
-		'panes'
+		'columns'
 	],
 	#category : #'GToolkit-Pager-Multi Pager - Model'
 }
 
 { #category : #'api - panes' }
 GtMultiPagerModel >> addPane: aPane [
-	self panes: (self panes copyWith: aPane)
+	self columns: (self columns copyWith: aPane)
 ]
 
 { #category : #'api - panes' }
@@ -17,29 +17,42 @@ GtMultiPagerModel >> children [
 	^ self panes
 ]
 
-{ #category : #'private - updating' }
-GtMultiPagerModel >> ensurePaneModelAfter: aPaneModel [
-	| anIndex |
-	anIndex := self panes
-			identityIndexOf: aPaneModel
-			ifAbsent: [ NotFound signal: aPaneModel in: self panes ].
-
-	^ anIndex + 1 > self panes size
-		ifTrue: [ | anotherPane |
-			anotherPane := GtMultiPagerPaneModel new.
-			self addPane: anotherPane.
-			anotherPane ]
-		ifFalse: [ self panes at: anIndex + 1 ]
+{ #category : #'api - panes' }
+GtMultiPagerModel >> columns [
+	^ columns
 ]
 
 { #category : #'api - panes' }
-GtMultiPagerModel >> fromToolModel: aToolModel [
-	| somePanes |
-	somePanes := GtMultiPagerPanesBuilder new
-			toolModel: aToolModel;
+GtMultiPagerModel >> columns: aCollection [
+	columns = aCollection ifTrue: [ ^ self ].
+	
+	aCollection do: [ :eachPane | eachPane pagerModel: self ].
+	columns := aCollection
+]
+
+{ #category : #'private - updating' }
+GtMultiPagerModel >> ensureColumnModelAfter: aColumnModel [
+	| anIndex |
+	anIndex := self columns
+			identityIndexOf: aColumnModel
+			ifAbsent: [ NotFound signal: aColumnModel in: self panes ].
+
+	^ anIndex + 1 > self columns size
+		ifTrue: [ | anotherPane |
+			anotherPane := GtMultiPagerColumnModel new.
+			self addPane: anotherPane.
+			anotherPane ]
+		ifFalse: [ self columns at: anIndex + 1 ]
+]
+
+{ #category : #'api - panes' }
+GtMultiPagerModel >> fromPaneModel: aPaneModel [
+	| someColumns |
+	someColumns := GtMultiPagerColumnsBuilder new
+			paneModel: aPaneModel;
 			build.
 
-	self panes: somePanes
+	self columns: someColumns
 ]
 
 { #category : #views }
@@ -54,10 +67,10 @@ GtMultiPagerModel >> gtLiveFor: aView [
 { #category : #views }
 GtMultiPagerModel >> gtPanesFor: aView [
 	<gtView>
-	panes ifNil: [ ^ aView empty ].
+	columns ifNil: [ ^ aView empty ].
 	^ aView columnedTree
 		title: 'Panes';
-		items: [ panes ];
+		items: [ columns ];
 		children: #children;
 		expandUpTo: 1;
 		column: 'Value' text: [ :each | each gtDisplayString ]
@@ -67,76 +80,89 @@ GtMultiPagerModel >> gtPanesFor: aView [
 GtMultiPagerModel >> initialize [
 	super initialize.
 
-	panes := Array empty
+	columns := Array empty
 ]
 
 { #category : #'api - hooks' }
-GtMultiPagerModel >> onFollowingToolModel: aToolModel expandedAfterPaneModel: aPaneModel [
+GtMultiPagerModel >> onColumnModelToolsChanged: aPaneModel [
+	aPaneModel paneModels
+		ifEmpty: [ self removeColumnAndAfterColumns: aPaneModel ]
+		ifNotEmpty: [ self onFollowingPaneModelsChangedAfterColumnModel: aPaneModel ]
+]
+
+{ #category : #'api - hooks' }
+GtMultiPagerModel >> onFollowingPaneModel: aPaneModel expandedAfterColumnModel: aColumnModel [
 	| anotherPaneModel |
-	self assert: [ aToolModel isExpanded ].
-	anotherPaneModel := self ensurePaneModelAfter: aPaneModel.
-	self assert: [ (anotherPaneModel toolModels includes: aToolModel) not ].
+	self assert: [ aPaneModel isExpanded ].
+	anotherPaneModel := self ensureColumnModelAfter: aColumnModel.
+	self assert: [ (anotherPaneModel paneModels includes: aPaneModel) not ].
 
-	anotherPaneModel onFollowingExpandedToolModel: aToolModel
+	anotherPaneModel onFollowingExpandedPaneModel: aPaneModel
 ]
 
 { #category : #'api - hooks' }
-GtMultiPagerModel >> onFollowingToolModelsChangedAfterPaneModel: aPaneModel [
-	| anotherPaneModel someToolModels |
-	someToolModels := aPaneModel followingExpandedToolModels.
-	someToolModels
-		ifEmpty: [ self removePaneModelsAfter: aPaneModel.
+GtMultiPagerModel >> onFollowingPaneModelsChangedAfterColumnModel: aColumnModel [
+	| anotherColumnModel somePaneModels |
+	somePaneModels := aColumnModel followingExpandedPaneModels.
+	somePaneModels
+		ifEmpty: [ self removeColumnModelsAfter: aColumnModel.
 			^ self ].
-	
-	anotherPaneModel := self ensurePaneModelAfter: aPaneModel.
-	anotherPaneModel toolModels: someToolModels
-]
 
-{ #category : #'api - hooks' }
-GtMultiPagerModel >> onPaneModelToolsChanged: aPaneModel [
-	aPaneModel toolModels
-		ifEmpty: [ self removePaneAndAfterPanes: aPaneModel ]
-		ifNotEmpty: [ self onFollowingToolModelsChangedAfterPaneModel: aPaneModel ]
+	anotherColumnModel := self ensureColumnModelAfter: aColumnModel.
+	anotherColumnModel paneModels: somePaneModels
 ]
 
 { #category : #'api - panes' }
 GtMultiPagerModel >> panes [
-	^ panes
+	self
+		deprecated: 'Please use #columns instead.'
+		transformWith: '`@receiver panes' -> '`@receiver columns'.
+	^ self columns
 ]
 
 { #category : #'api - panes' }
 GtMultiPagerModel >> panes: aCollection [
-	panes = aCollection ifTrue: [ ^ self ].
-	
-	aCollection do: [ :eachPane | eachPane pagerModel: self ].
-	panes := aCollection
+	self
+		deprecated: 'Please use columns: instead.'
+		transformWith: '`@receiver panes: `@statements1' -> '`@receiver columns: `@statements1'.
+
+	self columns: aCollection
 ]
 
 { #category : #'api - panes' }
-GtMultiPagerModel >> removePane: aPane [
-	self panes: (self panes copyWithout: aPane)
+GtMultiPagerModel >> removeColumn: aColumn [
+	self columns: (self columns copyWithout: aColumn)
 ]
 
 { #category : #'private - updating' }
-GtMultiPagerModel >> removePaneAndAfterPanes: aPaneModel [
+GtMultiPagerModel >> removeColumnAndAfterColumns: aColumnModel [
 	| anIndex |
-	anIndex := self panes
-			identityIndexOf: aPaneModel
-			ifAbsent: [ NotFound signalFor: aPaneModel in: self panes ].
+	anIndex := self columns
+			identityIndexOf: aColumnModel
+			ifAbsent: [ NotFound signalFor: aColumnModel in: self panes ].
 
 	anIndex = 1
 		ifTrue: [ self panes: (self panes copyFrom: 1 to: anIndex) ]
-		ifFalse: [ self panes: (self panes copyFrom: 1 to: anIndex - 1) ]
+		ifFalse: [ self columns: (self columns copyFrom: 1 to: anIndex - 1) ]
 ]
 
 { #category : #'private - updating' }
-GtMultiPagerModel >> removePaneModelsAfter: aPaneModel [
+GtMultiPagerModel >> removeColumnModelsAfter: aColumnModel [
 	| anIndex |
-	anIndex := self panes
-			identityIndexOf: aPaneModel
-			ifAbsent: [ NotFound signalFor: aPaneModel in: self panes ].
+	anIndex := self columns
+			identityIndexOf: aColumnModel
+			ifAbsent: [ NotFound signalFor: aColumnModel in: self panes ].
 
-	anIndex + 1 > self panes size ifTrue: [ ^ self ].
+	anIndex + 1 > self columns size ifTrue: [ ^ self ].
 
-	self panes: (self panes copyFrom: 1 to: anIndex)
+	self columns: (self columns copyFrom: 1 to: anIndex)
+]
+
+{ #category : #'api - panes' }
+GtMultiPagerModel >> removePane: aColumnModel [
+	self
+		deprecated: 'Please use removeColumn: instead.'
+		transformWith: '`@receiver removePane: `@statements1'
+				-> '`@receiver removeColumn: `@statements1'.
+	self removeColumn: aColumnModel
 ]

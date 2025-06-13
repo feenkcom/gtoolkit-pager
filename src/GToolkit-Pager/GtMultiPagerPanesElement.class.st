@@ -26,8 +26,8 @@ GtMultiPagerPanesElement >> onPagerModelChanged [
 	| someElements |
 	super onPagerModelChanged.
 
-	someElements := self pagerModel panes
-			collect: [ :eachPane | GtMultiPagerPaneElement new paneModel: eachPane ].
+	someElements := self pagerModel columns
+			collect: [ :eachPane | GtMultiPagerColumnElement new paneModel: eachPane ].
 
 	pagerElement removeAllPages.
 	someElements do: [ :eachElement | pagerElement addPage: eachElement ]

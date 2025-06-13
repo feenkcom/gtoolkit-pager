@@ -1,6 +1,6 @@
 Class {
-	#name : #GtMultiPagerCollapsedToolsElement,
-	#superclass : #GtMultiPagerToolBasicElement,
+	#name : #GtMultiPagerCollapsedPanesElement,
+	#superclass : #GtMultiPagerPaneBasicElement,
 	#instVars : [
 		'containerElement'
 	],
@@ -8,12 +8,12 @@ Class {
 }
 
 { #category : #initialization }
-GtMultiPagerCollapsedToolsElement >> defaultLayout [
+GtMultiPagerCollapsedPanesElement >> defaultLayout [
 	^ BlFrameLayout new
 ]
 
 { #category : #initialization }
-GtMultiPagerCollapsedToolsElement >> initialize [
+GtMultiPagerCollapsedPanesElement >> initialize [
 	super initialize.
 
 	containerElement := BrHorizontalPane new
@@ -26,7 +26,7 @@ GtMultiPagerCollapsedToolsElement >> initialize [
 ]
 
 { #category : #'api - tool model' }
-GtMultiPagerCollapsedToolsElement >> onToolModelChanged [
+GtMultiPagerCollapsedPanesElement >> onToolModelChanged [
 	| aCount someElements |
 	aCount := self toolModel collapsedChainCount.
 
