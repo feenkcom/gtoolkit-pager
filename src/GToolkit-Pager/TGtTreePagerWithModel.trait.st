@@ -1,22 +1,22 @@
 Trait {
-	#name : #TGtMultiPagerWithModel,
+	#name : #TGtTreePagerWithModel,
 	#instVars : [
 		'pagerModel'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #'api - pager model' }
-TGtMultiPagerWithModel >> onPagerModelChanged [
+TGtTreePagerWithModel >> onPagerModelChanged [
 ]
 
 { #category : #'api - pager model' }
-TGtMultiPagerWithModel >> pagerModel [
+TGtTreePagerWithModel >> pagerModel [
 	^ pagerModel
 ]
 
 { #category : #'api - pager model' }
-TGtMultiPagerWithModel >> pagerModel: aPagerModel [
+TGtTreePagerWithModel >> pagerModel: aPagerModel [
 	pagerModel = aPagerModel ifTrue: [ ^ self ].
 	
 	pagerModel := aPagerModel.

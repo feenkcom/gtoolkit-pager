@@ -1,41 +1,41 @@
 Class {
-	#name : #GtMultiPagerPhlowToolBuilder,
-	#superclass : #GtMultiPagerToolBuilder,
+	#name : #GtTreePagerPhlowToolBuilder,
+	#superclass : #GtTreePagerToolBuilder,
 	#instVars : [
 		'phlowTool'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #converting }
-GtMultiPagerPhlowToolBuilder >> asElement [
+GtTreePagerPhlowToolBuilder >> asElement [
 	^ self phlowTool asElement
 ]
 
 { #category : #converting }
-GtMultiPagerPhlowToolBuilder >> icon [
+GtTreePagerPhlowToolBuilder >> icon [
 	<return: #BrStencil or: nil>
 	^ self phlowTool icon
 ]
 
 { #category : #convenience }
-GtMultiPagerPhlowToolBuilder >> object: anObject [
+GtTreePagerPhlowToolBuilder >> object: anObject [
 	self phlowTool: anObject gtDefaultInspectorTool
 ]
 
 { #category : #accessing }
-GtMultiPagerPhlowToolBuilder >> phlowTool [
+GtTreePagerPhlowToolBuilder >> phlowTool [
 	<return: #GtPhlowTool>
 	^ phlowTool
 ]
 
 { #category : #accessing }
-GtMultiPagerPhlowToolBuilder >> phlowTool: aGtPhlowTool [
+GtTreePagerPhlowToolBuilder >> phlowTool: aGtPhlowTool [
 	phlowTool := aGtPhlowTool
 ]
 
 { #category : #converting }
-GtMultiPagerPhlowToolBuilder >> title [
+GtTreePagerPhlowToolBuilder >> title [
 	<return: #String>
 	^ self phlowTool object gtDisplayString
 ]

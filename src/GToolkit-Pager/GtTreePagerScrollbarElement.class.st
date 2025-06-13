@@ -1,21 +1,21 @@
 Class {
-	#name : #GtMultiPagerScrollbarElement,
-	#superclass : #GtMultiPagerBasicElement,
+	#name : #GtTreePagerScrollbarElement,
+	#superclass : #GtTreePagerBasicElement,
 	#instVars : [
 		'scrollbarElement',
 		'pagesElement',
 		'pageModelsAndElements'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
-GtMultiPagerScrollbarElement >> defaultLayout [
+GtTreePagerScrollbarElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
 { #category : #initialization }
-GtMultiPagerScrollbarElement >> initialize [
+GtTreePagerScrollbarElement >> initialize [
 	| containerElement wrapperElement |
 	super initialize.
 	self hMatchParent.

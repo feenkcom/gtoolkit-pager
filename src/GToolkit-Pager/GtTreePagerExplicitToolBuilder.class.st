@@ -1,22 +1,22 @@
 Class {
-	#name : #GtMultiPagerExplicitToolBuilder,
-	#superclass : #GtMultiPagerToolBuilder,
+	#name : #GtTreePagerExplicitToolBuilder,
+	#superclass : #GtTreePagerToolBuilder,
 	#instVars : [
 		'stencil',
 		'icon',
 		'title'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #converting }
-GtMultiPagerExplicitToolBuilder >> asElement [
+GtTreePagerExplicitToolBuilder >> asElement [
 	<return: #BlElement>
 	^ self stencil asElement
 ]
 
 { #category : #views }
-GtMultiPagerExplicitToolBuilder >> gtStencilSourceCodeFor: aView [
+GtTreePagerExplicitToolBuilder >> gtStencilSourceCodeFor: aView [
 	<gtView>
 	stencil ifNil: [ ^ aView empty ].
 
@@ -27,33 +27,33 @@ GtMultiPagerExplicitToolBuilder >> gtStencilSourceCodeFor: aView [
 ]
 
 { #category : #accessing }
-GtMultiPagerExplicitToolBuilder >> icon [
+GtTreePagerExplicitToolBuilder >> icon [
 	<return: #BrStencil or: nil>
 	^ icon
 ]
 
 { #category : #accessing }
-GtMultiPagerExplicitToolBuilder >> icon: anObject [
+GtTreePagerExplicitToolBuilder >> icon: anObject [
 	icon := anObject
 ]
 
 { #category : #accessing }
-GtMultiPagerExplicitToolBuilder >> stencil [
+GtTreePagerExplicitToolBuilder >> stencil [
 	^ stencil
 ]
 
 { #category : #accessing }
-GtMultiPagerExplicitToolBuilder >> stencil: aStencil [
+GtTreePagerExplicitToolBuilder >> stencil: aStencil [
 	stencil := aStencil asStencil
 ]
 
 { #category : #accessing }
-GtMultiPagerExplicitToolBuilder >> title [
+GtTreePagerExplicitToolBuilder >> title [
 	<return: #String>
 	^ title ifNil: [ title := self stencil gtDisplayString ]
 ]
 
 { #category : #accessing }
-GtMultiPagerExplicitToolBuilder >> title: anObject [
+GtTreePagerExplicitToolBuilder >> title: anObject [
 	title := anObject
 ]

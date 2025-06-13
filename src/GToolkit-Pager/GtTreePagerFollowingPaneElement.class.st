@@ -1,19 +1,19 @@
 Class {
-	#name : #GtMultiPagerFollowingToolElement,
-	#superclass : #GtMultiPagerToolBasicElement,
+	#name : #GtTreePagerFollowingPaneElement,
+	#superclass : #GtTreePagerPaneBasicElement,
 	#instVars : [
 		'collapsedToolsElement'
 	],
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
-GtMultiPagerFollowingToolElement >> defaultLayout [
+GtTreePagerFollowingPaneElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
 { #category : #initialization }
-GtMultiPagerFollowingToolElement >> initialize [
+GtTreePagerFollowingPaneElement >> initialize [
 	super initialize.
 
 	self
@@ -35,8 +35,8 @@ GtMultiPagerFollowingToolElement >> initialize [
 ]
 
 { #category : #initialization }
-GtMultiPagerFollowingToolElement >> initializeCollapsedToolsElement [
-	collapsedToolsElement := GtMultiPagerCollapsedToolsElement new
+GtTreePagerFollowingPaneElement >> initializeCollapsedToolsElement [
+	collapsedToolsElement := GtTreePagerCollapsedPanesElement new
 			visibility: BlVisibility gone;
 			constraintsDo: [ :c | 
 				c linear horizontal alignCenter.
@@ -44,18 +44,18 @@ GtMultiPagerFollowingToolElement >> initializeCollapsedToolsElement [
 ]
 
 { #category : #'private - event management' }
-GtMultiPagerFollowingToolElement >> onClickEvent: anEvent [
+GtTreePagerFollowingPaneElement >> onClickEvent: anEvent [
 	| aToolModel |
 	self visibility isVisible ifFalse: [ ^ self ].
 	anEvent consumed: true.
 
 	aToolModel := self viewModel firstExpandedToolModel.
 	aToolModel ifNil: [ ^ self ].
-	self fireEvent: (GtMultiPagerSpawnToolEvent new toolModel: aToolModel)
+	self fireEvent: (GtTreePagerSpawnToolEvent new toolModel: aToolModel)
 ]
 
 { #category : #accessing }
-GtMultiPagerFollowingToolElement >> onToolModelChanged [
+GtTreePagerFollowingPaneElement >> onToolModelChanged [
 	collapsedToolsElement toolModel: self toolModel.
 
 	self toolModel isCollapsed

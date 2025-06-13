@@ -1,17 +1,17 @@
 Class {
-	#name : #GtMultiPagerToolBuilder,
+	#name : #GtTreePagerToolBuilder,
 	#superclass : #Object,
-	#category : #'GToolkit-Pager-Multi Pager - Model'
+	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #converting }
-GtMultiPagerToolBuilder >> asElement [
+GtTreePagerToolBuilder >> asElement [
 	<return: #BlElement>
 	^ self subclassResponsibility
 ]
 
 { #category : #views }
-GtMultiPagerToolBuilder >> gtLiveFor: aView [
+GtTreePagerToolBuilder >> gtLiveFor: aView [
 	<gtView>
 	^ aView explicit
 		title: 'Live';
@@ -20,13 +20,13 @@ GtMultiPagerToolBuilder >> gtLiveFor: aView [
 ]
 
 { #category : #converting }
-GtMultiPagerToolBuilder >> icon [
+GtTreePagerToolBuilder >> icon [
 	<return: #BrStencil or: nil>
 	^ nil
 ]
 
 { #category : #converting }
-GtMultiPagerToolBuilder >> title [
+GtTreePagerToolBuilder >> title [
 	<return: #String>
 	^ self subclassResponsibility
 ]
