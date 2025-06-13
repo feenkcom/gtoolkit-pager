@@ -5,6 +5,38 @@ Class {
 }
 
 { #category : #'examples - pager' }
+GtMultiPagerModelExamples >> assertPager: aPager paneCharacterTools: aPanesCollection [
+	| aTitlesCollection |
+	aTitlesCollection := aPanesCollection collect: [ :each | each collect: #printString ].
+	self assertPager: aPager paneToolTitles: aTitlesCollection
+]
+
+{ #category : #'examples - pager' }
+GtMultiPagerModelExamples >> assertPager: aPager paneToolTitles: aPanesCollection [
+	"aCollection is an array of arrays. 
+	Each array contains tool titles for a particular pane."
+
+	self assert: aPager panes size equals: aPanesCollection size.
+	aPanesCollection
+		withIndexDo: [ :eachPaneCollection :eachPaneIndex | 
+			| aPane |
+			aPane := aPager panes at: eachPaneIndex.
+			self
+				assert: aPane toolModels size = eachPaneCollection size
+				description: [ 'Pane {1} has {2} tools, but must have {3} tools: {4} vs. {5}'
+						format: {eachPaneIndex.
+								aPane toolModels size.
+								eachPaneCollection size.
+								aPane toolModels collect: #title.
+								eachPaneCollection asArray} ].
+			eachPaneCollection
+				withIndexDo: [ :eachToolTitle :eachToolIndex | 
+					| aTool |
+					aTool := aPane toolModels at: eachToolIndex.
+					self assert: aTool title equals: eachToolTitle ] ]
+]
+
+{ #category : #'examples - pager' }
 GtMultiPagerModelExamples >> basicPagerModel [
 	<gtExample>
 	| aModel |
@@ -32,6 +64,86 @@ GtMultiPagerModelExamples >> basicToolModel [
 ]
 
 { #category : #'examples - pager' }
+GtMultiPagerModelExamples >> pagerWithAWithFollowingHTool [
+	<gtExample>
+	| aPager aToolA aToolH |
+	aPager := self pagerWithFivePanes.
+	aToolA := (aPager panes at: 1) toolModels first.
+	self assert: aToolA title equals: '$A'.
+	self assert: aToolA isExpanded.
+
+	aToolH := self toolModelWithPhlowBuilderFor: $H.
+	aToolA replaceFollowingToolBy: aToolH.
+
+	self assertPager: aPager paneCharacterTools: #(#($A) #($H)).
+	self assert: aToolA followingTools size equals: 1.
+
+	^ aPager
+]
+
+{ #category : #'examples - pager' }
+GtMultiPagerModelExamples >> pagerWithCWithFollowingEFHTools [
+	<gtExample>
+	| aPager aToolC aToolH |
+	aPager := self pagerWithFivePanes.
+	aToolC := (aPager panes at: 3) toolModels first.
+	self assert: aToolC title equals: '$C'.
+	self assert: aToolC isExpanded.
+	
+	aToolH := self toolModelWithPhlowBuilderFor: $H.
+	aToolC followingTools do: [ :each | each fasten ].
+	aToolC replaceFollowingToolBy: aToolH.
+
+	self assertPager: aPager paneCharacterTools: #(#($A) #($B) #($C $D) #($E $F $H) #($G)).
+	self assert: aToolC followingTools size equals: 3.
+
+	^ aPager
+]
+
+{ #category : #'examples - pager' }
+GtMultiPagerModelExamples >> pagerWithCWithFollowingHFTools [
+	<gtExample>
+	| aPager aToolC aToolH aToolF |
+	aPager := self pagerWithFivePanes.
+	aToolC := (aPager panes at: 3) toolModels first.
+	self assert: aToolC title equals: '$C'.
+	self assert: aToolC isExpanded.
+
+	aToolH := self toolModelWithPhlowBuilderFor: $H.
+	aToolF := aToolC followingTools second.
+	self assert: aToolF title equals: '$F'.
+	self assert: aToolF isUnfastened.
+	aToolF fasten.
+	self assert: aToolF isFastened.
+	aToolC replaceFollowingToolBy: aToolH.
+
+	self
+		assertPager: aPager
+		paneCharacterTools: #(#($A) #($B) #($C $D) #($H $F) #($G)).
+	self assert: aToolC followingTools size equals: 2.
+
+	^ aPager
+]
+
+{ #category : #'examples - pager' }
+GtMultiPagerModelExamples >> pagerWithCWithFollowingHTool [
+	<gtExample>
+	| aPager aToolC aToolH |
+	aPager := self pagerWithFivePanes.
+	aToolC := (aPager panes at: 3) toolModels first.
+	self assert: aToolC title equals: '$C'.
+	self assert: aToolC isExpanded.
+	
+	aToolH := self toolModelWithPhlowBuilderFor: $H.
+	aToolC replaceFollowingToolBy: aToolH.
+
+	self assertPager: aPager paneCharacterTools: #(#($A) #($B) #($C $D) #($E $H)).
+	self assert: aToolC followingTools size equals: 2.
+
+	^ aPager
+]
+
+{ #category : #'examples - pager' }
 GtMultiPagerModelExamples >> pagerWithCollapsedCNewlyExpandedFTools [
 	<gtExample>
 	| aPager aToolF |
@@ -43,11 +155,7 @@ GtMultiPagerModelExamples >> pagerWithCollapsedCNewlyExpandedFTools [
 	aToolF expand.
 	self assert: aToolF isExpanded.
 
-	self assert: aPager panes size equals: 4.
-	self assert: aPager panes first toolModels size equals: 1.
-	self assert: aPager panes second toolModels size equals: 1.
-	self assert: aPager panes third toolModels size equals: 3.
-	self assert: aPager panes fourth toolModels size equals: 1.
+	self assertPager: aPager paneCharacterTools: #(#($A) #($B) #($E $F $D) #($G)).
 	self assert: aPager panes third toolModels second equals: aToolF.
 
 	^ aPager
@@ -64,10 +172,7 @@ GtMultiPagerModelExamples >> pagerWithCollapsedFCTools [
 	aToolC collapse.
 	self assert: aToolC isCollapsed.
 
-	self assert: aPager panes size equals: 3.
-	self assert: aPager panes first toolModels size equals: 1.
-	self assert: aPager panes second toolModels size equals: 1.
-	self assert: aPager panes third toolModels size equals: 3.
+	self assertPager: aPager paneCharacterTools: #(#($A) #($B) #($E $G $D)).
 
 	^ aPager
 ]
@@ -83,14 +188,28 @@ GtMultiPagerModelExamples >> pagerWithCollapsedFTool [
 	aToolF collapse.
 	self assert: aToolF isCollapsed.
 
-	self assert: aPager panes size equals: 4.
-	self assert: aPager panes first toolModels size equals: 1.
-	self assert: aPager panes second toolModels size equals: 1.
-	self assert: aPager panes third toolModels size equals: 2.
-	self assert: aPager panes fourth toolModels size equals: 2.
+	self assertPager: aPager paneCharacterTools: #(#($A) #($B) #($C $D) #($E $G)).
 	self
 		assert: aPager panes fourth toolModels second
 		equals: aToolF followingTools anyOne.
+
+	^ aPager
+]
+
+{ #category : #'examples - pager' }
+GtMultiPagerModelExamples >> pagerWithDWithFollowingHTool [
+	<gtExample>
+	| aPager aToolD aToolH |
+	aPager := self pagerWithFivePanes.
+	aToolD := (aPager panes at: 3) toolModels second.
+	self assert: aToolD title equals: '$D'.
+	self assert: aToolD isExpanded.
+	
+	aToolH := self toolModelWithPhlowBuilderFor: $H.
+	aToolD followingTools do: [ :each | each fasten ].
+	aToolD replaceFollowingToolBy: aToolH.
+
+	self assertPager: aPager paneCharacterTools: #(#($A) #($B) #($C $D) #($E $F $H) #($G)).
 
 	^ aPager
 ]
@@ -103,12 +222,7 @@ GtMultiPagerModelExamples >> pagerWithFivePanes [
 	aTool := self toolModelWithThreeFollowingLevels.
 	aPager fromToolModel: aTool.
 	
-	self assert: aPager panes size equals: 5.
-	self assert: aPager panes first toolModels size equals: 1.
-	self assert: aPager panes second toolModels size equals: 1.
-	self assert: aPager panes third toolModels size equals: 2.
-	self assert: aPager panes fourth toolModels size equals: 2.
-	self assert: aPager panes fifth toolModels size equals: 1.
+	self assertPager: aPager paneCharacterTools: #(#($A) #($B) #($C $D) #($E $F) #($G)).
 	
 	^ aPager
 ]
@@ -124,12 +238,9 @@ GtMultiPagerModelExamples >> pagerWithNewlyExpandedFTool [
 	aToolF expand.
 	self assert: aToolF isExpanded.
 
-	self assert: aPager panes size equals: 5.
-	self assert: aPager panes first toolModels size equals: 1.
-	self assert: aPager panes second toolModels size equals: 1.
-	self assert: aPager panes third toolModels size equals: 2.
-	self assert: aPager panes fourth toolModels size equals: 2.
-	self assert: aPager panes fifth toolModels size equals: 1.
+	self
+		assertPager: aPager
+		paneCharacterTools: #(#($A) #($B) #($C $D) #($E $F) #($G)).
 	self assert: aPager panes fourth toolModels second equals: aToolF.
 
 	^ aPager

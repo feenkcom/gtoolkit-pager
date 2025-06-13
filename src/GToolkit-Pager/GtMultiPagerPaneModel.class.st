@@ -45,6 +45,11 @@ GtMultiPagerPaneModel >> children [
 	^ self toolModels
 ]
 
+{ #category : #'api - tool model' }
+GtMultiPagerPaneModel >> followingExpandedToolModels [
+	^ self toolModels flatCollect: #followingExpandedToolModels as: Array
+]
+
 { #category : #printing }
 GtMultiPagerPaneModel >> gtDisplayOn: stream [
 	stream nextPutAll: 'Pane model: '.
@@ -126,6 +131,14 @@ GtMultiPagerPaneModel >> onFollowingToolModelExpansionChanged: aToolModel [
 
 	self pagerModel
 		ifNotNil: [ :aPager | aPager onFollowingToolModel: aToolModel expandedAfterPaneModel: self ]
+]
+
+{ #category : #'api - hooks' }
+GtMultiPagerPaneModel >> onFollowingToolModelsChanged: aToolModel [
+	"Let's push following tool models to a next pane."
+
+	self pagerModel
+		ifNotNil: [ :aPager | aPager onFollowingToolModelsChangedAfterPaneModel: self ]
 ]
 
 { #category : #'api - hooks' }

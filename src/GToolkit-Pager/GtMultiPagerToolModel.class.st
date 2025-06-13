@@ -11,15 +11,15 @@ Class {
 		'title',
 		'icon',
 		'paneModel',
-		'announcer'
+		'announcer',
+		'isFastened'
 	],
 	#category : #'GToolkit-Pager-Multi Pager - Model'
 }
 
-{ #category : #accessing }
+{ #category : #'api - following tools' }
 GtMultiPagerToolModel >> addFollowingTool: aToolModel [
-	aToolModel previousTool: self.
-	self followingTools add: aToolModel.
+	self followingTools: (self followingTools copyWith: aToolModel)
 ]
 
 { #category : #announcer }
@@ -72,7 +72,19 @@ GtMultiPagerToolModel >> expand: aBoolean [
 	self collapse: aBoolean not
 ]
 
-{ #category : #accessing }
+{ #category : #'api - fastening' }
+GtMultiPagerToolModel >> fasten [
+	self fasten: true
+]
+
+{ #category : #'api - fastening' }
+GtMultiPagerToolModel >> fasten: aBoolean [
+	isFastened = aBoolean ifTrue: [ ^ self ].
+
+	isFastened := aBoolean
+]
+
+{ #category : #'api - following tools' }
 GtMultiPagerToolModel >> followingExpandedToolModels [
 	^ Array
 		streamContents: [ :aStream | 
@@ -83,14 +95,19 @@ GtMultiPagerToolModel >> followingExpandedToolModels [
 						ifFalse: [ aStream nextPutAll: eachTool followingExpandedToolModels ] ] ]
 ]
 
-{ #category : #accessing }
+{ #category : #'api - following tools' }
 GtMultiPagerToolModel >> followingTools [
 	^ followingTools
 ]
 
-{ #category : #accessing }
-GtMultiPagerToolModel >> followingTools: anObject [
-	followingTools := OrderedCollection withAll: anObject
+{ #category : #'api - following tools' }
+GtMultiPagerToolModel >> followingTools: aCollection [
+	followingTools = aCollection ifTrue: [ ^ self ].
+
+	aCollection do: [ :each | each previousTool: self ].
+	followingTools := aCollection.
+	
+	self notifyFollowingToolsChanged
 ]
 
 { #category : #printing }
@@ -146,8 +163,9 @@ GtMultiPagerToolModel >> icon: anObject [
 GtMultiPagerToolModel >> initialize [
 	super initialize.
 	announcer := Announcer new.
-	followingTools := OrderedCollection new.
-	isCollapsed := false
+	followingTools := Array empty.
+	isCollapsed := false.
+	isFastened := false.
 ]
 
 { #category : #'api - expandable' }
@@ -158,6 +176,16 @@ GtMultiPagerToolModel >> isCollapsed [
 { #category : #'api - expandable' }
 GtMultiPagerToolModel >> isExpanded [
 	^ self isCollapsed not
+]
+
+{ #category : #'api - fastening' }
+GtMultiPagerToolModel >> isFastened [
+	^ isFastened
+]
+
+{ #category : #'api - fastening' }
+GtMultiPagerToolModel >> isUnfastened [
+	^ self isFastened not
 ]
 
 { #category : #'api - expandable' }
@@ -173,6 +201,12 @@ GtMultiPagerToolModel >> notifyExpansionChanged [
 		announce: (GtMultiPagerToolModelExpansionChanged new
 				toolModel: self;
 				isCollapsed: self isCollapsed)
+]
+
+{ #category : #'private - notifying' }
+GtMultiPagerToolModel >> notifyFollowingToolsChanged [
+	self paneModel
+		ifNotNil: [ :aPaneModel | aPaneModel onFollowingToolModelsChanged: self ]
 ]
 
 { #category : #accessing }
@@ -205,6 +239,33 @@ GtMultiPagerToolModel >> previousTool: aToolModel [
 	previousTool := aToolModel
 ]
 
+{ #category : #'private - updating' }
+GtMultiPagerToolModel >> replaceFollowingTool: anOldToolModel by: aNewToolModel [
+	| anIndex |
+	anIndex := self followingTools
+			detectIndex: [ :each | each == anOldToolModel ]
+			ifNone: [ NotFound signalFor: anOldToolModel in: self followingTools ].
+
+	aNewToolModel previousTool: self.
+	anOldToolModel previousTool: nil.
+	self followingTools at: anIndex put: aNewToolModel.
+	
+	self notifyFollowingToolsChanged
+]
+
+{ #category : #'api - following tools' }
+GtMultiPagerToolModel >> replaceFollowingToolBy: aToolModel [
+	| anOldToolModel |
+	anOldToolModel := self followingTools reversed
+			detect: #isUnfastened
+			ifFound: #yourself
+			ifNone: [ nil ].
+
+	anOldToolModel
+		ifNil: [ self addFollowingTool: aToolModel ]
+		ifNotNil: [ self replaceFollowingTool: anOldToolModel by: aToolModel ]
+]
+
 { #category : #accessing }
 GtMultiPagerToolModel >> title [
 	^ title ifNil: [ self toolBuilder title ]
@@ -223,4 +284,9 @@ GtMultiPagerToolModel >> toolBuilder [
 { #category : #accessing }
 GtMultiPagerToolModel >> toolBuilder: anObject [
 	toolBuilder := anObject
+]
+
+{ #category : #'api - fastening' }
+GtMultiPagerToolModel >> unfasten [
+	self fasten: false
 ]

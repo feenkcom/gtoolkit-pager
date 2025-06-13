@@ -81,10 +81,22 @@ GtMultiPagerModel >> onFollowingToolModel: aToolModel expandedAfterPaneModel: aP
 ]
 
 { #category : #'api - hooks' }
-GtMultiPagerModel >> onPaneModelToolsChanged: aPaneModel [
-	aPaneModel toolModels ifNotEmpty: [ ^ self ].
+GtMultiPagerModel >> onFollowingToolModelsChangedAfterPaneModel: aPaneModel [
+	| anotherPaneModel someToolModels |
+	someToolModels := aPaneModel followingExpandedToolModels.
+	someToolModels
+		ifEmpty: [ self removePaneModelsAfter: aPaneModel.
+			^ self ].
+	
+	anotherPaneModel := self ensurePaneModelAfter: aPaneModel.
+	anotherPaneModel toolModels: someToolModels
+]
 
-	self removePane: aPaneModel
+{ #category : #'api - hooks' }
+GtMultiPagerModel >> onPaneModelToolsChanged: aPaneModel [
+	aPaneModel toolModels
+		ifEmpty: [ self removePaneAndAfterPanes: aPaneModel ]
+		ifNotEmpty: [ self onFollowingToolModelsChangedAfterPaneModel: aPaneModel ]
 ]
 
 { #category : #'api - panes' }
@@ -103,4 +115,28 @@ GtMultiPagerModel >> panes: aCollection [
 { #category : #'api - panes' }
 GtMultiPagerModel >> removePane: aPane [
 	self panes: (self panes copyWithout: aPane)
+]
+
+{ #category : #'private - updating' }
+GtMultiPagerModel >> removePaneAndAfterPanes: aPaneModel [
+	| anIndex |
+	anIndex := self panes
+			identityIndexOf: aPaneModel
+			ifAbsent: [ NotFound signalFor: aPaneModel in: self panes ].
+
+	anIndex = 1
+		ifTrue: [ self panes: (self panes copyFrom: 1 to: anIndex) ]
+		ifFalse: [ self panes: (self panes copyFrom: 1 to: anIndex - 1) ]
+]
+
+{ #category : #'private - updating' }
+GtMultiPagerModel >> removePaneModelsAfter: aPaneModel [
+	| anIndex |
+	anIndex := self panes
+			identityIndexOf: aPaneModel
+			ifAbsent: [ NotFound signalFor: aPaneModel in: self panes ].
+
+	anIndex + 1 > self panes size ifTrue: [ ^ self ].
+
+	self panes: (self panes copyFrom: 1 to: anIndex)
 ]
