@@ -136,7 +136,7 @@ GtTreePagerExamples >> pagerWithCWithFollowingEFHPanes [
 	self assert: aPaneC isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
-	aPaneC followingPanes do: [ :each | each fasten ].
+	aPaneC freeLink.
 	aPaneC replaceFollowingPaneBy: aPaneH.
 
 	self assert: aPaneC followingPanes size equals: 3.
@@ -155,9 +155,8 @@ GtTreePagerExamples >> pagerWithCWithFollowingHFPanes [
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
 	aPaneF := aPaneC followingPanes second.
 	self assert: aPaneF title equals: '$F'.
-	self assert: aPaneF isUnfastened.
-	aPaneF fasten.
-	self assert: aPaneF isFastened.
+	aPaneF beActiveLink.
+	self assert: aPaneC activeLink equals: aPaneF.
 	aPaneC replaceFollowingPaneBy: aPaneH.
 
 	self assert: aPaneC followingPanes size equals: 2.

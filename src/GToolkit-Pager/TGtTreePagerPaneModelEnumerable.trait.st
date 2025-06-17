@@ -4,6 +4,13 @@ Trait {
 }
 
 { #category : #'api - enumeration' }
+TGtTreePagerPaneModelEnumerable >> allPaneModelsDepthFirstDo: aBlock [
+	self enumerablePaneModels
+		do: [ :each | each allPaneModelsDepthFirstDo: aBlock ].
+	self enumerablePaneModels do: aBlock
+]
+
+{ #category : #'api - enumeration' }
 TGtTreePagerPaneModelEnumerable >> allPanesBreadthFirstDo: aBlock [
 	| aQueue |
 	aQueue := LinkedList withAll: self enumerablePaneModels.
