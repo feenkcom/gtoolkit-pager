@@ -6,16 +6,16 @@ Trait {
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
-{ #category : #'api - tool model' }
+{ #category : #'api - pane model' }
 TGtTreePagerWithPaneModel >> onPaneModelChanged [
 ]
 
-{ #category : #'api - tool model' }
+{ #category : #'api - pane model' }
 TGtTreePagerWithPaneModel >> paneModel [
 	^ paneModel
 ]
 
-{ #category : #'api - tool model' }
+{ #category : #'api - pane model' }
 TGtTreePagerWithPaneModel >> paneModel: aToolModel [
 	paneModel = aToolModel ifTrue: [ ^ self ].
 
@@ -26,10 +26,10 @@ TGtTreePagerWithPaneModel >> paneModel: aToolModel [
 	self subscribeToPaneModel
 ]
 
-{ #category : #'api - tool model' }
+{ #category : #'api - pane model' }
 TGtTreePagerWithPaneModel >> subscribeToPaneModel [
 ]
 
-{ #category : #'api - tool model' }
+{ #category : #'api - pane model' }
 TGtTreePagerWithPaneModel >> unsubscribeFromPaneModel [
 ]

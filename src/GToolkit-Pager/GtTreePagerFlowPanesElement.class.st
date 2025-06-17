@@ -61,9 +61,7 @@ GtTreePagerFlowPanesElement >> initialize [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> newPaneElementForPaneModel: aPaneModel [
-	^ (GtTreePagerPaneElement new paneModel: aPaneModel)
-		padding: (BlInsets all: 10);
-		addAptitude: BrGlamorousFocusableShadowAptitude new
+	^ GtTreePagerPaneElement new paneModel: aPaneModel
 ]
 
 { #category : #'api - pager model' }
