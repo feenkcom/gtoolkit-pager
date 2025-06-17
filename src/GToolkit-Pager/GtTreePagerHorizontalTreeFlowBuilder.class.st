@@ -75,11 +75,11 @@ GtTreePagerHorizontalTreeFlowBuilder >> processNode: aNode [
 
 	aNode paneModel isExpanded
 		ifTrue: [ nextDepthQueue
-				addAll: (self nodesFromPaneModels: aNode paneModel followingPanes shift: row - 1).
+				addAll: (self nodesFromPaneModels: aNode paneModel followingPanes shift: 0).
 			row := row + 1 ]
 		ifFalse: [ (self
 				nodesFromPaneModels: aNode paneModel followingPanes reversed
-				shift: row - 1) do: [ :eachNode | sameDepthQueue addFirst: eachNode ] ]
+				shift: 0) do: [ :eachNode | sameDepthQueue addFirst: eachNode ] ]
 ]
 
 { #category : #building }

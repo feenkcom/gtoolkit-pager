@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerPaneModel,
 	#superclass : #Object,
-	#traits : 'TGtAnnouncer',
-	#classTraits : 'TGtAnnouncer classTrait',
+	#traits : 'TGtAnnouncer + TGtTreePagerPaneModelEnumerable',
+	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerPaneModelEnumerable classTrait',
 	#instVars : [
 		'toolBuilder',
 		'isCollapsed',
@@ -62,14 +62,10 @@ GtTreePagerPaneModel >> collapsedChainCount [
 		collapsedChainCount
 ]
 
-{ #category : #accessing }
-GtTreePagerPaneModel >> columnModel [
-	^ columnModel
-]
-
-{ #category : #accessing }
-GtTreePagerPaneModel >> columnModel: aColumnModel [
-	columnModel := aColumnModel
+{ #category : #'api - enumeration' }
+GtTreePagerPaneModel >> enumerablePaneModels [
+	<return: #Collection of: #GtTreePagerPaneModel>
+	^ self followingPanes
 ]
 
 { #category : #'api - expandable' }
@@ -208,32 +204,15 @@ GtTreePagerPaneModel >> isUnfastened [
 
 { #category : #'api - expandable' }
 GtTreePagerPaneModel >> notifyExpansionChanged [
-	self columnModel
-		ifNotNil: [ :aPaneModel | aPaneModel onPaneModelExpansionChanged: self ]
-		ifNil: [ self previousExpandedToolModel
-				ifNotNil: [ :aPreviousTool | 
-					aPreviousTool columnModel
-						ifNotNil: [ :aPaneModel | aPaneModel onFollowingPaneModelExpansionChanged: self ] ] ].
-
 	self announcer
-		announce: (GtTreePagerToolModelExpansionChanged new
-				toolModel: self;
+		announce: (GtTreePagerPaneModelExpansionChanged new
+				paneModel: self;
 				isCollapsed: self isCollapsed)
 ]
 
 { #category : #'private - notifying' }
 GtTreePagerPaneModel >> notifyFollowingPanesChanged [
-	self columnModel
-		ifNotNil: [ :aPaneModel | aPaneModel onFollowingPaneModelsChanged: self ]
-]
-
-{ #category : #accessing }
-GtTreePagerPaneModel >> paneModel [
-	self
-		deprecated: 'Please use columnModel instead.'
-		transformWith: '`@receiver paneModel' -> '`@receiver columnModel'.
-
-	^ self columnModel
+	
 ]
 
 { #category : #accessing }
