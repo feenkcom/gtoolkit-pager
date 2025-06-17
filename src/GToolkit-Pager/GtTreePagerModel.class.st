@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #'api - panes' }
-GtTreePagerModel >> addPane: aPane [
+GtTreePagerModel >> addColumn: aPane [
 	self columns: (self columns copyWith: aPane)
 ]
 
@@ -113,20 +113,10 @@ GtTreePagerModel >> onFollowingPaneModelsChangedAfterColumnModel: aColumnModel [
 ]
 
 { #category : #'api - panes' }
-GtTreePagerModel >> panes [
-	self
-		deprecated: 'Please use #columns instead.'
-		transformWith: '`@receiver panes' -> '`@receiver columns'.
+GtTreePagerModel >> paneModels [
 	^ self columns
-]
-
-{ #category : #'api - panes' }
-GtTreePagerModel >> panes: aCollection [
-	self
-		deprecated: 'Please use columns: instead.'
-		transformWith: '`@receiver panes: `@statements1' -> '`@receiver columns: `@statements1'.
-
-	self columns: aCollection
+		ifEmpty: [ #() ]
+		ifNotEmpty: [ :aCollection | aCollection first paneModels ]
 ]
 
 { #category : #'api - panes' }
@@ -156,13 +146,4 @@ GtTreePagerModel >> removeColumnModelsAfter: aColumnModel [
 	anIndex + 1 > self columns size ifTrue: [ ^ self ].
 
 	self columns: (self columns copyFrom: 1 to: anIndex)
-]
-
-{ #category : #'api - panes' }
-GtTreePagerModel >> removePane: aColumnModel [
-	self
-		deprecated: 'Please use removeColumn: instead.'
-		transformWith: '`@receiver removePane: `@statements1'
-				-> '`@receiver removeColumn: `@statements1'.
-	self removeColumn: aColumnModel
 ]

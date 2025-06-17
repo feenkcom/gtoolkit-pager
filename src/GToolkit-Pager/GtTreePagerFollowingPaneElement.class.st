@@ -55,10 +55,10 @@ GtTreePagerFollowingPaneElement >> onClickEvent: anEvent [
 ]
 
 { #category : #accessing }
-GtTreePagerFollowingPaneElement >> onToolModelChanged [
-	collapsedToolsElement toolModel: self toolModel.
+GtTreePagerFollowingPaneElement >> onPaneModelChanged [
+	collapsedToolsElement toolModel: self paneModel.
 
-	self toolModel isCollapsed
+	self paneModel isCollapsed
 		ifTrue: [ collapsedToolsElement visibility: BlVisibility visible ]
 		ifFalse: [ collapsedToolsElement visibility: BlVisibility gone ].
 

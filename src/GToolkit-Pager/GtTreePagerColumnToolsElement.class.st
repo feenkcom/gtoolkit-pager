@@ -13,9 +13,9 @@ GtTreePagerColumnToolsElement >> defaultLayout [
 GtTreePagerColumnToolsElement >> onColumnModelChanged [
 	| somePaneElements |
 	somePaneElements := self paneModel paneModels
-			collect: [ :eachToolModel | 
+			collect: [ :eachPaneModel | 
 				GtTreePagerPaneElement new
-					toolModel: eachToolModel;
+					paneModel: eachPaneModel;
 					margin: (BlInsets all: 10);
 					addAptitude: BrGlamorousFocusableShadowAptitude new ].
 	self removeChildren.

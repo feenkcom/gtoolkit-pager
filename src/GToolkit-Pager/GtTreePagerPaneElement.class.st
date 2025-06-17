@@ -17,7 +17,7 @@ GtTreePagerPaneElement >> initialize [
 ]
 
 { #category : #accessing }
-GtTreePagerPaneElement >> onToolModelChanged [
+GtTreePagerPaneElement >> onPaneModelChanged [
 	self removeChildren.
-	self addChild: self toolModel asElement as: #tool
+	self addChild: self paneModel asElement as: #tool
 ]

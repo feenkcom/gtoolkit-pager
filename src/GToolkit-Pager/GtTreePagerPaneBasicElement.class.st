@@ -1,7 +1,7 @@
 Class {
 	#name : #GtTreePagerPaneBasicElement,
 	#superclass : #BlElement,
-	#traits : 'TBrLayoutResizable + TGtTreePagerWithToolModel',
-	#classTraits : 'TBrLayoutResizable classTrait + TGtTreePagerWithToolModel classTrait',
+	#traits : 'TBrLayoutResizable + TGtTreePagerWithPaneModel',
+	#classTraits : 'TBrLayoutResizable classTrait + TGtTreePagerWithPaneModel classTrait',
 	#category : #'GToolkit-Pager-Tree Pager'
 }

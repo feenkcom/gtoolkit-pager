@@ -159,7 +159,7 @@ GtTreePagerPaneModel >> gtLiveFor: aView [
 	^ aView explicit
 		title: 'Live';
 		priority: 10;
-		stencil: [ GtTreePagerPaneElement new toolModel: self ]
+		stencil: [ GtTreePagerPaneElement new paneModel: self ]
 ]
 
 { #category : #testing }
@@ -263,6 +263,16 @@ GtTreePagerPaneModel >> previousPane [
 { #category : #accessing }
 GtTreePagerPaneModel >> previousPane: aPaneModel [
 	previousPane := aPaneModel
+]
+
+{ #category : #printing }
+GtTreePagerPaneModel >> printOn: aStream [
+	super printOn: aStream.
+	aStream nextPut: $(.
+	aStream nextPutAll: self title asString.
+	self isCollapsed ifTrue: [ aStream nextPutAll: ', collapsed' ].
+	self isFastened ifTrue: [ aStream nextPutAll: ', fastened' ].
+	aStream nextPut: $)
 ]
 
 { #category : #'private - updating' }

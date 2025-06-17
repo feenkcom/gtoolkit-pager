@@ -42,7 +42,7 @@ GtTreePagerColumnModel >> announcer [
 
 { #category : #accessing }
 GtTreePagerColumnModel >> children [
-	^ self toolModels
+	^ self paneModels
 ]
 
 { #category : #'api - pane model' }

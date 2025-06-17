@@ -26,9 +26,9 @@ GtTreePagerCollapsedPanesElement >> initialize [
 ]
 
 { #category : #'api - tool model' }
-GtTreePagerCollapsedPanesElement >> onToolModelChanged [
+GtTreePagerCollapsedPanesElement >> onPaneModelChanged [
 	| aCount someElements |
-	aCount := self toolModel collapsedChainCount.
+	aCount := self paneModel collapsedChainCount.
 
 	self removeChildren.
 	someElements := (1 to: aCount)

@@ -36,6 +36,40 @@ GtTreePagerExamples >> assertPager: aPager columnPaneTitles: aPanesCollection [
 					self assert: aTool title equals: eachToolTitle ] ]
 ]
 
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> assertTreeFlowBuilderCallbacks: aBuilderCallbacks equalsPaneCharacters: aPanesCollection [
+	| aTitlesCollection |
+	aTitlesCollection := aPanesCollection
+			collect: [ :anArray | anArray collect: [ :anObject | anObject ifNotNil: #printString ] ].
+	self
+		assertTreeFlowBuilderCallbacks: aBuilderCallbacks
+		equalsPaneTitles: aTitlesCollection
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> assertTreeFlowBuilderCallbacks: aBuilderCallbacks equalsPaneTitles: aTitlesCollection [
+	aTitlesCollection
+		withIndexDo: [ :eachPaneCollection :eachDepthIndex | 
+			eachPaneCollection
+				withIndexDo: [ :eachPaneTitle :eachRowIndex | 
+					eachPaneTitle
+						ifNotNil: [ | someCandidates |
+							someCandidates := aBuilderCallbacks
+									select: [ :each | (each at: 1) title = eachPaneTitle ].
+
+							self
+								assert: someCandidates size = 1
+								description: [ someCandidates size isZero
+										ifTrue: [ 'Could not find {1} pane title: {2}'
+												format: {eachPaneTitle.
+														aBuilderCallbacks} ]
+										ifFalse: [ 'Too many candidates for {1} pane title: {2}'
+												format: {eachPaneTitle.
+														aBuilderCallbacks} ] ].
+							self assert: (someCandidates anyOne at: 2) equals: eachRowIndex.
+							self assert: (someCandidates anyOne at: 3) equals: eachDepthIndex ] ] ]
+]
+
 { #category : #'examples - columns' }
 GtTreePagerExamples >> basicColumnModel [
 	<gtExample>
@@ -131,6 +165,8 @@ GtTreePagerExamples >> pagerElementWithFiveColumns [
 	aPagerElement := self basicPagerElement.
 	aPagerModel := self pagerWithFivePanes.
 	aPagerElement pagerModel: aPagerModel.
+
+	(aPagerElement childAt: 1) layoutDo: [ :l | l numberOfVisibleColumns: 5 ].
 
 	^ aPagerElement
 ]
@@ -513,4 +549,71 @@ GtTreePagerExamples >> toolPhlowBuilderFor: anObject [
 	self assert: (aBuilder asElement isKindOf: BlElement).
 
 	^ aBuilder
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> treeFlowBuilderWithCollapsedFCPanes [
+	<gtExample>
+	| aPager allCallbacks |
+	aPager := self pagerWithCollapsedFCPanes.
+	allCallbacks := OrderedCollection new.
+
+	GtTreePagerHorizontalTreeFlowBuilder new
+		paneModels: aPager paneModels;
+		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex | 
+			allCallbacks
+				add: {aPaneModel.
+						aRowIndex.
+						aDepthIndex} ];
+		build.
+
+	self
+		assertTreeFlowBuilderCallbacks: allCallbacks
+		equalsPaneCharacters: #(#($A) #($B) #($E $G $D)).
+	^ allCallbacks
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> treeFlowBuilderWithCollapsedFPane [
+	<gtExample>
+	| aPager allCallbacks |
+	aPager := self pagerWithCollapsedFPane.
+	allCallbacks := OrderedCollection new.
+
+	GtTreePagerHorizontalTreeFlowBuilder new
+		paneModels: aPager paneModels;
+		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex | 
+			allCallbacks
+				add: {aPaneModel.
+						aRowIndex.
+						aDepthIndex} ];
+		build.
+
+	self
+		assertTreeFlowBuilderCallbacks: allCallbacks
+		equalsPaneCharacters: #(#($A) #($B) #($C $D) #($E $G)).
+	^ allCallbacks
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> treeFlowBuilderWithFivePanes [
+	<gtExample>
+	| aPager allCallbacks |
+	aPager := self pagerWithFivePanes.
+	allCallbacks := OrderedCollection new.
+
+	GtTreePagerHorizontalTreeFlowBuilder new
+		paneModels: aPager paneModels;
+		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex | 
+			allCallbacks
+				add: {aPaneModel.
+						aRowIndex.
+						aDepthIndex} ];
+		build.
+
+	self
+		assertTreeFlowBuilderCallbacks: allCallbacks
+		equalsPaneCharacters: #(#($A) #($B) #($C $D) #($E $F) #(nil $G)).
+
+	^ allCallbacks
 ]
