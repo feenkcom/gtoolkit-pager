@@ -22,7 +22,8 @@ GtTreePagerPaneElement >> initialize [
 	contentElement := GtTreePagerPaneContentElement new
 			margin: (BlInsets all: 5);
 			addAptitude: BrGlamorousFocusableShadowAptitude new.
-	followingsElement := GtTreePagerPaneFollowingsElement new.
+	followingsElement := GtTreePagerPaneFollowingsElement new
+			margin: (BlInsets top: 5 bottom: 5).
 
 	self addChild: contentElement.
 	self addChild: followingsElement

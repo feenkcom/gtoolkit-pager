@@ -15,6 +15,12 @@ GtTreePagerModel >> activeLink [
 	^ nil
 ]
 
+{ #category : #'api - panes' }
+GtTreePagerModel >> allFollowingPanes [
+	^ Array
+		streamContents: [ :aStream | self allPanesBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
+]
+
 { #category : #'api - pane model' }
 GtTreePagerModel >> allPreviousPanesDo: aFullBlockClosure [
 	"Do nothing."
