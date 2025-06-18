@@ -279,7 +279,7 @@ GtTreePagerExamples >> paneModelWithColumnedListInspector [
 	<gtExample>
 	| aPaneModel |
 	aPaneModel := GtTreePagerPaneModel new
-			toolBuilder: self toolBuilderWithColumnedListInspector.
+			object: BrExamplesShowroom new columnedList.
 
 	self assert: (aPaneModel asElement isKindOf: BlElement).
 	self assert: aPaneModel isCollapsed not.
@@ -292,7 +292,7 @@ GtTreePagerExamples >> paneModelWithElementIndexOne [
 	<gtExample>
 	| aToolModel |
 	aToolModel := GtTreePagerPaneModel new
-			toolBuilder: self toolBuilderWithElementIndexOne.
+			phlowTool: (GtPhlowExplicitTool new stencil: [ self paneElementWithIndex: 1 ]).
 
 	self assert: (aToolModel asElement isKindOf: BlElement).
 
@@ -303,8 +303,7 @@ GtTreePagerExamples >> paneModelWithElementIndexOne [
 GtTreePagerExamples >> paneModelWithIntegerInspector [
 	<gtExample>
 	| aToolModel |
-	aToolModel := self basicPaneModel
-			toolBuilder: self toolBuilderWithIntegerInspector.
+	aToolModel := self basicPaneModel object: 108.
 
 	self assert: (aToolModel asElement isKindOf: BlElement).
 	self assert: aToolModel isCollapsed not.
@@ -331,12 +330,11 @@ GtTreePagerExamples >> paneModelWithOneFollowingTool [
 { #category : #'examples - panes' }
 GtTreePagerExamples >> paneModelWithPhlowBuilderFor: anObject [
 	<gtExample>
-	| aToolModel aBuilder |
+	| aToolModel |
 	aToolModel := self basicPaneModel.
-	aBuilder := self toolPhlowBuilderFor: anObject.
-	aToolModel toolBuilder: aBuilder.
+	aToolModel object: anObject.
 
-	self assert: aToolModel toolBuilder equals: aBuilder.
+	self assert: aToolModel phlowTool object equals: anObject.
 	self assert: (aToolModel asElement isKindOf: BlElement).
 	self assert: aToolModel isCollapsed not.
 
@@ -391,53 +389,6 @@ GtTreePagerExamples >> paneModelWithTwoFollowingTools [
 	self assert: aToolThree previousPane equals: aToolOne.
 
 	^ aToolOne
-]
-
-{ #category : #'examples - panes' }
-GtTreePagerExamples >> toolBuilderWithColumnedListInspector [
-	<gtExample>
-	| aToolBuilder |
-	aToolBuilder := GtTreePagerPhlowToolBuilder new
-			object: BrExamplesShowroom new columnedList.
-
-	self assert: (aToolBuilder asElement isKindOf: BlElement).
-
-	^ aToolBuilder
-]
-
-{ #category : #'examples - panes' }
-GtTreePagerExamples >> toolBuilderWithElementIndexOne [
-	<gtExample>
-	| aToolBuilder |
-	aToolBuilder := GtTreePagerExplicitToolBuilder new
-			stencil: [ self paneElementWithIndex: 1 ].
-
-	self assert: (aToolBuilder asElement isKindOf: BlElement).
-
-	^ aToolBuilder
-]
-
-{ #category : #'examples - panes' }
-GtTreePagerExamples >> toolBuilderWithIntegerInspector [
-	<gtExample>
-	| aToolBuilder |
-	aToolBuilder := GtTreePagerPhlowToolBuilder new
-			object: 108.
-
-	self assert: (aToolBuilder asElement isKindOf: BlElement).
-
-	^ aToolBuilder
-]
-
-{ #category : #'examples - panes' }
-GtTreePagerExamples >> toolPhlowBuilderFor: anObject [
-	<gtExample>
-	| aBuilder |
-	aBuilder := GtTreePagerPhlowToolBuilder new object: anObject.
-
-	self assert: (aBuilder asElement isKindOf: BlElement).
-
-	^ aBuilder
 ]
 
 { #category : #'examples - tree flow builder' }

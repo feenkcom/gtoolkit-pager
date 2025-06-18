@@ -4,7 +4,6 @@ Class {
 	#traits : 'TGtAnnouncer + TGtTreePagerPaneModelEnumerable',
 	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerPaneModelEnumerable classTrait',
 	#instVars : [
-		'toolBuilder',
 		'isCollapsed',
 		'title',
 		'icon',
@@ -12,12 +11,13 @@ Class {
 		'columnModel',
 		'followingPanes',
 		'previousPane',
-		'activeLink'
+		'activeLink',
+		'phlowTool'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
-{ #category : #'api - following panes' }
+{ #category : #'api - previous panes' }
 GtTreePagerPaneModel >> activeLink [
 	^ activeLink
 ]
@@ -34,6 +34,14 @@ GtTreePagerPaneModel >> addFollowingPane: aPaneModel [
 	self followingPanes: (self followingPanes copyWith: aPaneModel)
 ]
 
+{ #category : #'api - previous panes' }
+GtTreePagerPaneModel >> allPreviousPanesDo: aBlock [
+	self previousPane
+		ifNotNil: [ :aPreviousPane | 
+			aBlock value: aPreviousPane.
+			aPreviousPane allPreviousPanesDo: aBlock ]
+]
+
 { #category : #announcer }
 GtTreePagerPaneModel >> announcer [
 	<return: #Announcer>
@@ -43,7 +51,7 @@ GtTreePagerPaneModel >> announcer [
 { #category : #converting }
 GtTreePagerPaneModel >> asElement [
 	<return: #BlElement>
-	^ self toolBuilder asElement
+	^ self phlowTool asElement
 ]
 
 { #category : #'api - following panes' }
@@ -113,13 +121,15 @@ GtTreePagerPaneModel >> followingPanes [
 
 { #category : #'api - following panes' }
 GtTreePagerPaneModel >> followingPanes: aCollection [
+	| anOldFollowingPanes |
 	followingPanes = aCollection ifTrue: [ ^ self ].
 
 	aCollection do: [ :each | each previousPane: self ].
+	anOldFollowingPanes := followingPanes.
 	followingPanes := aCollection.
 	self updateActiveLink.
 
-	self notifyFollowingPanesChanged
+	self notifyFollowingPanesChanged: anOldFollowingPanes
 ]
 
 { #category : #'api - following panes' }
@@ -210,17 +220,30 @@ GtTreePagerPaneModel >> isExpanded [
 	^ self isCollapsed not
 ]
 
-{ #category : #'api - expandable' }
+{ #category : #'private - notifying' }
 GtTreePagerPaneModel >> notifyExpansionChanged [
-	self announcer
-		announce: (GtTreePagerPaneModelExpansionChanged new
-				paneModel: self;
-				isCollapsed: self isCollapsed)
+	| anAnnouncement |
+	anAnnouncement := GtTreePagerPaneModelExpansionChanged new
+			paneModel: self;
+			isCollapsed: self isCollapsed.
+	self announcer announce: anAnnouncement.
+	self allPreviousPanesDo: [ :aPreviousPane | aPreviousPane announcer announce: anAnnouncement ]
 ]
 
 { #category : #'private - notifying' }
-GtTreePagerPaneModel >> notifyFollowingPanesChanged [
-	
+GtTreePagerPaneModel >> notifyFollowingPanesChanged: anOldFollowingPanes [
+	| anAnnouncement |
+	anAnnouncement := GtTreePagerPaneModelFollowingPanesChanged new
+			paneModel: self;
+			newFollowingPanes: self followingPanes;
+			oldFollowingPanes: anOldFollowingPanes.
+	self announcer announce: anAnnouncement.
+	self allPreviousPanesDo: [ :aPreviousPane | aPreviousPane announcer announce: anAnnouncement ]
+]
+
+{ #category : #'api - phlow' }
+GtTreePagerPaneModel >> object: anObject [
+	self phlowTool: anObject gtDefaultInspectorTool
 ]
 
 { #category : #accessing }
@@ -233,6 +256,16 @@ GtTreePagerPaneModel >> paneModel: aColumnModel [
 ]
 
 { #category : #accessing }
+GtTreePagerPaneModel >> phlowTool [
+	^ phlowTool
+]
+
+{ #category : #'api - phlow' }
+GtTreePagerPaneModel >> phlowTool: aGtPhlowTool [
+	phlowTool := aGtPhlowTool
+]
+
+{ #category : #'api - previous panes' }
 GtTreePagerPaneModel >> previousExpandedToolModel [
 	<return: #GtTreePagerPaneModel or: nil>
 	^ self previousPane
@@ -242,12 +275,12 @@ GtTreePagerPaneModel >> previousExpandedToolModel [
 				ifFalse: [ aPreviousTool previousExpandedToolModel ] ]
 ]
 
-{ #category : #accessing }
+{ #category : #'api - previous panes' }
 GtTreePagerPaneModel >> previousPane [
 	^ previousPane
 ]
 
-{ #category : #accessing }
+{ #category : #'api - previous panes' }
 GtTreePagerPaneModel >> previousPane: aPaneModel [
 	previousPane := aPaneModel
 ]
@@ -262,18 +295,28 @@ GtTreePagerPaneModel >> printOn: aStream [
 	aStream nextPut: $)
 ]
 
+{ #category : #'api - following panes' }
+GtTreePagerPaneModel >> removeFollowingPane: aPaneModel [
+	self followingPanes: (self followingPanes copyWithout: aPaneModel)
+]
+
+{ #category : #'api - following panes' }
+GtTreePagerPaneModel >> removeLink [
+	self activeLink ifNotNil: [ :aPaneModel | self removeFollowingPane: aPaneModel ]
+]
+
 { #category : #'private - updating' }
 GtTreePagerPaneModel >> replaceFollowingPane: anOldPaneModel by: aNewPaneModel [
-	| anIndex |
+	| anIndex aNewCollection |
 	anIndex := self followingPanes
 			detectIndex: [ :each | each == anOldPaneModel ]
 			ifNone: [ NotFound signalFor: anOldPaneModel in: self followingPanes ].
 
 	aNewPaneModel previousPane: self.
-	anOldPaneModel previousPane: nil.
-	self followingPanes at: anIndex put: aNewPaneModel.
-	
-	self notifyFollowingPanesChanged
+	aNewCollection := self followingPanes copy
+			at: anIndex put: aNewPaneModel;
+			yourself.
+	self followingPanes: aNewCollection
 ]
 
 { #category : #'api - following panes' }
@@ -286,9 +329,24 @@ GtTreePagerPaneModel >> replaceFollowingPaneBy: aPaneModel [
 		ifNotNil: [ self replaceFollowingPane: anOldPaneModel by: aPaneModel ]
 ]
 
+{ #category : #'api - following panes' }
+GtTreePagerPaneModel >> selectFollowingPane: aNewPaneModel [
+	| anOldPaneModel |
+	anOldPaneModel := self activeLink.
+
+	anOldPaneModel
+		ifNil: [ self addFollowingPane: aNewPaneModel collapse ]
+		ifNotNil: [ self replaceFollowingPane: anOldPaneModel by: aNewPaneModel ]
+]
+
+{ #category : #'api - phlow' }
+GtTreePagerPaneModel >> stencil: aBlStencil [
+	self phlowTool: (GtPhlowExplicitTool new stencil: aBlStencil)
+]
+
 { #category : #accessing }
 GtTreePagerPaneModel >> title [
-	^ title ifNil: [ self toolBuilder title ]
+	^ title ifNil: [ self phlowTool title ]
 ]
 
 { #category : #accessing }
@@ -296,14 +354,14 @@ GtTreePagerPaneModel >> title: anObject [
 	title := anObject
 ]
 
-{ #category : #accessing }
-GtTreePagerPaneModel >> toolBuilder [
-	^ toolBuilder
-]
+{ #category : #'api - previous panes' }
+GtTreePagerPaneModel >> topPreviousPane [
+	"Note: it is usually a pager model"
 
-{ #category : #accessing }
-GtTreePagerPaneModel >> toolBuilder: anObject [
-	toolBuilder := anObject
+	| aTopModel |
+	aTopModel := nil.
+	self allPreviousPanesDo: [ :aPreviousPane | aTopModel := aPreviousPane ].
+	^ aTopModel
 ]
 
 { #category : #'private - updating' }

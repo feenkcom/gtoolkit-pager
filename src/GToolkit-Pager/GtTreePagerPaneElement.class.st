@@ -17,6 +17,7 @@ GtTreePagerPaneElement >> defaultLayout [
 GtTreePagerPaneElement >> initialize [
 	super initialize.
 	self matchParent.
+	self clipChildren: false.
 
 	contentElement := GtTreePagerPaneContentElement new
 			margin: (BlInsets all: 5);

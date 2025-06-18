@@ -19,6 +19,17 @@ TGtTreePagerWithModel >> pagerModel [
 TGtTreePagerWithModel >> pagerModel: aPagerModel [
 	pagerModel = aPagerModel ifTrue: [ ^ self ].
 	
+	pagerModel ifNotNil: [ self unsubscribeFromPagerModel ].
+	
 	pagerModel := aPagerModel.
 	self onPagerModelChanged.
+	self subscribeToPagerModel
+]
+
+{ #category : #'api - pager model' }
+TGtTreePagerWithModel >> subscribeToPagerModel [
+]
+
+{ #category : #'api - pager model' }
+TGtTreePagerWithModel >> unsubscribeFromPagerModel [
 ]

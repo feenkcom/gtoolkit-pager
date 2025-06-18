@@ -64,10 +64,39 @@ GtTreePagerFlowPanesElement >> newPaneElementForPaneModel: aPaneModel [
 	^ GtTreePagerPaneElement new paneModel: aPaneModel
 ]
 
+{ #category : #'private - event handling' }
+GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
+	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
+
+	BlTaskAction
+		enqueueElement: self
+		action: [ self
+				updateElementDueTo: anAnnouncement paneModel
+				addedFollowingPanes: anAnnouncement addedFollowingPanes
+				removedFollowingPanes: anAnnouncement removedFollowingPanes ]
+]
+
 { #category : #'api - pager model' }
 GtTreePagerFlowPanesElement >> onPagerModelChanged [
 	super onPagerModelChanged.
+	self updateElement
+]
 
+{ #category : #'api - pager model' }
+GtTreePagerFlowPanesElement >> subscribeToPagerModel [
+	self pagerModel announcer weak
+		when: GtTreePagerPaneModelFollowingPanesChanged
+		send: #onGtTreePagerPaneModelFollowingPanesChanged:
+		to: self
+]
+
+{ #category : #'api - pager model' }
+GtTreePagerFlowPanesElement >> unsubscribeFromPagerModel [
+	self pagerModel unsubscribe: self
+]
+
+{ #category : #'private - updating' }
+GtTreePagerFlowPanesElement >> updateElement [
 	GtTreePagerHorizontalTreeFlowBuilder new
 		paneModels: self pagerModel paneModels;
 		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex | 
@@ -76,4 +105,16 @@ GtTreePagerFlowPanesElement >> onPagerModelChanged [
 				row: aRowIndex
 				depth: aDepthIndex ];
 		build
+]
+
+{ #category : #'private - updating' }
+GtTreePagerFlowPanesElement >> updateElementDueTo: aPaneModel addedFollowingPanes: addedFollowingPanes removedFollowingPanes: removedFollowingPanes [
+	removedFollowingPanes
+		do: [ :eachPaneModel | 
+			self
+				childForPaneModel: eachPaneModel
+				ifFound: [ :anElement | anElement removeFromParent ]
+				ifNone: [  ] ].
+
+	self updateElement
 ]

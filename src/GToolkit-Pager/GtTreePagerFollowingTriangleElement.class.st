@@ -1,5 +1,5 @@
 Class {
-	#name : #GtTreePagerFollowingPaneElement,
+	#name : #GtTreePagerFollowingTriangleElement,
 	#superclass : #GtTreePagerPaneBasicElement,
 	#instVars : [
 		'collapsedToolsElement'
@@ -8,12 +8,12 @@ Class {
 }
 
 { #category : #initialization }
-GtTreePagerFollowingPaneElement >> defaultLayout [
+GtTreePagerFollowingTriangleElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
 { #category : #initialization }
-GtTreePagerFollowingPaneElement >> initialize [
+GtTreePagerFollowingTriangleElement >> initialize [
 	super initialize.
 
 	self
@@ -32,17 +32,16 @@ GtTreePagerFollowingPaneElement >> initialize [
 ]
 
 { #category : #'private - event management' }
-GtTreePagerFollowingPaneElement >> onClickEvent: anEvent [
+GtTreePagerFollowingTriangleElement >> onClickEvent: anEvent [
 	| aToolModel |
 	self visibility isVisible ifFalse: [ ^ self ].
+	self paneModel ifNil: [ ^ self ].
 	anEvent consumed: true.
 
-	aToolModel := self viewModel firstExpandedToolModel.
-	aToolModel ifNil: [ ^ self ].
-	self fireEvent: (GtTreePagerSpawnToolEvent new toolModel: aToolModel)
+	aToolModel := self paneModel expand
 ]
 
-{ #category : #accessing }
-GtTreePagerFollowingPaneElement >> onPaneModelChanged [
+{ #category : #'api - pane model' }
+GtTreePagerFollowingTriangleElement >> onPaneModelChanged [
 	self visibility: BlVisibility visible
 ]
