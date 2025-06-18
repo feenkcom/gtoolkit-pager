@@ -36,13 +36,38 @@ GtTreePagerExamples >> assertPager: aPager columnPaneTitles: aPanesCollection [
 					self assert: aTool title equals: eachToolTitle ] ]
 ]
 
-{ #category : #'examples - columns' }
-GtTreePagerExamples >> basicColumnModel [
-	<gtExample>
-	| aColumn |
-	aColumn := GtTreePagerColumnModel new.
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> assertTreeFlowBuilderCallbacks: aBuilderCallbacks equalsPaneCharacters: aPanesCollection [
+	| aTitlesCollection |
+	aTitlesCollection := aPanesCollection
+			collect: [ :anArray | anArray collect: [ :anObject | anObject ifNotNil: #printString ] ].
+	self
+		assertTreeFlowBuilderCallbacks: aBuilderCallbacks
+		equalsPaneTitles: aTitlesCollection
+]
 
-	^ aColumn
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> assertTreeFlowBuilderCallbacks: aBuilderCallbacks equalsPaneTitles: aTitlesCollection [
+	aTitlesCollection
+		withIndexDo: [ :eachPaneCollection :eachDepthIndex | 
+			eachPaneCollection
+				withIndexDo: [ :eachPaneTitle :eachRowIndex | 
+					eachPaneTitle
+						ifNotNil: [ | someCandidates |
+							someCandidates := aBuilderCallbacks
+									select: [ :each | (each at: 1) title = eachPaneTitle ].
+
+							self
+								assert: someCandidates size = 1
+								description: [ someCandidates size isZero
+										ifTrue: [ 'Could not find {1} pane title: {2}'
+												format: {eachPaneTitle.
+														aBuilderCallbacks} ]
+										ifFalse: [ 'Too many candidates for {1} pane title: {2}'
+												format: {eachPaneTitle.
+														aBuilderCallbacks} ] ].
+							self assert: (someCandidates anyOne at: 2) equals: eachRowIndex.
+							self assert: (someCandidates anyOne at: 3) equals: eachDepthIndex ] ] ]
 ]
 
 { #category : #'examples - pager ui' }
@@ -72,58 +97,6 @@ GtTreePagerExamples >> basicPaneModel [
 	^ aModel
 ]
 
-{ #category : #'examples - columns' }
-GtTreePagerExamples >> columnModelWithOneElementIndexOnePane [
-	<gtExample>
-	| aColumn |
-	aColumn := self basicColumnModel.
-	aColumn
-		title: 'Pane 1';
-		paneModel: self paneModelWithElementIndexOne.
-
-	^ aColumn
-]
-
-{ #category : #'examples - columns' }
-GtTreePagerExamples >> columnModelWithOneFollowingPane [
-	<gtExample>
-	| aPane |
-	aPane := self basicColumnModel.
-	aPane
-		title: 'Pane 1';
-		paneModel: self paneModelWithOneFollowingTool.
-
-	^ aPane
-]
-
-{ #category : #'examples - columns' }
-GtTreePagerExamples >> columnModelWithTwoFollowingPanes [
-	<gtExample>
-	| aColumn |
-	aColumn := self basicColumnModel.
-	aColumn
-		title: 'Pane 1';
-		paneModel: self paneModelWithTwoFollowingTools.
-
-	aColumn paneModels first followingPanes second collapse.
-	self assert: aColumn paneModels first followingPanes second isCollapsed.
-
-	^ aColumn
-]
-
-{ #category : #'examples - columns' }
-GtTreePagerExamples >> columnModelWithTwoPanes [
-	<gtExample>
-	| aPane |
-	aPane := self basicColumnModel.
-	aPane
-		title: 'Pane 1';
-		paneModel: self paneModelWithElementIndexOne;
-		paneModel: self paneModelWithIntegerInspector.
-
-	^ aPane
-]
-
 { #category : #'examples - pager ui' }
 GtTreePagerExamples >> pagerElementWithFiveColumns [
 	<gtExample>
@@ -131,6 +104,8 @@ GtTreePagerExamples >> pagerElementWithFiveColumns [
 	aPagerElement := self basicPagerElement.
 	aPagerModel := self pagerWithFivePanes.
 	aPagerElement pagerModel: aPagerModel.
+
+	(aPagerElement childAt: 1) layoutDo: [ :l | l numberOfVisibleColumns: 5 ].
 
 	^ aPagerElement
 ]
@@ -140,14 +115,12 @@ GtTreePagerExamples >> pagerWithAWithFollowingHPane [
 	<gtExample>
 	| aPager aPaneA aPaneH |
 	aPager := self pagerWithFivePanes.
-	aPaneA := (aPager columns at: 1) paneModels first.
-	self assert: aPaneA title equals: '$A'.
+	aPaneA := aPager detectPaneModel: [ :each | each title = '$A' ].
 	self assert: aPaneA isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
 	aPaneA replaceFollowingPaneBy: aPaneH.
 
-	self assertPager: aPager columnCharacterPanes: #(#($A) #($H)).
 	self assert: aPaneA followingPanes size equals: 1.
 
 	^ aPager
@@ -158,17 +131,14 @@ GtTreePagerExamples >> pagerWithCWithFollowingEFHPanes [
 	<gtExample>
 	| aPager aPaneC aPaneH |
 	aPager := self pagerWithFivePanes.
-	aPaneC := (aPager columns at: 3) paneModels first.
+	aPaneC := aPager detectPaneModel: [ :each | each title = '$C' ].
 	self assert: aPaneC title equals: '$C'.
 	self assert: aPaneC isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
-	aPaneC followingPanes do: [ :each | each fasten ].
+	aPaneC freeLink.
 	aPaneC replaceFollowingPaneBy: aPaneH.
 
-	self
-		assertPager: aPager
-		columnCharacterPanes: #(#($A) #($B) #($C $D) #($E $F $H) #($G)).
 	self assert: aPaneC followingPanes size equals: 3.
 
 	^ aPager
@@ -179,21 +149,16 @@ GtTreePagerExamples >> pagerWithCWithFollowingHFPanes [
 	<gtExample>
 	| aPager aPaneC aPaneH aPaneF |
 	aPager := self pagerWithFivePanes.
-	aPaneC := (aPager columns at: 3) paneModels first.
-	self assert: aPaneC title equals: '$C'.
+	aPaneC := aPager detectPaneModel: [ :each | each title = '$C' ].
 	self assert: aPaneC isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
 	aPaneF := aPaneC followingPanes second.
 	self assert: aPaneF title equals: '$F'.
-	self assert: aPaneF isUnfastened.
-	aPaneF fasten.
-	self assert: aPaneF isFastened.
+	aPaneF beActiveLink.
+	self assert: aPaneC activeLink equals: aPaneF.
 	aPaneC replaceFollowingPaneBy: aPaneH.
 
-	self
-		assertPager: aPager
-		columnCharacterPanes: #(#($A) #($B) #($C $D) #($H $F) #($G)).
 	self assert: aPaneC followingPanes size equals: 2.
 
 	^ aPager
@@ -204,14 +169,12 @@ GtTreePagerExamples >> pagerWithCWithFollowingHPane [
 	<gtExample>
 	| aPager aPaneC aPaneH |
 	aPager := self pagerWithFivePanes.
-	aPaneC := (aPager columns at: 3) paneModels first.
-	self assert: aPaneC title equals: '$C'.
+	aPaneC := aPager detectPaneModel: [ :each | each title = '$C' ].
 	self assert: aPaneC isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
 	aPaneC replaceFollowingPaneBy: aPaneH.
 
-	self assertPager: aPager columnCharacterPanes: #(#($A) #($B) #($C $D) #($E $H)).
 	self assert: aPaneC followingPanes size equals: 2.
 
 	^ aPager
@@ -222,15 +185,10 @@ GtTreePagerExamples >> pagerWithCollapsedCNewlyExpandedFPanes [
 	<gtExample>
 	| aPager aPaneF |
 	aPager := self pagerWithCollapsedFCPanes.
-	aPaneF := (aPager columns at: 2) paneModels first followingPanes first
-			followingPanes second.
-	self assert: aPaneF title equals: '$F'.
+	aPaneF := aPager detectPaneModel: [ :each | each title = '$F' ].
 	self assert: aPaneF isCollapsed.
 	aPaneF expand.
 	self assert: aPaneF isExpanded.
-
-	self assertPager: aPager columnCharacterPanes: #(#($A) #($B) #($E $F $D) #($G)).
-	self assert: aPager columns third paneModels second equals: aPaneF.
 
 	^ aPager
 ]
@@ -240,13 +198,10 @@ GtTreePagerExamples >> pagerWithCollapsedFCPanes [
 	<gtExample>
 	| aPager aPaneC |
 	aPager := self pagerWithCollapsedFPane.
-	aPaneC := (aPager columns at: 3) paneModels first.
-	self assert: aPaneC title equals: '$C'.
+	aPaneC := aPager detectPaneModel: [ :each | each title = '$C' ].
 	self assert: aPaneC isExpanded.
 	aPaneC collapse.
 	self assert: aPaneC isCollapsed.
-
-	self assertPager: aPager columnCharacterPanes: #(#($A) #($B) #($E $G $D)).
 
 	^ aPager
 ]
@@ -256,16 +211,10 @@ GtTreePagerExamples >> pagerWithCollapsedFPane [
 	<gtExample>
 	| aPager aPaneF |
 	aPager := self pagerWithFivePanes.
-	aPaneF := (aPager columns at: 4) paneModels second.
-	self assert: aPaneF title equals: '$F'.
+	aPaneF := aPager detectPaneModel: [ :each | each title = '$F' ].
 	self assert: aPaneF isExpanded.
 	aPaneF collapse.
 	self assert: aPaneF isCollapsed.
-
-	self assertPager: aPager columnCharacterPanes: #(#($A) #($B) #($C $D) #($E $G)).
-	self
-		assert: aPager columns fourth paneModels second
-		equals: aPaneF followingPanes anyOne.
 
 	^ aPager
 ]
@@ -275,17 +224,12 @@ GtTreePagerExamples >> pagerWithDWithFollowingHPane [
 	<gtExample>
 	| aPager aPaneD aPaneH |
 	aPager := self pagerWithFivePanes.
-	aPaneD := (aPager columns at: 3) paneModels second.
-	self assert: aPaneD title equals: '$D'.
+	aPaneD := aPager detectPaneModel: [ :each | each title = '$D' ].
 	self assert: aPaneD isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
 	aPaneD followingPanes do: [ :each | each fasten ].
 	aPaneD replaceFollowingPaneBy: aPaneH.
-
-	self
-		assertPager: aPager
-		columnCharacterPanes: #(#($A) #($B) #($C $D) #($E $F $H) #($G)).
 
 	^ aPager
 ]
@@ -296,9 +240,7 @@ GtTreePagerExamples >> pagerWithFivePanes [
 	| aPager aPane |
 	aPager := self basicPagerModel.
 	aPane := self paneModelWithThreeFollowingLevels.
-	aPager fromPaneModel: aPane.
-	
-	self assertPager: aPager columnCharacterPanes: #(#($A) #($B) #($C $D) #($E $F) #($G)).
+	aPager paneModel: aPane.
 	
 	^ aPager
 ]
@@ -308,27 +250,10 @@ GtTreePagerExamples >> pagerWithNewlyExpandedFPane [
 	<gtExample>
 	| aPager aPaneF |
 	aPager := self pagerWithCollapsedFPane.
-	aPaneF := (aPager columns at: 3) paneModels first followingPanes second.
-	self assert: aPaneF title equals: '$F'.
+	aPaneF := aPager detectPaneModel: [ :each | each title = '$F' ].
 	self assert: aPaneF isCollapsed.
 	aPaneF expand.
 	self assert: aPaneF isExpanded.
-
-	self
-		assertPager: aPager
-		columnCharacterPanes: #(#($A) #($B) #($C $D) #($E $F) #($G)).
-	self assert: aPager columns fourth paneModels second equals: aPaneF.
-
-	^ aPager
-]
-
-{ #category : #'examples - pager' }
-GtTreePagerExamples >> pagerWithOnePaneWithTwoTools [
-	<gtExample>
-	| aPager aPane |
-	aPager := self basicPagerModel.
-	aPane := self columnModelWithTwoPanes.
-	aPager columns: {aPane}.
 
 	^ aPager
 ]
@@ -513,4 +438,71 @@ GtTreePagerExamples >> toolPhlowBuilderFor: anObject [
 	self assert: (aBuilder asElement isKindOf: BlElement).
 
 	^ aBuilder
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> treeFlowBuilderWithCollapsedFCPanes [
+	<gtExample>
+	| aPager allCallbacks |
+	aPager := self pagerWithCollapsedFCPanes.
+	allCallbacks := OrderedCollection new.
+
+	GtTreePagerHorizontalTreeFlowBuilder new
+		paneModels: aPager paneModels;
+		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex | 
+			allCallbacks
+				add: {aPaneModel.
+						aRowIndex.
+						aDepthIndex} ];
+		build.
+
+	self
+		assertTreeFlowBuilderCallbacks: allCallbacks
+		equalsPaneCharacters: #(#($A) #($B) #($E $G $D)).
+	^ allCallbacks
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> treeFlowBuilderWithCollapsedFPane [
+	<gtExample>
+	| aPager allCallbacks |
+	aPager := self pagerWithCollapsedFPane.
+	allCallbacks := OrderedCollection new.
+
+	GtTreePagerHorizontalTreeFlowBuilder new
+		paneModels: aPager paneModels;
+		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex | 
+			allCallbacks
+				add: {aPaneModel.
+						aRowIndex.
+						aDepthIndex} ];
+		build.
+
+	self
+		assertTreeFlowBuilderCallbacks: allCallbacks
+		equalsPaneCharacters: #(#($A) #($B) #($C $D) #($E $G)).
+	^ allCallbacks
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> treeFlowBuilderWithFivePanes [
+	<gtExample>
+	| aPager allCallbacks |
+	aPager := self pagerWithFivePanes.
+	allCallbacks := OrderedCollection new.
+
+	GtTreePagerHorizontalTreeFlowBuilder new
+		paneModels: aPager paneModels;
+		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex | 
+			allCallbacks
+				add: {aPaneModel.
+						aRowIndex.
+						aDepthIndex} ];
+		build.
+
+	self
+		assertTreeFlowBuilderCallbacks: allCallbacks
+		equalsPaneCharacters: #(#($A) #($B) #($C $D) #($E $F) #($G)).
+
+	^ allCallbacks
 ]

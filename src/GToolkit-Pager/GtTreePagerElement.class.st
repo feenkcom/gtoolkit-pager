@@ -17,7 +17,7 @@ GtTreePagerElement >> initialize [
 	super initialize.
 	self matchParent.
 
-	panesElement := GtTreePagerPanesElement new matchParent.
+	panesElement := GtTreePagerFlowPanesElement new matchParent.
 	self addChild: panesElement
 ]
 

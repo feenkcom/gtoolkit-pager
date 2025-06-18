@@ -1,6 +1,10 @@
 Class {
 	#name : #GtTreePagerPaneElement,
 	#superclass : #GtTreePagerPaneBasicElement,
+	#instVars : [
+		'contentElement',
+		'followingsElement'
+	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
@@ -12,12 +16,19 @@ GtTreePagerPaneElement >> defaultLayout [
 { #category : #initialization }
 GtTreePagerPaneElement >> initialize [
 	super initialize.
-	self background: self theme default contentBackground.
-	self matchParent
+	self matchParent.
+
+	contentElement := GtTreePagerPaneContentElement new
+			margin: (BlInsets all: 5);
+			addAptitude: BrGlamorousFocusableShadowAptitude new.
+	followingsElement := GtTreePagerPaneFollowingsElement new.
+
+	self addChild: contentElement.
+	self addChild: followingsElement
 ]
 
 { #category : #accessing }
-GtTreePagerPaneElement >> onToolModelChanged [
-	self removeChildren.
-	self addChild: self toolModel asElement as: #tool
+GtTreePagerPaneElement >> onPaneModelChanged [
+	contentElement paneModel: self paneModel.
+	followingsElement paneModel: self paneModel.
 ]

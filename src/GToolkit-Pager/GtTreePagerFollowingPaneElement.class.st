@@ -23,24 +23,12 @@ GtTreePagerFollowingPaneElement >> initialize [
 						16 @ 16.
 						0 @ 32});
 		aptitude: BrGlamorousFadedButtonExteriourAptitude;
-		visibility: BlVisibility hidden;
+		visibility: BlVisibility visible;
 		constraintsDo: [ :c | 
 			c linear horizontal alignRight.
 			c linear vertical alignCenter ];
 		margin: (BlInsets all: 2);
-		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ].
-
-	self initializeCollapsedToolsElement.
-	self addChild: collapsedToolsElement as: #collapsed
-]
-
-{ #category : #initialization }
-GtTreePagerFollowingPaneElement >> initializeCollapsedToolsElement [
-	collapsedToolsElement := GtTreePagerCollapsedPanesElement new
-			visibility: BlVisibility gone;
-			constraintsDo: [ :c | 
-				c linear horizontal alignCenter.
-				c linear vertical alignCenter ]
+		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ]
 ]
 
 { #category : #'private - event management' }
@@ -55,12 +43,6 @@ GtTreePagerFollowingPaneElement >> onClickEvent: anEvent [
 ]
 
 { #category : #accessing }
-GtTreePagerFollowingPaneElement >> onToolModelChanged [
-	collapsedToolsElement toolModel: self toolModel.
-
-	self toolModel isCollapsed
-		ifTrue: [ collapsedToolsElement visibility: BlVisibility visible ]
-		ifFalse: [ collapsedToolsElement visibility: BlVisibility gone ].
-
+GtTreePagerFollowingPaneElement >> onPaneModelChanged [
 	self visibility: BlVisibility visible
 ]
