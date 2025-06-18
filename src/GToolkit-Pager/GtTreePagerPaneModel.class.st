@@ -24,9 +24,13 @@ GtTreePagerPaneModel >> activeLink [
 
 { #category : #'api - following panes' }
 GtTreePagerPaneModel >> activeLink: aPaneModel [
+	| anOldActiveLink |
 	self assert: [ self followingPanes includes: aPaneModel ].
 
-	activeLink := aPaneModel
+	anOldActiveLink := activeLink.
+	activeLink := aPaneModel.
+
+	self notifyActiveLinkChangedFrom: anOldActiveLink to: activeLink
 ]
 
 { #category : #'api - following panes' }
@@ -57,6 +61,11 @@ GtTreePagerPaneModel >> asElement [
 { #category : #'api - following panes' }
 GtTreePagerPaneModel >> beActiveLink [
 	self previousPane ifNotNil: [ :aPaneModel | aPaneModel activeLink: self ]
+]
+
+{ #category : #'api - following panes' }
+GtTreePagerPaneModel >> beInactiveLink [
+	self previousPane ifNotNil: [ :aPaneModel | aPaneModel inactivateLink: self ]
 ]
 
 { #category : #accessing }
@@ -132,11 +141,6 @@ GtTreePagerPaneModel >> followingPanes: aCollection [
 	self notifyFollowingPanesChanged: anOldFollowingPanes
 ]
 
-{ #category : #'api - following panes' }
-GtTreePagerPaneModel >> freeLink [
-	activeLink := nil
-]
-
 { #category : #printing }
 GtTreePagerPaneModel >> gtDisplayOn: stream [
 	stream nextPutAll: 'Pane: '.
@@ -194,6 +198,22 @@ GtTreePagerPaneModel >> icon: anObject [
 	icon := anObject
 ]
 
+{ #category : #'api - following panes' }
+GtTreePagerPaneModel >> inactivateLink [
+	| anOldActiveLink |
+	anOldActiveLink := activeLink.
+	activeLink := nil.
+
+	self notifyActiveLinkChangedFrom: anOldActiveLink to: activeLink
+]
+
+{ #category : #'api - following panes' }
+GtTreePagerPaneModel >> inactivateLink: aPaneModel [
+	activeLink = aPaneModel ifFalse: [ ^ self ].
+
+	self inactivateLink
+]
+
 { #category : #initialization }
 GtTreePagerPaneModel >> initialize [
 	super initialize.
@@ -218,6 +238,23 @@ GtTreePagerPaneModel >> isCollapsed [
 { #category : #'api - expandable' }
 GtTreePagerPaneModel >> isExpanded [
 	^ self isCollapsed not
+]
+
+{ #category : #'private - notifying' }
+GtTreePagerPaneModel >> notifyActiveLinkChangedFrom: anOldActiveLink to: aNewActiveLink [
+	anOldActiveLink
+		ifNotNil: [ anOldActiveLink announcer
+				announce: (GtTreePagerPaneModelPreviousActiveLinkChanged new paneModel: anOldActiveLink) ].
+
+	aNewActiveLink
+		ifNotNil: [ aNewActiveLink announcer
+				announce: (GtTreePagerPaneModelPreviousActiveLinkChanged new paneModel: aNewActiveLink) ].
+
+	self announcer
+		announce: (GtTreePagerPaneModelActiveLinkChanged new
+				paneModel: self;
+				oldActiveLink: anOldActiveLink;
+				newActiveLink: aNewActiveLink)
 ]
 
 { #category : #'private - notifying' }
@@ -300,6 +337,12 @@ GtTreePagerPaneModel >> removeFollowingPane: aPaneModel [
 	self followingPanes: (self followingPanes copyWithout: aPaneModel)
 ]
 
+{ #category : #'api - previous panes' }
+GtTreePagerPaneModel >> removeFromPreviousPane [
+	self previousPane
+		ifNotNil: [ :aPreviousPane | aPreviousPane removeFollowingPane: self ]
+]
+
 { #category : #'api - following panes' }
 GtTreePagerPaneModel >> removeLink [
 	self activeLink ifNotNil: [ :aPaneModel | self removeFollowingPane: aPaneModel ]
@@ -367,11 +410,17 @@ GtTreePagerPaneModel >> topPreviousPane [
 { #category : #'private - updating' }
 GtTreePagerPaneModel >> updateActiveLink [
 	followingPanes
-		ifEmpty: [ activeLink := nil.
+		ifEmpty: [ self inactivateLink.
 			^ self ].
 
-	activeLink
-		ifNil: [ activeLink := followingPanes last ]
-		ifNotNil: [ (followingPanes includes: activeLink)
-				ifFalse: [ activeLink := followingPanes last ] ]
+	(activeLink notNil and: [ followingPanes includes: activeLink ])
+		ifFalse: [ self activeLink: followingPanes last ]
+]
+
+{ #category : #'api - following panes' }
+GtTreePagerPaneModel >> withAllFollowingPanes [
+	^ Array
+		streamContents: [ :aStream | 
+			aStream nextPut: self.
+			self allPanesBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
 ]

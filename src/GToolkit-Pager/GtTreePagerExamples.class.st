@@ -136,7 +136,7 @@ GtTreePagerExamples >> pagerWithCWithFollowingEFHPanes [
 	self assert: aPaneC isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
-	aPaneC freeLink.
+	aPaneC inactivateLink.
 	aPaneC replaceFollowingPaneBy: aPaneH.
 
 	self assert: aPaneC followingPanes size equals: 3.

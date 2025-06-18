@@ -109,7 +109,11 @@ GtTreePagerFlowPanesElement >> updateElement [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updateElementDueTo: aPaneModel addedFollowingPanes: addedFollowingPanes removedFollowingPanes: removedFollowingPanes [
-	removedFollowingPanes
+	| allRemovedPanes |
+	allRemovedPanes := removedFollowingPanes
+			flatCollect: [ :eachPane | eachPane withAllFollowingPanes ].
+
+	allRemovedPanes
 		do: [ :eachPaneModel | 
 			self
 				childForPaneModel: eachPaneModel
