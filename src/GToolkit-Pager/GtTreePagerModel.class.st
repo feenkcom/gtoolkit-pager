@@ -1,13 +1,38 @@
 Class {
 	#name : #GtTreePagerModel,
 	#superclass : #Object,
-	#traits : 'TGtTreePagerPaneModelEnumerable',
-	#classTraits : 'TGtTreePagerPaneModelEnumerable classTrait',
+	#traits : 'TGtTreePagerPaneModelEnumerable + TGtOptions + TGtAnnouncer',
+	#classTraits : 'TGtTreePagerPaneModelEnumerable classTrait + TGtOptions classTrait + TGtAnnouncer classTrait',
 	#instVars : [
-		'paneModels'
+		'paneModels',
+		'announcer'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
+
+{ #category : #'api - pane model' }
+GtTreePagerModel >> activeLink [
+	^ nil
+]
+
+{ #category : #'api - panes' }
+GtTreePagerModel >> allFollowingPanes [
+	^ Array
+		streamContents: [ :aStream | self allPanesBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerModel >> allPreviousPanesDo: aFullBlockClosure [
+	"Do nothing."
+
+	
+]
+
+{ #category : #announcer }
+GtTreePagerModel >> announcer [
+	<return: #Announcer>
+	^ announcer
+]
 
 { #category : #'api - panes' }
 GtTreePagerModel >> children [
@@ -18,6 +43,16 @@ GtTreePagerModel >> children [
 GtTreePagerModel >> enumerablePaneModels [
 	<return: #Collection of: #GtTreePagerPaneModel>
 	^ self paneModels
+]
+
+{ #category : #views }
+GtTreePagerModel >> gtDefaultInspectorTool [
+	^ GtPhlowCompositeTool new
+		addTool: (GtPhlowExplicitTool new
+				name: 'pager';
+				icon: BrGlamorousIcons tree;
+				stencil: [ GtTreePagerElement new pagerModel: self ]);
+		addTool: super gtDefaultInspectorTool
 ]
 
 { #category : #views }
@@ -45,6 +80,7 @@ GtTreePagerModel >> gtPanesFor: aView [
 GtTreePagerModel >> initialize [
 	super initialize.
 
+	announcer := Announcer new.
 	paneModels := Array empty
 ]
 
@@ -62,6 +98,6 @@ GtTreePagerModel >> paneModels [
 GtTreePagerModel >> paneModels: aCollection [
 	paneModels = aCollection ifTrue: [ ^ self ].
 	
-	"aCollection do: [ :eachPane | eachPane pagerModel: self ]."
+	aCollection do: [ :eachPane | eachPane previousPane: self ].
 	paneModels := aCollection
 ]

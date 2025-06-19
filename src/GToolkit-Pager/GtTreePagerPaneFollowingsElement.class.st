@@ -18,29 +18,55 @@ GtTreePagerPaneFollowingsElement >> initialize [
 
 { #category : #'private - updating' }
 GtTreePagerPaneFollowingsElement >> newPaneElement [
-	^ BrFrame new
-		vMatchParent;
-		hFitContent;
-		addChild: (GtTreePagerFollowingPaneElement new
-				constraintsDo: [ :c | 
-					c frame vertical alignCenter.
-					c frame horizontal alignLeft ])
+	^ GtTreePagerFollowingContainerElement new
 ]
 
 { #category : #'private - updating' }
 GtTreePagerPaneFollowingsElement >> newPaneElementFor: aPaneModel [
 	^ self newPaneElement
-		in: [ :aFrame | (aFrame childAt: 1) paneModel: aPaneModel ];
+		paneModel: aPaneModel;
 		yourself
+]
+
+{ #category : #'private - event management' }
+GtTreePagerPaneFollowingsElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
+	anAnnouncement paneModel = self paneModel ifFalse: [ ^ self ].
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingsElement >> onPaneModelChanged [
-	| somePaneModels somePaneElements |
+	self updateElement
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerPaneFollowingsElement >> subscribeToPaneModel [
+	self paneModel weak
+		when: GtTreePagerPaneModelFollowingPanesChanged
+		send: #onGtTreePagerPaneModelFollowingPanesChanged:
+		to: self
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerPaneFollowingsElement >> unsubscribeFromPaneModel [
+	self paneModel unsubscribe: self
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerPaneFollowingsElement >> updateElement [
+	| somePaneModels somePaneElements modelsWithElements |
 	somePaneModels := self paneModel followingExpandedPaneModels.
 
+	modelsWithElements := Dictionary new.
+	self
+		childrenDo: [ :eachChild | modelsWithElements at: eachChild paneModel put: eachChild ].
+
 	somePaneElements := somePaneModels
-			collect: [ :eachPaneModel | self newPaneElementFor: eachPaneModel ].
+			collect: [ :eachPaneModel | 
+				modelsWithElements
+					at: eachPaneModel
+					ifPresent: [ :aPaneElement | aPaneElement ]
+					ifAbsent: [ self newPaneElementFor: eachPaneModel ] ].
 
 	self removeChildren.
 	self addChildren: somePaneElements.
