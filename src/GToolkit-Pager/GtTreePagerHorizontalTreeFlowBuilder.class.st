@@ -18,11 +18,11 @@ GtTreePagerHorizontalTreeFlowBuilder >> build [
 	self assert: [ paneModelBlock isNotNil ].
 	self assert: [ paneModels isNotNil ].
 
-	sameDepthQueue := LinkedList new.
-	sameDepthQueue addAll: (self nodesFromPaneModels: self paneModels shift: 0).
-	nextDepthQueue := LinkedList new.
 	row := 1.
 	depth := 1.
+	sameDepthQueue := LinkedList new.
+	sameDepthQueue addAll: (self nodesFromPaneModels: self paneModels).
+	nextDepthQueue := LinkedList new.
 
 	[ sameDepthQueue isEmpty ] whileFalse: [ self processQueue ]
 ]
@@ -33,12 +33,12 @@ GtTreePagerHorizontalTreeFlowBuilder >> forEachPaneModelDo: aBlock [
 ]
 
 { #category : #private }
-GtTreePagerHorizontalTreeFlowBuilder >> nodesFromPaneModels: aCollectionOfPaneModels shift: anInteger [
+GtTreePagerHorizontalTreeFlowBuilder >> nodesFromPaneModels: aCollectionOfPaneModels [
 	^ aCollectionOfPaneModels
-		collect: [ :eachPaneModel | 
+		collectWithIndex: [ :eachPaneModel :anIndex | 
 			GtTreePagerHorizontalTreeFlowNode new
 				paneModel: eachPaneModel;
-				shift: anInteger ]
+				row: row + anIndex - 1 ]
 ]
 
 { #category : #accessing }
@@ -68,18 +68,18 @@ GtTreePagerHorizontalTreeFlowBuilder >> paneModels: aCollectionOfPaneModels [
 
 { #category : #private }
 GtTreePagerHorizontalTreeFlowBuilder >> processNode: aNode [
+	"row := row max: aNode row."
 	paneModelBlock
 		value: aNode paneModel
-		value: (aNode paneModel isExpanded ifTrue: [ row + aNode shift ] ifFalse: [ nil ])
+		value: (aNode paneModel isExpanded ifTrue: [ row ] ifFalse: [ nil ])
 		value: (aNode paneModel isExpanded ifTrue: [ depth ] ifFalse: [ nil ]).
 
 	aNode paneModel isExpanded
 		ifTrue: [ nextDepthQueue
-				addAll: (self nodesFromPaneModels: aNode paneModel followingPanes shift: 0).
+				addAll: (self nodesFromPaneModels: aNode paneModel followingPanes).
 			row := row + 1 ]
-		ifFalse: [ (self
-				nodesFromPaneModels: aNode paneModel followingPanes reversed
-				shift: 0) do: [ :eachNode | sameDepthQueue addFirst: eachNode ] ]
+		ifFalse: [ (self nodesFromPaneModels: aNode paneModel followingPanes reversed)
+				do: [ :eachNode | sameDepthQueue addFirst: eachNode ] ]
 ]
 
 { #category : #building }

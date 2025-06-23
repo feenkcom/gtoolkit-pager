@@ -3,7 +3,7 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'paneModel',
-		'shift'
+		'row'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -19,11 +19,11 @@ GtTreePagerHorizontalTreeFlowNode >> paneModel: anObject [
 ]
 
 { #category : #accessing }
-GtTreePagerHorizontalTreeFlowNode >> shift [
-	^ shift
+GtTreePagerHorizontalTreeFlowNode >> row [
+	^ row
 ]
 
 { #category : #accessing }
-GtTreePagerHorizontalTreeFlowNode >> shift: anObject [
-	shift := anObject
+GtTreePagerHorizontalTreeFlowNode >> row: anObject [
+	row := anObject
 ]
