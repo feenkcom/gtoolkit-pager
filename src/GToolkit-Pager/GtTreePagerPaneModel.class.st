@@ -119,14 +119,37 @@ GtTreePagerPaneModel >> expand: aBoolean [
 ]
 
 { #category : #'api - following panes' }
+GtTreePagerPaneModel >> followingCollapsedPaneModels [
+	^ Array
+		streamContents: [ :aStream | 
+			self followingPanes
+				do: [ :eachPane | 
+					eachPane isCollapsed
+						ifTrue: [ aStream nextPut: eachPane.
+							aStream nextPutAll: eachPane followingCollapsedPaneModels ] ] ]
+]
+
+{ #category : #'api - following panes' }
+GtTreePagerPaneModel >> followingExpandedAndCollapsedPaneModels [
+	^ Array
+		streamContents: [ :aStream | 
+			self followingPanes
+				do: [ :eachPane | 
+					aStream nextPut: eachPane.
+					eachPane isCollapsed
+						ifTrue: [ aStream nextPutAll: eachPane followingCollapsedPaneModels.
+							aStream nextPutAll: eachPane followingExpandedPaneModels ] ] ]
+]
+
+{ #category : #'api - following panes' }
 GtTreePagerPaneModel >> followingExpandedPaneModels [
 	^ Array
 		streamContents: [ :aStream | 
 			self followingPanes
-				do: [ :eachTool | 
-					eachTool isExpanded
-						ifTrue: [ aStream nextPut: eachTool ]
-						ifFalse: [ aStream nextPutAll: eachTool followingExpandedPaneModels ] ] ]
+				do: [ :eachPane | 
+					eachPane isExpanded
+						ifTrue: [ aStream nextPut: eachPane ]
+						ifFalse: [ aStream nextPutAll: eachPane followingExpandedPaneModels ] ] ]
 ]
 
 { #category : #'api - following panes' }
@@ -156,9 +179,8 @@ GtTreePagerPaneModel >> gtDisplayOn: stream [
 	stream nextPutAll: ' ('.
 	self isCollapsed ifTrue: [ stream nextPutAll: 'collapsed' ].
 	self isActiveLink
-		ifTrue: [ self isCollapsed
-				ifTrue: [ stream nextPutAll: ', ' ]
-				ifFalse: [ stream nextPutAll: 'active link' ] ].
+		ifTrue: [ self isCollapsed ifTrue: [ stream nextPutAll: ', ' ].
+			stream nextPutAll: 'active' ].
 	stream nextPut: $)
 ]
 
@@ -334,7 +356,7 @@ GtTreePagerPaneModel >> printOn: aStream [
 	aStream nextPut: $(.
 	aStream nextPutAll: self title asString.
 	self isCollapsed ifTrue: [ aStream nextPutAll: ', collapsed' ].
-	self isActiveLink ifTrue: [ aStream nextPutAll: ', active link' ].
+	self isActiveLink ifTrue: [ aStream nextPutAll: ', active' ].
 	aStream nextPut: $)
 ]
 

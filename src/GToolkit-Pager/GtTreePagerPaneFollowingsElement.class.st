@@ -18,7 +18,7 @@ GtTreePagerPaneFollowingsElement >> initialize [
 
 { #category : #'private - updating' }
 GtTreePagerPaneFollowingsElement >> newPaneElement [
-	^ GtTreePagerFollowingContainerElement new
+	^ GtTreePagerPaneFollowingContainerElement new
 ]
 
 { #category : #'private - updating' }
@@ -26,6 +26,11 @@ GtTreePagerPaneFollowingsElement >> newPaneElementFor: aPaneModel [
 	^ self newPaneElement
 		paneModel: aPaneModel;
 		yourself
+]
+
+{ #category : #'private - event management' }
+GtTreePagerPaneFollowingsElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
 { #category : #'private - event management' }
@@ -43,8 +48,11 @@ GtTreePagerPaneFollowingsElement >> onPaneModelChanged [
 GtTreePagerPaneFollowingsElement >> subscribeToPaneModel [
 	self paneModel weak
 		when: GtTreePagerPaneModelFollowingPanesChanged
-		send: #onGtTreePagerPaneModelFollowingPanesChanged:
-		to: self
+			send: #onGtTreePagerPaneModelFollowingPanesChanged:
+			to: self;
+		when: GtTreePagerPaneModelExpansionChanged
+			send: #onGtTreePagerPaneModelExpansionChanged:
+			to: self
 ]
 
 { #category : #'api - pane model' }
@@ -55,7 +63,7 @@ GtTreePagerPaneFollowingsElement >> unsubscribeFromPaneModel [
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingsElement >> updateElement [
 	| somePaneModels somePaneElements modelsWithElements |
-	somePaneModels := self paneModel followingExpandedPaneModels.
+	somePaneModels := self paneModel followingExpandedAndCollapsedPaneModels.
 
 	modelsWithElements := Dictionary new.
 	self

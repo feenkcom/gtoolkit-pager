@@ -1,19 +1,16 @@
 Class {
-	#name : #GtTreePagerFollowingTriangleElement,
+	#name : #GtTreePagerPaneFollowingExpandedElement,
 	#superclass : #GtTreePagerPaneBasicElement,
-	#instVars : [
-		'collapsedToolsElement'
-	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
-GtTreePagerFollowingTriangleElement >> defaultLayout [
+GtTreePagerPaneFollowingExpandedElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
 { #category : #initialization }
-GtTreePagerFollowingTriangleElement >> initialize [
+GtTreePagerPaneFollowingExpandedElement >> initialize [
 	super initialize.
 
 	self
@@ -22,20 +19,38 @@ GtTreePagerFollowingTriangleElement >> initialize [
 				vertices: {0 @ 0.
 						16 @ 16.
 						0 @ 32});
-		aptitude: BrGlamorousFadedButtonExteriourAptitude;
-		visibility: BlVisibility visible;
-		outskirts: BlOutskirts outside;
 		constraintsDo: [ :c | 
 			c linear horizontal alignRight.
 			c linear vertical alignCenter ];
+		outskirts: BlOutskirts inside;
 		margin: (BlInsets all: 2);
 		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ];
 		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
-				handleSubmenu: [ self newContextMenu ])
+				handleSubmenu: [ self newContextMenu ]).
+				
+	self initializeElementStyling
 ]
 
 { #category : #initialization }
-GtTreePagerFollowingTriangleElement >> newContextMenu [
+GtTreePagerPaneFollowingExpandedElement >> initializeElementStyling [
+	| anAptitude |
+	anAptitude := BrLazyStyleCommonAptitude new
+			default: [ :aStyle | 
+				aStyle background: self theme button defaultBackground.
+				aStyle border: self theme button fadedBackgroundColor ];
+			hovered: [ :aStyle | 
+					aStyle background: self theme button focusedFadedBackgroundColor.
+					aStyle border: self theme button focusedFadedBackgroundColor ];
+			when: BlElementState selected & BlElementState hovered not
+				style: [ :aStyle | 
+					aStyle background: self theme button fadedBackgroundColor.
+					aStyle border: self theme button fadedBackgroundColor ].
+
+	self addAptitude: anAptitude
+]
+
+{ #category : #initialization }
+GtTreePagerPaneFollowingExpandedElement >> newContextMenu [
 	| aMenu anActionItem |
 	aMenu := BrMenuItems new.
 
@@ -51,6 +66,13 @@ GtTreePagerFollowingTriangleElement >> newContextMenu [
 					action: [ :anElement :aButtonModel :anEvent | self paneModel beActiveLink ];
 					yourself ].
 	aMenu addItem: anActionItem.
+	
+	anActionItem := BrMenuActionItem new
+			id: #'menu--collapse-pane';
+			label: 'Collapse' preview: [ self paneModel title ];
+			action: [ :anElement :aButtonModel :anEvent | self paneModel collapse ];
+			yourself.
+	aMenu addItem: anActionItem.
 
 	anActionItem := BrMenuActionItem new
 			id: #'menu--remove-pane';
@@ -63,7 +85,7 @@ GtTreePagerFollowingTriangleElement >> newContextMenu [
 ]
 
 { #category : #'private - event management' }
-GtTreePagerFollowingTriangleElement >> onClickEvent: anEvent [
+GtTreePagerPaneFollowingExpandedElement >> onClickEvent: anEvent [
 	| aToolModel |
 	self visibility isVisible ifFalse: [ ^ self ].
 	self paneModel ifNil: [ ^ self ].
@@ -73,17 +95,17 @@ GtTreePagerFollowingTriangleElement >> onClickEvent: anEvent [
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerFollowingTriangleElement >> onGtTreePagerPaneModelPreviousActiveLinkChanged: anAnnouncement [
+GtTreePagerPaneFollowingExpandedElement >> onGtTreePagerPaneModelPreviousActiveLinkChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerFollowingTriangleElement >> onPaneModelChanged [
+GtTreePagerPaneFollowingExpandedElement >> onPaneModelChanged [
 	self updateElement
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerFollowingTriangleElement >> subscribeToPaneModel [
+GtTreePagerPaneFollowingExpandedElement >> subscribeToPaneModel [
 	self paneModel weak
 		when: GtTreePagerPaneModelPreviousActiveLinkChanged
 		send: #onGtTreePagerPaneModelPreviousActiveLinkChanged:
@@ -91,13 +113,13 @@ GtTreePagerFollowingTriangleElement >> subscribeToPaneModel [
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerFollowingTriangleElement >> unsubscribeFromPaneModel [
+GtTreePagerPaneFollowingExpandedElement >> unsubscribeFromPaneModel [
 	self paneModel unsubscribe: self
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerFollowingTriangleElement >> updateElement [
+GtTreePagerPaneFollowingExpandedElement >> updateElement [
 	self paneModel isActiveLink
-		ifTrue: [ self border: (BlBorder paint: self theme default darkBorderColor) ]
-		ifFalse: [ self border: BlBorder empty ]
+		ifTrue: [ self states addState: BlElementState selected ]
+		ifFalse: [ self states removeState: BlElementState selected ]
 ]
