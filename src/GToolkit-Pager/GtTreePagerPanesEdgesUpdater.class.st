@@ -39,7 +39,7 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromCollapsed: aFromPane toCollapsedP
 					model: aFromPane -> aToPane ];
 			zIndex: -1;
 			border: (BlBorder paint: self panesElement theme button fadedBackgroundColor);
-			beFixedTo;
+			beAutomatic;
 			fixedDistance: 10;
 			cornerRadius: 10;
 			fromAnchor: (BlElementCenterRightAnchor element: aFromTriangleElement);
@@ -114,7 +114,7 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromTriangle: aFromPane toCollapsedPa
 					model: aFromPane -> aToPane ];
 			zIndex: -1;
 			border: (BlBorder paint: self panesElement theme button fadedBackgroundColor);
-			beFixedTo;
+			beAutomatic;
 			fixedDistance: 10;
 			cornerRadius: 10;
 			fromAnchor: (BlElementCenterRightAnchor element: aFromTriangleElement);
