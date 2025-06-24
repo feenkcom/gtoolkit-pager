@@ -99,7 +99,7 @@ GtTreePagerFlowPanesElement >> newEdgeElementFromPaneModel: aFromPaneModel toPan
 			ifNone: [ NotFound signalFor: aToPaneModel in: self children ].
 
 	aFromTriangleQuery := (aFromElement query
-			// GtTreePagerPaneFollowingExpandedElement)
+			// GtTreePagerPaneFollowingTriangleElement)
 			@ [ :each | each paneModel = aToPaneModel ].
 	aFromTriangleQuery result
 		ifEmpty: [ NotFound signalFor: aToPaneModel in: aFromTriangleQuery ].

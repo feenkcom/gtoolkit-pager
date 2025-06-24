@@ -44,6 +44,14 @@ GtTreePagerPaneModel >> allFollowingPanes [
 		streamContents: [ :aStream | self allPanesBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
 ]
 
+{ #category : #'api - following panes' }
+GtTreePagerPaneModel >> allFollowingPanesCount [
+	| anIndex |
+	anIndex := 0.
+	self allPaneModelsDepthFirstDo: [ :aPane | anIndex := anIndex + 1 ].
+	^ anIndex
+]
+
 { #category : #'api - previous panes' }
 GtTreePagerPaneModel >> allPreviousPanesDo: aBlock [
 	self previousPane

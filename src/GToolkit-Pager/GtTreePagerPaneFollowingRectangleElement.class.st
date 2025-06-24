@@ -1,0 +1,74 @@
+Class {
+	#name : #GtTreePagerPaneFollowingRectangleElement,
+	#superclass : #GtTreePagerPaneBasicElement,
+	#category : #'GToolkit-Pager-Tree Pager'
+}
+
+{ #category : #initialization }
+GtTreePagerPaneFollowingRectangleElement >> defaultLayout [
+	^ BlLinearLayout horizontal
+]
+
+{ #category : #initialization }
+GtTreePagerPaneFollowingRectangleElement >> initialize [
+	super initialize.
+
+	self
+		exact: 16 @ 16;
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 2);
+		outskirts: BlOutskirts inside;
+		constraintsDo: [ :c | 
+			c linear horizontal alignRight.
+			c linear vertical alignCenter ];
+		margin: (BlInsets all: 2);
+		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ];
+		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
+				handleSubmenu: [ self newContextMenu ]);
+		addAptitude: (BrLazyStyleCommonAptitude new
+				default: [ :aStyle | 
+					aStyle background: self theme button defaultBackground.
+					aStyle border: self theme button fadedBackgroundColor ];
+				hovered: [ :aStyle | 
+					aStyle background: self theme button focusedFadedBackgroundColor.
+					aStyle border: self theme button focusedFadedBackgroundColor ])
+]
+
+{ #category : #initialization }
+GtTreePagerPaneFollowingRectangleElement >> newContextMenu [
+	| aMenu anActionItem |
+	aMenu := BrMenuItems new.
+
+	anActionItem := BrMenuActionItem new
+			id: #'menu--expand-pane';
+			label: 'Expand' preview: [ self paneModel title ];
+			action: [ :anElement :aButtonModel :anEvent | self paneModel expand ];
+			yourself.
+	aMenu addItem: anActionItem.
+
+	anActionItem := BrMenuActionItem new
+			id: #'menu--remove-pane';
+			label: 'Remove'
+				preview: [ '{1}{2}'
+						format: {self paneModel title.
+								self paneModel allFollowingPanesCount
+									ifNotNil: [ :aCount | 
+										aCount isZero
+											ifTrue: [ '' ]
+											ifFalse: [ ' and {1} other {2}'
+													format: {aCount.
+															'pane' asPluralBasedOn: aCount} ] ]
+									ifNil: [ '' ]} ];
+			action: [ :anElement :aButtonModel :anEvent | self paneModel removeFromPreviousPane ];
+			yourself.
+	aMenu addItem: anActionItem.
+
+	^ aMenu
+]
+
+{ #category : #initialization }
+GtTreePagerPaneFollowingRectangleElement >> onClickEvent: anEvent [
+	self paneModel ifNil: [ ^ self ].
+
+	anEvent consumed: true.
+	self paneModel expand
+]
