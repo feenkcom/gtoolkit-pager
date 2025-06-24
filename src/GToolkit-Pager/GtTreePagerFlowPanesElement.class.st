@@ -183,13 +183,17 @@ GtTreePagerFlowPanesElement >> updateElement [
 				depth: aDepthIndex ];
 		build.
 
-	self pagerModel
+	GtTreePagerPanesEdgesUpdater new
+		panesElement: self;
+		update.
+		
+	"self pagerModel
 		allPanesBreadthFirstDo: [ :eachFromPane | 
 			eachFromPane isCollapsed
 				ifFalse: [ eachFromPane followingExpandedPaneModels
 						do: [ :eachToPane | 
 							eachToPane isCollapsed
-								ifFalse: [ self ensureEdgeFromPaneModel: eachFromPane toPaneModel: eachToPane ] ] ] ]
+								ifFalse: [ self ensureEdgeFromPaneModel: eachFromPane toPaneModel: eachToPane ] ] ] ]"
 ]
 
 { #category : #'private - updating' }

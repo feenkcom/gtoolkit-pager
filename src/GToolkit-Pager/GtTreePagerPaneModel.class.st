@@ -339,13 +339,13 @@ GtTreePagerPaneModel >> phlowTool: aGtPhlowTool [
 ]
 
 { #category : #'api - previous panes' }
-GtTreePagerPaneModel >> previousExpandedToolModel [
+GtTreePagerPaneModel >> previousExpandedPane [
 	<return: #GtTreePagerPaneModel or: nil>
 	^ self previousPane
 		ifNotNil: [ :aPreviousTool | 
 			aPreviousTool isExpanded
 				ifTrue: [ aPreviousTool ]
-				ifFalse: [ aPreviousTool previousExpandedToolModel ] ]
+				ifFalse: [ aPreviousTool previousExpandedPane ] ]
 ]
 
 { #category : #'api - previous panes' }
