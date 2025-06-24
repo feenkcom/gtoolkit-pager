@@ -7,6 +7,11 @@ Trait {
 }
 
 { #category : #'api - pane model' }
+TGtTreePagerWithPaneModel >> hasPaneModel [
+	^ paneModel isNotNil
+]
+
+{ #category : #'api - pane model' }
 TGtTreePagerWithPaneModel >> onPaneModelChanged [
 ]
 

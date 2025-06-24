@@ -97,6 +97,69 @@ GtTreePagerExamples >> basicPaneModel [
 	^ aModel
 ]
 
+{ #category : #'examples - followings' }
+GtTreePagerExamples >> followingsUpdaterWithCFromCollapsedFPane [
+	<gtExample>
+	| aPager anUpdater aPane somePanes |
+	aPager := self pagerWithCollapsedFCPanes.
+	aPane := aPager detectPaneModel: [ :each | each title = $B printString ].
+
+	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
+	somePanes := anUpdater panesToDisplay.
+	self assert: somePanes size equals: 3.
+	self assert: (somePanes collect: #title) equals: #('$F' '$C' '$D').
+	self assert: anUpdater paneElementsToDisplay size equals: 4.
+
+	^ anUpdater
+]
+
+{ #category : #'examples - followings' }
+GtTreePagerExamples >> followingsUpdaterWithCFromFivePanes [
+	<gtExample>
+	| aPager anUpdater aPane somePanes |
+	aPager := self pagerWithFivePanes.
+	aPane := aPager detectPaneModel: [ :each | each title = $C printString ].
+
+	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
+	somePanes := anUpdater panesToDisplay.
+	self assert: somePanes size equals: 2.
+	self assert: (somePanes collect: #title) equals: #('$E' '$F' ).
+	self assert: anUpdater paneElementsToDisplay size equals: 2.
+
+	^ anUpdater
+]
+
+{ #category : #'examples - followings' }
+GtTreePagerExamples >> followingsUpdaterWithFFromFivePanes [
+	<gtExample>
+	| aPager anUpdater aPane somePanes |
+	aPager := self pagerWithFivePanes.
+	aPane := aPager detectPaneModel: [ :each | each title = $F printString ].
+
+	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
+	somePanes := anUpdater panesToDisplay.
+	self assert: somePanes size equals: 1.
+	self assert: somePanes anyOne title equals: $G printString.
+	self assert: anUpdater paneElementsToDisplay size equals: 1.
+
+	^ anUpdater
+]
+
+{ #category : #'examples - followings' }
+GtTreePagerExamples >> followingsUpdaterWithGFromFivePanes [
+	<gtExample>
+	| aPager anUpdater aPane somePanes |
+	aPager := self pagerWithFivePanes.
+	aPane := aPager detectPaneModel: [ :each | each title = $G printString ].
+
+	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
+	somePanes := anUpdater panesToDisplay.
+	self assert: somePanes isEmpty.
+	self assert: anUpdater paneElementsToDisplay isEmpty.
+
+	^ anUpdater
+]
+
 { #category : #'examples - pager ui' }
 GtTreePagerExamples >> pagerElementWithFiveColumns [
 	<gtExample>

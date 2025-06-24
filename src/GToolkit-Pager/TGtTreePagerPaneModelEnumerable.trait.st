@@ -15,10 +15,11 @@ TGtTreePagerPaneModelEnumerable >> allPanesBreadthFirstDo: aBlock [
 	| aQueue |
 	aQueue := LinkedList withAll: self enumerablePaneModels.
 	[ aQueue notEmpty ]
-		whileTrue: [ | aPaneModel |
+		whileTrue: [ | aPaneModel aResult |
 			aPaneModel := aQueue removeFirst.
-			aBlock value: aPaneModel.
-			aQueue addAll: aPaneModel enumerablePaneModels ]
+			aResult := aBlock value: aPaneModel.
+			(aResult isBoolean and: [ aResult not ]) ifFalse: [
+				aQueue addAll: aPaneModel enumerablePaneModels ] ]
 ]
 
 { #category : #'api - enumeration' }

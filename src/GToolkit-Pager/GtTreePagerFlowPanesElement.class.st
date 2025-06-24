@@ -99,7 +99,7 @@ GtTreePagerFlowPanesElement >> newEdgeElementFromPaneModel: aFromPaneModel toPan
 			ifNone: [ NotFound signalFor: aToPaneModel in: self children ].
 
 	aFromTriangleQuery := (aFromElement query
-			// GtTreePagerPaneFollowingExpandedElement)
+			// GtTreePagerPaneFollowingTriangleElement)
 			@ [ :each | each paneModel = aToPaneModel ].
 	aFromTriangleQuery result
 		ifEmpty: [ NotFound signalFor: aToPaneModel in: aFromTriangleQuery ].
@@ -183,13 +183,17 @@ GtTreePagerFlowPanesElement >> updateElement [
 				depth: aDepthIndex ];
 		build.
 
-	self pagerModel
+	GtTreePagerPanesEdgesUpdater new
+		panesElement: self;
+		update.
+		
+	"self pagerModel
 		allPanesBreadthFirstDo: [ :eachFromPane | 
 			eachFromPane isCollapsed
 				ifFalse: [ eachFromPane followingExpandedPaneModels
 						do: [ :eachToPane | 
 							eachToPane isCollapsed
-								ifFalse: [ self ensureEdgeFromPaneModel: eachFromPane toPaneModel: eachToPane ] ] ] ]
+								ifFalse: [ self ensureEdgeFromPaneModel: eachFromPane toPaneModel: eachToPane ] ] ] ]"
 ]
 
 { #category : #'private - updating' }

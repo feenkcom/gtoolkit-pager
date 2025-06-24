@@ -18,7 +18,7 @@ GtTreePagerPaneFollowingsElement >> initialize [
 
 { #category : #'private - updating' }
 GtTreePagerPaneFollowingsElement >> newPaneElement [
-	^ GtTreePagerPaneFollowingContainerElement new
+	^ GtTreePagerPaneFollowingBasicContainerElement triangle
 ]
 
 { #category : #'private - updating' }
@@ -62,23 +62,10 @@ GtTreePagerPaneFollowingsElement >> unsubscribeFromPaneModel [
 
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingsElement >> updateElement [
-	| somePaneModels somePaneElements modelsWithElements |
-	somePaneModels := self paneModel followingExpandedAndCollapsedPaneModels.
+	GtTreePagerPaneFollowingsElementUpdater new 
+		followingsElement: self;
+		update. 
 
-	modelsWithElements := Dictionary new.
-	self
-		childrenDo: [ :eachChild | modelsWithElements at: eachChild paneModel put: eachChild ].
-
-	somePaneElements := somePaneModels
-			collect: [ :eachPaneModel | 
-				modelsWithElements
-					at: eachPaneModel
-					ifPresent: [ :aPaneElement | aPaneElement ]
-					ifAbsent: [ self newPaneElementFor: eachPaneModel ] ].
-
-	self removeChildren.
-	self addChildren: somePaneElements.
-
-	somePaneElements
-		ifEmpty: [ self addChild: (self newPaneElement visibility: BlVisibility hidden) ]
+	self hasChildren ifFalse: [ 
+		self addChild: (self newPaneElement visibility: BlVisibility hidden) ]
 ]

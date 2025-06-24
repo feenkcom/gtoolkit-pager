@@ -44,6 +44,14 @@ GtTreePagerPaneModel >> allFollowingPanes [
 		streamContents: [ :aStream | self allPanesBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
 ]
 
+{ #category : #'api - following panes' }
+GtTreePagerPaneModel >> allFollowingPanesCount [
+	| anIndex |
+	anIndex := 0.
+	self allPaneModelsDepthFirstDo: [ :aPane | anIndex := anIndex + 1 ].
+	^ anIndex
+]
+
 { #category : #'api - previous panes' }
 GtTreePagerPaneModel >> allPreviousPanesDo: aBlock [
 	self previousPane
@@ -331,13 +339,13 @@ GtTreePagerPaneModel >> phlowTool: aGtPhlowTool [
 ]
 
 { #category : #'api - previous panes' }
-GtTreePagerPaneModel >> previousExpandedToolModel [
+GtTreePagerPaneModel >> previousExpandedPane [
 	<return: #GtTreePagerPaneModel or: nil>
 	^ self previousPane
 		ifNotNil: [ :aPreviousTool | 
 			aPreviousTool isExpanded
 				ifTrue: [ aPreviousTool ]
-				ifFalse: [ aPreviousTool previousExpandedToolModel ] ]
+				ifFalse: [ aPreviousTool previousExpandedPane ] ]
 ]
 
 { #category : #'api - previous panes' }
