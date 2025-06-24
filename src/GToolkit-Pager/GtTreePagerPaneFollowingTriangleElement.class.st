@@ -80,11 +80,17 @@ GtTreePagerPaneFollowingTriangleElement >> newContextMenu [
 					yourself ].
 	aMenu addItem: anActionItem.
 
-	anActionItem := BrMenuActionItem new
-			id: #'menu--collapse-pane';
-			label: 'Collapse' preview: [ self paneModel title ];
-			action: [ :anElement :aButtonModel :anEvent | self paneModel collapse ];
-			yourself.
+	self paneModel isExpanded
+		ifTrue: [ anActionItem := BrMenuActionItem new
+					id: #'menu--collapse-pane';
+					label: 'Collapse' preview: [ self paneModel title ];
+					action: [ :anElement :aButtonModel :anEvent | self paneModel collapse ];
+					yourself ]
+		ifFalse: [ anActionItem := BrMenuActionItem new
+					id: #'menu--expand-pane';
+					label: 'Expand' preview: [ self paneModel title ];
+					action: [ :anElement :aButtonModel :anEvent | self paneModel expand ];
+					yourself ].
 	aMenu addItem: anActionItem.
 
 	anActionItem := BrMenuActionItem new
