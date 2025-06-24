@@ -108,6 +108,7 @@ GtTreePagerExamples >> followingsUpdaterWithCFromCollapsedFPane [
 	somePanes := anUpdater panesToDisplay.
 	self assert: somePanes size equals: 3.
 	self assert: (somePanes collect: #title) equals: #('$F' '$C' '$D').
+	self assert: anUpdater paneElementsToDisplay size equals: 4.
 
 	^ anUpdater
 ]
@@ -123,6 +124,7 @@ GtTreePagerExamples >> followingsUpdaterWithCFromFivePanes [
 	somePanes := anUpdater panesToDisplay.
 	self assert: somePanes size equals: 2.
 	self assert: (somePanes collect: #title) equals: #('$E' '$F' ).
+	self assert: anUpdater paneElementsToDisplay size equals: 2.
 
 	^ anUpdater
 ]
@@ -138,6 +140,7 @@ GtTreePagerExamples >> followingsUpdaterWithFFromFivePanes [
 	somePanes := anUpdater panesToDisplay.
 	self assert: somePanes size equals: 1.
 	self assert: somePanes anyOne title equals: $G printString.
+	self assert: anUpdater paneElementsToDisplay size equals: 1.
 
 	^ anUpdater
 ]
@@ -152,6 +155,7 @@ GtTreePagerExamples >> followingsUpdaterWithGFromFivePanes [
 	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
 	somePanes := anUpdater panesToDisplay.
 	self assert: somePanes isEmpty.
+	self assert: anUpdater paneElementsToDisplay isEmpty.
 
 	^ anUpdater
 ]

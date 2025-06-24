@@ -1,3 +1,8 @@
+"
+I know which {{gtMethod:GtTreePagerPaneModel >> #followingPanes | label=following panes}} should be {{gtMethod: GtTreePagerPaneFollowingsElementUpdater>>#panesToDisplay | label=displayed}} for a give {{gtMethod: GtTreePagerPaneFollowingsElementUpdater >> #paneModel | label=pane model}}. 
+I know update {{gtClass:GtTreePagerPaneFollowingsElement}} children accordingly.
+I do not create links between collapsed pane elements.
+"
 Class {
 	#name : #GtTreePagerPaneFollowingsElementUpdater,
 	#superclass : #Object,
@@ -22,8 +27,9 @@ GtTreePagerPaneFollowingsElementUpdater >> collectPaneElements: aPaneModel in: a
 		aStream nextPut: (GtTreePagerPaneFollowingBasicContainerElement collapsed 
 			paneModel: aPaneModel) ].
 
-	aStream nextPut: (GtTreePagerPaneFollowingBasicContainerElement triangle 
-		paneModel: aPaneModel)
+	(self paneModel followingPanes includes: aPaneModel) ifTrue: [
+		aStream nextPut: (GtTreePagerPaneFollowingBasicContainerElement triangle 
+			paneModel: aPaneModel) ]
 ]
 
 { #category : #private }
@@ -49,6 +55,36 @@ GtTreePagerPaneFollowingsElementUpdater >> followingsElement [
 { #category : #accessing }
 GtTreePagerPaneFollowingsElementUpdater >> followingsElement: anObject [
 	followingsElement := anObject
+]
+
+{ #category : #views }
+GtTreePagerPaneFollowingsElementUpdater >> gtPaneElementsFor: aView [
+	<gtView>
+	self paneModel ifNil: [ ^ aView empty ].
+
+	^ aView columnedList
+		title: 'Pane elements';
+		tooltip: 'Pane elements to display';
+		priority: 5;
+		items: [ self paneElementsToDisplay ];
+		column: 'Element'
+			text: [ :eachElement | 
+				(eachElement isKindOf: GtTreePagerPaneFollowingBasicContainerElement)
+					ifTrue: [ eachElement hasChildren
+							ifTrue: [ | aText |
+								aText := 'Container with ' asRopedText
+										foreground: BlTheme default button disabledTextColor.
+								aText append: (eachElement childAt: 1) gtDisplayText.
+								aText ]
+							ifFalse: [ eachElement gtDisplayString ] ]
+					ifFalse: [ eachElement gtDisplayString ] ] weight: 2;
+		column: 'Pane model' text: [ :eachElement | eachElement paneModel ];
+		column: 'Display index'
+			text: [ :eachElement | 
+				| aDisplayIndex |
+				aDisplayIndex := self panesToDisplay indexOf: eachElement paneModel.
+				aDisplayIndex isZero ifTrue: [ '' ] ifFalse: [ aDisplayIndex ] ]
+			width: 90
 ]
 
 { #category : #views }
@@ -105,6 +141,13 @@ GtTreePagerPaneFollowingsElementUpdater >> gtRootPanesFor: aView [
 ]
 
 { #category : #accessing }
+GtTreePagerPaneFollowingsElementUpdater >> paneElementsToDisplay [
+	"Return pane elements that should be displayed as following panes (to the right of a given pane)."
+
+	^ self collectPaneElements: self panesToDisplay
+]
+
+{ #category : #accessing }
 GtTreePagerPaneFollowingsElementUpdater >> paneModel [
 	^ paneModel ifNil: [ followingsElement ifNotNil: #paneModel ]
 ]
@@ -131,9 +174,9 @@ GtTreePagerPaneFollowingsElementUpdater >> panesToDisplay [
 
 { #category : #updating }
 GtTreePagerPaneFollowingsElementUpdater >> update [
-	| orderedPanes orderedElements |
-	orderedPanes := self panesToDisplay.
-	orderedElements := self collectPaneElements: orderedPanes.
+	| orderedElements |
+	panesToDisplay := nil.
+	orderedElements := self paneElementsToDisplay.
 
 	self followingsElement
 		removeChildren;
