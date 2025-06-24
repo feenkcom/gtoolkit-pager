@@ -80,7 +80,11 @@ GtTreePagerPaneFollowingCollapsedElement >> updateRectangleElement [
 { #category : #'private - updating' }
 GtTreePagerPaneFollowingCollapsedElement >> updateTrianglesElement [
 	| someElements |
-	someElements := self paneModel followingPanes
+	someElements := (self paneModel followingPanes
+			sorted: [ :a :b | 
+				a isCollapsed
+					ifTrue: [ true ]
+					ifFalse: [ b isCollapsed ifTrue: [ false ] ifFalse: [ true ] ] ])
 			collect: [ :eachPane | self newTriangleElementForPaneModel: eachPane ]
 			as: Array.
 
