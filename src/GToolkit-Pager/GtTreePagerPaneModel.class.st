@@ -403,7 +403,9 @@ GtTreePagerPaneModel >> selectFollowingPane: aNewPaneModel [
 
 	anOldPaneModel
 		ifNil: [ self addFollowingPane: aNewPaneModel collapse ]
-		ifNotNil: [ self replaceFollowingPane: anOldPaneModel by: aNewPaneModel ]
+		ifNotNil: [ 
+			aNewPaneModel collapse: anOldPaneModel isCollapsed.
+			self replaceFollowingPane: anOldPaneModel by: aNewPaneModel ]
 ]
 
 { #category : #'api - phlow' }
