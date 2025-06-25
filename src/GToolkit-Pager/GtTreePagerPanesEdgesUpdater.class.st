@@ -12,13 +12,15 @@ Class {
 GtTreePagerPanesEdgesUpdater >> collectEdgeFromCollapsed: aFromPane toCollapsedPane: aToPane in: aStream [
 	| aFromPaneElement aFromTriangleQuery aFromTriangleElement aLineElement aToCollapsedQuery aToCollapsedElement |
 	aFromPaneElement := self panesElement children
-			detect: [ :eachElement | eachElement graph isNode and: [ eachElement paneModel = aFromPane previousExpandedPane ] ]
+			detect: [ :eachElement | 
+				eachElement graph isNode
+					and: [ eachElement paneModel = aFromPane previousExpandedPane ] ]
 			ifFound: [ :anElement | anElement ]
 			ifNone: [ NotFound signalFor: aFromPane in: self panesElement children ].
 
 	aFromTriangleQuery := (aFromPaneElement query
 			// GtTreePagerPaneFollowingCollapsedElement
-			// GtTreePagerPaneFollowingTriangleElement)
+			// GtTreePagerPaneFollowingOutputElement)
 			@ [ :each | each paneModel = aToPane ].
 	aFromTriangleQuery result
 		ifEmpty: [ NotFound signalFor: aToPane in: aFromTriangleQuery ].
@@ -42,8 +44,10 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromCollapsed: aFromPane toCollapsedP
 			beAutomatic;
 			fixedDistance: 10;
 			cornerRadius: 10;
-			fromAnchor: (BlElementCenterRightAnchor element: aFromTriangleElement);
-			toAnchor: (BlElementBottomCenterAnchor element: aToCollapsedElement).
+			fromAnchor: (BlElementBottomCenterAnchor element: aFromTriangleElement);
+			toAnchor: (BlElementTopCenterAnchor element: aToCollapsedElement).
+
+	self styleLineElement: aLineElement.
 
 	aStream nextPut: aLineElement
 ]
@@ -52,7 +56,9 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromCollapsed: aFromPane toCollapsedP
 GtTreePagerPanesEdgesUpdater >> collectEdgeFromCollapsed: aFromPane toExpandedPane: aToPane in: aStream [
 	| aFromElement aToElement aFromTriangleQuery aFromTriangleElement aLineElement |
 	aFromElement := self panesElement children
-			detect: [ :eachElement | eachElement graph isNode and: [ eachElement paneModel = aFromPane previousExpandedPane ] ]
+			detect: [ :eachElement | 
+				eachElement graph isNode
+					and: [ eachElement paneModel = aFromPane previousExpandedPane ] ]
 			ifFound: [ :anElement | anElement ]
 			ifNone: [ NotFound signalFor: aFromPane in: self panesElement children ].
 	aToElement := self panesElement children
@@ -62,7 +68,7 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromCollapsed: aFromPane toExpandedPa
 
 	aFromTriangleQuery := (aFromElement query
 			// GtTreePagerPaneFollowingCollapsedElement
-			// GtTreePagerPaneFollowingTriangleElement)
+			// GtTreePagerPaneFollowingOutputElement)
 			@ [ :each | each paneModel = aToPane ].
 	aFromTriangleQuery result
 		ifEmpty: [ NotFound signalFor: aToPane in: aFromTriangleQuery ].
@@ -80,7 +86,9 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromCollapsed: aFromPane toExpandedPa
 			cornerRadius: 10;
 			fromAnchor: (BlElementCenterRightAnchor element: aFromTriangleElement);
 			toAnchor: (BlElementCenterLeftAnchor element: aToElement).
-			
+
+	self styleLineElement: aLineElement.
+
 	aStream nextPut: aLineElement
 ]
 
@@ -93,7 +101,7 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromTriangle: aFromPane toCollapsedPa
 			ifNone: [ NotFound signalFor: aFromPane in: self panesElement children ].
 
 	aFromTriangleQuery := (aFromPaneElement query
-			// GtTreePagerPaneFollowingTriangleElement)
+			// GtTreePagerPaneFollowingOutputElement)
 			@ [ :each | each paneModel = aToPane ].
 	aFromTriangleQuery result
 		ifEmpty: [ NotFound signalFor: aToPane in: aFromTriangleQuery ].
@@ -118,7 +126,10 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromTriangle: aFromPane toCollapsedPa
 			fixedDistance: 10;
 			cornerRadius: 10;
 			fromAnchor: (BlElementCenterRightAnchor element: aFromTriangleElement);
-			toAnchor: (BlElementBottomCenterAnchor element: aToCollapsedElement).
+			toAnchor: (BlElementTopCenterAnchor element: aToCollapsedElement).
+
+	self styleLineElement: aLineElement.
+
 
 	aStream nextPut: aLineElement
 ]
@@ -136,7 +147,7 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromTriangle: aFromPane toExpandedPan
 			ifNone: [ NotFound signalFor: aToPane in: self panesElement children ].
 
 	aFromTriangleQuery := (aFromElement query
-			// GtTreePagerPaneFollowingTriangleElement)
+			// GtTreePagerPaneFollowingOutputElement)
 			@ [ :each | each paneModel = aToPane ].
 	aFromTriangleQuery result
 		ifEmpty: [ NotFound signalFor: aToPane in: aFromTriangleQuery ].
@@ -155,6 +166,8 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromTriangle: aFromPane toExpandedPan
 			fromAnchor: (BlElementCenterRightAnchor element: aFromTriangleElement);
 			toAnchor: (BlElementCenterLeftAnchor element: aToElement).
 			
+	self styleLineElement: aLineElement.
+	
 	aStream nextPut: aLineElement
 ]
 
@@ -221,6 +234,16 @@ GtTreePagerPanesEdgesUpdater >> panesElement [
 { #category : #accessing }
 GtTreePagerPanesEdgesUpdater >> panesElement: anObject [
 	panesElement := anObject
+]
+
+{ #category : #private }
+GtTreePagerPanesEdgesUpdater >> styleLineElement: aLineElement [
+	| anAptitude |
+	anAptitude := BrLazyStyleCommonAptitude new
+			default: [ :aStyle | aStyle border: aLineElement theme button fadedBackgroundColor ];
+			hovered: [ :aStyle | aStyle border: aLineElement theme button focusedFadedBackgroundColor ].
+
+	aLineElement addAptitude: anAptitude
 ]
 
 { #category : #building }

@@ -3,51 +3,68 @@ Class {
 	#superclass : #GtTreePagerPaneBasicElement,
 	#instVars : [
 		'rectangleElement',
-		'trianglesElement'
+		'rightOutputsElement',
+		'bottomOutputsElement'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
 GtTreePagerPaneFollowingCollapsedElement >> defaultLayout [
-	^ BlLinearLayout horizontal
-]
-
-{ #category : #initialization }
-GtTreePagerPaneFollowingCollapsedElement >> defaultSize [
-	^ 16 @ 16
+	^ BlGridLayout horizontal columnCount: 2
 ]
 
 { #category : #initialization }
 GtTreePagerPaneFollowingCollapsedElement >> initialize [
 	super initialize.
 
-	self exact: self defaultSize.
+	self fitContent.
 
 	self initializeRectangleElement.
-	self initializeTrianglesElement.
+	self initializeRightOutputsElement.
+	self initializeBottomOutputsElement.
 
 	self
 		addChildren: {rectangleElement.
-				trianglesElement}
+				rightOutputsElement.
+				bottomOutputsElement}
+]
+
+{ #category : #initialization }
+GtTreePagerPaneFollowingCollapsedElement >> initializeBottomOutputsElement [
+	bottomOutputsElement := BrHorizontalPane new
+			fitContent;
+			constraintsDo: [ :c | 
+				c grid horizontal alignCenter.
+				c grid vertical alignTop ]
 ]
 
 { #category : #initialization }
 GtTreePagerPaneFollowingCollapsedElement >> initializeRectangleElement [
-	rectangleElement := GtTreePagerPaneFollowingRectangleElement new matchParent
+	rectangleElement := GtTreePagerPaneFollowingRectangleElement new
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingCollapsedElement >> initializeTrianglesElement [
-	trianglesElement := BrVerticalPane new fitContent
+GtTreePagerPaneFollowingCollapsedElement >> initializeRightOutputsElement [
+	rightOutputsElement := BrVerticalPane new
+			fitContent;
+			constraintsDo: [ :c | 
+				c grid horizontal alignLeft.
+				c grid vertical alignCenter ]
 ]
 
 { #category : #'private - updating' }
-GtTreePagerPaneFollowingCollapsedElement >> newTriangleElementForPaneModel: aPaneModel [
+GtTreePagerPaneFollowingCollapsedElement >> newOutputElementForPaneModel: aPaneModel [
 	| anElement |
-	anElement := GtTreePagerPaneFollowingTriangleElement new
+	anElement := GtTreePagerPaneFollowingOutputElement new
 			beSmallSize;
 			paneModel: aPaneModel.
+
+	aPaneModel isExpanded
+		ifTrue: [ anElement beHorizontal.
+			anElement margin: (BlInsets top: 1 bottom: 1) ]
+		ifFalse: [ anElement beVertical.
+			anElement margin: (BlInsets left: 1 right: 1) ].
 
 	^ anElement
 ]
@@ -60,31 +77,27 @@ GtTreePagerPaneFollowingCollapsedElement >> onPaneModelChanged [
 
 { #category : #'private - updating' }
 GtTreePagerPaneFollowingCollapsedElement >> updateElement [
-	self paneModel followingPanes size isZero
-		ifTrue: [ self exact: self defaultSize ]
-		ifFalse: [ self fitContent ].
-
 	self updateRectangleElement.
-	self updateTrianglesElement
+	self updateOutputElements
+]
+
+{ #category : #'private - updating' }
+GtTreePagerPaneFollowingCollapsedElement >> updateOutputElements [
+	| someElements |
+	someElements := self paneModel followingPanes
+			collect: [ :eachPane | self newOutputElementForPaneModel: eachPane ]
+			as: Array.
+
+	rightOutputsElement
+		removeChildren;
+		addChildren: (someElements select: [ :each | each paneModel isExpanded ]).
+
+	bottomOutputsElement
+		removeChildren;
+		addChildren: (someElements select: [ :each | each paneModel isCollapsed ])
 ]
 
 { #category : #'private - updating' }
 GtTreePagerPaneFollowingCollapsedElement >> updateRectangleElement [
-	self paneModel followingPanes size isZero
-		ifTrue: [ rectangleElement matchParent ]
-		ifFalse: [ rectangleElement
-				hExact: 8;
-				vMatchParent ]
-]
-
-{ #category : #'private - updating' }
-GtTreePagerPaneFollowingCollapsedElement >> updateTrianglesElement [
-	| someElements |
-	someElements := self paneModel followingPanes
-			collect: [ :eachPane | self newTriangleElementForPaneModel: eachPane ]
-			as: Array.
-
-	trianglesElement
-		removeChildren;
-		addChildren: someElements
+	
 ]

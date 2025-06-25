@@ -1,18 +1,28 @@
 Class {
-	#name : #GtTreePagerPaneFollowingTriangleElement,
+	#name : #GtTreePagerPaneFollowingOutputElement,
 	#superclass : #GtTreePagerPaneBasicElement,
 	#traits : 'TBrSizeAdjustable',
 	#classTraits : 'TBrSizeAdjustable classTrait',
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
+{ #category : #'api - orientation' }
+GtTreePagerPaneFollowingOutputElement >> beHorizontal [
+	self states addState: BrListOrientationState horizontal
+]
+
+{ #category : #'api - orientation' }
+GtTreePagerPaneFollowingOutputElement >> beVertical [
+	self states addState: BrListOrientationState vertical
+]
+
 { #category : #initialization }
-GtTreePagerPaneFollowingTriangleElement >> defaultLayout [
+GtTreePagerPaneFollowingOutputElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingTriangleElement >> initialize [
+GtTreePagerPaneFollowingOutputElement >> initialize [
 	super initialize.
 
 	self
@@ -20,50 +30,68 @@ GtTreePagerPaneFollowingTriangleElement >> initialize [
 		constraintsDo: [ :c | 
 			c linear horizontal alignRight.
 			c linear vertical alignCenter ];
-		outskirts: BlOutskirts centered;
 		margin: (BlInsets all: 2);
+		outskirts: BlOutskirts centered;
 		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ];
 		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
 				handleSubmenu: [ self newContextMenu ]).
 
 	self initializeElementStyling.
-	self initializeSizeStyling.
+	self initializeGeometryAndSizeStyling
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingTriangleElement >> initializeElementStyling [
+GtTreePagerPaneFollowingOutputElement >> initializeElementStyling [
 	| anAptitude |
 	anAptitude := BrLazyStyleCommonAptitude new
-			default: [ :aStyle | 
-				aStyle background: self theme button defaultBackground.
-				aStyle border: self theme button fadedBackgroundColor ];
-			hovered: [ :aStyle | 
+			when: BrSizeAdjustmentState normal & BlElementState selected not
+						& BlElementState hovered not
+				style: [ :aStyle | 
+					aStyle background: self theme button defaultBackground.
+					aStyle border: self theme button fadedBackgroundColor ];
+			when: BrSizeAdjustmentState small & BlElementState selected not
+						& BlElementState hovered not
+				style: [ :aStyle | aStyle background: self theme button fadedBackgroundColor ];
+			when: BrSizeAdjustmentState normal & BlElementState hovered
+				style: [ :aStyle | 
 					aStyle background: self theme button focusedFadedBackgroundColor.
 					aStyle border: self theme button focusedFadedBackgroundColor ];
-			when: BlElementState selected & BlElementState hovered not
+			when: BrSizeAdjustmentState small & BlElementState hovered
+				style: [ :aStyle | aStyle background: self theme button focusedFadedBackgroundColor ];
+			when: BrSizeAdjustmentState normal & BlElementState selected
+						& BlElementState hovered not
 				style: [ :aStyle | 
 					aStyle background: self theme button fadedBackgroundColor.
-					aStyle border: self theme button fadedBackgroundColor ].
+					aStyle border: self theme button fadedBackgroundColor ];
+			when: BrSizeAdjustmentState small & BlElementState selected
+						& BlElementState hovered not
+				style: [ :aStyle | aStyle background: self theme button fadedBackgroundColor ].
 
 	self addAptitude: anAptitude
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingTriangleElement >> initializeSizeStyling [
+GtTreePagerPaneFollowingOutputElement >> initializeGeometryAndSizeStyling [
 	| anAptitude |
 	anAptitude := BrSizeAdjustmentAptitude new
-			small: [ :aStyle | 
-				aStyle geometry: self smallSizeGeometry.
-				aStyle do: [ :aWidget | aWidget exact: 10 @ 20 ] ];
+			when: BrListOrientationState horizontal & BrSizeAdjustmentState small
+				style: [ :aStyle | 
+					aStyle geometry: BlRectangleGeometry new.
+					aStyle do: [ :aWidget | aWidget exact: 6 @ 1 ] ];
+			when: BrListOrientationState vertical & BrSizeAdjustmentState small
+				style: [ :aStyle | 
+					aStyle geometry: BlRectangleGeometry new.
+					aStyle do: [ :aWidget | aWidget exact: 1 @ 6 ] ];
 			normal: [ :aStyle | 
 				aStyle geometry: self normalSizeGeometry.
-				aStyle do: [ :aWidget | aWidget exact: 16 @ 30 ] ].
+				aStyle
+					do: [ :aWidget | aWidget exact: self triangleWidth @ self triangleHeight ] ].
 
 	self addAptitude: anAptitude
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingTriangleElement >> newContextMenu [
+GtTreePagerPaneFollowingOutputElement >> newContextMenu [
 	| aMenu anActionItem |
 	aMenu := BrMenuItems new.
 
@@ -114,15 +142,15 @@ GtTreePagerPaneFollowingTriangleElement >> newContextMenu [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingTriangleElement >> normalSizeGeometry [
+GtTreePagerPaneFollowingOutputElement >> normalSizeGeometry [
 	^ BlPolygonGeometry
 		vertices: {0 @ 0.
-				16 @ 16.
-				0 @ 32}
+				self triangleWidth @ (self triangleHeight // 2).
+				0 @ self triangleHeight}
 ]
 
 { #category : #'private - event management' }
-GtTreePagerPaneFollowingTriangleElement >> onClickEvent: anEvent [
+GtTreePagerPaneFollowingOutputElement >> onClickEvent: anEvent [
 	| aToolModel |
 	self visibility isVisible ifFalse: [ ^ self ].
 	self paneModel ifNil: [ ^ self ].
@@ -132,38 +160,40 @@ GtTreePagerPaneFollowingTriangleElement >> onClickEvent: anEvent [
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerPaneFollowingTriangleElement >> onGtTreePagerPaneModelPreviousActiveLinkChanged: anAnnouncement [
+GtTreePagerPaneFollowingOutputElement >> onGtTreePagerPaneModelPreviousActiveLinkChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingTriangleElement >> onPaneModelChanged [
+GtTreePagerPaneFollowingOutputElement >> onPaneModelChanged [
 	self updateElement
 ]
 
-{ #category : #initialization }
-GtTreePagerPaneFollowingTriangleElement >> smallSizeGeometry [
-	^ BlPolygonGeometry
-		vertices: {0 @ 0.
-				10 @ 10.
-				0 @ 20}
-]
-
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingTriangleElement >> subscribeToPaneModel [
+GtTreePagerPaneFollowingOutputElement >> subscribeToPaneModel [
 	self paneModel weak
 		when: GtTreePagerPaneModelPreviousActiveLinkChanged
 		send: #onGtTreePagerPaneModelPreviousActiveLinkChanged:
 		to: self
 ]
 
+{ #category : #initialization }
+GtTreePagerPaneFollowingOutputElement >> triangleHeight [
+	^ 32
+]
+
+{ #category : #initialization }
+GtTreePagerPaneFollowingOutputElement >> triangleWidth [
+	^ 16
+]
+
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingTriangleElement >> unsubscribeFromPaneModel [
+GtTreePagerPaneFollowingOutputElement >> unsubscribeFromPaneModel [
 	self paneModel unsubscribe: self
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingTriangleElement >> updateElement [
+GtTreePagerPaneFollowingOutputElement >> updateElement [
 	self paneModel isActiveLink
 		ifTrue: [ self states addState: BlElementState selected ]
 		ifFalse: [ self states removeState: BlElementState selected ]

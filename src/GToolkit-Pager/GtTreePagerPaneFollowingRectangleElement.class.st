@@ -20,13 +20,13 @@ GtTreePagerPaneFollowingRectangleElement >> initialize [
 		constraintsDo: [ :c | 
 			c linear horizontal alignRight.
 			c linear vertical alignCenter ];
-		margin: (BlInsets all: 2);
+		margin: (BlInsets all: 0);
 		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ];
 		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
 				handleSubmenu: [ self newContextMenu ]);
 		addAptitude: (BrLazyStyleCommonAptitude new
 				default: [ :aStyle | 
-					aStyle background: self theme button defaultBackground.
+					aStyle background:  self theme button fadedBackgroundColor.
 					aStyle border: self theme button fadedBackgroundColor ];
 				hovered: [ :aStyle | 
 					aStyle background: self theme button focusedFadedBackgroundColor.

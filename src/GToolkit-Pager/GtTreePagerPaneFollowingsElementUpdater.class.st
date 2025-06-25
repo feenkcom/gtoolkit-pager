@@ -23,17 +23,21 @@ GtTreePagerPaneFollowingsElementUpdater >> collectPaneElements: orderedPanes [
 
 { #category : #private }
 GtTreePagerPaneFollowingsElementUpdater >> collectPaneElements: aPaneModel in: aStream [
-	aPaneModel isCollapsed ifTrue: [ 
-		aStream nextPut: (GtTreePagerPaneFollowingBasicContainerElement collapsed 
-			paneModel: aPaneModel) ].
-
 	(self paneModel followingPanes includes: aPaneModel) ifTrue: [
 		aStream nextPut: (GtTreePagerPaneFollowingBasicContainerElement triangle 
+			paneModel: aPaneModel) ].
+
+	aPaneModel isCollapsed ifTrue: [ 
+		aStream nextPut: (GtTreePagerPaneFollowingBasicContainerElement collapsed 
 			paneModel: aPaneModel) ]
 ]
 
 { #category : #private }
 GtTreePagerPaneFollowingsElementUpdater >> collectPanesToDisplay: aPaneModel in: aStream depth: aDepth [
+	aDepth = 1
+		ifTrue: [ aStream nextPut: aPaneModel ]
+		ifFalse: [ aPaneModel isCollapsed ifTrue: [ aStream nextPut: aPaneModel ] ].
+		
 	aPaneModel isCollapsed
 		ifTrue: [ aPaneModel followingPanes
 				do: [ :eachPaneModel | 
@@ -41,10 +45,6 @@ GtTreePagerPaneFollowingsElementUpdater >> collectPanesToDisplay: aPaneModel in:
 						collectPanesToDisplay: eachPaneModel
 						in: aStream
 						depth: aDepth + 1 ] ].
-
-	aDepth = 1
-		ifTrue: [ aStream nextPut: aPaneModel ]
-		ifFalse: [ aPaneModel isCollapsed ifTrue: [ aStream nextPut: aPaneModel ] ]
 ]
 
 { #category : #accessing }

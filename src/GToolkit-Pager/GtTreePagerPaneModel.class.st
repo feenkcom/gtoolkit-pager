@@ -138,18 +138,6 @@ GtTreePagerPaneModel >> followingCollapsedPaneModels [
 ]
 
 { #category : #'api - following panes' }
-GtTreePagerPaneModel >> followingExpandedAndCollapsedPaneModels [
-	^ Array
-		streamContents: [ :aStream | 
-			self followingPanes
-				do: [ :eachPane | 
-					aStream nextPut: eachPane.
-					eachPane isCollapsed
-						ifTrue: [ aStream nextPutAll: eachPane followingCollapsedPaneModels.
-							aStream nextPutAll: eachPane followingExpandedPaneModels ] ] ]
-]
-
-{ #category : #'api - following panes' }
 GtTreePagerPaneModel >> followingExpandedPaneModels [
 	^ Array
 		streamContents: [ :aStream | 

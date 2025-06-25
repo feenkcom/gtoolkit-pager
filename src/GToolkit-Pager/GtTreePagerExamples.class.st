@@ -107,7 +107,7 @@ GtTreePagerExamples >> followingsUpdaterWithCFromCollapsedFPane [
 	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
 	somePanes := anUpdater panesToDisplay.
 	self assert: somePanes size equals: 3.
-	self assert: (somePanes collect: #title) equals: #('$F' '$C' '$D').
+	self assert: (somePanes collect: #title) equals: #('$C' '$F' '$D').
 	self assert: anUpdater paneElementsToDisplay size equals: 4.
 
 	^ anUpdater
