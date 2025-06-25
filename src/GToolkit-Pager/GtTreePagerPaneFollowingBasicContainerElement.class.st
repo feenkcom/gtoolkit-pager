@@ -13,6 +13,7 @@ GtTreePagerPaneFollowingBasicContainerElement class >> collapsed [
 	^ self new
 		addChild: (GtTreePagerPaneFollowingCollapsedElement new
 				constraintsDo: [ :c | 
+					c margin: (BlInsets left: 10).
 					c frame vertical alignCenter.
 					c frame horizontal alignLeft ])
 ]
@@ -20,7 +21,8 @@ GtTreePagerPaneFollowingBasicContainerElement class >> collapsed [
 { #category : #factory }
 GtTreePagerPaneFollowingBasicContainerElement class >> triangle [
 	^ self new
-		addChild: (GtTreePagerPaneFollowingTriangleElement new
+		addChild: (GtTreePagerPaneFollowingOutputElement new
+				beNormalSize;
 				constraintsDo: [ :c | 
 					c frame vertical alignCenter.
 					c frame horizontal alignLeft ])

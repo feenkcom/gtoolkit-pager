@@ -20,7 +20,7 @@ GtTreePagerPaneFollowingContainerElement >> initialize [
 		vMatchParent;
 		hFitContent.
 
-	expandedElement := GtTreePagerPaneFollowingTriangleElement new
+	expandedElement := GtTreePagerPaneFollowingOutputElement new
 			constraintsDo: [ :c | 
 				c frame vertical alignCenter.
 				c frame horizontal alignLeft ].

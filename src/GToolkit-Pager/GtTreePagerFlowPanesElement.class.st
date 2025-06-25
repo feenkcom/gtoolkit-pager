@@ -5,18 +5,6 @@ Class {
 }
 
 { #category : #'api - children enumeration' }
-GtTreePagerFlowPanesElement >> childEdgeFromPaneModel: aFromPaneModel toPaneModel: aToPaneModel ifFound: aFoundBlock ifNone: aNoneBlock [
-	^ self children
-		detect: [ :eachElement | 
-			eachElement graph isEdge
-				and: [ | anAssoc |
-					anAssoc := eachElement graph model.
-					anAssoc key = aFromPaneModel and: [ anAssoc value = aToPaneModel ] ] ]
-		ifFound: aFoundBlock
-		ifNone: aNoneBlock
-]
-
-{ #category : #'api - children enumeration' }
 GtTreePagerFlowPanesElement >> childNodeForPaneModel: aPaneModel ifFound: aFoundBlock ifNone: aNoneBlock [
 	^ self children
 		detect: [ :eachElement | eachElement graph isNode and: [ eachElement paneModel = aPaneModel ] ]
@@ -31,20 +19,6 @@ GtTreePagerFlowPanesElement >> defaultLayout [
 		firstVisibleColumn: 1;
 		horizontalOffset: 0;
 		cellSpacing: 10
-]
-
-{ #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> ensureEdgeFromPaneModel: aFromPaneModel toPaneModel: aToPaneModel [
-	| anElement |
-	anElement := self
-			childEdgeFromPaneModel: aFromPaneModel
-			toPaneModel: aToPaneModel
-			ifFound: [ :aLineElement | aLineElement ]
-			ifNone: [ self
-					newEdgeElementFromPaneModel: aFromPaneModel
-					toPaneModel: aToPaneModel ].
-
-	anElement hasParent ifFalse: [ self addChild: anElement ]
 ]
 
 { #category : #'private - updating' }
@@ -83,40 +57,6 @@ GtTreePagerFlowPanesElement >> initialize [
 	self
 		when: BlMouseWheelEvent
 		do: [ :anEvent | self layoutDo: [ :aLayout | aLayout mouseWheelEvent: anEvent ] ]
-]
-
-{ #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> newEdgeElementFromPaneModel: aFromPaneModel toPaneModel: aToPaneModel [
-	| aFromElement aToElement aFromTriangleQuery aFromTriangleElement |
-	aFromElement := self
-			childNodeForPaneModel: aFromPaneModel
-			ifFound: [ :anElement | anElement ]
-			ifNone: [ NotFound signalFor: aFromPaneModel in: self children ].
-
-	aToElement := self
-			childNodeForPaneModel: aToPaneModel
-			ifFound: [ :anElement | anElement ]
-			ifNone: [ NotFound signalFor: aToPaneModel in: self children ].
-
-	aFromTriangleQuery := (aFromElement query
-			// GtTreePagerPaneFollowingTriangleElement)
-			@ [ :each | each paneModel = aToPaneModel ].
-	aFromTriangleQuery result
-		ifEmpty: [ NotFound signalFor: aToPaneModel in: aFromTriangleQuery ].
-	aFromTriangleElement := aFromTriangleQuery result anyOne.
-
-	^ BlManhattanLineElement new
-		in: [ :theElement | 
-			theElement graph
-				beEdge;
-				model: aFromPaneModel -> aToPaneModel ];
-		zIndex: -1;
-		border: (BlBorder paint: self theme button fadedBackgroundColor);
-		beFixedTo;
-		fixedDistance: 10;
-		cornerRadius: 10;
-		fromAnchor: (BlElementCenterRightAnchor element: aFromTriangleElement);
-		toAnchor: (BlElementCenterLeftAnchor element: aToElement)
 ]
 
 { #category : #'private - updating' }
@@ -186,14 +126,6 @@ GtTreePagerFlowPanesElement >> updateElement [
 	GtTreePagerPanesEdgesUpdater new
 		panesElement: self;
 		update.
-		
-	"self pagerModel
-		allPanesBreadthFirstDo: [ :eachFromPane | 
-			eachFromPane isCollapsed
-				ifFalse: [ eachFromPane followingExpandedPaneModels
-						do: [ :eachToPane | 
-							eachToPane isCollapsed
-								ifFalse: [ self ensureEdgeFromPaneModel: eachFromPane toPaneModel: eachToPane ] ] ] ]"
 ]
 
 { #category : #'private - updating' }
@@ -207,7 +139,8 @@ GtTreePagerFlowPanesElement >> updateElementDueTo: aPaneModel addedFollowingPane
 				self
 					childrenDo: [ :eachChild | 
 						(eachChild graph isEdge
-							and: [ allRemovedPanes includes: eachChild graph model value ])
+							and: [ (allRemovedPanes includes: eachChild graph model value)
+									or: [ allRemovedPanes includes: eachChild graph model key ] ])
 							ifTrue: [ aStream nextPut: eachChild ] ].
 
 				allRemovedPanes
@@ -229,7 +162,9 @@ GtTreePagerFlowPanesElement >> updateElementDueToExpansionChange: aPaneModel [
 			streamContents: [ :aStream | 
 				self
 					childrenDo: [ :eachChild | 
-						(eachChild graph isEdge and: [ eachChild graph model value = aPaneModel ])
+						(eachChild graph isEdge
+							and: [ eachChild graph model value = aPaneModel
+									or: [ eachChild graph model key = aPaneModel ] ])
 							ifTrue: [ aStream nextPut: eachChild ] ].
 
 				aPaneModel isCollapsed
