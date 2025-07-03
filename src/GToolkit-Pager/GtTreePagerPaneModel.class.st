@@ -110,6 +110,16 @@ GtTreePagerPaneModel >> collapsedChainCount [
 		collapsedChainCount
 ]
 
+{ #category : #'api - previous panes' }
+GtTreePagerPaneModel >> depthIndex [
+	"Return my depth in the pane tree structure.
+	Root panes returns `1` values."
+
+	^ self previousPane 
+		ifNotNil: [ :aPane | aPane depthIndex + 1 ] 
+		ifNil: [ 1 ]
+]
+
 { #category : #'api - enumeration' }
 GtTreePagerPaneModel >> enumerablePaneModels [
 	<return: #Collection of: #GtTreePagerPaneModel>

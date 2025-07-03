@@ -39,6 +39,11 @@ GtTreePagerModel >> children [
 	^ self paneModels
 ]
 
+{ #category : #'api - pane model' }
+GtTreePagerModel >> depthIndex [
+	^ 0
+]
+
 { #category : #'api - enumeration' }
 GtTreePagerModel >> enumerablePaneModels [
 	<return: #Collection of: #GtTreePagerPaneModel>

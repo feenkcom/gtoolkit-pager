@@ -168,7 +168,7 @@ GtTreePagerExamples >> pagerElementWithFiveColumns [
 	aPagerModel := self pagerWithFivePanes.
 	aPagerElement pagerModel: aPagerModel.
 
-	(aPagerElement childAt: 1) layoutDo: [ :l | l numberOfVisibleColumns: 5 ].
+	(aPagerElement childAt: aPagerElement childrenCount) layoutDo: [ :l | l numberOfVisibleColumns: 5 ].
 
 	^ aPagerElement
 ]
@@ -463,16 +463,17 @@ GtTreePagerExamples >> treeFlowBuilderWithCollapsedFCPanes [
 
 	GtTreePagerHorizontalTreeFlowBuilder new
 		paneModels: aPager paneModels;
-		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex | 
+		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
 			allCallbacks
 				add: {aPaneModel.
 						aRowIndex.
-						aDepthIndex} ];
+						aDepthIndex.
+						aSpanIndex} ];
 		build.
 
 	self
 		assertTreeFlowBuilderCallbacks: allCallbacks
-		equalsPaneCharacters: #(#($A) #($B) #($E $G $D)).
+		equalsPaneCharacters: #(#($A) #($B) #(nil $E $G $D)).
 	^ allCallbacks
 ]
 
@@ -485,11 +486,12 @@ GtTreePagerExamples >> treeFlowBuilderWithCollapsedFPane [
 
 	GtTreePagerHorizontalTreeFlowBuilder new
 		paneModels: aPager paneModels;
-		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex | 
+		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
 			allCallbacks
 				add: {aPaneModel.
 						aRowIndex.
-						aDepthIndex} ];
+						aDepthIndex.
+						aSpanIndex} ];
 		build.
 
 	self
@@ -507,16 +509,17 @@ GtTreePagerExamples >> treeFlowBuilderWithFivePanes [
 
 	GtTreePagerHorizontalTreeFlowBuilder new
 		paneModels: aPager paneModels;
-		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex | 
+		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
 			allCallbacks
 				add: {aPaneModel.
 						aRowIndex.
-						aDepthIndex} ];
+						aDepthIndex.
+						aSpanIndex} ];
 		build.
 
 	self
 		assertTreeFlowBuilderCallbacks: allCallbacks
-		equalsPaneCharacters: #(#($A) #($B) #($C $D) #($E $F) #($G)).
+		equalsPaneCharacters: #(#($A) #($B) #($C $D) #($E $F) #(nil $G)).
 
 	^ allCallbacks
 ]

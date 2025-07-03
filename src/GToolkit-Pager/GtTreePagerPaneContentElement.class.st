@@ -54,6 +54,20 @@ GtTreePagerPaneContentElement >> onGtPhlowObjectToSpawn: anEvent [
 
 { #category : #accessing }
 GtTreePagerPaneContentElement >> onPaneModelChanged [
-	self removeChildren.
-	self addChild: self paneModel asElement as: #tool
+	| targetId |
+	targetId := #tool asBlocElementId.
+	self childrenDo: [ :eachChild | eachChild id = targetId 
+		ifTrue: [ eachChild removeFromParent ] ].
+
+	self addChild: self paneModel asElement as: targetId
+]
+
+{ #category : #accessing }
+GtTreePagerPaneContentElement >> toolElement [
+	| targetId |
+	targetId := #tool asBlocElementId.
+	self
+		childrenDo: [ :eachChild | eachChild id = targetId ifTrue: [ ^ eachChild ] ].
+
+	^ nil
 ]
