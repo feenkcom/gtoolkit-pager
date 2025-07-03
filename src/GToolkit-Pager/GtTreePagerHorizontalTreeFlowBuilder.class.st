@@ -72,7 +72,8 @@ GtTreePagerHorizontalTreeFlowBuilder >> processNode: aNode [
 	paneModelBlock
 		value: aNode paneModel
 		value: (aNode paneModel isExpanded ifTrue: [ row ] ifFalse: [ nil ])
-		value: (aNode paneModel isExpanded ifTrue: [ depth ] ifFalse: [ nil ]).
+		value: (aNode paneModel isExpanded ifTrue: [ depth ] ifFalse: [ nil ])
+		value: (aNode paneModel isExpanded ifTrue: [ 1 ] ifFalse: [ nil ]).
 
 	aNode paneModel isExpanded
 		ifTrue: [ nextDepthQueue

@@ -22,7 +22,7 @@ GtTreePagerFlowPanesElement >> defaultLayout [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex depth: aDepthIndex [
+GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex depth: aDepthIndex span: aSpanIndex [
 	| anElement |
 	aPaneModel isCollapsed
 		ifTrue: [ ^ self ensureRemoveElementForPaneModel: aPaneModel ].
@@ -36,7 +36,8 @@ GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex
 		constraintsDo: [ :c | 
 			c horizontalTreeFlow
 				row: aRowIndex;
-				depth: aDepthIndex ].
+				depth: aDepthIndex;
+				span: aSpanIndex ].
 
 	anElement hasParent ifFalse: [ self addChild: anElement ]
 ]
@@ -116,16 +117,17 @@ GtTreePagerFlowPanesElement >> unsubscribeFromPagerModel [
 GtTreePagerFlowPanesElement >> updateElement [
 	GtTreePagerHorizontalTreeFlowBuilder new
 		paneModels: self pagerModel paneModels;
-		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex | 
+		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
 			self
 				ensureNodeForPaneModel: aPaneModel
 				row: aRowIndex
-				depth: aDepthIndex ];
+				depth: aDepthIndex
+				span: aSpanIndex ];
 		build.
 
 	GtTreePagerPanesEdgesUpdater new
 		panesElement: self;
-		update.
+		update
 ]
 
 { #category : #'private - updating' }
