@@ -18,7 +18,7 @@ GtTreePagerFlowPanesElement >> defaultLayout [
 		numberOfVisibleColumns: 2;
 		firstVisibleColumn: 1;
 		horizontalOffset: 0;
-		cellSpacing: 10
+		cellSpacing: 20
 ]
 
 { #category : #'private - updating' }
