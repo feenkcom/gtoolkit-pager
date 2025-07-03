@@ -4,8 +4,7 @@ Class {
 	#instVars : [
 		'contentElement',
 		'followingsElement',
-		'disappearElement',
-		'maximizeElement'
+		'disappearElement'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -43,7 +42,7 @@ GtTreePagerPaneElement >> initialize [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newDisappearElement [
-	^ GtInspectorRoundButtonStencil normal asElement
+	^ GtInspectorRoundButtonStencil small asElement
 		icon: BrPlusIconStencil close asElement;
 		label: 'Close pane';
 		id: GtPagerMaximizeButtonElementId;
@@ -58,31 +57,67 @@ GtTreePagerPaneElement >> newDisappearElement [
 GtTreePagerPaneElement >> onDisappearClick: anEvent [
 	anEvent consumed: true.
 	self hasPaneModel ifFalse: [ ^ self ].
+	self paneModel depthIndex = 1 ifTrue: [ ^ self ].
 
-	self paneModel hasFollowingPanes
-		ifTrue: [ self paneModel collapse ]
-		ifFalse: [ self paneModel removeFromPreviousPane ]
+	self paneModel followingExpandedPaneModels isEmpty
+		ifFalse: [ self paneModel collapse ]
+		ifTrue: [ self paneModel removeFromPreviousPane ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerPaneElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
+	BlTaskAction enqueueElement: self action: [ self updateDisappearElement ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerPaneElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
+	BlTaskAction enqueueElement: self action: [ self updateDisappearElement ]
 ]
 
 { #category : #accessing }
 GtTreePagerPaneElement >> onPaneModelChanged [
+	super onPaneModelChanged.
 	contentElement paneModel: self paneModel.
 	followingsElement paneModel: self paneModel.
 	
 	self updateElement.
 ]
 
+{ #category : #'api - pane model' }
+GtTreePagerPaneElement >> subscribeToPaneModel [
+	super subscribeToPaneModel.
+
+	self paneModel announcer weak
+		when: GtTreePagerPaneModelFollowingPanesChanged
+			send: #onGtTreePagerPaneModelFollowingPanesChanged:
+			to: self;
+		when: GtTreePagerPaneModelExpansionChanged
+			send: #onGtTreePagerPaneModelExpansionChanged:
+			to: self
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerPaneElement >> unsubscribeFromPaneModel [
+	super unsubscribeFromPaneModel.
+
+	self paneModel announcer unsubscribe: self
+]
+
 { #category : #'private - updating' }
 GtTreePagerPaneElement >> updateDisappearElement [
-	self paneModel hasFollowingPanes
-		ifTrue: [ disappearElement
+	self paneModel depthIndex = 1 ifTrue: [
+		disappearElement visibility:  BlVisibility gone.
+		^ self ].
+
+	self paneModel followingExpandedPaneModels isEmpty
+		ifFalse: [ disappearElement
 				icon: (BlElement new
 						size: 2 @ 10;
 						background: Color gray);
 				label: 'Collapse pane' ]
-		ifFalse: [ disappearElement
+		ifTrue: [ disappearElement
 				icon: BrPlusIconStencil close asElement;
-				label: 'Close pane' ]
+				label: 'Remove pane' ]
 ]
 
 { #category : #'private - updating' }
