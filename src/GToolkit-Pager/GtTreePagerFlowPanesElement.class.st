@@ -97,6 +97,15 @@ GtTreePagerFlowPanesElement >> onPagerModelChanged [
 	self updateElement
 ]
 
+{ #category : #'api - scrolling' }
+GtTreePagerFlowPanesElement >> scrollToColumn: aColumn [
+	self
+		layoutDo: [ :l | 
+			l
+				firstVisibleColumn: aColumn;
+				horizontalOffset: 0 ]
+]
+
 { #category : #'api - pager model' }
 GtTreePagerFlowPanesElement >> subscribeToPagerModel [
 	self pagerModel announcer weak
