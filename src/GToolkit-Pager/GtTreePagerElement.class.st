@@ -2,7 +2,8 @@ Class {
 	#name : #GtTreePagerElement,
 	#superclass : #GtTreePagerBasicElement,
 	#instVars : [
-		'panesElement'
+		'panesElement',
+		'scrollbarElement'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -17,7 +18,9 @@ GtTreePagerElement >> initialize [
 	super initialize.
 	self matchParent.
 
+	scrollbarElement := GtTreePagerScrollbarElement new margin: (BlInsets top: 10).
 	panesElement := GtTreePagerFlowPanesElement new matchParent.
+	self addChild: scrollbarElement.
 	self addChild: panesElement.
 
 	self
@@ -34,12 +37,22 @@ GtTreePagerElement >> initialize [
 						label: 'Minimize pane';
 						constraintsDo: [ :c | 
 							c frame horizontal alignCenterAt: 0.0.
-							c frame vertical alignCenterAt: 0.0 ] ])
+							c frame vertical alignCenterAt: 0.0 ] ]).
+
+	self
+		when: GtTreePagerScrollToColumnWish
+		do: [ :aWish | self onGtTreePagerScrollToColumnWish: aWish ]
+]
+
+{ #category : #initialization }
+GtTreePagerElement >> onGtTreePagerScrollToColumnWish: aWish [ 
+	panesElement scrollToColumn: aWish column 
 ]
 
 { #category : #'api - pager model' }
 GtTreePagerElement >> onPagerModelChanged [
 	super onPagerModelChanged.
 
-	panesElement pagerModel: self pagerModel
+	panesElement pagerModel: self pagerModel.
+	scrollbarElement pagerModel: self pagerModel
 ]

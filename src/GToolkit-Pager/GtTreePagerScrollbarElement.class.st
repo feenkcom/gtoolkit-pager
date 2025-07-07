@@ -3,15 +3,52 @@ Class {
 	#superclass : #GtTreePagerBasicElement,
 	#instVars : [
 		'scrollbarElement',
-		'pagesElement',
-		'pageModelsAndElements'
+		'pageModelsAndElements',
+		'panesElement'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
+{ #category : #'api - children enumeration' }
+GtTreePagerScrollbarElement >> childNodeForPaneModel: aPaneModel ifFound: aFoundBlock ifNone: aNoneBlock [
+	^ panesElement children
+		detect: [ :eachElement | eachElement graph isNode and: [ eachElement paneModel = aPaneModel ] ]
+		ifFound: aFoundBlock
+		ifNone: aNoneBlock
+]
+
 { #category : #initialization }
 GtTreePagerScrollbarElement >> defaultLayout [
 	^ BlLinearLayout horizontal
+]
+
+{ #category : #'private - updating' }
+GtTreePagerScrollbarElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex depth: aDepthIndex span: aSpanIndex [
+	| anElement |
+	aPaneModel isCollapsed
+		ifTrue: [ ^ self ensureRemoveElementForPaneModel: aPaneModel ].
+
+	anElement := self
+			childNodeForPaneModel: aPaneModel
+			ifFound: [ :theElement | theElement ]
+			ifNone: [ self newNodeElementForPaneModel: aPaneModel ].
+
+	anElement
+		constraintsDo: [ :c | 
+			c horizontalTreeFlow
+				row: aRowIndex;
+				depth: aDepthIndex;
+				span: aSpanIndex ].
+
+	anElement hasParent ifFalse: [ panesElement addChild: anElement ]
+]
+
+{ #category : #'private - updating' }
+GtTreePagerScrollbarElement >> ensureRemoveElementForPaneModel: aPaneModel [
+	self
+		childNodeForPaneModel: aPaneModel
+		ifFound: [ :anElement | anElement removeFromParent ]
+		ifNone: [  "ignore" ]
 ]
 
 { #category : #initialization }
@@ -23,10 +60,16 @@ GtTreePagerScrollbarElement >> initialize [
 
 	pageModelsAndElements := OrderedCollection new.
 
-	pagesElement := BrHorizontalPane new.
-	pagesElement
-		alignCenter;
-		fitContent.
+	panesElement := BlElement new.
+	panesElement
+		layout: (BlHorizontalTreeFlowLayout new
+				numberOfVisibleColumns: 20;
+				firstVisibleColumn: 1;
+				horizontalOffset: 0;
+				cellSpacing: 2);
+		constraintsDo: [ :c | 
+			c horizontal fitContent.
+			c vertical exact: 20 ].
 
 	scrollbarElement := BlHorizontalScrollbarElement new
 			disableClickToScroll;
@@ -44,7 +87,7 @@ GtTreePagerScrollbarElement >> initialize [
 
 	wrapperElement := BrVerticalPane new
 			fitContent;
-			addChild: pagesElement;
+			addChild: panesElement;
 			addChild: scrollbarElement.
 
 	containerElement := BrHorizontalPane new
@@ -55,4 +98,76 @@ GtTreePagerScrollbarElement >> initialize [
 			addChild: wrapperElement.
 
 	self addChild: containerElement
+]
+
+{ #category : #'private - updating' }
+GtTreePagerScrollbarElement >> newNodeElementForPaneModel: aPaneModel [
+	^ GtTreePagerPaneScrollPreviewElement new
+		hExact: 15;
+		vMatchParent;
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 2);
+		addAptitude: BrGlamorousFadedButtonExteriourAptitude;
+		in: [ :theElement | 
+			theElement graph
+				beNode;
+				model: aPaneModel ];
+		when: BlClickEvent do: [ :anEvent | self onPaneElementClick: anEvent ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerScrollbarElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
+	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
+
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerScrollbarElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
+	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
+
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
+]
+
+{ #category : #'api - pager model' }
+GtTreePagerScrollbarElement >> onPagerModelChanged [
+	super onPagerModelChanged.
+	self updateElement
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerScrollbarElement >> onPaneElementClick: anEvent [
+	anEvent consumed: true.
+
+	self
+		fireEvent: (GtTreePagerScrollToColumnWish new
+				column: anEvent currentTarget constraints horizontalTreeFlow depth)
+]
+
+{ #category : #'api - pager model' }
+GtTreePagerScrollbarElement >> subscribeToPagerModel [
+	self pagerModel announcer weak
+		when: GtTreePagerPaneModelFollowingPanesChanged
+			send: #onGtTreePagerPaneModelFollowingPanesChanged:
+			to: self;
+		when: GtTreePagerPaneModelExpansionChanged
+			send: #onGtTreePagerPaneModelExpansionChanged:
+			to: self
+]
+
+{ #category : #'api - pager model' }
+GtTreePagerScrollbarElement >> unsubscribeFromPagerModel [
+	self pagerModel unsubscribe: self
+]
+
+{ #category : #'private - updating' }
+GtTreePagerScrollbarElement >> updateElement [
+	GtTreePagerHorizontalTreeFlowBuilder new
+		paneModels: self pagerModel paneModels;
+		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
+			self
+				ensureNodeForPaneModel: aPaneModel
+				row: aRowIndex
+				depth: aDepthIndex
+				span: aSpanIndex ];
+		build
 ]
