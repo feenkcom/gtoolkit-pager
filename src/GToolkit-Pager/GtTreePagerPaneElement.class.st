@@ -88,7 +88,7 @@ GtTreePagerPaneElement >> subscribeToPaneModel [
 	super subscribeToPaneModel.
 
 	self paneModel announcer weak
-		when: GtTreePagerPaneModelFollowingPanesChanged
+		when: GtTreePagerPaneModelFollowingLinksChanged
 			send: #onGtTreePagerPaneModelFollowingPanesChanged:
 			to: self;
 		when: GtTreePagerPaneModelExpansionChanged

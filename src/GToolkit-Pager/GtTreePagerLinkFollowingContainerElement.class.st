@@ -1,15 +1,11 @@
 Class {
-	#name : #GtTreePagerPaneFollowingBasicContainerElement,
-	#superclass : #GtTreePagerPaneBasicElement,
-	#instVars : [
-		'expandedElement',
-		'collapsedElement'
-	],
+	#name : #GtTreePagerLinkFollowingContainerElement,
+	#superclass : #GtTreePagerLinkBasicElement,
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #factory }
-GtTreePagerPaneFollowingBasicContainerElement class >> collapsed [
+GtTreePagerLinkFollowingContainerElement class >> collapsed [
 	^ self new
 		addChild: (GtTreePagerPaneFollowingCollapsedElement new
 				constraintsDo: [ :c | 
@@ -19,7 +15,7 @@ GtTreePagerPaneFollowingBasicContainerElement class >> collapsed [
 ]
 
 { #category : #factory }
-GtTreePagerPaneFollowingBasicContainerElement class >> triangle [
+GtTreePagerLinkFollowingContainerElement class >> triangle [
 	^ self new
 		addChild: (GtTreePagerPaneFollowingOutputElement new
 				beNormalSize;
@@ -29,12 +25,12 @@ GtTreePagerPaneFollowingBasicContainerElement class >> triangle [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingBasicContainerElement >> defaultLayout [
+GtTreePagerLinkFollowingContainerElement >> defaultLayout [
 	^ BlFrameLayout new
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingBasicContainerElement >> initialize [
+GtTreePagerLinkFollowingContainerElement >> initialize [
 	super initialize.
 	self
 		vMatchParent;
@@ -42,7 +38,7 @@ GtTreePagerPaneFollowingBasicContainerElement >> initialize [
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingBasicContainerElement >> onPaneModelChanged [
+GtTreePagerLinkFollowingContainerElement >> onLinkModelChanged [
 	self children do: [ :eachChild | 
-		eachChild paneModel: self paneModel ]
+		eachChild linkModel: self linkModel ]
 ]

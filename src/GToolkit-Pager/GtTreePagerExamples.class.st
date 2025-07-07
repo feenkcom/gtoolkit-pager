@@ -105,10 +105,10 @@ GtTreePagerExamples >> followingsUpdaterWithCFromCollapsedFPane [
 	aPane := aPager detectPaneModel: [ :each | each title = $B printString ].
 
 	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
-	somePanes := anUpdater panesToDisplay.
+	somePanes := anUpdater linksToDisplay.
 	self assert: somePanes size equals: 3.
 	self assert: (somePanes collect: #title) equals: #('$C' '$F' '$D').
-	self assert: anUpdater paneElementsToDisplay size equals: 4.
+	self assert: anUpdater linkElementsToDisplay size equals: 4.
 
 	^ anUpdater
 ]
@@ -121,10 +121,10 @@ GtTreePagerExamples >> followingsUpdaterWithCFromFivePanes [
 	aPane := aPager detectPaneModel: [ :each | each title = $C printString ].
 
 	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
-	somePanes := anUpdater panesToDisplay.
+	somePanes := anUpdater linksToDisplay.
 	self assert: somePanes size equals: 2.
 	self assert: (somePanes collect: #title) equals: #('$E' '$F' ).
-	self assert: anUpdater paneElementsToDisplay size equals: 2.
+	self assert: anUpdater linkElementsToDisplay size equals: 2.
 
 	^ anUpdater
 ]
@@ -137,10 +137,10 @@ GtTreePagerExamples >> followingsUpdaterWithFFromFivePanes [
 	aPane := aPager detectPaneModel: [ :each | each title = $F printString ].
 
 	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
-	somePanes := anUpdater panesToDisplay.
+	somePanes := anUpdater linksToDisplay.
 	self assert: somePanes size equals: 1.
 	self assert: somePanes anyOne title equals: $G printString.
-	self assert: anUpdater paneElementsToDisplay size equals: 1.
+	self assert: anUpdater linkElementsToDisplay size equals: 1.
 
 	^ anUpdater
 ]
@@ -153,9 +153,9 @@ GtTreePagerExamples >> followingsUpdaterWithGFromFivePanes [
 	aPane := aPager detectPaneModel: [ :each | each title = $G printString ].
 
 	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
-	somePanes := anUpdater panesToDisplay.
+	somePanes := anUpdater linksToDisplay.
 	self assert: somePanes isEmpty.
-	self assert: anUpdater paneElementsToDisplay isEmpty.
+	self assert: anUpdater linkElementsToDisplay isEmpty.
 
 	^ anUpdater
 ]
@@ -182,7 +182,7 @@ GtTreePagerExamples >> pagerWithAWithFollowingHPane [
 	self assert: aPaneA isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
-	aPaneA replaceFollowingPaneBy: aPaneH.
+	aPaneA spawnFollowingPane: aPaneH.
 
 	self assert: aPaneA followingPanes size equals: 1.
 
@@ -200,7 +200,7 @@ GtTreePagerExamples >> pagerWithCWithFollowingEFHPanes [
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
 	aPaneC inactivateLink.
-	aPaneC replaceFollowingPaneBy: aPaneH.
+	aPaneC spawnFollowingPane: aPaneH.
 
 	self assert: aPaneC followingPanes size equals: 3.
 
@@ -210,17 +210,17 @@ GtTreePagerExamples >> pagerWithCWithFollowingEFHPanes [
 { #category : #'examples - pager' }
 GtTreePagerExamples >> pagerWithCWithFollowingHFPanes [
 	<gtExample>
-	| aPager aPaneC aPaneH aPaneF |
+	| aPager aPaneC aPaneH aLinkF |
 	aPager := self pagerWithFivePanes.
 	aPaneC := aPager detectPaneModel: [ :each | each title = '$C' ].
 	self assert: aPaneC isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
-	aPaneF := aPaneC followingPanes second.
-	self assert: aPaneF title equals: '$F'.
-	aPaneF beActiveLink.
-	self assert: aPaneC activeLink equals: aPaneF.
-	aPaneC replaceFollowingPaneBy: aPaneH.
+	aLinkF := aPaneC followingLinks second.
+	self assert: aLinkF title equals: '$F'.
+	aLinkF beActiveLink.
+	self assert: aPaneC activeLink equals: aLinkF.
+	aPaneC spawnFollowingPane: aPaneH.
 
 	self assert: aPaneC followingPanes size equals: 2.
 
@@ -236,7 +236,7 @@ GtTreePagerExamples >> pagerWithCWithFollowingHPane [
 	self assert: aPaneC isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
-	aPaneC replaceFollowingPaneBy: aPaneH.
+	aPaneC spawnFollowingPane: aPaneH.
 
 	self assert: aPaneC followingPanes size equals: 2.
 
@@ -292,7 +292,7 @@ GtTreePagerExamples >> pagerWithDWithFollowingHPane [
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
 	aPaneD followingPanes do: [ :each | each fasten ].
-	aPaneD replaceFollowingPaneBy: aPaneH.
+	aPaneD spawnFollowingPane: aPaneH.
 
 	^ aPager
 ]
@@ -407,31 +407,31 @@ GtTreePagerExamples >> paneModelWithPhlowBuilderFor: anObject [
 { #category : #'examples - panes' }
 GtTreePagerExamples >> paneModelWithThreeFollowingLevels [
 	<gtExample>
-	| aToolB aToolA aToolC aToolD aToolE aToolF aToolG |
-	aToolA := self paneModelWithPhlowBuilderFor: $A.
-	aToolB := self paneModelWithPhlowBuilderFor: $B.
-	aToolC := self paneModelWithPhlowBuilderFor: $C.
-	aToolD := self paneModelWithPhlowBuilderFor: $D.
-	aToolE := self paneModelWithPhlowBuilderFor: $E.
-	aToolF := self paneModelWithPhlowBuilderFor: $F.
-	aToolG := self paneModelWithPhlowBuilderFor: $G.
+	| aPaneA aPaneB aPaneC aPaneD aPaneE aPaneF aPaneG |
+	aPaneA := self paneModelWithPhlowBuilderFor: $A.
+	aPaneB := self paneModelWithPhlowBuilderFor: $B.
+	aPaneC := self paneModelWithPhlowBuilderFor: $C.
+	aPaneD := self paneModelWithPhlowBuilderFor: $D.
+	aPaneE := self paneModelWithPhlowBuilderFor: $E.
+	aPaneF := self paneModelWithPhlowBuilderFor: $F.
+	aPaneG := self paneModelWithPhlowBuilderFor: $G.
 
-	aToolA addFollowingPane: aToolB.
-	aToolB addFollowingPane: aToolC.
-	aToolB addFollowingPane: aToolD.
-	aToolC addFollowingPane: aToolE.
-	aToolC addFollowingPane: aToolF.
-	aToolF addFollowingPane: aToolG.
+	aPaneA addFollowingPane: aPaneB.
+	aPaneB addFollowingPane: aPaneC.
+	aPaneB addFollowingPane: aPaneD.
+	aPaneC addFollowingPane: aPaneE.
+	aPaneC addFollowingPane: aPaneF.
+	aPaneF addFollowingPane: aPaneG.
 
-	self assert: aToolA followingPanes size equals: 1.
-	self assert: aToolB followingPanes size equals: 2.
-	self assert: aToolC followingPanes size equals: 2.
-	self assert: aToolD followingPanes size equals: 0.
-	self assert: aToolE followingPanes size equals: 0.
-	self assert: aToolF followingPanes size equals: 1.
-	self assert: aToolG followingPanes size equals: 0.
+	self assert: aPaneA followingPanes size equals: 1.
+	self assert: aPaneB followingPanes size equals: 2.
+	self assert: aPaneC followingPanes size equals: 2.
+	self assert: aPaneD followingPanes size equals: 0.
+	self assert: aPaneE followingPanes size equals: 0.
+	self assert: aPaneF followingPanes size equals: 1.
+	self assert: aPaneG followingPanes size equals: 0.
 
-	^ aToolA
+	^ aPaneA
 ]
 
 { #category : #'examples - panes' }

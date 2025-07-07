@@ -14,8 +14,10 @@ GtTreePagerHorizontalTreeFlowNode >> paneModel [
 ]
 
 { #category : #accessing }
-GtTreePagerHorizontalTreeFlowNode >> paneModel: anObject [
-	paneModel := anObject
+GtTreePagerHorizontalTreeFlowNode >> paneModel: aPaneModel [
+	self assert: [ aPaneModel isKindOf: GtTreePagerPaneModel ].
+
+	paneModel := aPaneModel
 ]
 
 { #category : #accessing }

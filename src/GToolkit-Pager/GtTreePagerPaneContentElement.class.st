@@ -47,7 +47,7 @@ GtTreePagerPaneContentElement >> onGtPhlowObjectToSpawn: anEvent [
 	self paneModel ifNil: [ ^ self ].
 	anEvent consumed: true.
 	self paneModel
-		replaceFollowingPaneBy: (GtTreePagerPaneModel new
+		spawnFollowingPane: (GtTreePagerPaneModel new
 				phlowTool: anEvent tool;
 				expand)
 ]

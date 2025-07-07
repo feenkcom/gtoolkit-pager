@@ -1,6 +1,6 @@
 Class {
 	#name : #GtTreePagerPaneFollowingOutputElement,
-	#superclass : #GtTreePagerPaneBasicElement,
+	#superclass : #GtTreePagerLinkBasicElement,
 	#traits : 'TBrSizeAdjustable',
 	#classTraits : 'TBrSizeAdjustable classTrait',
 	#category : #'GToolkit-Pager-Tree Pager'
@@ -95,29 +95,29 @@ GtTreePagerPaneFollowingOutputElement >> newContextMenu [
 	| aMenu anActionItem |
 	aMenu := BrMenuItems new.
 
-	self paneModel isActiveLink
+	self linkModel isActiveLink
 		ifTrue: [ anActionItem := BrMenuActionItem new
 					id: #'menu--keep-link';
-					label: 'Keep' preview: [ self paneModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self paneModel beInactiveLink ];
+					label: 'Keep' preview: [ self linkModel title ];
+					action: [ :anElement :aButtonModel :anEvent | self linkModel beInactiveLink ];
 					yourself ]
 		ifFalse: [ anActionItem := BrMenuActionItem new
 					id: #'menu--activate-link';
-					label: 'Activate' preview: [ self paneModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self paneModel beActiveLink ];
+					label: 'Activate' preview: [ self linkModel title ];
+					action: [ :anElement :aButtonModel :anEvent | self linkModel beActiveLink ];
 					yourself ].
 	aMenu addItem: anActionItem.
 
-	self paneModel isExpanded
+	self linkModel isExpanded
 		ifTrue: [ anActionItem := BrMenuActionItem new
 					id: #'menu--collapse-pane';
-					label: 'Collapse' preview: [ self paneModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self paneModel collapse ];
+					label: 'Collapse' preview: [ self linkModel title ];
+					action: [ :anElement :aButtonModel :anEvent | self linkModel collapse ];
 					yourself ]
 		ifFalse: [ anActionItem := BrMenuActionItem new
 					id: #'menu--expand-pane';
-					label: 'Expand' preview: [ self paneModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self paneModel expand ];
+					label: 'Expand' preview: [ self linkModel title ];
+					action: [ :anElement :aButtonModel :anEvent | self linkModel expand ];
 					yourself ].
 	aMenu addItem: anActionItem.
 
@@ -125,8 +125,8 @@ GtTreePagerPaneFollowingOutputElement >> newContextMenu [
 			id: #'menu--remove-pane';
 			label: 'Remove'
 				preview: [ '{1}{2}'
-						format: {self paneModel title.
-								self paneModel allFollowingPanesCount
+						format: {self linkModel title.
+								self linkModel allFollowingPanesCount
 									ifNotNil: [ :aCount | 
 										aCount isZero
 											ifTrue: [ '' ]
@@ -134,7 +134,7 @@ GtTreePagerPaneFollowingOutputElement >> newContextMenu [
 													format: {aCount.
 															'pane' asPluralBasedOn: aCount} ] ]
 									ifNil: [ '' ]} ];
-			action: [ :anElement :aButtonModel :anEvent | self paneModel removeFromPreviousPane ];
+			action: [ :anElement :aButtonModel :anEvent | self linkModel removeFromPreviousPane ];
 			yourself.
 	aMenu addItem: anActionItem.
 
@@ -153,10 +153,10 @@ GtTreePagerPaneFollowingOutputElement >> normalSizeGeometry [
 GtTreePagerPaneFollowingOutputElement >> onClickEvent: anEvent [
 	| aToolModel |
 	self visibility isVisible ifFalse: [ ^ self ].
-	self paneModel ifNil: [ ^ self ].
+	self linkModel ifNil: [ ^ self ].
 	anEvent consumed: true.
 
-	aToolModel := self paneModel expand
+	aToolModel := self linkModel expand
 ]
 
 { #category : #'private - event handling' }
@@ -165,13 +165,13 @@ GtTreePagerPaneFollowingOutputElement >> onGtTreePagerPaneModelPreviousActiveLin
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingOutputElement >> onPaneModelChanged [
+GtTreePagerPaneFollowingOutputElement >> onLinkModelChanged [
 	self updateElement
 ]
 
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingOutputElement >> subscribeToPaneModel [
-	self paneModel weak
+	self linkModel weak
 		when: GtTreePagerPaneModelPreviousActiveLinkChanged
 		send: #onGtTreePagerPaneModelPreviousActiveLinkChanged:
 		to: self
@@ -189,12 +189,12 @@ GtTreePagerPaneFollowingOutputElement >> triangleWidth [
 
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingOutputElement >> unsubscribeFromPaneModel [
-	self paneModel unsubscribe: self
+	self linkModel unsubscribe: self
 ]
 
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingOutputElement >> updateElement [
-	self paneModel isActiveLink
+	self linkModel isActiveLink
 		ifTrue: [ self states addState: BlElementState selected ]
 		ifFalse: [ self states removeState: BlElementState selected ]
 ]
