@@ -1,0 +1,31 @@
+Class {
+	#name : #GtTreePagerLinkInactiveSpawnedState,
+	#superclass : #GtTreePagerLinkState,
+	#category : #'GToolkit-Pager-Tree Pager'
+}
+
+{ #category : #visiting }
+GtTreePagerLinkInactiveSpawnedState >> acceptVisitor: aVisitor [
+	^ aVisitor visitGtTreePagerLinkInactiveSpawnedState: self
+]
+
+{ #category : #'api - state' }
+GtTreePagerLinkInactiveSpawnedState >> activate [
+	"Return an active state"
+
+	^ GtTreePagerLinkState spawned
+]
+
+{ #category : #'api - state' }
+GtTreePagerLinkInactiveSpawnedState >> collapse [
+	"Return a collapsed state"
+
+	^ GtTreePagerLinkState collapsed
+]
+
+{ #category : #'api - state' }
+GtTreePagerLinkInactiveSpawnedState >> isDisplayed [
+	"Return true if link pane model is displayed (expanded and spawned)"
+
+	^ true
+]

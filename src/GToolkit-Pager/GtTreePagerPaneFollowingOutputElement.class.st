@@ -92,53 +92,9 @@ GtTreePagerPaneFollowingOutputElement >> initializeGeometryAndSizeStyling [
 
 { #category : #initialization }
 GtTreePagerPaneFollowingOutputElement >> newContextMenu [
-	| aMenu anActionItem |
-	aMenu := BrMenuItems new.
-
-	self linkModel isActiveLink
-		ifTrue: [ anActionItem := BrMenuActionItem new
-					id: #'menu--keep-link';
-					label: 'Keep' preview: [ self linkModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self linkModel beInactiveLink ];
-					yourself ]
-		ifFalse: [ anActionItem := BrMenuActionItem new
-					id: #'menu--activate-link';
-					label: 'Activate' preview: [ self linkModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self linkModel beActiveLink ];
-					yourself ].
-	aMenu addItem: anActionItem.
-
-	self linkModel isExpanded
-		ifTrue: [ anActionItem := BrMenuActionItem new
-					id: #'menu--collapse-pane';
-					label: 'Collapse' preview: [ self linkModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self linkModel collapse ];
-					yourself ]
-		ifFalse: [ anActionItem := BrMenuActionItem new
-					id: #'menu--expand-pane';
-					label: 'Expand' preview: [ self linkModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self linkModel expand ];
-					yourself ].
-	aMenu addItem: anActionItem.
-
-	anActionItem := BrMenuActionItem new
-			id: #'menu--remove-pane';
-			label: 'Remove'
-				preview: [ '{1}{2}'
-						format: {self linkModel title.
-								self linkModel allFollowingPanesCount
-									ifNotNil: [ :aCount | 
-										aCount isZero
-											ifTrue: [ '' ]
-											ifFalse: [ ' and {1} other {2}'
-													format: {aCount.
-															'pane' asPluralBasedOn: aCount} ] ]
-									ifNil: [ '' ]} ];
-			action: [ :anElement :aButtonModel :anEvent | self linkModel removeFromPreviousPane ];
-			yourself.
-	aMenu addItem: anActionItem.
-
-	^ aMenu
+	^ GtTreePagerLinkContextMenuBuilder new
+		linkModel: self linkModel;
+		build
 ]
 
 { #category : #initialization }
