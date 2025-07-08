@@ -1,7 +1,7 @@
 "
-I know which {{gtMethod:GtTreePagerPaneModel >> #followingPanes | label=following panes}} should be {gtMethod: GtTreePagerPaneFollowingsElementUpdater>>#panesToDisplay | label=displayed} for a give {{gtMethod: GtTreePagerPaneFollowingsElementUpdater >> #paneModel | label=pane model}}. 
-I know update {{gtClass:GtTreePagerPaneFollowingsElement}} children accordingly.
-I do not create links between collapsed pane elements.
+I know which {{gtMethod:GtTreePagerPaneModel >> #followingPanes | label=following panes}} should be {{gtMethod: GtTreePagerPaneFollowingsElementUpdater>>#linksToDisplay | label=displayed}} for a given {{gtMethod: GtTreePagerPaneFollowingsElementUpdater >> #paneModel | label=pane model}}. 
+I updates {{gtClass:GtTreePagerPaneFollowingsElement}} children accordingly.
+I do not create links between pane and link elements.
 "
 Class {
 	#name : #GtTreePagerPaneFollowingsElementUpdater,
