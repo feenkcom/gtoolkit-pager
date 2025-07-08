@@ -1,5 +1,5 @@
 "
-I know which {{gtMethod:GtTreePagerPaneModel >> #followingPanes | label=following panes}} should be {{gtMethod: GtTreePagerPaneFollowingsElementUpdater>>#panesToDisplay | label=displayed}} for a give {{gtMethod: GtTreePagerPaneFollowingsElementUpdater >> #paneModel | label=pane model}}. 
+I know which {{gtMethod:GtTreePagerPaneModel >> #followingPanes | label=following panes}} should be {gtMethod: GtTreePagerPaneFollowingsElementUpdater>>#panesToDisplay | label=displayed} for a give {{gtMethod: GtTreePagerPaneFollowingsElementUpdater >> #paneModel | label=pane model}}. 
 I know update {{gtClass:GtTreePagerPaneFollowingsElement}} children accordingly.
 I do not create links between collapsed pane elements.
 "
