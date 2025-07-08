@@ -1,6 +1,6 @@
 Class {
 	#name : #GtTreePagerPaneFollowingRectangleElement,
-	#superclass : #GtTreePagerPaneBasicElement,
+	#superclass : #GtTreePagerLinkBasicElement,
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
@@ -40,8 +40,8 @@ GtTreePagerPaneFollowingRectangleElement >> newContextMenu [
 
 	anActionItem := BrMenuActionItem new
 			id: #'menu--expand-pane';
-			label: 'Expand' preview: [ self paneModel title ];
-			action: [ :anElement :aButtonModel :anEvent | self paneModel expand ];
+			label: 'Expand' preview: [ self linkModel title ];
+			action: [ :anElement :aButtonModel :anEvent | self linkModel expand ];
 			yourself.
 	aMenu addItem: anActionItem.
 
@@ -49,8 +49,8 @@ GtTreePagerPaneFollowingRectangleElement >> newContextMenu [
 			id: #'menu--remove-pane';
 			label: 'Remove'
 				preview: [ '{1}{2}'
-						format: {self paneModel title.
-								self paneModel allFollowingPanesCount
+						format: {self linkModel title.
+								self linkModel allFollowingPanesCount
 									ifNotNil: [ :aCount | 
 										aCount isZero
 											ifTrue: [ '' ]
@@ -58,7 +58,7 @@ GtTreePagerPaneFollowingRectangleElement >> newContextMenu [
 													format: {aCount.
 															'pane' asPluralBasedOn: aCount} ] ]
 									ifNil: [ '' ]} ];
-			action: [ :anElement :aButtonModel :anEvent | self paneModel removeFromPreviousPane ];
+			action: [ :anElement :aButtonModel :anEvent | self linkModel removeFromPreviousPane ];
 			yourself.
 	aMenu addItem: anActionItem.
 
@@ -67,8 +67,8 @@ GtTreePagerPaneFollowingRectangleElement >> newContextMenu [
 
 { #category : #initialization }
 GtTreePagerPaneFollowingRectangleElement >> onClickEvent: anEvent [
-	self paneModel ifNil: [ ^ self ].
-
 	anEvent consumed: true.
-	self paneModel expand
+	self linkModel ifNil: [ ^ self ].
+
+	self linkModel expand
 ]

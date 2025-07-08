@@ -21,7 +21,7 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromCollapsed: aFromPane toCollapsedP
 	aFromTriangleQuery := (aFromPaneElement query
 			// GtTreePagerPaneFollowingCollapsedElement
 			// GtTreePagerPaneFollowingOutputElement)
-			@ [ :each | each paneModel = aToPane ].
+			@ [ :each | each linkModel paneModel = aToPane ].
 	aFromTriangleQuery result
 		ifEmpty: [ NotFound signalFor: aToPane in: aFromTriangleQuery ].
 	aFromTriangleElement := aFromTriangleQuery result anyOne.
@@ -29,7 +29,7 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromCollapsed: aFromPane toCollapsedP
 	aToCollapsedQuery := (aFromPaneElement query
 			// GtTreePagerPaneFollowingCollapsedElement
 			/ GtTreePagerPaneFollowingRectangleElement)
-			@ [ :each | each paneModel = aToPane ].
+			@ [ :each | each linkModel paneModel = aToPane ].
 	aToCollapsedQuery result
 		ifEmpty: [ NotFound signalFor: aToPane in: aToCollapsedQuery ].
 	aToCollapsedElement := aToCollapsedQuery result anyOne.
@@ -69,7 +69,7 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromCollapsed: aFromPane toExpandedPa
 	aFromTriangleQuery := (aFromElement query
 			// GtTreePagerPaneFollowingCollapsedElement
 			// GtTreePagerPaneFollowingOutputElement)
-			@ [ :each | each paneModel = aToPane ].
+			@ [ :each | each linkModel paneModel = aToPane ].
 	aFromTriangleQuery result
 		ifEmpty: [ NotFound signalFor: aToPane in: aFromTriangleQuery ].
 	aFromTriangleElement := aFromTriangleQuery result anyOne.
@@ -102,7 +102,7 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromTriangle: aFromPane toCollapsedPa
 
 	aFromTriangleQuery := (aFromPaneElement query
 			// GtTreePagerPaneFollowingOutputElement)
-			@ [ :each | each paneModel = aToPane ].
+			@ [ :each | each linkModel paneModel = aToPane ].
 	aFromTriangleQuery result
 		ifEmpty: [ NotFound signalFor: aToPane in: aFromTriangleQuery ].
 	aFromTriangleElement := aFromTriangleQuery result anyOne.
@@ -110,7 +110,7 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromTriangle: aFromPane toCollapsedPa
 	aToCollapsedQuery := (aFromPaneElement query
 			// GtTreePagerPaneFollowingCollapsedElement
 			/ GtTreePagerPaneFollowingRectangleElement)
-			@ [ :each | each paneModel = aToPane ].
+			@ [ :each | each linkModel paneModel = aToPane ].
 	aToCollapsedQuery result
 		ifEmpty: [ NotFound signalFor: aToPane in: aToCollapsedQuery ].
 	aToCollapsedElement := aToCollapsedQuery result anyOne.
@@ -148,7 +148,7 @@ GtTreePagerPanesEdgesUpdater >> collectEdgeFromTriangle: aFromPane toExpandedPan
 
 	aFromTriangleQuery := (aFromElement query
 			// GtTreePagerPaneFollowingOutputElement)
-			@ [ :each | each paneModel = aToPane ].
+			@ [ :each | each linkModel paneModel = aToPane ].
 	aFromTriangleQuery result
 		ifEmpty: [ NotFound signalFor: aToPane in: aFromTriangleQuery ].
 	aFromTriangleElement := aFromTriangleQuery result anyOne.

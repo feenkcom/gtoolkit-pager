@@ -146,7 +146,7 @@ GtTreePagerScrollbarElement >> onPaneElementClick: anEvent [
 { #category : #'api - pager model' }
 GtTreePagerScrollbarElement >> subscribeToPagerModel [
 	self pagerModel announcer weak
-		when: GtTreePagerPaneModelFollowingPanesChanged
+		when: GtTreePagerPaneModelFollowingLinksChanged
 			send: #onGtTreePagerPaneModelFollowingPanesChanged:
 			to: self;
 		when: GtTreePagerPaneModelExpansionChanged

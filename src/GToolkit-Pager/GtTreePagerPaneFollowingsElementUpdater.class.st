@@ -1,5 +1,5 @@
 "
-I know which {{gtMethod:GtTreePagerPaneModel >> #followingPanes | label=following panes}} should be {{gtMethod: GtTreePagerPaneFollowingsElementUpdater>>#panesToDisplay | label=displayed}} for a give {{gtMethod: GtTreePagerPaneFollowingsElementUpdater >> #paneModel | label=pane model}}. 
+I know which {{gtMethod:GtTreePagerPaneModel >> #followingPanes | label=following panes}} should be {gtMethod: GtTreePagerPaneFollowingsElementUpdater>>#panesToDisplay | label=displayed} for a give {{gtMethod: GtTreePagerPaneFollowingsElementUpdater >> #paneModel | label=pane model}}. 
 I know update {{gtClass:GtTreePagerPaneFollowingsElement}} children accordingly.
 I do not create links between collapsed pane elements.
 "
@@ -9,40 +9,40 @@ Class {
 	#instVars : [
 		'followingsElement',
 		'paneModel',
-		'panesToDisplay'
+		'linksToDisplay'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #private }
-GtTreePagerPaneFollowingsElementUpdater >> collectPaneElements: orderedPanes [ 
+GtTreePagerPaneFollowingsElementUpdater >> collectLinkElements: orderedLinks [ 
 	^ Array streamContents: [ :aStream | 
-		orderedPanes do: [ :eachPane | 
-			self collectPaneElements: eachPane in: aStream ] ]
+		orderedLinks do: [ :eachLinks | 
+			self collectLinkElements: eachLinks in: aStream ] ]
 ]
 
 { #category : #private }
-GtTreePagerPaneFollowingsElementUpdater >> collectPaneElements: aPaneModel in: aStream [
-	(self paneModel followingPanes includes: aPaneModel) ifTrue: [
-		aStream nextPut: (GtTreePagerPaneFollowingBasicContainerElement triangle 
-			paneModel: aPaneModel) ].
+GtTreePagerPaneFollowingsElementUpdater >> collectLinkElements: aLinkModel in: aStream [
+	(self paneModel followingLinks includes: aLinkModel) ifTrue: [
+		aStream nextPut: (GtTreePagerLinkFollowingContainerElement triangle 
+			linkModel: aLinkModel) ].
 
-	aPaneModel isCollapsed ifTrue: [ 
-		aStream nextPut: (GtTreePagerPaneFollowingBasicContainerElement collapsed 
-			paneModel: aPaneModel) ]
+	aLinkModel isCollapsed ifTrue: [ 
+		aStream nextPut: (GtTreePagerLinkFollowingContainerElement collapsed 
+			linkModel: aLinkModel) ]
 ]
 
 { #category : #private }
-GtTreePagerPaneFollowingsElementUpdater >> collectPanesToDisplay: aPaneModel in: aStream depth: aDepth [
+GtTreePagerPaneFollowingsElementUpdater >> collectLinksToDisplay: aLinkModel in: aStream depth: aDepth [
 	aDepth = 1
-		ifTrue: [ aStream nextPut: aPaneModel ]
-		ifFalse: [ aPaneModel isCollapsed ifTrue: [ aStream nextPut: aPaneModel ] ].
+		ifTrue: [ aStream nextPut: aLinkModel ]
+		ifFalse: [ aLinkModel isCollapsed ifTrue: [ aStream nextPut: aLinkModel ] ].
 		
-	aPaneModel isCollapsed
-		ifTrue: [ aPaneModel followingPanes
-				do: [ :eachPaneModel | 
+	aLinkModel isCollapsed
+		ifTrue: [ aLinkModel followingLinks
+				do: [ :eachLinkModel | 
 					self
-						collectPanesToDisplay: eachPaneModel
+						collectLinksToDisplay: eachLinkModel
 						in: aStream
 						depth: aDepth + 1 ] ].
 ]
@@ -58,18 +58,18 @@ GtTreePagerPaneFollowingsElementUpdater >> followingsElement: anObject [
 ]
 
 { #category : #views }
-GtTreePagerPaneFollowingsElementUpdater >> gtPaneElementsFor: aView [
+GtTreePagerPaneFollowingsElementUpdater >> gtLinkElementsFor: aView [
 	<gtView>
 	self paneModel ifNil: [ ^ aView empty ].
 
 	^ aView columnedList
-		title: 'Pane elements';
-		tooltip: 'Pane elements to display';
+		title: 'Link elements';
+		tooltip: 'Link elements to display';
 		priority: 5;
-		items: [ self paneElementsToDisplay ];
+		items: [ self linkElementsToDisplay ];
 		column: 'Element'
 			text: [ :eachElement | 
-				(eachElement isKindOf: GtTreePagerPaneFollowingBasicContainerElement)
+				(eachElement isKindOf: GtTreePagerLinkFollowingContainerElement)
 					ifTrue: [ eachElement hasChildren
 							ifTrue: [ | aText |
 								aText := 'Container with ' asRopedText
@@ -78,11 +78,11 @@ GtTreePagerPaneFollowingsElementUpdater >> gtPaneElementsFor: aView [
 								aText ]
 							ifFalse: [ eachElement gtDisplayString ] ]
 					ifFalse: [ eachElement gtDisplayString ] ] weight: 2;
-		column: 'Pane model' text: [ :eachElement | eachElement paneModel ];
+		column: 'Link model' text: [ :eachElement | eachElement linkModel ];
 		column: 'Display index'
 			text: [ :eachElement | 
 				| aDisplayIndex |
-				aDisplayIndex := self panesToDisplay indexOf: eachElement paneModel.
+				aDisplayIndex := self linksToDisplay indexOf: eachElement linkModel.
 				aDisplayIndex isZero ifTrue: [ '' ] ifFalse: [ aDisplayIndex ] ]
 			width: 90
 ]
@@ -112,7 +112,7 @@ GtTreePagerPaneFollowingsElementUpdater >> gtPanesFor: aView [
 		column: 'Display index'
 			text: [ :each | 
 				| aDisplayIndex |
-				aDisplayIndex := self panesToDisplay indexOf: each.
+				aDisplayIndex := self linksToDisplay indexOf: each.
 				aDisplayIndex isZero ifTrue: [ '' ] ifFalse: [ aDisplayIndex ] ] width: 90
 ]
 
@@ -141,10 +141,25 @@ GtTreePagerPaneFollowingsElementUpdater >> gtRootPanesFor: aView [
 ]
 
 { #category : #accessing }
-GtTreePagerPaneFollowingsElementUpdater >> paneElementsToDisplay [
-	"Return pane elements that should be displayed as following panes (to the right of a given pane)."
+GtTreePagerPaneFollowingsElementUpdater >> linkElementsToDisplay [
+	"Return link elements that should be displayed as following links (to the right of a given pane)."
 
-	^ self collectPaneElements: self panesToDisplay
+	^ self collectLinkElements: self linksToDisplay
+]
+
+{ #category : #accessing }
+GtTreePagerPaneFollowingsElementUpdater >> linksToDisplay [
+	"Return links that should be displayed as following links (to the right of a given pane)."
+
+	^ linksToDisplay
+		ifNil: [ linksToDisplay := Array
+					streamContents: [ :aStream | 
+						self paneModel followingLinks
+							do: [ :eachLinkModel | 
+								self
+									collectLinksToDisplay: eachLinkModel
+									in: aStream
+									depth: 1 ] ] ]
 ]
 
 { #category : #accessing }
@@ -157,26 +172,11 @@ GtTreePagerPaneFollowingsElementUpdater >> paneModel: aPaneModel [
 	paneModel := aPaneModel
 ]
 
-{ #category : #accessing }
-GtTreePagerPaneFollowingsElementUpdater >> panesToDisplay [
-	"Return panes that should be displayed as following panes (to the right of a given pane)."
-
-	^ panesToDisplay
-		ifNil: [ panesToDisplay := Array
-					streamContents: [ :aStream | 
-						self paneModel followingPanes
-							do: [ :eachPaneModel | 
-								self
-									collectPanesToDisplay: eachPaneModel
-									in: aStream
-									depth: 1 ] ] ]
-]
-
 { #category : #updating }
 GtTreePagerPaneFollowingsElementUpdater >> update [
 	| orderedElements |
-	panesToDisplay := nil.
-	orderedElements := self paneElementsToDisplay.
+	linksToDisplay := nil.
+	orderedElements := self linkElementsToDisplay.
 
 	self followingsElement
 		removeChildren;

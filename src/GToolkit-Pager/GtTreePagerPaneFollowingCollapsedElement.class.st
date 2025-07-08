@@ -1,6 +1,6 @@
 Class {
 	#name : #GtTreePagerPaneFollowingCollapsedElement,
-	#superclass : #GtTreePagerPaneBasicElement,
+	#superclass : #GtTreePagerLinkBasicElement,
 	#instVars : [
 		'rectangleElement',
 		'rightOutputsElement',
@@ -54,11 +54,11 @@ GtTreePagerPaneFollowingCollapsedElement >> initializeRightOutputsElement [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerPaneFollowingCollapsedElement >> newOutputElementForPaneModel: aPaneModel [
+GtTreePagerPaneFollowingCollapsedElement >> newOutputElementForLinkModel: aPaneModel [
 	| anElement |
 	anElement := GtTreePagerPaneFollowingOutputElement new
 			beSmallSize;
-			paneModel: aPaneModel.
+			linkModel: aPaneModel.
 
 	aPaneModel isExpanded
 		ifTrue: [ anElement beHorizontal.
@@ -70,8 +70,8 @@ GtTreePagerPaneFollowingCollapsedElement >> newOutputElementForPaneModel: aPaneM
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingCollapsedElement >> onPaneModelChanged [
-	rectangleElement paneModel: self paneModel.
+GtTreePagerPaneFollowingCollapsedElement >> onLinkModelChanged [
+	rectangleElement linkModel: self linkModel.
 	self updateElement
 ]
 
@@ -84,17 +84,17 @@ GtTreePagerPaneFollowingCollapsedElement >> updateElement [
 { #category : #'private - updating' }
 GtTreePagerPaneFollowingCollapsedElement >> updateOutputElements [
 	| someElements |
-	someElements := self paneModel followingPanes
-			collect: [ :eachPane | self newOutputElementForPaneModel: eachPane ]
+	someElements := self linkModel followingLinks
+			collect: [ :eachLink | self newOutputElementForLinkModel: eachLink ]
 			as: Array.
 
 	rightOutputsElement
 		removeChildren;
-		addChildren: (someElements select: [ :each | each paneModel isExpanded ]).
+		addChildren: (someElements select: [ :each | each linkModel isExpanded ]).
 
 	bottomOutputsElement
 		removeChildren;
-		addChildren: (someElements select: [ :each | each paneModel isCollapsed ])
+		addChildren: (someElements select: [ :each | each linkModel isCollapsed ])
 ]
 
 { #category : #'private - updating' }

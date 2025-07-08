@@ -18,7 +18,7 @@ GtTreePagerPaneFollowingsElement >> initialize [
 
 { #category : #'private - updating' }
 GtTreePagerPaneFollowingsElement >> newPaneElement [
-	^ GtTreePagerPaneFollowingBasicContainerElement triangle
+	^ GtTreePagerLinkFollowingContainerElement triangle
 ]
 
 { #category : #'private - updating' }
@@ -47,7 +47,7 @@ GtTreePagerPaneFollowingsElement >> onPaneModelChanged [
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingsElement >> subscribeToPaneModel [
 	self paneModel weak
-		when: GtTreePagerPaneModelFollowingPanesChanged
+		when: GtTreePagerPaneModelFollowingLinksChanged
 			send: #onGtTreePagerPaneModelFollowingPanesChanged:
 			to: self;
 		when: GtTreePagerPaneModelExpansionChanged
