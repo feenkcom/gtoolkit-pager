@@ -275,11 +275,11 @@ GtTreePagerExamples >> pagerWithCollapsedFPane [
 	| aPager aPaneF |
 	aPager := self pagerWithFivePanes.
 	aPaneF := aPager detectPaneModel: [ :each | each title = '$F' ].
-	self assert: aPaneF isDisplayed.
+	self assert: aPaneF isSpawned.
 	self assert: aPaneF isExpanded.
 	aPaneF collapse.
 	self assert: aPaneF isCollapsed.
-	self assert: aPaneF isDisplayed not.
+	self assert: aPaneF isSpawned not.
 
 	^ aPager
 ]

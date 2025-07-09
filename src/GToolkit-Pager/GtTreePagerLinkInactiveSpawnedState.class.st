@@ -24,8 +24,9 @@ GtTreePagerLinkInactiveSpawnedState >> collapse [
 ]
 
 { #category : #'api - state' }
-GtTreePagerLinkInactiveSpawnedState >> isDisplayed [
-	"Return true if link pane model is displayed (expanded and spawned)"
+GtTreePagerLinkInactiveSpawnedState >> isSpawned [
+	"Return true if link pane model is spawned (expanded and displayed)"
 
+	<return: #Boolean>
 	^ true
 ]

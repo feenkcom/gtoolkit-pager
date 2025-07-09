@@ -29,8 +29,9 @@ GtTreePagerLinkActiveSpawnedState >> isActive [
 ]
 
 { #category : #'api - state' }
-GtTreePagerLinkActiveSpawnedState >> isDisplayed [
-	"Return true if link pane model is displayed (expanded and spawned)"
+GtTreePagerLinkActiveSpawnedState >> isSpawned [
+	"Return true if link pane model is spawned (expanded and displayed)"
 
+	<return: #Boolean>
 	^ true
 ]

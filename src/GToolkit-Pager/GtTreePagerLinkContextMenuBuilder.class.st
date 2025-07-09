@@ -57,6 +57,25 @@ GtTreePagerLinkContextMenuBuilder >> newExpandLinkActionItem [
 ]
 
 { #category : #private }
+GtTreePagerLinkContextMenuBuilder >> newHideLinkActionItem [
+	^ BrMenuActionItem new
+		id: #'menu--hide-link';
+		label: 'Hide'
+			preview: [ '{1}{2}'
+					format: {self linkModel title.
+							self linkModel allFollowingPanesCount
+								ifNotNil: [ :aCount | 
+									aCount isZero
+										ifTrue: [ '' ]
+										ifFalse: [ ' and {1} other {2}'
+												format: {aCount.
+														'pane' asPluralBasedOn: aCount} ] ]
+								ifNil: [ '' ]} ];
+		action: [ :anElement :aButtonModel :anEvent | self linkModel hide ];
+		yourself
+]
+
+{ #category : #private }
 GtTreePagerLinkContextMenuBuilder >> newInactivateLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'menu--keep-link';
@@ -95,6 +114,7 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSelectedState: aS
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedState: aState [
 	menu addItem: self newInactivateLinkActionItem.
 	menu addItem: self newCollapseLinkActionItem.
+	menu addItem: self newHideLinkActionItem.
 	menu addItem: self newRemoveLinkActionItem
 ]
 
@@ -114,6 +134,7 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveHiddenState: aS
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveSpawnedState: aState [
 	menu addItem: self newActivateLinkActionItem.
 	menu addItem: self newCollapseLinkActionItem.
+	menu addItem: self newHideLinkActionItem.
 	menu addItem: self newRemoveLinkActionItem
 ]
 

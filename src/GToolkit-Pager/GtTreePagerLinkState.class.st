@@ -3,6 +3,7 @@ Class {
 	#superclass : #Object,
 	#classVars : [
 		'Collapsed',
+		'Hidden',
 		'Inactive',
 		'Selected',
 		'Spawned'
@@ -13,6 +14,11 @@ Class {
 { #category : #'api - accessing' }
 GtTreePagerLinkState class >> collapsed [
 	^ Collapsed ifNil: [ Collapsed := GtTreePagerLinkInactiveCollapsedState new ]
+]
+
+{ #category : #'api - accessing' }
+GtTreePagerLinkState class >> hidden [
+	^ Hidden ifNil: [ Hidden := GtTreePagerLinkInactiveHiddenState new ]
 ]
 
 { #category : #'api - accessing' }
@@ -57,6 +63,13 @@ GtTreePagerLinkState >> expand [
 ]
 
 { #category : #'api - state' }
+GtTreePagerLinkState >> hide [
+	"Return a hidden state"
+
+	^ GtTreePagerLinkState hidden
+]
+
+{ #category : #'api - state' }
 GtTreePagerLinkState >> inactivate [
 	"Return an inactive state"
 
@@ -74,18 +87,19 @@ GtTreePagerLinkState >> isCollapsed [
 ]
 
 { #category : #'api - state' }
-GtTreePagerLinkState >> isDisplayed [
-	"Return true if link pane model is displayed (expanded and spawned)"
-
-	^ false
-]
-
-{ #category : #'api - state' }
 GtTreePagerLinkState >> isExpanded [
 	^ self isCollapsed not
 ]
 
 { #category : #'api - state' }
 GtTreePagerLinkState >> isHidden [
+	^ false
+]
+
+{ #category : #'api - state' }
+GtTreePagerLinkState >> isSpawned [
+	"Return true if link pane model is spawned (expanded and displayed)"
+
+	<return: #Boolean>
 	^ false
 ]

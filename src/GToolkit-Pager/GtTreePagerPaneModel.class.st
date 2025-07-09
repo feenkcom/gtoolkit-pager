@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerPaneModel,
 	#superclass : #Object,
-	#traits : 'TGtAnnouncer + TGtTreePagerPaneModelEnumerable',
-	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerPaneModelEnumerable classTrait',
+	#traits : 'TGtAnnouncer + TGtTreePagerPaneModelEnumerable + TGtTreePagerLinkModelState',
+	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerPaneModelEnumerable classTrait + TGtTreePagerLinkModelState classTrait',
 	#instVars : [
 		'title',
 		'icon',
@@ -27,7 +27,8 @@ GtTreePagerPaneModel >> activeLink: aLinkModel [
 
 { #category : #'api - following links' }
 GtTreePagerPaneModel >> addFollowingLink: aLinkModel [
-	self isDisplayed ifFalse: [ self previousLink ifNotNil: #expand ].
+	self isSpawned ifFalse: [ 
+		self previousLink ifNotNil: #expand ].
 
 	followingLinks addLink: aLinkModel
 ]
@@ -245,39 +246,6 @@ GtTreePagerPaneModel >> initialize [
 	followingLinks := GtTreePagerPaneLinks new paneModel: self.
 ]
 
-{ #category : #'api - activation' }
-GtTreePagerPaneModel >> isActive [
-	^ self previousLink
-		ifNotNil: [ :aLinkModel | aLinkModel isActive ]
-		ifNil: [ false ]
-]
-
-{ #category : #'api - expandable' }
-GtTreePagerPaneModel >> isCollapsed [
-	^ self previousLink
-		ifNotNil: [ :aLinkModel | aLinkModel isCollapsed ]
-		ifNil: [ false ]
-]
-
-{ #category : #'api - visibility' }
-GtTreePagerPaneModel >> isDisplayed [
-	^ self previousLink
-		ifNotNil: [ :aLinkModel | aLinkModel isDisplayed ]
-		ifNil: [ true ]
-]
-
-{ #category : #'api - expandable' }
-GtTreePagerPaneModel >> isExpanded [
-	^ self isCollapsed not
-]
-
-{ #category : #'api - visibility' }
-GtTreePagerPaneModel >> isHidden [
-	^ self previousLink
-		ifNotNil: [ :aLinkModel | aLinkModel isHidden ]
-		ifNil: [ false ]
-]
-
 { #category : #'private - notifying' }
 GtTreePagerPaneModel >> notifyActiveLinkChangedFrom: anOldActiveLink to: aNewActiveLink [
 	anOldActiveLink
@@ -419,7 +387,7 @@ GtTreePagerPaneModel >> selectFollowingPane: aNewPaneModel [
 	aNewLinkModel := GtTreePagerLinkModel new paneModel: aNewPaneModel.
 
 	anOldLinkModel
-		ifNil: [ self addFollowingPane: (aNewLinkModel collapse) ]
+		ifNil: [ self addFollowingLink: (aNewLinkModel collapse) ]
 		ifNotNil: [ aNewLinkModel collapse: anOldLinkModel isCollapsed.
 			self replaceFollowingLink: anOldLinkModel by: aNewLinkModel ]
 ]
@@ -434,6 +402,14 @@ GtTreePagerPaneModel >> spawnFollowingPane: aNewPaneModel [
 	anOldLinkModel
 		ifNil: [ self addFollowingLink: aNewLinkModel ]
 		ifNotNil: [ self replaceFollowingLink: anOldLinkModel by: aNewLinkModel ]
+]
+
+{ #category : #'api - state' }
+GtTreePagerPaneModel >> state [
+	<return: #GtTreePagerLinkState>
+	^ self previousLink
+		ifNotNil: [ :aLink | aLink state ]
+		ifNil: [ GtTreePagerLinkState spawned ]
 ]
 
 { #category : #'api - phlow' }

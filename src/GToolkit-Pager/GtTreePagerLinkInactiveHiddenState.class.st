@@ -24,6 +24,11 @@ GtTreePagerLinkInactiveHiddenState >> expand [
 ]
 
 { #category : #'api - state' }
+GtTreePagerLinkInactiveHiddenState >> hide [
+	^ self
+]
+
+{ #category : #'api - state' }
 GtTreePagerLinkInactiveHiddenState >> isHidden [
 	^ true
 ]

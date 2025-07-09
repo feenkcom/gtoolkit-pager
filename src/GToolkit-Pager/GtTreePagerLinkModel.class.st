@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerLinkModel,
 	#superclass : #Object,
-	#traits : 'TGtAnnouncer',
-	#classTraits : 'TGtAnnouncer classTrait',
+	#traits : 'TGtAnnouncer + TGtTreePagerLinkModelState + TGtTreePagerPreviousLinkModelAdaptor',
+	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerLinkModelState classTrait + TGtTreePagerPreviousLinkModelAdaptor classTrait',
 	#instVars : [
 		'paneModel',
 		'previousPane',
@@ -17,9 +17,24 @@ GtTreePagerLinkModel >> activate [
 	self state: self state activate
 ]
 
+{ #category : #'api - pane model' }
+GtTreePagerLinkModel >> activeLink [
+	"TODO: I think it can be removed"
+
+	<return: #TGtTreePagerLinkModel or: nil>
+	^ self previousPane activeLink
+]
+
 { #category : #'api - following links' }
 GtTreePagerLinkModel >> allFollowingPanesCount [
 	^ paneModel allFollowingPanesCount
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerLinkModel >> allPreviousPanesDo: aFullBlockClosure [
+	"Iterate previous panes hierarchy"
+
+	self previousPane allPreviousPanesDo: aFullBlockClosure
 ]
 
 { #category : #announcer }
@@ -82,6 +97,11 @@ GtTreePagerLinkModel >> gtDisplayOn: stream [
 	stream nextPutAll: ' ('.
 	self isCollapsed ifTrue: [ stream nextPutAll: 'collapsed' ].
 	stream nextPut: $)
+]
+
+{ #category : #'api - visibility' }
+GtTreePagerLinkModel >> hide [
+	self state: self state hide
 ]
 
 { #category : #'api - state' }

@@ -4,28 +4,16 @@ Class {
 	#traits : 'TGtTreePagerPaneModelEnumerable + TGtOptions + TGtAnnouncer',
 	#classTraits : 'TGtTreePagerPaneModelEnumerable classTrait + TGtOptions classTrait + TGtAnnouncer classTrait',
 	#instVars : [
-		'paneModels',
-		'announcer'
+		'announcer',
+		'paneLinks'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
-
-{ #category : #'api - pane model' }
-GtTreePagerModel >> activeLink [
-	^ nil
-]
 
 { #category : #'api - panes' }
 GtTreePagerModel >> allFollowingPanes [
 	^ Array
 		streamContents: [ :aStream | self allPanesBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
-]
-
-{ #category : #'api - pane model' }
-GtTreePagerModel >> allPreviousPanesDo: aFullBlockClosure [
-	"Do nothing."
-
-	
 ]
 
 { #category : #announcer }
@@ -37,11 +25,6 @@ GtTreePagerModel >> announcer [
 { #category : #'api - panes' }
 GtTreePagerModel >> children [
 	^ self paneModels
-]
-
-{ #category : #'api - pane model' }
-GtTreePagerModel >> depthIndex [
-	^ 0
 ]
 
 { #category : #'api - enumeration' }
@@ -72,10 +55,10 @@ GtTreePagerModel >> gtLiveFor: aView [
 { #category : #views }
 GtTreePagerModel >> gtPanesFor: aView [
 	<gtView>
-	paneModels ifNil: [ ^ aView empty ].
+	paneLinks ifNil: [ ^ aView empty ].
 	^ aView columnedTree
 		title: 'Panes';
-		items: [ paneModels ];
+		items: [ paneLinks ];
 		children: #children;
 		expandUpTo: 10;
 		column: 'Value' text: [ :each | each gtDisplayString ];
@@ -111,29 +94,24 @@ GtTreePagerModel >> initialize [
 	super initialize.
 
 	announcer := Announcer new.
-	paneModels := Array empty
+	paneLinks := Array empty
 ]
 
 { #category : #'api - panes' }
-GtTreePagerModel >> isActive [
-	^ self state isActive
+GtTreePagerModel >> paneLinks [
+	<return: #Collection of: #GtTreePagerModelLinkAdaptor>
+	^ paneLinks
 ]
 
 { #category : #'api - panes' }
-GtTreePagerModel >> isCollapsed [
-	"My pane models are not collapsed"
+GtTreePagerModel >> paneLinks: aCollection [
+	self assert: [ aCollection allSatisfy: [ :each | 
+		each isKindOf: GtTreePagerModelLinkAdaptor ] ].
+	
+	paneLinks = aCollection ifTrue: [ ^ self ].
 
-	^ self state isCollapsed
-]
-
-{ #category : #'api - panes' }
-GtTreePagerModel >> isDisplayed [
-	^ self state isDisplayed
-]
-
-{ #category : #'api - panes' }
-GtTreePagerModel >> isHidden [
-	^ self state isHidden
+	aCollection do: [ :eachLink | eachLink pagerModel: self ].
+	paneLinks := aCollection
 ]
 
 { #category : #'api - panes' }
@@ -143,25 +121,12 @@ GtTreePagerModel >> paneModel: aPaneModel [
 
 { #category : #'api - panes' }
 GtTreePagerModel >> paneModels [
-	^ paneModels
+	^ self paneLinks collect: #paneModel
 ]
 
 { #category : #'api - panes' }
 GtTreePagerModel >> paneModels: aCollection [
-	paneModels = aCollection ifTrue: [ ^ self ].
-	
-	aCollection do: [ :eachPane | eachPane previousLink: self ].
-	paneModels := aCollection
-]
-
-{ #category : #'api - panes' }
-GtTreePagerModel >> previousPane [
-	"I am the root of my pane models"
-
-	^ self
-]
-
-{ #category : #'api - panes' }
-GtTreePagerModel >> state [
-	^ GtTreePagerLinkState spawned
+	self
+		paneLinks: (aCollection
+				collect: [ :eachPane | GtTreePagerModelLinkAdaptor new paneModel: eachPane ])
 ]
