@@ -44,6 +44,23 @@ GtTreePagerModelLinkAdaptor >> depthIndex [
 	^ 0
 ]
 
+{ #category : #'api - pane model' }
+GtTreePagerModelLinkAdaptor >> followingLinks [
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self paneModel followingLinks
+]
+
+{ #category : #printing }
+GtTreePagerModelLinkAdaptor >> gtDisplayOn: stream [
+	stream nextPutAll: 'Link: '.
+	stream nextPutAll: self title asString.
+	self isCollapsed ifFalse: [ ^ self ].
+
+	stream nextPutAll: ' ('.
+	self isCollapsed ifTrue: [ stream nextPutAll: 'collapsed' ].
+	stream nextPut: $)
+]
+
 { #category : #accessing }
 GtTreePagerModelLinkAdaptor >> pagerModel [
 	^ pagerModel
@@ -83,10 +100,24 @@ GtTreePagerModelLinkAdaptor >> previousPane [
 	^ self pagerModel
 ]
 
+{ #category : #printing }
+GtTreePagerModelLinkAdaptor >> printOn: aStream [
+	super printOn: aStream.
+	aStream nextPut: $(.
+	aStream nextPutAll: self title asString.
+	self isCollapsed ifTrue: [ aStream nextPutAll: ', collapsed' ].
+	aStream nextPut: $)
+]
+
 { #category : #'api - state' }
 GtTreePagerModelLinkAdaptor >> state [
 	"My pane model is always spawned (and thefore displayed)"
 
 	<return: #GtTreePagerLinkState>
 	^ GtTreePagerLinkState spawned
+]
+
+{ #category : #accessing }
+GtTreePagerModelLinkAdaptor >> title [
+	^ self paneModel title
 ]

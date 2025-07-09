@@ -26,6 +26,12 @@ TGtTreePagerLinkModel >> depthIndex [
 ]
 
 { #category : #'api - pane model' }
+TGtTreePagerLinkModel >> followingLinks [
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self explicitRequirement
+]
+
+{ #category : #'api - pane model' }
 TGtTreePagerLinkModel >> previousLink [
 	<return: #TGtTreePagerLinkModel or: nil>
 	^ self explicitRequirement

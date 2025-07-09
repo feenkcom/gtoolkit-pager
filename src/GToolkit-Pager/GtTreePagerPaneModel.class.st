@@ -193,9 +193,21 @@ GtTreePagerPaneModel >> gtFollowingPanesFor: aView [
 		children: #followingPanes;
 		expandUpTo: 1;
 		column: 'Title' text: [ :each | each title ];
-		column: 'Expanded'
+		column: 'Spawned'
 			text: [ :each | 
-				each isExpanded
+				each isSpawned
+					ifTrue: [ 'yes' ]
+					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
+			width: 70;
+		column: 'Hidden'
+			text: [ :each | 
+				each isHidden
+					ifTrue: [ 'yes' ]
+					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
+			width: 70;
+		column: 'Collapsed'
+			text: [ :each | 
+				each isCollapsed
 					ifTrue: [ 'yes' ]
 					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
 			width: 70
@@ -216,6 +228,11 @@ GtTreePagerPaneModel >> gtLiveFor: aView [
 { #category : #testing }
 GtTreePagerPaneModel >> hasFollowingLinks [
 	^ self followingLinks isNotEmpty
+]
+
+{ #category : #'api - visibility' }
+GtTreePagerPaneModel >> hide [
+	self previousLink ifNotNil: #hide
 ]
 
 { #category : #accessing }

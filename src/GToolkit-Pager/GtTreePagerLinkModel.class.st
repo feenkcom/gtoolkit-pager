@@ -93,7 +93,8 @@ GtTreePagerLinkModel >> followingExpandedLinkModels [
 
 { #category : #'api - following links' }
 GtTreePagerLinkModel >> followingLinks [
-	^ paneModel followingLinks
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self paneModel followingLinks
 ]
 
 { #category : #printing }

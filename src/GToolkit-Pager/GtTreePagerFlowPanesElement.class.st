@@ -137,10 +137,10 @@ GtTreePagerFlowPanesElement >> unsubscribeFromPagerModel [
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updateElement [
 	GtTreePagerHorizontalTreeFlowBuilder new
-		paneModels: self pagerModel paneModels;
-		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
+		linkModels: self pagerModel linkModels;
+		forEachPaneModelDo: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
 			self
-				ensureNodeForPaneModel: aPaneModel
+				ensureNodeForPaneModel: aLinkModel paneModel
 				row: aRowIndex
 				depth: aDepthIndex
 				span: aSpanIndex ];
