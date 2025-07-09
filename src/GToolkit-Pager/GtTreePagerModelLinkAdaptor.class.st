@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerModelLinkAdaptor,
 	#superclass : #Object,
-	#traits : 'TGtTreePagerPreviousLinkModelAdaptor + TGtTreePagerLinkModelState',
-	#classTraits : 'TGtTreePagerPreviousLinkModelAdaptor classTrait + TGtTreePagerLinkModelState classTrait',
+	#traits : 'TGtTreePagerLinkModel + TGtTreePagerLinkModelState + TGtAnnouncer',
+	#classTraits : 'TGtTreePagerLinkModel classTrait + TGtTreePagerLinkModelState classTrait + TGtAnnouncer classTrait',
 	#instVars : [
 		'pagerModel',
 		'paneModel'
@@ -18,12 +18,22 @@ GtTreePagerModelLinkAdaptor >> activeLink [
 	^ nil
 ]
 
-{ #category : #'api - pane model' }
+{ #category : #'as yet unclassified' }
 GtTreePagerModelLinkAdaptor >> allPreviousPanesDo: aFullBlockClosure [
-	"Iterate previous panes hierarchy.
-	I am the root of my pane model, therefore do nothing."
+	"Iterate previous panes hierarchy."
 
-	
+	self pagerModel allPreviousPanesDo: aFullBlockClosure
+]
+
+{ #category : #announcer }
+GtTreePagerModelLinkAdaptor >> announcer [
+	^ self paneModel announcer
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerModelLinkAdaptor >> children [
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self paneModel children
 ]
 
 { #category : #'api - pane model' }
@@ -55,15 +65,22 @@ GtTreePagerModelLinkAdaptor >> paneModel [
 GtTreePagerModelLinkAdaptor >> paneModel: aPaneModel [
 	self assert: [ aPaneModel isKindOf: GtTreePagerPaneModel ].
 	
+	aPaneModel previousLink: self.
 	paneModel := aPaneModel
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerModelLinkAdaptor >> previousLink [
+	<return: #TGtTreePagerLinkModel or: nil>
+	^ nil
 ]
 
 { #category : #'api - pane model' }
 GtTreePagerModelLinkAdaptor >> previousPane [
 	"I am the root of my pane model"
 
-	<return: #GtTreePagerPaneModel or: #TGtTreePagerPreviousLinkModelAdaptor>
-	^ self
+	<return: #GtTreePagerPaneModel or: #TGtTreePagerLinkModel>
+	^ self pagerModel
 ]
 
 { #category : #'api - state' }

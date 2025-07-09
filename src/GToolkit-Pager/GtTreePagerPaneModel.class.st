@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerPaneModel,
 	#superclass : #Object,
-	#traits : 'TGtAnnouncer + TGtTreePagerPaneModelEnumerable + TGtTreePagerLinkModelState',
-	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerPaneModelEnumerable classTrait + TGtTreePagerLinkModelState classTrait',
+	#traits : 'TGtAnnouncer + TGtTreePagerPaneModelEnumerable + TGtTreePagerLinkModelState + TGtTreePagerPaneModel',
+	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerPaneModelEnumerable classTrait + TGtTreePagerLinkModelState classTrait + TGtTreePagerPaneModel classTrait',
 	#instVars : [
 		'title',
 		'icon',
@@ -34,11 +34,6 @@ GtTreePagerPaneModel >> addFollowingLink: aLinkModel [
 ]
 
 { #category : #'api - following links' }
-GtTreePagerPaneModel >> addFollowingPane: aPaneModel [
-	self addFollowingLink: (GtTreePagerLinkModel new paneModel: aPaneModel)
-]
-
-{ #category : #'api - following links' }
 GtTreePagerPaneModel >> allFollowingPanes [
 	^ Array
 		streamContents: [ :aStream | self allPanesBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
@@ -52,7 +47,7 @@ GtTreePagerPaneModel >> allFollowingPanesCount [
 	^ anIndex
 ]
 
-{ #category : #'api - previous panes' }
+{ #category : #'api - previous links' }
 GtTreePagerPaneModel >> allPreviousPanesDo: aBlock [
 	self previousPane
 		ifNotNil: [ :aPreviousPane | 
@@ -74,7 +69,8 @@ GtTreePagerPaneModel >> asElement [
 
 { #category : #accessing }
 GtTreePagerPaneModel >> children [
-	^ self followingPanes
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self followingLinks
 ]
 
 { #category : #'api - expandable' }
@@ -211,7 +207,10 @@ GtTreePagerPaneModel >> gtLiveFor: aView [
 	^ aView explicit
 		title: 'Live';
 		priority: 10;
-		stencil: [ GtTreePagerPaneElement new paneModel: self ]
+		stencil: [ BrFrame new
+				matchParent;
+				padding: (BlInsets all: 10);
+				addChild: (GtTreePagerPaneElement new paneModel: self) ]
 ]
 
 { #category : #testing }
@@ -261,16 +260,6 @@ GtTreePagerPaneModel >> notifyActiveLinkChangedFrom: anOldActiveLink to: aNewAct
 				paneModel: self;
 				oldActiveLink: anOldActiveLink;
 				newActiveLink: aNewActiveLink)
-]
-
-{ #category : #'private - notifying' }
-GtTreePagerPaneModel >> notifyExpansionChanged [
-	| anAnnouncement |
-	anAnnouncement := GtTreePagerPaneModelExpansionChanged new
-			paneModel: self;
-			isCollapsed: self isCollapsed.
-	self announcer announce: anAnnouncement.
-	self allPreviousPanesDo: [ :aPreviousPane | aPreviousPane announcer announce: anAnnouncement ]
 ]
 
 { #category : #'private - notifying' }
@@ -381,7 +370,7 @@ GtTreePagerPaneModel >> replaceFollowingLink: anOldLinkModel by: aNewLinkModel [
 ]
 
 { #category : #'api - following links' }
-GtTreePagerPaneModel >> selectFollowingPane: aNewPaneModel [
+GtTreePagerPaneModel >> selectPane: aNewPaneModel [
 	| anOldLinkModel aNewLinkModel |
 	anOldLinkModel := self activeLink.
 	aNewLinkModel := GtTreePagerLinkModel new paneModel: aNewPaneModel.
@@ -393,7 +382,7 @@ GtTreePagerPaneModel >> selectFollowingPane: aNewPaneModel [
 ]
 
 { #category : #'api - following links' }
-GtTreePagerPaneModel >> spawnFollowingPane: aNewPaneModel [
+GtTreePagerPaneModel >> spawnPane: aNewPaneModel [
 	| anOldLinkModel aNewLinkModel |
 	anOldLinkModel := self activeLink.
 	aNewLinkModel := GtTreePagerLinkModel new paneModel: aNewPaneModel.
@@ -402,6 +391,15 @@ GtTreePagerPaneModel >> spawnFollowingPane: aNewPaneModel [
 	anOldLinkModel
 		ifNil: [ self addFollowingLink: aNewLinkModel ]
 		ifNotNil: [ self replaceFollowingLink: anOldLinkModel by: aNewLinkModel ]
+]
+
+{ #category : #'api - following links' }
+GtTreePagerPaneModel >> spawnSiblingPane: aNewPaneModel [
+	| aNewLinkModel |
+	aNewLinkModel := GtTreePagerLinkModel new paneModel: aNewPaneModel.
+	aNewLinkModel expand.
+
+	self addFollowingLink: aNewLinkModel
 ]
 
 { #category : #'api - state' }
@@ -425,16 +423,6 @@ GtTreePagerPaneModel >> title [
 { #category : #accessing }
 GtTreePagerPaneModel >> title: anObject [
 	title := anObject
-]
-
-{ #category : #'api - previous panes' }
-GtTreePagerPaneModel >> topPreviousPane [
-	"Note: it is usually a pager model"
-
-	| aTopModel |
-	aTopModel := nil.
-	self allPreviousPanesDo: [ :aPreviousPane | aTopModel := aPreviousPane ].
-	^ aTopModel
 ]
 
 { #category : #'api - following links' }

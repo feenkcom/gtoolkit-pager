@@ -71,6 +71,15 @@ GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
 ]
 
 { #category : #'private - event handling' }
+GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
+	anAnnouncement linkModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
+
+	BlTaskAction
+		enqueueElement: self
+		action: [ self updateElement ]
+]
+
+{ #category : #'private - event handling' }
 GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
 	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
@@ -114,6 +123,9 @@ GtTreePagerFlowPanesElement >> subscribeToPagerModel [
 			to: self;
 		when: GtTreePagerPaneModelExpansionChanged
 			send: #onGtTreePagerPaneModelExpansionChanged:
+			to: self;
+		when: GtTreePagerLinkModelStateChanged
+			send: #onGtTreePagerLinkModelStateChanged:
 			to: self
 ]
 

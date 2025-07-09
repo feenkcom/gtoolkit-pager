@@ -39,7 +39,7 @@ GtTreePagerPaneContentElement >> onGtPhlowObjectToSelect: anEvent [
 	self paneModel ifNil: [ ^ self ].
 	anEvent consumed: true.
 	self paneModel
-		selectFollowingPane: (GtTreePagerPaneModel new phlowTool: anEvent tool)
+		selectPane: (GtTreePagerPaneModel new phlowTool: anEvent tool)
 ]
 
 { #category : #'private - event handling' }
@@ -47,7 +47,7 @@ GtTreePagerPaneContentElement >> onGtPhlowObjectToSpawn: anEvent [
 	self paneModel ifNil: [ ^ self ].
 	anEvent consumed: true.
 	self paneModel
-		spawnFollowingPane: (GtTreePagerPaneModel new
+		spawnPane: (GtTreePagerPaneModel new
 				phlowTool: anEvent tool;
 				expand)
 ]

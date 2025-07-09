@@ -29,7 +29,17 @@ GtTreePagerPaneFollowingsElement >> newPaneElementFor: aPaneModel [
 ]
 
 { #category : #'private - event management' }
+GtTreePagerPaneFollowingsElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
+]
+
+{ #category : #'private - event management' }
 GtTreePagerPaneFollowingsElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
+]
+
+{ #category : #'private - event management' }
+GtTreePagerPaneFollowingsElement >> onGtTreePagerPaneModelFollowingLinksChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
@@ -50,8 +60,8 @@ GtTreePagerPaneFollowingsElement >> subscribeToPaneModel [
 		when: GtTreePagerPaneModelFollowingLinksChanged
 			send: #onGtTreePagerPaneModelFollowingPanesChanged:
 			to: self;
-		when: GtTreePagerPaneModelExpansionChanged
-			send: #onGtTreePagerPaneModelExpansionChanged:
+		when: GtTreePagerLinkModelStateChanged
+			send: #onGtTreePagerLinkModelStateChanged:
 			to: self
 ]
 

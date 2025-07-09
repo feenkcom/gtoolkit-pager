@@ -13,6 +13,7 @@ TGtTreePagerWithLinkModel >> hasLinkModel [
 
 { #category : #'api - link model' }
 TGtTreePagerWithLinkModel >> linkModel [
+	<return: #GtTreePagerLinkModel>
 	^ linkModel
 ]
 

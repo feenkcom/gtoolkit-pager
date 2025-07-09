@@ -115,6 +115,13 @@ GtTreePagerScrollbarElement >> newNodeElementForPaneModel: aPaneModel [
 ]
 
 { #category : #'private - event handling' }
+GtTreePagerScrollbarElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
+	anAnnouncement linkModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
+
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
+]
+
+{ #category : #'private - event handling' }
 GtTreePagerScrollbarElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
 	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
@@ -151,6 +158,9 @@ GtTreePagerScrollbarElement >> subscribeToPagerModel [
 			to: self;
 		when: GtTreePagerPaneModelExpansionChanged
 			send: #onGtTreePagerPaneModelExpansionChanged:
+			to: self;
+		when: GtTreePagerLinkModelStateChanged
+			send: #onGtTreePagerLinkModelStateChanged:
 			to: self
 ]
 

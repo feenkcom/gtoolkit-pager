@@ -30,7 +30,9 @@ GtTreePagerPaneLinks >> activeLink: aNewLinkModel [
 GtTreePagerPaneLinks >> addLink: aLinkModel [
 	aLinkModel isActive ifTrue: [ self inactivateLink ].
 
-	^ self links: (self links copyWith: aLinkModel)
+	self links: (self links copyWith: aLinkModel).
+	
+	self notifyActiveLinkChangedFrom: nil to: aLinkModel
 ]
 
 { #category : #views }
@@ -140,6 +142,7 @@ GtTreePagerPaneLinks >> removeLink: aLinkModel [
 { #category : #'private - updating' }
 GtTreePagerPaneLinks >> updateActiveLink [
 	links ifEmpty: [ ^ self ].
+	self activeLink ifNotNil: [ ^ self ].
 
-	self activeLink notNil ifFalse: [ self activeLink: links last ]
+	self activeLink: links last
 ]

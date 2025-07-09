@@ -5,7 +5,7 @@ Class {
 	#classTraits : 'TGtTreePagerPaneModelEnumerable classTrait + TGtOptions classTrait + TGtAnnouncer classTrait',
 	#instVars : [
 		'announcer',
-		'paneLinks'
+		'linkModels'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -16,6 +16,13 @@ GtTreePagerModel >> allFollowingPanes [
 		streamContents: [ :aStream | self allPanesBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
 ]
 
+{ #category : #'api - previous links' }
+GtTreePagerModel >> allPreviousPanesDo: aFullBlockClosure [
+	"Iterate previous panes hierarchy"
+
+	
+]
+
 { #category : #announcer }
 GtTreePagerModel >> announcer [
 	<return: #Announcer>
@@ -24,7 +31,8 @@ GtTreePagerModel >> announcer [
 
 { #category : #'api - panes' }
 GtTreePagerModel >> children [
-	^ self paneModels
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self linkModels
 ]
 
 { #category : #'api - enumeration' }
@@ -55,35 +63,35 @@ GtTreePagerModel >> gtLiveFor: aView [
 { #category : #views }
 GtTreePagerModel >> gtPanesFor: aView [
 	<gtView>
-	paneLinks ifNil: [ ^ aView empty ].
+	linkModels ifNil: [ ^ aView empty ].
 	^ aView columnedTree
 		title: 'Panes';
-		items: [ paneLinks ];
+		items: [ linkModels ];
 		children: #children;
 		expandUpTo: 10;
-		column: 'Value' text: [ :each | each gtDisplayString ];
-		column: 'Value' text: [ :each | each previousLink state gtDisplayString ];
+		column: 'Value' text: [ :eachLink | eachLink gtDisplayString ];
+		column: 'State' text: [ :eachLink | eachLink state gtDisplayString ];
 		column: 'Active'
-			text: [ :each | 
-				each isActive
+			text: [ :eachLink | 
+				eachLink isActive
 					ifTrue: [ 'yes' ]
 					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
 			width: 50;
 		column: 'Spawned'
-			text: [ :each | 
-				each isDisplayed
+			text: [ :eachLink | 
+				eachLink isSpawned
 					ifTrue: [ 'yes' ]
 					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
 			width: 70;
 		column: 'Hidden'
-			text: [ :each | 
-				each isHidden
+			text: [ :eachLink | 
+				eachLink isHidden
 					ifTrue: [ 'yes' ]
 					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
 			width: 60;
 		column: 'Collapsed'
-			text: [ :each | 
-				each isCollapsed
+			text: [ :eachLink | 
+				eachLink isCollapsed
 					ifTrue: [ 'yes' ]
 					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
 			width: 70
@@ -94,24 +102,24 @@ GtTreePagerModel >> initialize [
 	super initialize.
 
 	announcer := Announcer new.
-	paneLinks := Array empty
+	linkModels := Array empty
 ]
 
 { #category : #'api - panes' }
-GtTreePagerModel >> paneLinks [
+GtTreePagerModel >> linkModels [
 	<return: #Collection of: #GtTreePagerModelLinkAdaptor>
-	^ paneLinks
+	^ linkModels
 ]
 
 { #category : #'api - panes' }
-GtTreePagerModel >> paneLinks: aCollection [
+GtTreePagerModel >> linkModels: aCollection [
 	self assert: [ aCollection allSatisfy: [ :each | 
 		each isKindOf: GtTreePagerModelLinkAdaptor ] ].
 	
-	paneLinks = aCollection ifTrue: [ ^ self ].
+	linkModels = aCollection ifTrue: [ ^ self ].
 
 	aCollection do: [ :eachLink | eachLink pagerModel: self ].
-	paneLinks := aCollection
+	linkModels := aCollection
 ]
 
 { #category : #'api - panes' }
@@ -121,12 +129,12 @@ GtTreePagerModel >> paneModel: aPaneModel [
 
 { #category : #'api - panes' }
 GtTreePagerModel >> paneModels [
-	^ self paneLinks collect: #paneModel
+	^ self linkModels collect: #paneModel
 ]
 
 { #category : #'api - panes' }
 GtTreePagerModel >> paneModels: aCollection [
 	self
-		paneLinks: (aCollection
+		linkModels: (aCollection
 				collect: [ :eachPane | GtTreePagerModelLinkAdaptor new paneModel: eachPane ])
 ]

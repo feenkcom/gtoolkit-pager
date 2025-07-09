@@ -1,12 +1,11 @@
 Class {
 	#name : #GtTreePagerLinkModel,
 	#superclass : #Object,
-	#traits : 'TGtAnnouncer + TGtTreePagerLinkModelState + TGtTreePagerPreviousLinkModelAdaptor',
-	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerLinkModelState classTrait + TGtTreePagerPreviousLinkModelAdaptor classTrait',
+	#traits : 'TGtAnnouncer + TGtTreePagerLinkModelState + TGtTreePagerLinkModel + TGtTreePagerPaneModel',
+	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerLinkModelState classTrait + TGtTreePagerLinkModel classTrait + TGtTreePagerPaneModel classTrait',
 	#instVars : [
 		'paneModel',
 		'previousPane',
-		'announcer',
 		'state'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
@@ -30,17 +29,20 @@ GtTreePagerLinkModel >> allFollowingPanesCount [
 	^ paneModel allFollowingPanesCount
 ]
 
-{ #category : #'api - pane model' }
-GtTreePagerLinkModel >> allPreviousPanesDo: aFullBlockClosure [
+{ #category : #'as yet unclassified' }
+GtTreePagerLinkModel >> allPreviousPanesDo: aBlock [
 	"Iterate previous panes hierarchy"
 
-	self previousPane allPreviousPanesDo: aFullBlockClosure
+	self previousPane
+		ifNotNil: [ :aPreviousPane | 
+			aBlock value: aPreviousPane.
+			aPreviousPane allPreviousPanesDo: aBlock ]
 ]
 
 { #category : #announcer }
 GtTreePagerLinkModel >> announcer [
 	<return: #Announcer>
-	^ announcer
+	^ self paneModel announcer
 ]
 
 { #category : #'api - state' }
@@ -51,6 +53,12 @@ GtTreePagerLinkModel >> beActiveLink [
 { #category : #'api - activation' }
 GtTreePagerLinkModel >> beInactiveLink [
 	self inactivate
+]
+
+{ #category : #'api - following links' }
+GtTreePagerLinkModel >> children [
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self paneModel children
 ]
 
 { #category : #'api - expandable' }
@@ -65,7 +73,7 @@ GtTreePagerLinkModel >> collapse: aBoolean [
 
 { #category : #'api - previous panes' }
 GtTreePagerLinkModel >> depthIndex [
-	^ self previousPane depthIndex
+	^ self previousPane ifNotNil: #depthIndex ifNil: [ 1 ]
 ]
 
 { #category : #'api - expandable' }
@@ -99,6 +107,20 @@ GtTreePagerLinkModel >> gtDisplayOn: stream [
 	stream nextPut: $)
 ]
 
+{ #category : #views }
+GtTreePagerLinkModel >> gtLiveFor: aView [
+	<gtView>
+	self paneModel ifNil: [ ^ aView empty ].
+
+	^ aView explicit
+		title: 'Live';
+		priority: 10;
+		stencil: [ BrFrame new
+				matchParent;
+				padding: (BlInsets all: 10);
+				addChild: (GtTreePagerPaneElement new paneModel: self paneModel) ]
+]
+
 { #category : #'api - visibility' }
 GtTreePagerLinkModel >> hide [
 	self state: self state hide
@@ -112,8 +134,7 @@ GtTreePagerLinkModel >> inactivate [
 { #category : #initialization }
 GtTreePagerLinkModel >> initialize [
 	super initialize.
-	announcer := Announcer new.
-	state := GtTreePagerLinkState selected.
+	state := GtTreePagerLinkState selected
 ]
 
 { #category : #'api - activation' }
@@ -148,15 +169,20 @@ GtTreePagerLinkModel >> isHidden [
 
 { #category : #'private - notifying' }
 GtTreePagerLinkModel >> notifyStateChangedFrom: anOldState [
-	self announcer
-		announce: (GtTreePagerLinkModelStateChanged new
-				linkModel: self;
-				oldState: anOldState;
-				newState: self state)
+	| anAnnouncement |
+	anAnnouncement := GtTreePagerLinkModelStateChanged new
+			linkModel: self;
+			oldState: anOldState;
+			newState: self state.
+
+	self announcer announce: anAnnouncement.
+	self
+		allPreviousPanesDo: [ :aPreviousPane | aPreviousPane announcer announce: anAnnouncement ]
 ]
 
 { #category : #accessing }
 GtTreePagerLinkModel >> paneModel [
+	<return: #GtTreePagerPaneModel>
 	^ paneModel
 ]
 
@@ -168,6 +194,12 @@ GtTreePagerLinkModel >> paneModel: aPaneModel [
 	paneModel := aPaneModel.
 ]
 
+{ #category : #'api - pane model' }
+GtTreePagerLinkModel >> previousLink [
+	<return: #TGtTreePagerLinkModel or: nil>
+	^ self previousPane ifNotNil: #previousLink
+]
+
 { #category : #accessing }
 GtTreePagerLinkModel >> previousPane [
 	^ previousPane
@@ -175,6 +207,8 @@ GtTreePagerLinkModel >> previousPane [
 
 { #category : #accessing }
 GtTreePagerLinkModel >> previousPane: aPaneModel [
+	self assert: [ paneModel isNotNil ].
+	self assert: [ aPaneModel isNotNil ].
 	previousPane := aPaneModel
 ]
 
@@ -190,7 +224,22 @@ GtTreePagerLinkModel >> printOn: aStream [
 { #category : #'api - previous panes' }
 GtTreePagerLinkModel >> removeFromPreviousPane [
 	self previousPane
-		ifNotNil: [ :aPreviousPane | aPreviousPane removeFollowingPane: self ]
+		ifNotNil: [ :aPreviousPane | aPreviousPane removeFollowingLink: self ]
+]
+
+{ #category : #'api - following links' }
+GtTreePagerLinkModel >> removeLink [
+	self paneModel removeLink
+]
+
+{ #category : #'api - following links' }
+GtTreePagerLinkModel >> selectPane: aPaneModel [
+	self paneModel selectPane: aPaneModel
+]
+
+{ #category : #'api - following links' }
+GtTreePagerLinkModel >> spawnPane: aPaneModel [
+	self paneModel spawnPane: aPaneModel
 ]
 
 { #category : #'api - state' }
