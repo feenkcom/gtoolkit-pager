@@ -64,7 +64,7 @@ GtTreePagerPaneElement >> onDisappearClick: anEvent [
 	self hasPaneModel ifFalse: [ ^ self ].
 	self paneModel depthIndex = 1 ifTrue: [ ^ self ].
 
-	self paneModel followingExpandedPaneModels isEmpty
+	self paneModel followingSpawnedPaneModels isEmpty
 		ifFalse: [ self paneModel collapse ]
 		ifTrue: [ self paneModel removeFromPreviousPane ]
 ]
@@ -127,7 +127,7 @@ GtTreePagerPaneElement >> updateDisappearElement [
 		disappearElement visibility:  BlVisibility gone.
 		^ self ].
 
-	self paneModel followingExpandedPaneModels isEmpty
+	self paneModel followingSpawnedPaneModels isEmpty
 		ifFalse: [ disappearElement
 				icon: (BlElement new
 						size: 2 @ 10;

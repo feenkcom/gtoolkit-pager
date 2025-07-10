@@ -143,22 +143,6 @@ GtTreePagerPaneModel >> followingCollapsedPaneModels [
 ]
 
 { #category : #'api - following links' }
-GtTreePagerPaneModel >> followingExpandedLinkModels [
-	^ Array
-		streamContents: [ :aStream | 
-			self followingLinks
-				do: [ :eachLink | 
-					eachLink isExpanded
-						ifTrue: [ aStream nextPut: eachLink ]
-						ifFalse: [ aStream nextPutAll: eachLink followingExpandedLinkModels ] ] ]
-]
-
-{ #category : #'api - following links' }
-GtTreePagerPaneModel >> followingExpandedPaneModels [
-	^ self followingExpandedLinkModels collect: #paneModel
-]
-
-{ #category : #'api - following links' }
 GtTreePagerPaneModel >> followingLinks [
 	^ followingLinks links
 ]
@@ -176,6 +160,22 @@ GtTreePagerPaneModel >> followingPanes [
 { #category : #'api - following links' }
 GtTreePagerPaneModel >> followingPanes: aCollection [
 	self followingLinks: (aCollection collect: [ :each | GtTreePagerLinkModel new paneModel: each ])
+]
+
+{ #category : #'api - following links' }
+GtTreePagerPaneModel >> followingSpawnedLinkModels [
+	^ Array
+		streamContents: [ :aStream | 
+			self followingLinks
+				do: [ :eachLink | 
+					eachLink isSpawned
+						ifTrue: [ aStream nextPut: eachLink ]
+						ifFalse: [ aStream nextPutAll: eachLink followingSpawnedLinkModels ] ] ]
+]
+
+{ #category : #'api - following links' }
+GtTreePagerPaneModel >> followingSpawnedPaneModels [
+	^ self followingSpawnedLinkModels collect: #paneModel
 ]
 
 { #category : #printing }
