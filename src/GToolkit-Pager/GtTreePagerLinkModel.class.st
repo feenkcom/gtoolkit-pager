@@ -153,11 +153,6 @@ GtTreePagerLinkModel >> isCollapsed [
 	^ state isCollapsed
 ]
 
-{ #category : #'api - visibility' }
-GtTreePagerLinkModel >> isDisplayed [
-	^ state isDisplayed
-]
-
 { #category : #'api - expandable' }
 GtTreePagerLinkModel >> isExpanded [
 	^ state isExpanded
@@ -171,6 +166,9 @@ GtTreePagerLinkModel >> isHidden [
 { #category : #'private - notifying' }
 GtTreePagerLinkModel >> notifyStateChangedFrom: anOldState [
 	| anAnnouncement |
+	self previousPane ifNotNil: [ :aPane | 
+		aPane linkModel: self stateChangedFrom: anOldState to: self state ].
+	
 	anAnnouncement := GtTreePagerLinkModelStateChanged new
 			linkModel: self;
 			oldState: anOldState;

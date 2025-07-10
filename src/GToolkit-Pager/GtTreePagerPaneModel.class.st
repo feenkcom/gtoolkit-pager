@@ -190,9 +190,15 @@ GtTreePagerPaneModel >> gtFollowingPanesFor: aView [
 	^ aView columnedTree
 		title: 'Panes';
 		items: [ {self} ];
-		children: #followingPanes;
+		children: #followingLinks;
 		expandUpTo: 1;
 		column: 'Title' text: [ :each | each title ];
+		column: 'Active'
+			text: [ :each | 
+				each isActive
+					ifTrue: [ 'yes' ]
+					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
+			width: 70;
 		column: 'Spawned'
 			text: [ :each | 
 				each isSpawned
@@ -260,6 +266,14 @@ GtTreePagerPaneModel >> initialize [
 	super initialize.
 	announcer := Announcer new.
 	followingLinks := GtTreePagerPaneLinks new paneModel: self.
+]
+
+{ #category : #'api - notifying' }
+GtTreePagerPaneModel >> linkModel: aLinkModel stateChangedFrom: anOldLinkState to: aNewActiveState [
+	followingLinks
+		linkModel: aLinkModel
+		stateChangedFrom: anOldLinkState
+		to: aNewActiveState
 ]
 
 { #category : #'private - notifying' }

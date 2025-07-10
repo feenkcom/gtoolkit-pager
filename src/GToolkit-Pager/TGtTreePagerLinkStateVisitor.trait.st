@@ -32,3 +32,8 @@ TGtTreePagerLinkStateVisitor >> visitGtTreePagerLinkInactiveSpawnedState: aState
 TGtTreePagerLinkStateVisitor >> visitGtTreePagerLinkState: aState [
 	
 ]
+
+{ #category : #visiting }
+TGtTreePagerLinkStateVisitor >> visitLinkState: aState [
+	^ aState acceptVisitor: self
+]

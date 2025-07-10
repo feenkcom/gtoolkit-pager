@@ -53,7 +53,7 @@ GtTreePagerPaneLinks >> gtLinksFor: aView [
 			width: 50;
 		column: 'Spawned'
 			text: [ :each | 
-				each isDisplayed
+				each isSpawned
 					ifTrue: [ 'yes' ]
 					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
 			width: 70;
@@ -91,6 +91,15 @@ GtTreePagerPaneLinks >> inactivateLink: aLinkModel [
 GtTreePagerPaneLinks >> initialize [
 	super initialize.
 	links := Array empty
+]
+
+{ #category : #'api - notifying' }
+GtTreePagerPaneLinks >> linkModel: aLinkModel stateChangedFrom: anOldLinkState to: aNewActiveState [
+	anOldLinkState isActive = aNewActiveState isActive ifTrue: [ ^ self ].
+	aNewActiveState isActive ifFalse: [ ^ self ].
+
+	links
+		do: [ :eachLink | eachLink == aLinkModel ifFalse: [ eachLink inactivate ] ]
 ]
 
 { #category : #'api - links' }

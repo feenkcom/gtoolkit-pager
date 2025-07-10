@@ -307,6 +307,52 @@ GtTreePagerExamples >> pagerWithDWithFollowingHPane [
 ]
 
 { #category : #'examples - pager' }
+GtTreePagerExamples >> pagerWithEActiveLink [
+	<gtExample>
+	| aPager aPaneC aPagerAnnouncements aPaneCAnnouncements aLinkE aLinkF aLinkEAnnouncements aLinkFAnnouncements |
+	aPagerAnnouncements := OrderedCollection new.
+	aPaneCAnnouncements := OrderedCollection new.
+	aLinkEAnnouncements := OrderedCollection new.
+	aLinkFAnnouncements := OrderedCollection new.
+
+	aPager := self pagerWithFivePanes.
+	aPaneC := aPager detectPaneModel: [ :each | each title = '$C' ].
+	self assert: aPaneC isSpawned.
+	aLinkE := aPaneC followingLinks detect: [ :each | each title = '$E' ].
+	aLinkF := aPaneC followingLinks detect: [ :each | each title = '$F' ].
+	self assert: aLinkE isActive not.
+	self assert: aLinkF isActive.
+
+	aPager announcer weak
+		when: Announcement
+		send: #add:
+		to: aPagerAnnouncements.
+	aPaneC announcer weak
+		when: Announcement
+		send: #add:
+		to: aPaneCAnnouncements.
+	aLinkE announcer weak
+		when: Announcement
+		send: #add:
+		to: aLinkEAnnouncements.
+	aLinkF announcer weak
+		when: Announcement
+		send: #add:
+		to: aLinkFAnnouncements.
+
+	aLinkE activate.
+	self assert: aLinkE isActive.
+	self assert: aLinkF isActive not.
+
+	self assert: aPagerAnnouncements size equals: 2.
+	self assert: aPaneCAnnouncements size equals: 2.
+	self assert: aLinkEAnnouncements size equals: 1.
+	self assert: aLinkFAnnouncements size equals: 1.
+
+	^ aPager
+]
+
+{ #category : #'examples - pager' }
 GtTreePagerExamples >> pagerWithFivePanes [
 	<gtExample>
 	| aPager aPane |

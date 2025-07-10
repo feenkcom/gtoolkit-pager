@@ -249,6 +249,8 @@ GtTreePagerPanesEdgesUpdater >> styleLineElement: aLineElement [
 { #category : #building }
 GtTreePagerPanesEdgesUpdater >> update [
 	| someEdgeElements edgeElementsToRemove |
+	true ifTrue: [ ^ self ].
+	
 	someEdgeElements := self edgeElementsToDisplay.
 
 	edgeElementsToRemove := self panesElement children

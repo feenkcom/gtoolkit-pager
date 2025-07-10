@@ -116,6 +116,11 @@ GtTreePagerPaneFollowingOutputElement >> onClickEvent: anEvent [
 ]
 
 { #category : #'private - event handling' }
+GtTreePagerPaneFollowingOutputElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
+]
+
+{ #category : #'private - event handling' }
 GtTreePagerPaneFollowingOutputElement >> onGtTreePagerPaneModelPreviousActiveLinkChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
@@ -126,11 +131,15 @@ GtTreePagerPaneFollowingOutputElement >> onLinkModelChanged [
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingOutputElement >> subscribeToPaneModel [
+GtTreePagerPaneFollowingOutputElement >> subscribeToLinkModel [
+	super subscribeToLinkModel.
 	self linkModel weak
 		when: GtTreePagerPaneModelPreviousActiveLinkChanged
-		send: #onGtTreePagerPaneModelPreviousActiveLinkChanged:
-		to: self
+			send: #onGtTreePagerPaneModelPreviousActiveLinkChanged:
+			to: self;
+		when: GtTreePagerLinkModelStateChanged
+			send: #onGtTreePagerLinkModelStateChanged:
+			to: self
 ]
 
 { #category : #initialization }
@@ -144,13 +153,13 @@ GtTreePagerPaneFollowingOutputElement >> triangleWidth [
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingOutputElement >> unsubscribeFromPaneModel [
+GtTreePagerPaneFollowingOutputElement >> unsubscribeFromLinkModel [
 	self linkModel unsubscribe: self
 ]
 
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingOutputElement >> updateElement [
-	self linkModel isActiveLink
+	self linkModel isActive
 		ifTrue: [ self states addState: BlElementState selected ]
 		ifFalse: [ self states removeState: BlElementState selected ]
 ]

@@ -6,46 +6,19 @@ I do not create links between pane and link elements.
 Class {
 	#name : #GtTreePagerPaneFollowingsElementUpdater,
 	#superclass : #Object,
+	#traits : 'TGtTreePagerLinkStateVisitor',
+	#classTraits : 'TGtTreePagerLinkStateVisitor classTrait',
 	#instVars : [
 		'followingsElement',
 		'paneModel',
-		'linksToDisplay'
+		'linksToDisplay',
+		'existingElements',
+		'linksStream',
+		'currentDepth',
+		'currentLinkModel'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
-
-{ #category : #private }
-GtTreePagerPaneFollowingsElementUpdater >> collectLinkElements: orderedLinks [ 
-	^ Array streamContents: [ :aStream | 
-		orderedLinks do: [ :eachLinks | 
-			self collectLinkElements: eachLinks in: aStream ] ]
-]
-
-{ #category : #private }
-GtTreePagerPaneFollowingsElementUpdater >> collectLinkElements: aLinkModel in: aStream [
-	(self paneModel followingLinks includes: aLinkModel) ifTrue: [
-		aStream nextPut: (GtTreePagerLinkFollowingContainerElement triangle 
-			linkModel: aLinkModel) ].
-
-	aLinkModel isCollapsed ifTrue: [ 
-		aStream nextPut: (GtTreePagerLinkFollowingContainerElement collapsed 
-			linkModel: aLinkModel) ]
-]
-
-{ #category : #private }
-GtTreePagerPaneFollowingsElementUpdater >> collectLinksToDisplay: aLinkModel in: aStream depth: aDepth [
-	aDepth = 1
-		ifTrue: [ aStream nextPut: aLinkModel ]
-		ifFalse: [ aLinkModel isCollapsed ifTrue: [ aStream nextPut: aLinkModel ] ].
-		
-	aLinkModel isCollapsed
-		ifTrue: [ aLinkModel followingLinks
-				do: [ :eachLinkModel | 
-					self
-						collectLinksToDisplay: eachLinkModel
-						in: aStream
-						depth: aDepth + 1 ] ].
-]
 
 { #category : #accessing }
 GtTreePagerPaneFollowingsElementUpdater >> followingsElement [
@@ -144,7 +117,11 @@ GtTreePagerPaneFollowingsElementUpdater >> gtRootPanesFor: aView [
 GtTreePagerPaneFollowingsElementUpdater >> linkElementsToDisplay [
 	"Return link elements that should be displayed as following links (to the right of a given pane)."
 
-	^ self collectLinkElements: self linksToDisplay
+	^ GtTreePagerPaneFollowingsLinkElementsCollector new
+		paneModel: self paneModel;
+		linkModels: self linksToDisplay;
+		existingElements: existingElements;
+		collect
 ]
 
 { #category : #accessing }
@@ -152,14 +129,9 @@ GtTreePagerPaneFollowingsElementUpdater >> linksToDisplay [
 	"Return links that should be displayed as following links (to the right of a given pane)."
 
 	^ linksToDisplay
-		ifNil: [ linksToDisplay := Array
-					streamContents: [ :aStream | 
-						self paneModel followingLinks
-							do: [ :eachLinkModel | 
-								self
-									collectLinksToDisplay: eachLinkModel
-									in: aStream
-									depth: 1 ] ] ]
+		ifNil: [ linksToDisplay := GtTreePagerPaneFollowingsLinksCollector new
+					paneModel: self paneModel;
+					collect ]
 ]
 
 { #category : #accessing }
@@ -174,11 +146,15 @@ GtTreePagerPaneFollowingsElementUpdater >> paneModel: aPaneModel [
 
 { #category : #updating }
 GtTreePagerPaneFollowingsElementUpdater >> update [
-	| orderedElements |
+	| linkElementsToDisplay |
 	linksToDisplay := nil.
-	orderedElements := self linkElementsToDisplay.
+	existingElements := Dictionary
+			newFrom: (self followingsElement children
+					collect: [ :eachElement | eachElement linkModel -> eachElement ]).
+	
+	linkElementsToDisplay := self linkElementsToDisplay.
 
 	self followingsElement
 		removeChildren;
-		addChildren: orderedElements
+		addChildren: linkElementsToDisplay
 ]
