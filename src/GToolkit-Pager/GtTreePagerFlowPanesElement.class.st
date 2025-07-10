@@ -135,7 +135,7 @@ GtTreePagerFlowPanesElement >> unsubscribeFromPagerModel [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updateElement [
-	| displayedElements |
+	| displayedElements edgeElements |
 	displayedElements := OrderedCollection new.
 
 	GtTreePagerHorizontalTreeFlowBuilder new
@@ -149,37 +149,19 @@ GtTreePagerFlowPanesElement >> updateElement [
 						span: aSpanIndex) ];
 		build.
 
-	GtTreePagerPanesEdgesUpdater new
-		panesElement: self;
-		update.
+	edgeElements := GtTreePagerPanesEdgesBuilder new
+			panesElement: self;
+			displayedPaneElements: displayedElements;
+			build.
+			
+	self addChildren: edgeElements.
+	displayedElements addAll: edgeElements.
 
 	(self children difference: displayedElements) do: #removeFromParent
 ]
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updateElementDueTo: aPaneModel addedFollowingPanes: addedFollowingPanes removedFollowingPanes: removedFollowingPanes [
-	| allRemovedPanes toRemoveElements |
-	allRemovedPanes := removedFollowingPanes
-			flatCollect: [ :eachPane | eachPane withAllFollowingPanes ].
-
-	toRemoveElements := Array
-			streamContents: [ :aStream | 
-				self
-					childrenDo: [ :eachChild | 
-						(eachChild graph isEdge
-							and: [ (allRemovedPanes includes: eachChild graph model value)
-									or: [ allRemovedPanes includes: eachChild graph model key ] ])
-							ifTrue: [ aStream nextPut: eachChild ] ].
-
-				allRemovedPanes
-					do: [ :eachPaneModel | 
-						self
-							childNodeForPaneModel: eachPaneModel
-							ifFound: [ :anElement | aStream nextPut: anElement ]
-							ifNone: [  ] ] ].
-
-	toRemoveElements do: [ :eachChild | eachChild removeFromParent ].
-
 	self updateElement
 ]
 

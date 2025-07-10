@@ -13,7 +13,7 @@ Class {
 { #category : #'api - panes' }
 GtTreePagerModel >> allFollowingPanes [
 	^ Array
-		streamContents: [ :aStream | self allPanesBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
+		streamContents: [ :aStream | self allPaneModelsBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
 ]
 
 { #category : #'api - previous links' }
@@ -31,6 +31,12 @@ GtTreePagerModel >> announcer [
 
 { #category : #'api - panes' }
 GtTreePagerModel >> children [
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self linkModels
+]
+
+{ #category : #'api - enumeration' }
+GtTreePagerModel >> enumerableLinkModels [
 	<return: #Collection of: #TGtTreePagerLinkModel>
 	^ self linkModels
 ]

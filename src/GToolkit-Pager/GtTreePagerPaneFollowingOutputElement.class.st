@@ -21,6 +21,11 @@ GtTreePagerPaneFollowingOutputElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
+{ #category : #'accessing - ui' }
+GtTreePagerPaneFollowingOutputElement >> incomingLinkElements [
+	^ Array empty
+]
+
 { #category : #initialization }
 GtTreePagerPaneFollowingOutputElement >> initialize [
 	super initialize.
@@ -128,6 +133,11 @@ GtTreePagerPaneFollowingOutputElement >> onGtTreePagerPaneModelPreviousActiveLin
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingOutputElement >> onLinkModelChanged [
 	self updateElement
+]
+
+{ #category : #'accessing - ui' }
+GtTreePagerPaneFollowingOutputElement >> outgoingLinkElements [
+	^ self hasLinkModel ifTrue: [ Array with: self ] ifFalse: [ Array empty ]
 ]
 
 { #category : #'api - pane model' }

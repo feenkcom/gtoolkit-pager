@@ -9,6 +9,11 @@ GtTreePagerPaneFollowingsElement >> defaultLayout [
 	^ BlLinearLayout vertical
 ]
 
+{ #category : #'accessing - ui' }
+GtTreePagerPaneFollowingsElement >> incomingLinkElements [
+	^ self children flatCollect: #incomingLinkElements
+]
+
 { #category : #initialization }
 GtTreePagerPaneFollowingsElement >> initialize [
 	super initialize.
@@ -52,6 +57,11 @@ GtTreePagerPaneFollowingsElement >> onGtTreePagerPaneModelFollowingPanesChanged:
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingsElement >> onPaneModelChanged [
 	self updateElement
+]
+
+{ #category : #'accessing - ui' }
+GtTreePagerPaneFollowingsElement >> outgoingLinkElements [
+	^ self children flatCollect: #outgoingLinkElements
 ]
 
 { #category : #'api - pane model' }

@@ -14,6 +14,11 @@ GtTreePagerPaneElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
+{ #category : #'accessing - ui' }
+GtTreePagerPaneElement >> incomingLinkElements [
+	^ followingsElement incomingLinkElements
+]
+
 { #category : #initialization }
 GtTreePagerPaneElement >> initialize [
 	super initialize.
@@ -86,6 +91,11 @@ GtTreePagerPaneElement >> onPaneModelChanged [
 	followingsElement paneModel: self paneModel.
 	
 	self updateElement.
+]
+
+{ #category : #'accessing - ui' }
+GtTreePagerPaneElement >> outgoingLinkElements [
+	^ followingsElement outgoingLinkElements
 ]
 
 { #category : #'api - pane model' }

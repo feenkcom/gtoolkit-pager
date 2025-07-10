@@ -29,6 +29,11 @@ GtTreePagerLinkFollowingContainerElement >> defaultLayout [
 	^ BlFrameLayout new
 ]
 
+{ #category : #'accessing - ui' }
+GtTreePagerLinkFollowingContainerElement >> incomingLinkElements [
+	^ self children flatCollect: #incomingLinkElements
+]
+
 { #category : #initialization }
 GtTreePagerLinkFollowingContainerElement >> initialize [
 	super initialize.
@@ -41,4 +46,9 @@ GtTreePagerLinkFollowingContainerElement >> initialize [
 GtTreePagerLinkFollowingContainerElement >> onLinkModelChanged [
 	self children do: [ :eachChild | 
 		eachChild linkModel: self linkModel ]
+]
+
+{ #category : #'accessing - ui' }
+GtTreePagerLinkFollowingContainerElement >> outgoingLinkElements [
+	^ self children flatCollect: #outgoingLinkElements
 ]

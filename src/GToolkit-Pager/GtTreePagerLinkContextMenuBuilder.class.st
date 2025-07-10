@@ -121,6 +121,7 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedState: aSt
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveCollapsedState: aState [
 	menu addItem: self newExpandLinkActionItem.
+	menu addItem: self newHideLinkActionItem.
 	menu addItem: self newRemoveLinkActionItem
 ]
 

@@ -36,7 +36,7 @@ GtTreePagerPaneModel >> addFollowingLink: aLinkModel [
 { #category : #'api - following links' }
 GtTreePagerPaneModel >> allFollowingPanes [
 	^ Array
-		streamContents: [ :aStream | self allPanesBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
+		streamContents: [ :aStream | self allPaneModelsBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
 ]
 
 { #category : #'api - following links' }
@@ -102,6 +102,12 @@ GtTreePagerPaneModel >> depthIndex [
 	^ self previousLink 
 		ifNotNil: [ :aLink | aLink depthIndex + 1 ] 
 		ifNil: [ 1 ]
+]
+
+{ #category : #'api - enumeration' }
+GtTreePagerPaneModel >> enumerableLinkModels [
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self followingLinks
 ]
 
 { #category : #'api - enumeration' }
@@ -407,8 +413,10 @@ GtTreePagerPaneModel >> selectPane: aNewPaneModel [
 	aNewLinkModel := GtTreePagerLinkModel new paneModel: aNewPaneModel.
 
 	anOldLinkModel
-		ifNil: [ self addFollowingLink: (aNewLinkModel collapse) ]
-		ifNotNil: [ aNewLinkModel collapse: anOldLinkModel isCollapsed.
+		ifNil: [ 
+			self addFollowingLink: aNewLinkModel ]
+		ifNotNil: [ 
+			aNewLinkModel state: anOldLinkModel state.
 			self replaceFollowingLink: anOldLinkModel by: aNewLinkModel ]
 ]
 
@@ -461,5 +469,5 @@ GtTreePagerPaneModel >> withAllFollowingPanes [
 	^ Array
 		streamContents: [ :aStream | 
 			aStream nextPut: self.
-			self allPanesBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
+			self allPaneModelsBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
 ]

@@ -4,14 +4,26 @@ Trait {
 }
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> allPaneModelsDepthFirstDo: aBlock [
-	self enumerablePaneModels
-		do: [ :each | each allPaneModelsDepthFirstDo: aBlock ].
-	self enumerablePaneModels do: aBlock
+TGtTreePagerPaneModelEnumerable >> allLinkModelsBreadthFirstDo: aBlock [
+	| aQueue |
+	aQueue := LinkedList withAll: self enumerableLinkModels.
+	[ aQueue notEmpty ]
+		whileTrue: [ | aPaneModel aResult |
+			aPaneModel := aQueue removeFirst.
+			aResult := aBlock value: aPaneModel.
+			(aResult isBoolean and: [ aResult not ]) ifFalse: [
+				aQueue addAll: aPaneModel enumerablePaneModels ] ]
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> allPanesBreadthFirstDo: aBlock [
+TGtTreePagerPaneModelEnumerable >> allLinkModelsDepthFirstDo: aBlock [
+	self enumerableLinkModels
+		do: [ :each | each allLinkModelsDepthFirstDo: aBlock ].
+	self enumerableLinkModels do: aBlock
+]
+
+{ #category : #'api - enumeration' }
+TGtTreePagerPaneModelEnumerable >> allPaneModelsBreadthFirstDo: aBlock [
 	| aQueue |
 	aQueue := LinkedList withAll: self enumerablePaneModels.
 	[ aQueue notEmpty ]
@@ -20,6 +32,38 @@ TGtTreePagerPaneModelEnumerable >> allPanesBreadthFirstDo: aBlock [
 			aResult := aBlock value: aPaneModel.
 			(aResult isBoolean and: [ aResult not ]) ifFalse: [
 				aQueue addAll: aPaneModel enumerablePaneModels ] ]
+]
+
+{ #category : #'api - enumeration' }
+TGtTreePagerPaneModelEnumerable >> allPaneModelsDepthFirstDo: aBlock [
+	self enumerablePaneModels
+		do: [ :each | each allPaneModelsDepthFirstDo: aBlock ].
+	self enumerablePaneModels do: aBlock
+]
+
+{ #category : #'api - enumeration' }
+TGtTreePagerPaneModelEnumerable >> detectLinkModel: aDetectBlock [
+	^ self
+		detectLinkModel: aDetectBlock
+		ifNone: [ NotFound signalFor: aDetectBlock in: self enumerableLinkModels ]
+]
+
+{ #category : #'api - enumeration' }
+TGtTreePagerPaneModelEnumerable >> detectLinkModel: aDetectBlock ifFound: aFoundBlock ifNone: aNoneBlock [
+	self
+		allLinkModelsBreadthFirstDo: [ :eachPaneModel | 
+			(aDetectBlock value: eachPaneModel)
+				ifTrue: [ ^ aFoundBlock value: eachPaneModel ] ].
+
+	^ aNoneBlock value
+]
+
+{ #category : #'api - enumeration' }
+TGtTreePagerPaneModelEnumerable >> detectLinkModel: aDetectBlock ifNone: aNoneBlock [
+	^ self
+		detectLinkModel: aDetectBlock
+		ifFound: [ :aPaneModel | aPaneModel ]
+		ifNone: aNoneBlock
 ]
 
 { #category : #'api - enumeration' }
@@ -32,7 +76,7 @@ TGtTreePagerPaneModelEnumerable >> detectPaneModel: aDetectBlock [
 { #category : #'api - enumeration' }
 TGtTreePagerPaneModelEnumerable >> detectPaneModel: aDetectBlock ifFound: aFoundBlock ifNone: aNoneBlock [
 	self
-		allPanesBreadthFirstDo: [ :eachPaneModel | 
+		allPaneModelsBreadthFirstDo: [ :eachPaneModel | 
 			(aDetectBlock value: eachPaneModel)
 				ifTrue: [ ^ aFoundBlock value: eachPaneModel ] ].
 
@@ -45,6 +89,12 @@ TGtTreePagerPaneModelEnumerable >> detectPaneModel: aDetectBlock ifNone: aNoneBl
 		detectPaneModel: aDetectBlock
 		ifFound: [ :aPaneModel | aPaneModel ]
 		ifNone: aNoneBlock
+]
+
+{ #category : #'api - enumeration' }
+TGtTreePagerPaneModelEnumerable >> enumerableLinkModels [
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self explicitRequirement
 ]
 
 { #category : #'api - enumeration' }

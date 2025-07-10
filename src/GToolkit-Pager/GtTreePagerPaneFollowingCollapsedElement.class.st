@@ -14,6 +14,11 @@ GtTreePagerPaneFollowingCollapsedElement >> defaultLayout [
 	^ BlGridLayout horizontal columnCount: 2
 ]
 
+{ #category : #'accessing - ui' }
+GtTreePagerPaneFollowingCollapsedElement >> incomingLinkElements [
+	^ Array with: rectangleElement
+]
+
 { #category : #initialization }
 GtTreePagerPaneFollowingCollapsedElement >> initialize [
 	super initialize.
@@ -54,13 +59,13 @@ GtTreePagerPaneFollowingCollapsedElement >> initializeRightOutputsElement [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerPaneFollowingCollapsedElement >> newOutputElementForLinkModel: aPaneModel [
+GtTreePagerPaneFollowingCollapsedElement >> newOutputElementForLinkModel: aLinkModel [
 	| anElement |
 	anElement := GtTreePagerPaneFollowingOutputElement new
 			beSmallSize;
-			linkModel: aPaneModel.
+			linkModel: aLinkModel.
 
-	aPaneModel isExpanded
+	aLinkModel isSpawned
 		ifTrue: [ anElement beHorizontal.
 			anElement margin: (BlInsets top: 1 bottom: 1) ]
 		ifFalse: [ anElement beVertical.
@@ -73,6 +78,12 @@ GtTreePagerPaneFollowingCollapsedElement >> newOutputElementForLinkModel: aPaneM
 GtTreePagerPaneFollowingCollapsedElement >> onLinkModelChanged [
 	rectangleElement linkModel: self linkModel.
 	self updateElement
+]
+
+{ #category : #'accessing - ui' }
+GtTreePagerPaneFollowingCollapsedElement >> outgoingLinkElements [
+	^ (rightOutputsElement children flatCollect: #outgoingLinkElements)
+		, (bottomOutputsElement children flatCollect: #outgoingLinkElements)
 ]
 
 { #category : #'private - updating' }
