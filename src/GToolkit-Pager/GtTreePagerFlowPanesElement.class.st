@@ -79,15 +79,6 @@ GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelStateChanged: anAnnouncemen
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
-	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
-
-	BlTaskAction
-		enqueueElement: self
-		action: [ self updateElementDueToExpansionChange: anAnnouncement paneModel ]
-]
-
-{ #category : #'private - event handling' }
 GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
 	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
@@ -119,9 +110,6 @@ GtTreePagerFlowPanesElement >> subscribeToPagerModel [
 	self pagerModel announcer weak
 		when: GtTreePagerPaneModelFollowingLinksChanged
 			send: #onGtTreePagerPaneModelFollowingPanesChanged:
-			to: self;
-		when: GtTreePagerPaneModelExpansionChanged
-			send: #onGtTreePagerPaneModelExpansionChanged:
 			to: self;
 		when: GtTreePagerLinkModelStateChanged
 			send: #onGtTreePagerLinkModelStateChanged:
@@ -162,28 +150,5 @@ GtTreePagerFlowPanesElement >> updateElement [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updateElementDueTo: aPaneModel addedFollowingPanes: addedFollowingPanes removedFollowingPanes: removedFollowingPanes [
-	self updateElement
-]
-
-{ #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> updateElementDueToExpansionChange: aPaneModel [
-	| toRemoveElements |
-	toRemoveElements := Array
-			streamContents: [ :aStream | 
-				self
-					childrenDo: [ :eachChild | 
-						(eachChild graph isEdge
-							and: [ eachChild graph model value = aPaneModel
-									or: [ eachChild graph model key = aPaneModel ] ])
-							ifTrue: [ aStream nextPut: eachChild ] ].
-
-				aPaneModel isCollapsed
-					ifTrue: [ self
-							childNodeForPaneModel: aPaneModel
-							ifFound: [ :anElement | aStream nextPut: anElement ]
-							ifNone: [  ] ] ].
-
-	toRemoveElements do: [ :eachChild | eachChild removeFromParent ].
-
 	self updateElement
 ]

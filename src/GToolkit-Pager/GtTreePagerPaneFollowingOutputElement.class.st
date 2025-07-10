@@ -125,11 +125,6 @@ GtTreePagerPaneFollowingOutputElement >> onGtTreePagerLinkModelStateChanged: anA
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
-{ #category : #'private - event handling' }
-GtTreePagerPaneFollowingOutputElement >> onGtTreePagerPaneModelPreviousActiveLinkChanged: anAnnouncement [
-	BlTaskAction enqueueElement: self action: [ self updateElement ]
-]
-
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingOutputElement >> onLinkModelChanged [
 	self updateElement
@@ -144,9 +139,6 @@ GtTreePagerPaneFollowingOutputElement >> outgoingLinkElements [
 GtTreePagerPaneFollowingOutputElement >> subscribeToLinkModel [
 	super subscribeToLinkModel.
 	self linkModel weak
-		when: GtTreePagerPaneModelPreviousActiveLinkChanged
-			send: #onGtTreePagerPaneModelPreviousActiveLinkChanged:
-			to: self;
 		when: GtTreePagerLinkModelStateChanged
 			send: #onGtTreePagerLinkModelStateChanged:
 			to: self

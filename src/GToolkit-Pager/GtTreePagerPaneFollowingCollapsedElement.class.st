@@ -74,6 +74,10 @@ GtTreePagerPaneFollowingCollapsedElement >> newOutputElementForLinkModel: aLinkM
 	^ anElement
 ]
 
+{ #category : #'private - event handling' }
+GtTreePagerPaneFollowingCollapsedElement >> onGtTreePagerPaneModelFollowingLinksChanged: anAnnouncement [
+]
+
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingCollapsedElement >> onLinkModelChanged [
 	rectangleElement linkModel: self linkModel.
@@ -84,6 +88,23 @@ GtTreePagerPaneFollowingCollapsedElement >> onLinkModelChanged [
 GtTreePagerPaneFollowingCollapsedElement >> outgoingLinkElements [
 	^ (rightOutputsElement children flatCollect: #outgoingLinkElements)
 		, (bottomOutputsElement children flatCollect: #outgoingLinkElements)
+]
+
+{ #category : #'api - link model' }
+GtTreePagerPaneFollowingCollapsedElement >> subscribeToLinkModel [
+	super subscribeToLinkModel.
+
+	self linkModel announcer weak
+		when: GtTreePagerPaneModelFollowingLinksChanged
+		send: #onGtTreePagerPaneModelFollowingLinksChanged:
+		to: self
+]
+
+{ #category : #'api - link model' }
+GtTreePagerPaneFollowingCollapsedElement >> unsubscribeFromLinkModel [
+	super unsubscribeFromLinkModel.
+
+	self linkModel announcer unsubscribe: self
 ]
 
 { #category : #'private - updating' }
@@ -101,11 +122,11 @@ GtTreePagerPaneFollowingCollapsedElement >> updateOutputElements [
 
 	rightOutputsElement
 		removeChildren;
-		addChildren: (someElements select: [ :each | each linkModel isExpanded ]).
+		addChildren: (someElements select: [ :each | each linkModel isSpawned ]).
 
 	bottomOutputsElement
 		removeChildren;
-		addChildren: (someElements select: [ :each | each linkModel isCollapsed ])
+		addChildren: (someElements select: [ :each | each linkModel isSpawned not ])
 ]
 
 { #category : #'private - updating' }

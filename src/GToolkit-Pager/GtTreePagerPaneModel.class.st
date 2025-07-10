@@ -284,14 +284,6 @@ GtTreePagerPaneModel >> linkModel: aLinkModel stateChangedFrom: anOldLinkState t
 
 { #category : #'private - notifying' }
 GtTreePagerPaneModel >> notifyActiveLinkChangedFrom: anOldActiveLink to: aNewActiveLink [
-	anOldActiveLink
-		ifNotNil: [ anOldActiveLink announcer
-				announce: (GtTreePagerPaneModelPreviousActiveLinkChanged new paneModel: anOldActiveLink) ].
-
-	aNewActiveLink
-		ifNotNil: [ aNewActiveLink announcer
-				announce: (GtTreePagerPaneModelPreviousActiveLinkChanged new paneModel: aNewActiveLink) ].
-
 	self announcer
 		announce: (GtTreePagerPaneModelActiveLinkChanged new
 				paneModel: self;
@@ -383,8 +375,8 @@ GtTreePagerPaneModel >> removeFollowingPane: aPaneModel [
 
 { #category : #'api - previous panes' }
 GtTreePagerPaneModel >> removeFromPreviousPane [
-	self previousPane
-		ifNotNil: [ :aPreviousPane | aPreviousPane removeFollowingPane: self ]
+	self previousLink
+		ifNotNil: [ :aPreviousLink | aPreviousLink removeFromPreviousPane ]
 ]
 
 { #category : #'api - following links' }

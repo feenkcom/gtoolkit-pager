@@ -75,11 +75,6 @@ GtTreePagerPaneElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerPaneElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
-	BlTaskAction enqueueElement: self action: [ self updateDisappearElement ]
-]
-
-{ #category : #'private - event handling' }
 GtTreePagerPaneElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateDisappearElement ]
 ]
@@ -105,9 +100,6 @@ GtTreePagerPaneElement >> subscribeToPaneModel [
 	self paneModel announcer weak
 		when: GtTreePagerPaneModelFollowingLinksChanged
 			send: #onGtTreePagerPaneModelFollowingPanesChanged:
-			to: self;
-		when: GtTreePagerPaneModelExpansionChanged
-			send: #onGtTreePagerPaneModelExpansionChanged:
 			to: self;
 		when: GtTreePagerLinkModelStateChanged
 			send: #onGtTreePagerLinkModelStateChanged:
