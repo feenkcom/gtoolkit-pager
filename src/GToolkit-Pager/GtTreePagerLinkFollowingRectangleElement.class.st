@@ -1,16 +1,16 @@
 Class {
-	#name : #GtTreePagerPaneFollowingRectangleElement,
+	#name : #GtTreePagerLinkFollowingRectangleElement,
 	#superclass : #GtTreePagerLinkBasicElement,
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
-GtTreePagerPaneFollowingRectangleElement >> defaultLayout [
+GtTreePagerLinkFollowingRectangleElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingRectangleElement >> initialize [
+GtTreePagerLinkFollowingRectangleElement >> initialize [
 	super initialize.
 
 	self
@@ -34,7 +34,7 @@ GtTreePagerPaneFollowingRectangleElement >> initialize [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingRectangleElement >> newContextMenu [
+GtTreePagerLinkFollowingRectangleElement >> newContextMenu [
 	| aMenu anActionItem |
 	aMenu := BrMenuItems new.
 
@@ -66,7 +66,7 @@ GtTreePagerPaneFollowingRectangleElement >> newContextMenu [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingRectangleElement >> onClickEvent: anEvent [
+GtTreePagerLinkFollowingRectangleElement >> onClickEvent: anEvent [
 	anEvent consumed: true.
 	self linkModel ifNil: [ ^ self ].
 

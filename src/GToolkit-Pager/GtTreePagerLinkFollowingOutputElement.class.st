@@ -1,5 +1,5 @@
 Class {
-	#name : #GtTreePagerPaneFollowingOutputElement,
+	#name : #GtTreePagerLinkFollowingOutputElement,
 	#superclass : #GtTreePagerLinkBasicElement,
 	#traits : 'TBrSizeAdjustable',
 	#classTraits : 'TBrSizeAdjustable classTrait',
@@ -7,27 +7,27 @@ Class {
 }
 
 { #category : #'api - orientation' }
-GtTreePagerPaneFollowingOutputElement >> beHorizontal [
+GtTreePagerLinkFollowingOutputElement >> beHorizontal [
 	self states addState: BrListOrientationState horizontal
 ]
 
 { #category : #'api - orientation' }
-GtTreePagerPaneFollowingOutputElement >> beVertical [
+GtTreePagerLinkFollowingOutputElement >> beVertical [
 	self states addState: BrListOrientationState vertical
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingOutputElement >> defaultLayout [
+GtTreePagerLinkFollowingOutputElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
 { #category : #'accessing - ui' }
-GtTreePagerPaneFollowingOutputElement >> incomingLinkElements [
+GtTreePagerLinkFollowingOutputElement >> incomingLinkElements [
 	^ Array empty
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingOutputElement >> initialize [
+GtTreePagerLinkFollowingOutputElement >> initialize [
 	super initialize.
 
 	self
@@ -46,7 +46,7 @@ GtTreePagerPaneFollowingOutputElement >> initialize [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingOutputElement >> initializeElementStyling [
+GtTreePagerLinkFollowingOutputElement >> initializeElementStyling [
 	| anAptitude |
 	anAptitude := BrLazyStyleCommonAptitude new
 			when: BrSizeAdjustmentState normal & BlElementState selected not
@@ -76,7 +76,7 @@ GtTreePagerPaneFollowingOutputElement >> initializeElementStyling [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingOutputElement >> initializeGeometryAndSizeStyling [
+GtTreePagerLinkFollowingOutputElement >> initializeGeometryAndSizeStyling [
 	| anAptitude |
 	anAptitude := BrSizeAdjustmentAptitude new
 			when: BrListOrientationState horizontal & BrSizeAdjustmentState small
@@ -96,14 +96,14 @@ GtTreePagerPaneFollowingOutputElement >> initializeGeometryAndSizeStyling [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingOutputElement >> newContextMenu [
+GtTreePagerLinkFollowingOutputElement >> newContextMenu [
 	^ GtTreePagerLinkContextMenuBuilder new
 		linkModel: self linkModel;
 		build
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingOutputElement >> normalSizeGeometry [
+GtTreePagerLinkFollowingOutputElement >> normalSizeGeometry [
 	^ BlPolygonGeometry
 		vertices: {0 @ 0.
 				self triangleWidth @ (self triangleHeight // 2).
@@ -111,7 +111,7 @@ GtTreePagerPaneFollowingOutputElement >> normalSizeGeometry [
 ]
 
 { #category : #'private - event management' }
-GtTreePagerPaneFollowingOutputElement >> onClickEvent: anEvent [
+GtTreePagerLinkFollowingOutputElement >> onClickEvent: anEvent [
 	| aToolModel |
 	self visibility isVisible ifFalse: [ ^ self ].
 	self linkModel ifNil: [ ^ self ].
@@ -121,22 +121,22 @@ GtTreePagerPaneFollowingOutputElement >> onClickEvent: anEvent [
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerPaneFollowingOutputElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
+GtTreePagerLinkFollowingOutputElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingOutputElement >> onLinkModelChanged [
+GtTreePagerLinkFollowingOutputElement >> onLinkModelChanged [
 	self updateElement
 ]
 
 { #category : #'accessing - ui' }
-GtTreePagerPaneFollowingOutputElement >> outgoingLinkElements [
+GtTreePagerLinkFollowingOutputElement >> outgoingLinkElements [
 	^ self hasLinkModel ifTrue: [ Array with: self ] ifFalse: [ Array empty ]
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingOutputElement >> subscribeToLinkModel [
+GtTreePagerLinkFollowingOutputElement >> subscribeToLinkModel [
 	super subscribeToLinkModel.
 	self linkModel weak
 		when: GtTreePagerLinkModelStateChanged
@@ -145,22 +145,22 @@ GtTreePagerPaneFollowingOutputElement >> subscribeToLinkModel [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingOutputElement >> triangleHeight [
+GtTreePagerLinkFollowingOutputElement >> triangleHeight [
 	^ 32
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingOutputElement >> triangleWidth [
+GtTreePagerLinkFollowingOutputElement >> triangleWidth [
 	^ 16
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingOutputElement >> unsubscribeFromLinkModel [
+GtTreePagerLinkFollowingOutputElement >> unsubscribeFromLinkModel [
 	self linkModel unsubscribe: self
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingOutputElement >> updateElement [
+GtTreePagerLinkFollowingOutputElement >> updateElement [
 	self linkModel isActive
 		ifTrue: [ self states addState: BlElementState selected ]
 		ifFalse: [ self states removeState: BlElementState selected ]
