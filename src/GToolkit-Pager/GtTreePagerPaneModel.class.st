@@ -7,7 +7,6 @@ Class {
 		'title',
 		'icon',
 		'announcer',
-		'columnModel',
 		'phlowTool',
 		'followingLinks',
 		'previousLink'
@@ -249,7 +248,7 @@ GtTreePagerPaneModel >> hide [
 
 { #category : #accessing }
 GtTreePagerPaneModel >> icon [
-	^ icon ifNil: [ self toolBuilder icon ]
+	^ icon ifNil: [ self phlowTool icon ]
 ]
 
 { #category : #accessing }
@@ -324,6 +323,17 @@ GtTreePagerPaneModel >> phlowTool [
 { #category : #'api - phlow' }
 GtTreePagerPaneModel >> phlowTool: aGtPhlowTool [
 	phlowTool := aGtPhlowTool
+]
+
+{ #category : #copying }
+GtTreePagerPaneModel >> postSimilarPaneCopy [
+	| newLinks |
+	announcer := Announcer new.
+	previousLink := nil.
+	newLinks := self followingLinks
+			collect: [ :eachLink | eachLink similarLinkCopy ].
+	followingLinks := GtTreePagerPaneLinks new paneModel: self.
+	self followingLinks: newLinks
 ]
 
 { #category : #'api - previous panes' }
@@ -410,6 +420,12 @@ GtTreePagerPaneModel >> selectPane: aNewPaneModel [
 		ifNotNil: [ 
 			aNewLinkModel state: anOldLinkModel state.
 			self replaceFollowingLink: anOldLinkModel by: aNewLinkModel ]
+]
+
+{ #category : #copying }
+GtTreePagerPaneModel >> similarPaneCopy [
+	<return: #TGtTreePagerPaneModel>
+	^ self shallowCopy postSimilarPaneCopy
 ]
 
 { #category : #'api - following links' }

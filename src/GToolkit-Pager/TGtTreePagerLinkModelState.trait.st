@@ -24,7 +24,9 @@ TGtTreePagerLinkModelState >> isCollapsed [
 { #category : #'api - state' }
 TGtTreePagerLinkModelState >> isExpanded [
 	"Return true if link model is expanded.
-	Expanded panes may be spawned (displayed)."
+	Expanded panes may be spawned (displayed).
+	It is better to ask `#isSpawned` in order to know
+	whether a pane is displayed."
 
 	<return: #Boolean>
 	^ self state isExpanded

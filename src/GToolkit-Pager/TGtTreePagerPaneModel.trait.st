@@ -30,6 +30,12 @@ TGtTreePagerPaneModel >> selectPane: aPaneModel [
 	self explicitRequirement
 ]
 
+{ #category : #copying }
+TGtTreePagerPaneModel >> similarPaneCopy [
+	<return: #TGtTreePagerPaneModel>
+	^ self explicitRequirement
+]
+
 { #category : #'api - following links' }
 TGtTreePagerPaneModel >> spawnPane: aPaneModel [
 	"Spawn a new pane model"

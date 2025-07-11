@@ -8,11 +8,11 @@ TGtTreePagerPaneModelEnumerable >> allLinkModelsBreadthFirstDo: aBlock [
 	| aQueue |
 	aQueue := LinkedList withAll: self enumerableLinkModels.
 	[ aQueue notEmpty ]
-		whileTrue: [ | aPaneModel aResult |
-			aPaneModel := aQueue removeFirst.
-			aResult := aBlock value: aPaneModel.
+		whileTrue: [ | aLinkModel aResult |
+			aLinkModel := aQueue removeFirst.
+			aResult := aBlock value: aLinkModel.
 			(aResult isBoolean and: [ aResult not ]) ifFalse: [
-				aQueue addAll: aPaneModel enumerablePaneModels ] ]
+				aQueue addAll: aLinkModel enumerableLinkModels ] ]
 ]
 
 { #category : #'api - enumeration' }

@@ -31,6 +31,11 @@ TGtTreePagerLinkModel >> followingLinks [
 	^ self explicitRequirement
 ]
 
+{ #category : #copying }
+TGtTreePagerLinkModel >> postSimilarLinkCopy [
+	
+]
+
 { #category : #'api - pane model' }
 TGtTreePagerLinkModel >> previousLink [
 	<return: #TGtTreePagerLinkModel or: nil>
@@ -43,4 +48,10 @@ TGtTreePagerLinkModel >> previousPane [
 
 	<return: #GtTreePagerPaneModel or: #TGtTreePagerLinkModel>
 	^ self explicitRequirement
+]
+
+{ #category : #copying }
+TGtTreePagerLinkModel >> similarLinkCopy [
+	<return: #TGtTreePagerPaneModel>
+	^ self shallowCopy postSimilarLinkCopy
 ]

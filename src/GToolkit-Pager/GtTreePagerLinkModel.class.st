@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerLinkModel,
 	#superclass : #Object,
-	#traits : 'TGtAnnouncer + TGtTreePagerLinkModelState + TGtTreePagerLinkModel + TGtTreePagerPaneModel',
-	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerLinkModelState classTrait + TGtTreePagerLinkModel classTrait + TGtTreePagerPaneModel classTrait',
+	#traits : 'TGtAnnouncer + TGtTreePagerLinkModelState + TGtTreePagerLinkModel + TGtTreePagerPaneModel + TGtTreePagerPaneModelEnumerable',
+	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerLinkModelState classTrait + TGtTreePagerLinkModel classTrait + TGtTreePagerPaneModel classTrait + TGtTreePagerPaneModelEnumerable classTrait',
 	#instVars : [
 		'paneModel',
 		'previousPane',
@@ -74,6 +74,18 @@ GtTreePagerLinkModel >> collapse: aBoolean [
 { #category : #'api - previous panes' }
 GtTreePagerLinkModel >> depthIndex [
 	^ self previousPane ifNotNil: #depthIndex ifNil: [ 1 ]
+]
+
+{ #category : #'api - enumeration' }
+GtTreePagerLinkModel >> enumerableLinkModels [
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self paneModel enumerableLinkModels
+]
+
+{ #category : #'api - enumeration' }
+GtTreePagerLinkModel >> enumerablePaneModels [
+	<return: #Collection of: #GtTreePagerPaneModel>
+	^ self paneModel enumerablePaneModels
 ]
 
 { #category : #'api - expandable' }
@@ -193,6 +205,12 @@ GtTreePagerLinkModel >> paneModel: aPaneModel [
 	paneModel := aPaneModel.
 ]
 
+{ #category : #copying }
+GtTreePagerLinkModel >> postSimilarLinkCopy [
+	previousPane := nil.
+	self paneModel: paneModel similarPaneCopy.
+]
+
 { #category : #'api - pane model' }
 GtTreePagerLinkModel >> previousLink [
 	<return: #TGtTreePagerLinkModel or: nil>
@@ -234,6 +252,12 @@ GtTreePagerLinkModel >> removeLink [
 { #category : #'api - following links' }
 GtTreePagerLinkModel >> selectPane: aPaneModel [
 	self paneModel selectPane: aPaneModel
+]
+
+{ #category : #copying }
+GtTreePagerLinkModel >> similarPaneCopy [
+	<return: #TGtTreePagerPaneModel>
+	^ self paneModel similarPaneCopy
 ]
 
 { #category : #'api - following links' }

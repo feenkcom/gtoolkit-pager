@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerModelLinkAdaptor,
 	#superclass : #Object,
-	#traits : 'TGtTreePagerLinkModel + TGtTreePagerLinkModelState + TGtAnnouncer',
-	#classTraits : 'TGtTreePagerLinkModel classTrait + TGtTreePagerLinkModelState classTrait + TGtAnnouncer classTrait',
+	#traits : 'TGtTreePagerLinkModel + TGtTreePagerLinkModelState + TGtAnnouncer + TGtTreePagerPaneModelEnumerable',
+	#classTraits : 'TGtTreePagerLinkModel classTrait + TGtTreePagerLinkModelState classTrait + TGtAnnouncer classTrait + TGtTreePagerPaneModelEnumerable classTrait',
 	#instVars : [
 		'pagerModel',
 		'paneModel'
@@ -42,6 +42,18 @@ GtTreePagerModelLinkAdaptor >> depthIndex [
 
 	<return: #Integer>
 	^ 0
+]
+
+{ #category : #'api - enumeration' }
+GtTreePagerModelLinkAdaptor >> enumerableLinkModels [
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self paneModel enumerableLinkModels
+]
+
+{ #category : #'api - enumeration' }
+GtTreePagerModelLinkAdaptor >> enumerablePaneModels [
+	<return: #Collection of: #GtTreePagerPaneModel>
+	^ self paneModel enumerablePaneModels
 ]
 
 { #category : #'api - pane model' }
@@ -84,6 +96,12 @@ GtTreePagerModelLinkAdaptor >> paneModel: aPaneModel [
 	
 	aPaneModel previousLink: self.
 	paneModel := aPaneModel
+]
+
+{ #category : #copying }
+GtTreePagerModelLinkAdaptor >> postSimilarLinkCopy [
+	pagerModel := nil.
+	paneModel := paneModel similarPaneCopy
 ]
 
 { #category : #'api - pane model' }

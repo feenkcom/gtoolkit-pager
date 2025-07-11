@@ -13,7 +13,7 @@ Class {
 { #category : #building }
 GtTreePagerLinkContextMenuBuilder >> build [
 	menu := BrMenuItems new.
-	self visitLinkState.
+	self visitLinkState: self linkModel state.
 	^ menu
 ]
 
@@ -60,17 +60,7 @@ GtTreePagerLinkContextMenuBuilder >> newExpandLinkActionItem [
 GtTreePagerLinkContextMenuBuilder >> newHideLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'menu--hide-link';
-		label: 'Hide'
-			preview: [ '{1}{2}'
-					format: {self linkModel title.
-							self linkModel allFollowingPanesCount
-								ifNotNil: [ :aCount | 
-									aCount isZero
-										ifTrue: [ '' ]
-										ifFalse: [ ' and {1} other {2}'
-												format: {aCount.
-														'pane' asPluralBasedOn: aCount} ] ]
-								ifNil: [ '' ]} ];
+		label: 'Hide' preview: [ self thisAndOtherPanesPreviewString ];
 		action: [ :anElement :aButtonModel :anEvent | self linkModel hide ];
 		yourself
 ]
@@ -88,25 +78,43 @@ GtTreePagerLinkContextMenuBuilder >> newInactivateLinkActionItem [
 GtTreePagerLinkContextMenuBuilder >> newRemoveLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'menu--remove-pane';
-		label: 'Remove'
-			preview: [ '{1}{2}'
-					format: {self linkModel title.
-							self linkModel allFollowingPanesCount
-								ifNotNil: [ :aCount | 
-									aCount isZero
-										ifTrue: [ '' ]
-										ifFalse: [ ' and {1} other {2}'
-												format: {aCount.
-														'pane' asPluralBasedOn: aCount} ] ]
-								ifNil: [ '' ]} ];
+		label: 'Remove' preview: [ self thisAndOtherPanesPreviewString ];
 		action: [ :anElement :aButtonModel :anEvent | self linkModel removeFromPreviousPane ];
 		yourself
+]
+
+{ #category : #private }
+GtTreePagerLinkContextMenuBuilder >> newWorldTabActionItem [
+	^ BrMenuActionItem new
+		id: #'menu--new-world-tab';
+		label: 'Open in new tab' preview: [ self thisAndOtherPanesPreviewString ];
+		action: [ :anElement :aButtonModel :anEvent | 
+			BlSpace new
+				paneInTreePager: self linkModel similarPaneCopy;
+				withSceneDriller;
+				showFrom: anElement ];
+		yourself
+]
+
+{ #category : #private }
+GtTreePagerLinkContextMenuBuilder >> thisAndOtherPanesPreviewString [
+	^ '{1}{2}'
+		format: {self linkModel title.
+				self linkModel allFollowingPanesCount
+					ifNotNil: [ :aCount | 
+						aCount isZero
+							ifTrue: [ '' ]
+							ifFalse: [ ' and {1} other {2}'
+									format: {aCount.
+											'pane' asPluralBasedOn: aCount} ] ]
+					ifNil: [ '' ]}
 ]
 
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSelectedState: aState [
 	menu addItem: self newInactivateLinkActionItem.
 	menu addItem: self newExpandLinkActionItem.
+	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRemoveLinkActionItem
 ]
 
@@ -115,6 +123,7 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedState: aSt
 	menu addItem: self newInactivateLinkActionItem.
 	menu addItem: self newCollapseLinkActionItem.
 	menu addItem: self newHideLinkActionItem.
+	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRemoveLinkActionItem
 ]
 
@@ -122,12 +131,14 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedState: aSt
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveCollapsedState: aState [
 	menu addItem: self newExpandLinkActionItem.
 	menu addItem: self newHideLinkActionItem.
+	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRemoveLinkActionItem
 ]
 
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveHiddenState: aState [
 	menu addItem: self newExpandLinkActionItem.
+	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRemoveLinkActionItem
 ]
 
@@ -136,15 +147,12 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveSpawnedState: a
 	menu addItem: self newActivateLinkActionItem.
 	menu addItem: self newCollapseLinkActionItem.
 	menu addItem: self newHideLinkActionItem.
+	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRemoveLinkActionItem
 ]
 
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkState: aState [
+	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRemoveLinkActionItem
-]
-
-{ #category : #private }
-GtTreePagerLinkContextMenuBuilder >> visitLinkState [
-	self linkModel state acceptVisitor: self
 ]

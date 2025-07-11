@@ -150,8 +150,17 @@ GtTreePagerPaneLinks >> removeLink: aLinkModel [
 
 { #category : #'private - updating' }
 GtTreePagerPaneLinks >> updateActiveLink [
+	| someCandidates |
 	links ifEmpty: [ ^ self ].
-	self activeLink ifNotNil: [ ^ self ].
 
-	self activeLink: links last
+	someCandidates := links select: #isActive.
+	someCandidates size = 1 ifTrue: [ ^ self ].
+	someCandidates size > 1 ifTrue: [ 
+		someCandidates allButLastDo: #inactivate.
+		^ self ].
+
+	someCandidates := links select: #isSpawned.
+	someCandidates ifEmpty: [ ^ self ].
+
+	self activeLink: someCandidates last
 ]

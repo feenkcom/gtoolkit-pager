@@ -262,11 +262,46 @@ GtTreePagerExamples >> pagerWithCollapsedFCPanes [
 	| aPager aPaneC |
 	aPager := self pagerWithCollapsedFPane.
 	aPaneC := aPager detectPaneModel: [ :each | each title = '$C' ].
+	self assert: aPaneC isSpawned.
 	self assert: aPaneC isExpanded.
 	aPaneC collapse.
 	self assert: aPaneC isCollapsed.
+	self assert: aPaneC isSpawned not.
+	self assert: aPaneC isActive not.
 
 	^ aPager
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerExamples >> pagerWithCollapsedFCPanes_similarPaneCopy [
+	<gtExample>
+	| aPager aLinkC aLinkF copyOfPaneC anotherPager copyOfLinkF |
+	aPager := self pagerWithCollapsedFCPanes.
+	aLinkC := aPager detectLinkModel: [ :each | each title = '$C' ].
+	aLinkF := aPager detectLinkModel: [ :each | each title = '$F' ].
+	self assert: aLinkC isCollapsed.
+	self assert: aLinkF isCollapsed.
+
+	copyOfPaneC := aLinkC similarPaneCopy.
+	copyOfLinkF := copyOfPaneC detectLinkModel: [ :each | each title = '$F' ].
+
+	self assert: (aLinkC paneModel == copyOfPaneC) not.
+	self assert: (copyOfPaneC isKindOf: GtTreePagerPaneModel).
+	self assert: copyOfPaneC withAllFollowingPanes size equals: 4.
+	self assert: copyOfPaneC isCollapsed not.
+	self assert: copyOfPaneC isSpawned.
+	self assert: copyOfPaneC isActive.
+
+	self assert: copyOfLinkF isCollapsed.
+	
+	anotherPager := self basicPagerModel.
+	anotherPager paneModel: copyOfPaneC.
+
+	self assert: copyOfPaneC isCollapsed not.
+	self assert: copyOfPaneC isSpawned.
+	self assert: copyOfPaneC isActive.
+
+	^ anotherPager
 ]
 
 { #category : #'examples - pager' }
