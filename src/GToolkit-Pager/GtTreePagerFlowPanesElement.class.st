@@ -54,14 +54,6 @@ GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex
 	^ anElement
 ]
 
-{ #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> ensureRemoveElementForPaneModel: aPaneModel [
-	self
-		childNodeForPaneModel: aPaneModel
-		ifFound: [ :anElement | anElement removeFromParent ]
-		ifNone: [  "ignore" ]
-]
-
 { #category : #initialization }
 GtTreePagerFlowPanesElement >> initialize [
 	super initialize.
