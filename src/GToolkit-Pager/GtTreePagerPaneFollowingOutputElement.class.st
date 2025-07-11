@@ -52,7 +52,7 @@ GtTreePagerPaneFollowingOutputElement >> initializeElementStyling [
 			when: BrSizeAdjustmentState normal & BlElementState selected not
 						& BlElementState hovered not
 				style: [ :aStyle | 
-					aStyle background: self theme button defaultBackground.
+					aStyle background: BlBackground transparent.
 					aStyle border: self theme button fadedBackgroundColor ];
 			when: BrSizeAdjustmentState small & BlElementState selected not
 						& BlElementState hovered not
