@@ -43,9 +43,8 @@ GtTreePagerPaneContentElement >> onGtPhlowObjectToSelect: anEvent [
 	self paneModel selectPane: aSelectedPane.
 	
 	aSelectedPane isSpawned ifFalse: [ ^ self ].
-	
 	self
-		fireEvent: (GtTreePagerScrollToColumnWish new column: aSelectedPane depthIndex)
+		fireEvent: (GtTreePagerScrollToColumnWish new column: self paneModel depthIndex)
 ]
 
 { #category : #'private - event handling' }
@@ -59,7 +58,7 @@ GtTreePagerPaneContentElement >> onGtPhlowObjectToSpawn: anEvent [
 	self paneModel spawnPane: aSpawnedPane.
 
 	self
-		fireEvent: (GtTreePagerScrollToColumnWish new column: aSpawnedPane depthIndex)
+		fireEvent: (GtTreePagerScrollToColumnWish new column: self paneModel depthIndex)
 ]
 
 { #category : #accessing }

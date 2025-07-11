@@ -42,16 +42,7 @@ GtTreePagerElement >> initialize [
 
 	self
 		when: GtTreePagerScrollToColumnWish
-		do: [ :aWish | self onGtTreePagerScrollToColumnWish: aWish ].
-	self
-		when: GtTreePagerDisplayColumnWish
-		do: [ :aWish | self onGtTreePagerDisplayColumnWish: aWish ]
-]
-
-{ #category : #initialization }
-GtTreePagerElement >> onGtTreePagerDisplayColumnWish: aWish [
-	aWish consumed: true.
-	panesElement displayColumn: aWish column
+		do: [ :aWish | self onGtTreePagerScrollToColumnWish: aWish ]
 ]
 
 { #category : #initialization }
