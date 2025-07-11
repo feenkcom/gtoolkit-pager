@@ -21,6 +21,11 @@ GtTreePagerPaneFollowingOutputElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
+{ #category : #'accessing - ui' }
+GtTreePagerPaneFollowingOutputElement >> incomingLinkElements [
+	^ Array empty
+]
+
 { #category : #initialization }
 GtTreePagerPaneFollowingOutputElement >> initialize [
 	super initialize.
@@ -92,53 +97,9 @@ GtTreePagerPaneFollowingOutputElement >> initializeGeometryAndSizeStyling [
 
 { #category : #initialization }
 GtTreePagerPaneFollowingOutputElement >> newContextMenu [
-	| aMenu anActionItem |
-	aMenu := BrMenuItems new.
-
-	self linkModel isActiveLink
-		ifTrue: [ anActionItem := BrMenuActionItem new
-					id: #'menu--keep-link';
-					label: 'Keep' preview: [ self linkModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self linkModel beInactiveLink ];
-					yourself ]
-		ifFalse: [ anActionItem := BrMenuActionItem new
-					id: #'menu--activate-link';
-					label: 'Activate' preview: [ self linkModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self linkModel beActiveLink ];
-					yourself ].
-	aMenu addItem: anActionItem.
-
-	self linkModel isExpanded
-		ifTrue: [ anActionItem := BrMenuActionItem new
-					id: #'menu--collapse-pane';
-					label: 'Collapse' preview: [ self linkModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self linkModel collapse ];
-					yourself ]
-		ifFalse: [ anActionItem := BrMenuActionItem new
-					id: #'menu--expand-pane';
-					label: 'Expand' preview: [ self linkModel title ];
-					action: [ :anElement :aButtonModel :anEvent | self linkModel expand ];
-					yourself ].
-	aMenu addItem: anActionItem.
-
-	anActionItem := BrMenuActionItem new
-			id: #'menu--remove-pane';
-			label: 'Remove'
-				preview: [ '{1}{2}'
-						format: {self linkModel title.
-								self linkModel allFollowingPanesCount
-									ifNotNil: [ :aCount | 
-										aCount isZero
-											ifTrue: [ '' ]
-											ifFalse: [ ' and {1} other {2}'
-													format: {aCount.
-															'pane' asPluralBasedOn: aCount} ] ]
-									ifNil: [ '' ]} ];
-			action: [ :anElement :aButtonModel :anEvent | self linkModel removeFromPreviousPane ];
-			yourself.
-	aMenu addItem: anActionItem.
-
-	^ aMenu
+	^ GtTreePagerLinkContextMenuBuilder new
+		linkModel: self linkModel;
+		build
 ]
 
 { #category : #initialization }
@@ -160,7 +121,7 @@ GtTreePagerPaneFollowingOutputElement >> onClickEvent: anEvent [
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerPaneFollowingOutputElement >> onGtTreePagerPaneModelPreviousActiveLinkChanged: anAnnouncement [
+GtTreePagerPaneFollowingOutputElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
@@ -169,12 +130,18 @@ GtTreePagerPaneFollowingOutputElement >> onLinkModelChanged [
 	self updateElement
 ]
 
+{ #category : #'accessing - ui' }
+GtTreePagerPaneFollowingOutputElement >> outgoingLinkElements [
+	^ self hasLinkModel ifTrue: [ Array with: self ] ifFalse: [ Array empty ]
+]
+
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingOutputElement >> subscribeToPaneModel [
+GtTreePagerPaneFollowingOutputElement >> subscribeToLinkModel [
+	super subscribeToLinkModel.
 	self linkModel weak
-		when: GtTreePagerPaneModelPreviousActiveLinkChanged
-		send: #onGtTreePagerPaneModelPreviousActiveLinkChanged:
-		to: self
+		when: GtTreePagerLinkModelStateChanged
+			send: #onGtTreePagerLinkModelStateChanged:
+			to: self
 ]
 
 { #category : #initialization }
@@ -188,13 +155,13 @@ GtTreePagerPaneFollowingOutputElement >> triangleWidth [
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingOutputElement >> unsubscribeFromPaneModel [
+GtTreePagerPaneFollowingOutputElement >> unsubscribeFromLinkModel [
 	self linkModel unsubscribe: self
 ]
 
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingOutputElement >> updateElement [
-	self linkModel isActiveLink
+	self linkModel isActive
 		ifTrue: [ self states addState: BlElementState selected ]
 		ifFalse: [ self states removeState: BlElementState selected ]
 ]

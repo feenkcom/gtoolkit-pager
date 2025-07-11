@@ -2,22 +2,34 @@ Class {
 	#name : #GtTreePagerHorizontalTreeFlowNode,
 	#superclass : #Object,
 	#instVars : [
-		'paneModel',
-		'row'
+		'row',
+		'linkModel'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
-{ #category : #accessing }
-GtTreePagerHorizontalTreeFlowNode >> paneModel [
-	^ paneModel
+{ #category : #printing }
+GtTreePagerHorizontalTreeFlowNode >> gtDisplayOn: stream [
+	stream nextPutAll: 'Node: '.
+	stream nextPutAll: (self linkModel ifNotNil: #title) asString
 ]
 
 { #category : #accessing }
-GtTreePagerHorizontalTreeFlowNode >> paneModel: aPaneModel [
-	self assert: [ aPaneModel isKindOf: GtTreePagerPaneModel ].
+GtTreePagerHorizontalTreeFlowNode >> linkModel [
+	^ linkModel
+]
 
-	paneModel := aPaneModel
+{ #category : #accessing }
+GtTreePagerHorizontalTreeFlowNode >> linkModel: aPaneModel [
+	linkModel := aPaneModel
+]
+
+{ #category : #printing }
+GtTreePagerHorizontalTreeFlowNode >> printOn: aStream [
+	super printOn: aStream.
+	aStream nextPut: $(.
+	aStream nextPutAll: (self linkModel ifNotNil: #title) asString.
+	aStream nextPut: $)
 ]
 
 { #category : #accessing }

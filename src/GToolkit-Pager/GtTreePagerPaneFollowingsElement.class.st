@@ -9,6 +9,11 @@ GtTreePagerPaneFollowingsElement >> defaultLayout [
 	^ BlLinearLayout vertical
 ]
 
+{ #category : #'accessing - ui' }
+GtTreePagerPaneFollowingsElement >> incomingLinkElements [
+	^ self children flatCollect: #incomingLinkElements
+]
+
 { #category : #initialization }
 GtTreePagerPaneFollowingsElement >> initialize [
 	super initialize.
@@ -29,7 +34,17 @@ GtTreePagerPaneFollowingsElement >> newPaneElementFor: aPaneModel [
 ]
 
 { #category : #'private - event management' }
+GtTreePagerPaneFollowingsElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
+]
+
+{ #category : #'private - event management' }
 GtTreePagerPaneFollowingsElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
+]
+
+{ #category : #'private - event management' }
+GtTreePagerPaneFollowingsElement >> onGtTreePagerPaneModelFollowingLinksChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
@@ -44,14 +59,19 @@ GtTreePagerPaneFollowingsElement >> onPaneModelChanged [
 	self updateElement
 ]
 
+{ #category : #'accessing - ui' }
+GtTreePagerPaneFollowingsElement >> outgoingLinkElements [
+	^ self children flatCollect: #outgoingLinkElements
+]
+
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingsElement >> subscribeToPaneModel [
 	self paneModel weak
 		when: GtTreePagerPaneModelFollowingLinksChanged
 			send: #onGtTreePagerPaneModelFollowingPanesChanged:
 			to: self;
-		when: GtTreePagerPaneModelExpansionChanged
-			send: #onGtTreePagerPaneModelExpansionChanged:
+		when: GtTreePagerLinkModelStateChanged
+			send: #onGtTreePagerLinkModelStateChanged:
 			to: self
 ]
 

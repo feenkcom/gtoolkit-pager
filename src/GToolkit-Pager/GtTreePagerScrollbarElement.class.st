@@ -115,8 +115,8 @@ GtTreePagerScrollbarElement >> newNodeElementForPaneModel: aPaneModel [
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerScrollbarElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
-	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
+GtTreePagerScrollbarElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
+	anAnnouncement linkModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
@@ -149,8 +149,8 @@ GtTreePagerScrollbarElement >> subscribeToPagerModel [
 		when: GtTreePagerPaneModelFollowingLinksChanged
 			send: #onGtTreePagerPaneModelFollowingPanesChanged:
 			to: self;
-		when: GtTreePagerPaneModelExpansionChanged
-			send: #onGtTreePagerPaneModelExpansionChanged:
+		when: GtTreePagerLinkModelStateChanged
+			send: #onGtTreePagerLinkModelStateChanged:
 			to: self
 ]
 
@@ -162,10 +162,10 @@ GtTreePagerScrollbarElement >> unsubscribeFromPagerModel [
 { #category : #'private - updating' }
 GtTreePagerScrollbarElement >> updateElement [
 	GtTreePagerHorizontalTreeFlowBuilder new
-		paneModels: self pagerModel paneModels;
-		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
+		linkModels: self pagerModel linkModels;
+		forEachPaneModelDo: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
 			self
-				ensureNodeForPaneModel: aPaneModel
+				ensureNodeForPaneModel: aLinkModel paneModel
 				row: aRowIndex
 				depth: aDepthIndex
 				span: aSpanIndex ];

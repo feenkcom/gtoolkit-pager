@@ -14,6 +14,11 @@ GtTreePagerPaneElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
+{ #category : #'accessing - ui' }
+GtTreePagerPaneElement >> incomingLinkElements [
+	^ followingsElement incomingLinkElements
+]
+
 { #category : #initialization }
 GtTreePagerPaneElement >> initialize [
 	super initialize.
@@ -59,13 +64,13 @@ GtTreePagerPaneElement >> onDisappearClick: anEvent [
 	self hasPaneModel ifFalse: [ ^ self ].
 	self paneModel depthIndex = 1 ifTrue: [ ^ self ].
 
-	self paneModel followingExpandedPaneModels isEmpty
+	self paneModel followingSpawnedPaneModels isEmpty
 		ifFalse: [ self paneModel collapse ]
 		ifTrue: [ self paneModel removeFromPreviousPane ]
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerPaneElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
+GtTreePagerPaneElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateDisappearElement ]
 ]
 
@@ -83,6 +88,11 @@ GtTreePagerPaneElement >> onPaneModelChanged [
 	self updateElement.
 ]
 
+{ #category : #'accessing - ui' }
+GtTreePagerPaneElement >> outgoingLinkElements [
+	^ followingsElement outgoingLinkElements
+]
+
 { #category : #'api - pane model' }
 GtTreePagerPaneElement >> subscribeToPaneModel [
 	super subscribeToPaneModel.
@@ -91,8 +101,8 @@ GtTreePagerPaneElement >> subscribeToPaneModel [
 		when: GtTreePagerPaneModelFollowingLinksChanged
 			send: #onGtTreePagerPaneModelFollowingPanesChanged:
 			to: self;
-		when: GtTreePagerPaneModelExpansionChanged
-			send: #onGtTreePagerPaneModelExpansionChanged:
+		when: GtTreePagerLinkModelStateChanged
+			send: #onGtTreePagerLinkModelStateChanged:
 			to: self
 ]
 
@@ -109,7 +119,7 @@ GtTreePagerPaneElement >> updateDisappearElement [
 		disappearElement visibility:  BlVisibility gone.
 		^ self ].
 
-	self paneModel followingExpandedPaneModels isEmpty
+	self paneModel followingSpawnedPaneModels isEmpty
 		ifFalse: [ disappearElement
 				icon: (BlElement new
 						size: 2 @ 10;

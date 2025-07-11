@@ -21,12 +21,22 @@ GtTreePagerFlowPanesElement >> defaultLayout [
 		cellSpacing: 20
 ]
 
+{ #category : #'api - scrolling' }
+GtTreePagerFlowPanesElement >> displayColumn: aColumn [
+	"I display the column as the last visible column"
+
+	self
+		layoutDo: [ :l | 
+			| aFirstColumn |
+			aFirstColumn := aColumn - l numberOfVisibleColumns + 1 max: 1.
+			l
+				firstVisibleColumn: aFirstColumn;
+				horizontalOffset: 0 ]
+]
+
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex depth: aDepthIndex span: aSpanIndex [
 	| anElement |
-	aPaneModel isCollapsed
-		ifTrue: [ ^ self ensureRemoveElementForPaneModel: aPaneModel ].
-
 	anElement := self
 			childNodeForPaneModel: aPaneModel
 			ifFound: [ :theElement | theElement ]
@@ -39,7 +49,9 @@ GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex
 				depth: aDepthIndex;
 				span: aSpanIndex ].
 
-	anElement hasParent ifFalse: [ self addChild: anElement ]
+	anElement hasParent ifFalse: [ self addChild: anElement ].
+	
+	^ anElement
 ]
 
 { #category : #'private - updating' }
@@ -71,12 +83,12 @@ GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelExpansionChanged: anAnnouncement [
-	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
+GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
+	anAnnouncement linkModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
 	BlTaskAction
 		enqueueElement: self
-		action: [ self updateElementDueToExpansionChange: anAnnouncement paneModel ]
+		action: [ self updateElement ]
 ]
 
 { #category : #'private - event handling' }
@@ -112,8 +124,8 @@ GtTreePagerFlowPanesElement >> subscribeToPagerModel [
 		when: GtTreePagerPaneModelFollowingLinksChanged
 			send: #onGtTreePagerPaneModelFollowingPanesChanged:
 			to: self;
-		when: GtTreePagerPaneModelExpansionChanged
-			send: #onGtTreePagerPaneModelExpansionChanged:
+		when: GtTreePagerLinkModelStateChanged
+			send: #onGtTreePagerLinkModelStateChanged:
 			to: self
 ]
 
@@ -124,67 +136,32 @@ GtTreePagerFlowPanesElement >> unsubscribeFromPagerModel [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updateElement [
+	| displayedElements edgeElements |
+	displayedElements := OrderedCollection new.
+
 	GtTreePagerHorizontalTreeFlowBuilder new
-		paneModels: self pagerModel paneModels;
-		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
-			self
-				ensureNodeForPaneModel: aPaneModel
-				row: aRowIndex
-				depth: aDepthIndex
-				span: aSpanIndex ];
+		linkModels: self pagerModel linkModels;
+		forEachPaneModelDo: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
+			displayedElements
+				add: (self
+						ensureNodeForPaneModel: aLinkModel paneModel
+						row: aRowIndex
+						depth: aDepthIndex
+						span: aSpanIndex) ];
 		build.
 
-	GtTreePagerPanesEdgesUpdater new
-		panesElement: self;
-		update
+	edgeElements := GtTreePagerPanesEdgesBuilder new
+			panesElement: self;
+			displayedPaneElements: displayedElements;
+			build.
+			
+	self addChildren: edgeElements.
+	displayedElements addAll: edgeElements.
+
+	(self children difference: displayedElements) do: #removeFromParent
 ]
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updateElementDueTo: aPaneModel addedFollowingPanes: addedFollowingPanes removedFollowingPanes: removedFollowingPanes [
-	| allRemovedPanes toRemoveElements |
-	allRemovedPanes := removedFollowingPanes
-			flatCollect: [ :eachPane | eachPane withAllFollowingPanes ].
-
-	toRemoveElements := Array
-			streamContents: [ :aStream | 
-				self
-					childrenDo: [ :eachChild | 
-						(eachChild graph isEdge
-							and: [ (allRemovedPanes includes: eachChild graph model value)
-									or: [ allRemovedPanes includes: eachChild graph model key ] ])
-							ifTrue: [ aStream nextPut: eachChild ] ].
-
-				allRemovedPanes
-					do: [ :eachPaneModel | 
-						self
-							childNodeForPaneModel: eachPaneModel
-							ifFound: [ :anElement | aStream nextPut: anElement ]
-							ifNone: [  ] ] ].
-
-	toRemoveElements do: [ :eachChild | eachChild removeFromParent ].
-
-	self updateElement
-]
-
-{ #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> updateElementDueToExpansionChange: aPaneModel [
-	| toRemoveElements |
-	toRemoveElements := Array
-			streamContents: [ :aStream | 
-				self
-					childrenDo: [ :eachChild | 
-						(eachChild graph isEdge
-							and: [ eachChild graph model value = aPaneModel
-									or: [ eachChild graph model key = aPaneModel ] ])
-							ifTrue: [ aStream nextPut: eachChild ] ].
-
-				aPaneModel isCollapsed
-					ifTrue: [ self
-							childNodeForPaneModel: aPaneModel
-							ifFound: [ :anElement | aStream nextPut: anElement ]
-							ifNone: [  ] ] ].
-
-	toRemoveElements do: [ :eachChild | eachChild removeFromParent ].
-
 	self updateElement
 ]
