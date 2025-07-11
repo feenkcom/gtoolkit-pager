@@ -23,6 +23,7 @@ GtTreePagerElement >> initialize [
 	self addChild: scrollbarElement.
 	self addChild: panesElement.
 
+	self background: self theme default backdropBackground.
 	self
 		addAptitude: (BrGlamorousMaximizerOverlayHostAptitude new
 				contentElement: [ BlElement new
