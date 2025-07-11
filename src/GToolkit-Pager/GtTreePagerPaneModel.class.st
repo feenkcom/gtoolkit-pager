@@ -99,7 +99,7 @@ GtTreePagerPaneModel >> depthIndex [
 	Root panes returns `1` values."
 
 	^ self previousLink 
-		ifNotNil: [ :aLink | aLink depthIndex + 1 ] 
+		ifNotNil: [ :aLink | aLink depthIndex ] 
 		ifNil: [ 1 ]
 ]
 

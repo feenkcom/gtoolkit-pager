@@ -18,6 +18,11 @@ GtTreePagerModelLinkAdaptor >> activeLink [
 	^ nil
 ]
 
+{ #category : #'api - following links' }
+GtTreePagerModelLinkAdaptor >> allFollowingPanesCount [
+	^ paneModel allFollowingPanesCount
+]
+
 { #category : #'as yet unclassified' }
 GtTreePagerModelLinkAdaptor >> allPreviousPanesDo: aFullBlockClosure [
 	"Iterate previous panes hierarchy."
@@ -41,7 +46,7 @@ GtTreePagerModelLinkAdaptor >> depthIndex [
 	"Return a depth of a given pane model"
 
 	<return: #Integer>
-	^ 0
+	^ 1
 ]
 
 { #category : #'api - enumeration' }
@@ -125,6 +130,12 @@ GtTreePagerModelLinkAdaptor >> printOn: aStream [
 	aStream nextPutAll: self title asString.
 	self isCollapsed ifTrue: [ aStream nextPutAll: ', collapsed' ].
 	aStream nextPut: $)
+]
+
+{ #category : #copying }
+GtTreePagerModelLinkAdaptor >> similarPaneCopy [
+	<return: #TGtTreePagerPaneModel>
+	^ self paneModel similarPaneCopy
 ]
 
 { #category : #'api - state' }

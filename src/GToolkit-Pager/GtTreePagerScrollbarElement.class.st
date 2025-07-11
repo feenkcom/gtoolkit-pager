@@ -92,12 +92,25 @@ GtTreePagerScrollbarElement >> initialize [
 ]
 
 { #category : #'private - updating' }
+GtTreePagerScrollbarElement >> newContextMenuFor: aPaneModel [
+	| aLinkModel |
+	aLinkModel := aPaneModel previousLink.
+	aLinkModel ifNil: [ ^ nil ].
+
+	^ GtTreePagerLinkContextMenuBuilder new
+		linkModel: aLinkModel;
+		build
+]
+
+{ #category : #'private - updating' }
 GtTreePagerScrollbarElement >> newNodeElementForPaneModel: aPaneModel [
 	^ GtTreePagerPaneScrollPreviewElement new
 		hExact: 15;
 		vMatchParent;
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 2);
 		addAptitude: BrGlamorousFadedButtonExteriourAptitude;
+		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
+				handleSubmenu: [ self newContextMenuFor: aPaneModel ]);
 		in: [ :theElement | 
 			theElement graph
 				beNode;

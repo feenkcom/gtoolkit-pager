@@ -73,7 +73,9 @@ GtTreePagerLinkModel >> collapse: aBoolean [
 
 { #category : #'api - previous panes' }
 GtTreePagerLinkModel >> depthIndex [
-	^ self previousPane ifNotNil: #depthIndex ifNil: [ 1 ]
+	^ self previousPane
+		ifNotNil: [ :aPaneModel | aPaneModel depthIndex + 1 ]
+		ifNil: [ 1 ]
 ]
 
 { #category : #'api - enumeration' }
