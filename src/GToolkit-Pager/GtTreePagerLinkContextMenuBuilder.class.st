@@ -120,11 +120,13 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSelectedState: aS
 
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedState: aState [
-	menu addItem: self newInactivateLinkActionItem.
-	menu addItem: self newCollapseLinkActionItem.
-	menu addItem: self newHideLinkActionItem.
+	self linkModel depthIndex = 1
+		ifFalse: [ menu addItem: self newInactivateLinkActionItem.
+			menu addItem: self newCollapseLinkActionItem.
+			menu addItem: self newHideLinkActionItem ].
 	menu addItem: self newWorldTabActionItem.
-	menu addItem: self newRemoveLinkActionItem
+	self linkModel depthIndex = 1
+		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]
 
 { #category : #visiting }
@@ -132,27 +134,32 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveCollapsedState:
 	menu addItem: self newExpandLinkActionItem.
 	menu addItem: self newHideLinkActionItem.
 	menu addItem: self newWorldTabActionItem.
-	menu addItem: self newRemoveLinkActionItem
+	self linkModel depthIndex = 1
+		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]
 
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveHiddenState: aState [
 	menu addItem: self newExpandLinkActionItem.
 	menu addItem: self newWorldTabActionItem.
-	menu addItem: self newRemoveLinkActionItem
+	self linkModel depthIndex = 1
+		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]
 
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveSpawnedState: aState [
-	menu addItem: self newActivateLinkActionItem.
-	menu addItem: self newCollapseLinkActionItem.
-	menu addItem: self newHideLinkActionItem.
+	self linkModel depthIndex = 1
+		ifFalse: [ menu addItem: self newActivateLinkActionItem.
+			menu addItem: self newCollapseLinkActionItem.
+			menu addItem: self newHideLinkActionItem ].
 	menu addItem: self newWorldTabActionItem.
-	menu addItem: self newRemoveLinkActionItem
+	self linkModel depthIndex = 1
+		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]
 
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkState: aState [
 	menu addItem: self newWorldTabActionItem.
-	menu addItem: self newRemoveLinkActionItem
+	self linkModel depthIndex = 1
+		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]

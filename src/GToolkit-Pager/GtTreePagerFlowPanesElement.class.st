@@ -21,19 +21,6 @@ GtTreePagerFlowPanesElement >> defaultLayout [
 		cellSpacing: 20
 ]
 
-{ #category : #'api - scrolling' }
-GtTreePagerFlowPanesElement >> displayColumn: aColumn [
-	"I display the column as the last visible column"
-
-	self
-		layoutDo: [ :l | 
-			| aFirstColumn |
-			aFirstColumn := aColumn - l numberOfVisibleColumns + 1 max: 1.
-			l
-				firstVisibleColumn: aFirstColumn;
-				horizontalOffset: 0 ]
-]
-
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex depth: aDepthIndex span: aSpanIndex [
 	| anElement |
@@ -52,14 +39,6 @@ GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex
 	anElement hasParent ifFalse: [ self addChild: anElement ].
 	
 	^ anElement
-]
-
-{ #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> ensureRemoveElementForPaneModel: aPaneModel [
-	self
-		childNodeForPaneModel: aPaneModel
-		ifFound: [ :anElement | anElement removeFromParent ]
-		ifNone: [  "ignore" ]
 ]
 
 { #category : #initialization }

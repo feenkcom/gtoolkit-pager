@@ -1,5 +1,5 @@
 Class {
-	#name : #GtTreePagerPaneFollowingCollapsedElement,
+	#name : #GtTreePagerLinkFollowingCollapsedElement,
 	#superclass : #GtTreePagerLinkBasicElement,
 	#instVars : [
 		'rectangleElement',
@@ -10,17 +10,17 @@ Class {
 }
 
 { #category : #initialization }
-GtTreePagerPaneFollowingCollapsedElement >> defaultLayout [
+GtTreePagerLinkFollowingCollapsedElement >> defaultLayout [
 	^ BlGridLayout horizontal columnCount: 2
 ]
 
 { #category : #'accessing - ui' }
-GtTreePagerPaneFollowingCollapsedElement >> incomingLinkElements [
+GtTreePagerLinkFollowingCollapsedElement >> incomingLinkElements [
 	^ Array with: rectangleElement
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingCollapsedElement >> initialize [
+GtTreePagerLinkFollowingCollapsedElement >> initialize [
 	super initialize.
 
 	self fitContent.
@@ -36,7 +36,7 @@ GtTreePagerPaneFollowingCollapsedElement >> initialize [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingCollapsedElement >> initializeBottomOutputsElement [
+GtTreePagerLinkFollowingCollapsedElement >> initializeBottomOutputsElement [
 	bottomOutputsElement := BrHorizontalPane new
 			fitContent;
 			constraintsDo: [ :c | 
@@ -45,12 +45,12 @@ GtTreePagerPaneFollowingCollapsedElement >> initializeBottomOutputsElement [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingCollapsedElement >> initializeRectangleElement [
-	rectangleElement := GtTreePagerPaneFollowingRectangleElement new
+GtTreePagerLinkFollowingCollapsedElement >> initializeRectangleElement [
+	rectangleElement := GtTreePagerLinkFollowingRectangleElement new
 ]
 
 { #category : #initialization }
-GtTreePagerPaneFollowingCollapsedElement >> initializeRightOutputsElement [
+GtTreePagerLinkFollowingCollapsedElement >> initializeRightOutputsElement [
 	rightOutputsElement := BrVerticalPane new
 			fitContent;
 			constraintsDo: [ :c | 
@@ -59,9 +59,9 @@ GtTreePagerPaneFollowingCollapsedElement >> initializeRightOutputsElement [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerPaneFollowingCollapsedElement >> newOutputElementForLinkModel: aLinkModel [
+GtTreePagerLinkFollowingCollapsedElement >> newOutputElementForLinkModel: aLinkModel [
 	| anElement |
-	anElement := GtTreePagerPaneFollowingOutputElement new
+	anElement := GtTreePagerLinkFollowingOutputElement new
 			beSmallSize;
 			linkModel: aLinkModel.
 
@@ -75,23 +75,23 @@ GtTreePagerPaneFollowingCollapsedElement >> newOutputElementForLinkModel: aLinkM
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerPaneFollowingCollapsedElement >> onGtTreePagerPaneModelFollowingLinksChanged: anAnnouncement [
+GtTreePagerLinkFollowingCollapsedElement >> onGtTreePagerPaneModelFollowingLinksChanged: anAnnouncement [
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerPaneFollowingCollapsedElement >> onLinkModelChanged [
+GtTreePagerLinkFollowingCollapsedElement >> onLinkModelChanged [
 	rectangleElement linkModel: self linkModel.
 	self updateElement
 ]
 
 { #category : #'accessing - ui' }
-GtTreePagerPaneFollowingCollapsedElement >> outgoingLinkElements [
+GtTreePagerLinkFollowingCollapsedElement >> outgoingLinkElements [
 	^ (rightOutputsElement children flatCollect: #outgoingLinkElements)
 		, (bottomOutputsElement children flatCollect: #outgoingLinkElements)
 ]
 
 { #category : #'api - link model' }
-GtTreePagerPaneFollowingCollapsedElement >> subscribeToLinkModel [
+GtTreePagerLinkFollowingCollapsedElement >> subscribeToLinkModel [
 	super subscribeToLinkModel.
 
 	self linkModel announcer weak
@@ -101,20 +101,20 @@ GtTreePagerPaneFollowingCollapsedElement >> subscribeToLinkModel [
 ]
 
 { #category : #'api - link model' }
-GtTreePagerPaneFollowingCollapsedElement >> unsubscribeFromLinkModel [
+GtTreePagerLinkFollowingCollapsedElement >> unsubscribeFromLinkModel [
 	super unsubscribeFromLinkModel.
 
 	self linkModel announcer unsubscribe: self
 ]
 
 { #category : #'private - updating' }
-GtTreePagerPaneFollowingCollapsedElement >> updateElement [
+GtTreePagerLinkFollowingCollapsedElement >> updateElement [
 	self updateRectangleElement.
 	self updateOutputElements
 ]
 
 { #category : #'private - updating' }
-GtTreePagerPaneFollowingCollapsedElement >> updateOutputElements [
+GtTreePagerLinkFollowingCollapsedElement >> updateOutputElements [
 	| someElements |
 	someElements := self linkModel followingLinks
 			collect: [ :eachLink | self newOutputElementForLinkModel: eachLink ]
@@ -130,6 +130,6 @@ GtTreePagerPaneFollowingCollapsedElement >> updateOutputElements [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerPaneFollowingCollapsedElement >> updateRectangleElement [
+GtTreePagerLinkFollowingCollapsedElement >> updateRectangleElement [
 	
 ]

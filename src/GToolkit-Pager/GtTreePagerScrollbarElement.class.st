@@ -25,9 +25,6 @@ GtTreePagerScrollbarElement >> defaultLayout [
 { #category : #'private - updating' }
 GtTreePagerScrollbarElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex depth: aDepthIndex span: aSpanIndex [
 	| anElement |
-	aPaneModel isCollapsed
-		ifTrue: [ ^ self ensureRemoveElementForPaneModel: aPaneModel ].
-
 	anElement := self
 			childNodeForPaneModel: aPaneModel
 			ifFound: [ :theElement | theElement ]
@@ -40,15 +37,9 @@ GtTreePagerScrollbarElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex
 				depth: aDepthIndex;
 				span: aSpanIndex ].
 
-	anElement hasParent ifFalse: [ panesElement addChild: anElement ]
-]
-
-{ #category : #'private - updating' }
-GtTreePagerScrollbarElement >> ensureRemoveElementForPaneModel: aPaneModel [
-	self
-		childNodeForPaneModel: aPaneModel
-		ifFound: [ :anElement | anElement removeFromParent ]
-		ifNone: [  "ignore" ]
+	anElement hasParent ifFalse: [ panesElement addChild: anElement ].
+	
+	^ anElement
 ]
 
 { #category : #initialization }
@@ -101,12 +92,25 @@ GtTreePagerScrollbarElement >> initialize [
 ]
 
 { #category : #'private - updating' }
+GtTreePagerScrollbarElement >> newContextMenuFor: aPaneModel [
+	| aLinkModel |
+	aLinkModel := aPaneModel previousLink.
+	aLinkModel ifNil: [ ^ nil ].
+
+	^ GtTreePagerLinkContextMenuBuilder new
+		linkModel: aLinkModel;
+		build
+]
+
+{ #category : #'private - updating' }
 GtTreePagerScrollbarElement >> newNodeElementForPaneModel: aPaneModel [
 	^ GtTreePagerPaneScrollPreviewElement new
 		hExact: 15;
 		vMatchParent;
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 2);
 		addAptitude: BrGlamorousFadedButtonExteriourAptitude;
+		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
+				handleSubmenu: [ self newContextMenuFor: aPaneModel ]);
 		in: [ :theElement | 
 			theElement graph
 				beNode;
@@ -161,13 +165,18 @@ GtTreePagerScrollbarElement >> unsubscribeFromPagerModel [
 
 { #category : #'private - updating' }
 GtTreePagerScrollbarElement >> updateElement [
+	| displayedElements |
+	displayedElements := OrderedCollection new.
 	GtTreePagerHorizontalTreeFlowBuilder new
 		linkModels: self pagerModel linkModels;
 		forEachPaneModelDo: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
-			self
-				ensureNodeForPaneModel: aLinkModel paneModel
-				row: aRowIndex
-				depth: aDepthIndex
-				span: aSpanIndex ];
-		build
+			displayedElements
+				add: (self
+						ensureNodeForPaneModel: aLinkModel paneModel
+						row: aRowIndex
+						depth: aDepthIndex
+						span: aSpanIndex) ];
+		build.
+
+	(panesElement children difference: displayedElements) do: #removeFromParent
 ]

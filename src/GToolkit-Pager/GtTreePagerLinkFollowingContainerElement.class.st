@@ -7,7 +7,7 @@ Class {
 { #category : #factory }
 GtTreePagerLinkFollowingContainerElement class >> collapsed [
 	^ self new
-		addChild: (GtTreePagerPaneFollowingCollapsedElement new
+		addChild: (GtTreePagerLinkFollowingCollapsedElement new
 				constraintsDo: [ :c | 
 					c margin: (BlInsets left: 10).
 					c frame vertical alignCenter.
@@ -17,7 +17,7 @@ GtTreePagerLinkFollowingContainerElement class >> collapsed [
 { #category : #factory }
 GtTreePagerLinkFollowingContainerElement class >> triangle [
 	^ self new
-		addChild: (GtTreePagerPaneFollowingOutputElement new
+		addChild: (GtTreePagerLinkFollowingOutputElement new
 				beNormalSize;
 				constraintsDo: [ :c | 
 					c frame vertical alignCenter.
