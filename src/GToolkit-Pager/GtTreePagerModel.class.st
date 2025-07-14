@@ -1,11 +1,12 @@
 Class {
 	#name : #GtTreePagerModel,
 	#superclass : #Object,
-	#traits : 'TGtTreePagerPaneModelEnumerable + TGtOptions + TGtAnnouncer',
-	#classTraits : 'TGtTreePagerPaneModelEnumerable classTrait + TGtOptions classTrait + TGtAnnouncer classTrait',
+	#traits : 'TGtTreePagerPaneModelEnumerable + TGtAnnouncer + TGtOptions',
+	#classTraits : 'TGtTreePagerPaneModelEnumerable classTrait + TGtAnnouncer classTrait + TGtOptions classTrait',
 	#instVars : [
 		'announcer',
-		'linkModels'
+		'linkModels',
+		'settings'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -108,7 +109,8 @@ GtTreePagerModel >> initialize [
 	super initialize.
 
 	announcer := Announcer new.
-	linkModels := Array empty
+	linkModels := Array empty.
+	settings := GtTreePagerModelSettings new announcer: announcer.
 ]
 
 { #category : #'api - panes' }
@@ -143,4 +145,9 @@ GtTreePagerModel >> paneModels: aCollection [
 	self
 		linkModels: (aCollection
 				collect: [ :eachPane | GtTreePagerModelLinkAdaptor new paneModel: eachPane ])
+]
+
+{ #category : #accessing }
+GtTreePagerModel >> settings [
+	^ settings
 ]

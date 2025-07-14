@@ -7,6 +7,11 @@ Trait {
 }
 
 { #category : #'api - pager model' }
+TGtTreePagerWithModel >> hasPagerModel [
+	^ pagerModel isNotNil
+]
+
+{ #category : #'api - pager model' }
 TGtTreePagerWithModel >> onPagerModelChanged [
 ]
 
