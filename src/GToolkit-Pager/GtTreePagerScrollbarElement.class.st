@@ -94,7 +94,7 @@ GtTreePagerScrollbarElement >> initialize [
 				c ignored vertical alignCenter ];
 			addItem: (columnHeightElement := BrButton new
 						beSmallSize;
-						aptitude: BrGlamorousButtonWithIconAptitude;
+						aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
 						icon: self newFillRowHeightIcon;
 						label: 'Use whole column height';
 						action: [ :aButton | self onChangeColumnHeightSettingsFrom: aButton ]).
@@ -129,10 +129,10 @@ GtTreePagerScrollbarElement >> newFillColumnHeightIcon [
 		alignTopLeft;
 		addChild: (BlElement new
 				size: 7 @ 14;
-				background: self theme button defaultTextForeground);
+				background: self theme button fadedBackgroundColor);
 		addChild: (BlElement new
 				size: 7 @ 14;
-				background: self theme button defaultTextForeground)
+				background: self theme button fadedBackgroundColor)
 ]
 
 { #category : #visiting }
@@ -143,10 +143,10 @@ GtTreePagerScrollbarElement >> newFillRowHeightIcon [
 		alignTopLeft;
 		addChild: (BlElement new
 				size: 7 @ 14;
-				background: self theme button defaultTextForeground);
+				background: self theme button fadedBackgroundColor);
 		addChild: (BlElement new
 				size: 7 @ 7;
-				background: self theme button defaultTextForeground)
+				background: self theme button fadedBackgroundColor)
 ]
 
 { #category : #'private - updating' }
