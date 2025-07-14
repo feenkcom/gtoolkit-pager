@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerModel,
 	#superclass : #Object,
-	#traits : 'TGtTreePagerPaneModelEnumerable + TGtAnnouncer',
-	#classTraits : 'TGtTreePagerPaneModelEnumerable classTrait + TGtAnnouncer classTrait',
+	#traits : 'TGtTreePagerPaneModelEnumerable + TGtAnnouncer + TGtOptions',
+	#classTraits : 'TGtTreePagerPaneModelEnumerable classTrait + TGtAnnouncer classTrait + TGtOptions classTrait',
 	#instVars : [
 		'announcer',
 		'linkModels',
