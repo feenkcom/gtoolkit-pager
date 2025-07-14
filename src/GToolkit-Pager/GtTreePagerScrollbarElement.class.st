@@ -1,10 +1,13 @@
 Class {
 	#name : #GtTreePagerScrollbarElement,
 	#superclass : #GtTreePagerBasicElement,
+	#traits : 'TBlHorizontalTreeFlowLayoutRowCountVisitor',
+	#classTraits : 'TBlHorizontalTreeFlowLayoutRowCountVisitor classTrait',
 	#instVars : [
 		'scrollbarElement',
 		'pageModelsAndElements',
-		'panesElement'
+		'panesElement',
+		'columnHeightElement'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -44,7 +47,7 @@ GtTreePagerScrollbarElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex
 
 { #category : #initialization }
 GtTreePagerScrollbarElement >> initialize [
-	| containerElement wrapperElement |
+	| containerElement panePreviewElement toolbarElement |
 	super initialize.
 	self hMatchParent.
 	self vFitContent.
@@ -54,7 +57,7 @@ GtTreePagerScrollbarElement >> initialize [
 	panesElement := BlElement new.
 	panesElement
 		layout: (BlHorizontalTreeFlowLayout new
-				numberOfVisibleColumns: 20;
+				displayAllColumns;
 				firstVisibleColumn: 1;
 				horizontalOffset: 0;
 				cellSpacing: 2);
@@ -76,17 +79,33 @@ GtTreePagerScrollbarElement >> initialize [
 						c frame vertical alignCenter ];
 					aptitude: BrGlamorousFadedButtonExteriourAptitude).
 
-	wrapperElement := BrVerticalPane new
+	panePreviewElement := BrVerticalPane new
 			fitContent;
 			addChild: panesElement;
 			addChild: scrollbarElement.
+
+	toolbarElement := BrToolbar new
+			aptitude: (BrGlamorousToolbarAptitude new spacing: 5);
+			fitContent;
+			margin: (BlInsets left: 5 right: 5);
+			constraintsDo: [ :c | 
+				c ignoreByLayout.
+				c ignored horizontal alignRight.
+				c ignored vertical alignCenter ];
+			addItem: (columnHeightElement := BrButton new
+						beSmallSize;
+						aptitude: BrGlamorousButtonWithIconAptitude;
+						icon: self newFillRowHeightIcon;
+						label: 'Use whole column height';
+						action: [ :aButton | self onChangeColumnHeightSettingsFrom: aButton ]).
 
 	containerElement := BrHorizontalPane new
 			margin: (BlInsets top: 5);
 			alignCenter;
 			hMatchParent;
 			vFitContent;
-			addChild: wrapperElement.
+			addChild: panePreviewElement;
+			addChild: toolbarElement.
 
 	self addChild: containerElement
 ]
@@ -100,6 +119,34 @@ GtTreePagerScrollbarElement >> newContextMenuFor: aPaneModel [
 	^ GtTreePagerLinkContextMenuBuilder new
 		linkModel: aLinkModel;
 		build
+]
+
+{ #category : #visiting }
+GtTreePagerScrollbarElement >> newFillColumnHeightIcon [
+	^ BrHorizontalPane new
+		cellSpacing: 2;
+		fitContent;
+		alignTopLeft;
+		addChild: (BlElement new
+				size: 7 @ 14;
+				background: self theme button defaultTextForeground);
+		addChild: (BlElement new
+				size: 7 @ 14;
+				background: self theme button defaultTextForeground)
+]
+
+{ #category : #visiting }
+GtTreePagerScrollbarElement >> newFillRowHeightIcon [
+	^ BrHorizontalPane new
+		cellSpacing: 2;
+		fitContent;
+		alignTopLeft;
+		addChild: (BlElement new
+				size: 7 @ 14;
+				background: self theme button defaultTextForeground);
+		addChild: (BlElement new
+				size: 7 @ 7;
+				background: self theme button defaultTextForeground)
 ]
 
 { #category : #'private - updating' }
@@ -119,17 +166,38 @@ GtTreePagerScrollbarElement >> newNodeElementForPaneModel: aPaneModel [
 ]
 
 { #category : #'private - event handling' }
+GtTreePagerScrollbarElement >> onChangeColumnHeightSettingsFrom: aButton [
+	self hasPagerModel ifFalse: [ ^ self ].
+	
+	GtTreePagerColumnHeightChanger new 
+		settings: self pagerModel settings;
+		change.
+	
+	self visitLayoutRowCount: self pagerModel settings columnHeight
+]
+
+{ #category : #'private - event handling' }
 GtTreePagerScrollbarElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
 	anAnnouncement linkModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
-	BlTaskAction enqueueElement: self action: [ self updateElement ]
+	BlTaskAction enqueueElement: self action: [ self updatePanesElement ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerScrollbarElement >> onGtTreePagerModelColumnHeightChanged: anAnnouncement [
+	self pagerModel settings = anAnnouncement settings ifFalse: [ ^ self ].
+
+	BlTaskAction
+		enqueueElement: self
+		action: [ self updatePanesColumnHeight.
+			self updateColumnHeightSettingsElement ]
 ]
 
 { #category : #'private - event handling' }
 GtTreePagerScrollbarElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
 	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
-	BlTaskAction enqueueElement: self action: [ self updateElement ]
+	BlTaskAction enqueueElement: self action: [ self updatePanesElement ]
 ]
 
 { #category : #'api - pager model' }
@@ -155,6 +223,9 @@ GtTreePagerScrollbarElement >> subscribeToPagerModel [
 			to: self;
 		when: GtTreePagerLinkModelStateChanged
 			send: #onGtTreePagerLinkModelStateChanged:
+			to: self;
+		when: GtTreePagerModelColumnHeightChanged
+			send: #onGtTreePagerModelColumnHeightChanged:
 			to: self
 ]
 
@@ -164,9 +235,30 @@ GtTreePagerScrollbarElement >> unsubscribeFromPagerModel [
 ]
 
 { #category : #'private - updating' }
+GtTreePagerScrollbarElement >> updateColumnHeightSettingsElement [
+	self visitLayoutRowCount: self pagerModel settings columnHeight
+]
+
+{ #category : #'private - updating' }
 GtTreePagerScrollbarElement >> updateElement [
+	self updateColumnHeightSettingsElement.
+	self updatePanesColumnHeight.
+	self updatePanesElement
+]
+
+{ #category : #'private - updating' }
+GtTreePagerScrollbarElement >> updatePanesColumnHeight [
+	panesElement
+		layoutDo: [ :l | l rowCount: self pagerModel settings columnHeight ].
+
+	
+]
+
+{ #category : #'private - updating' }
+GtTreePagerScrollbarElement >> updatePanesElement [
 	| displayedElements |
 	displayedElements := OrderedCollection new.
+
 	GtTreePagerHorizontalTreeFlowBuilder new
 		linkModels: self pagerModel linkModels;
 		forEachPaneModelDo: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
@@ -179,4 +271,18 @@ GtTreePagerScrollbarElement >> updateElement [
 		build.
 
 	(panesElement children difference: displayedElements) do: #removeFromParent
+]
+
+{ #category : #visiting }
+GtTreePagerScrollbarElement >> visitBlHorizontalTreeFlowLayoutCellCount: aCount [
+	columnHeightElement
+		label: 'Click to fill row height (instead of column height)';
+		icon: self newFillColumnHeightIcon
+]
+
+{ #category : #visiting }
+GtTreePagerScrollbarElement >> visitBlHorizontalTreeFlowLayoutRowGrowingCount: aCount [
+	columnHeightElement
+		label: 'Click to fill column height (instead of row height)';
+		icon: self newFillRowHeightIcon
 ]

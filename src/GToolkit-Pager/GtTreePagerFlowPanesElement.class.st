@@ -67,19 +67,21 @@ GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelStateChanged: anAnnouncemen
 
 	BlTaskAction
 		enqueueElement: self
-		action: [ self updateElement ]
+		action: [ self updatePaneAndEdgeElements ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerFlowPanesElement >> onGtTreePagerModelColumnHeightChanged: anAnnouncement [
+	self pagerModel settings = anAnnouncement settings ifFalse: [ ^ self ].
+
+	BlTaskAction enqueueElement: self action: [ self updatePanesColumnHeight ]
 ]
 
 { #category : #'private - event handling' }
 GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
 	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
-	BlTaskAction
-		enqueueElement: self
-		action: [ self
-				updateElementDueTo: anAnnouncement paneModel
-				addedFollowingPanes: anAnnouncement addedFollowingPanes
-				removedFollowingPanes: anAnnouncement removedFollowingPanes ]
+	BlTaskAction enqueueElement: self action: [ self updatePaneAndEdgeElements ]
 ]
 
 { #category : #'api - pager model' }
@@ -105,6 +107,9 @@ GtTreePagerFlowPanesElement >> subscribeToPagerModel [
 			to: self;
 		when: GtTreePagerLinkModelStateChanged
 			send: #onGtTreePagerLinkModelStateChanged:
+			to: self;
+		when: GtTreePagerModelColumnHeightChanged
+			send: #onGtTreePagerModelColumnHeightChanged:
 			to: self
 ]
 
@@ -115,6 +120,12 @@ GtTreePagerFlowPanesElement >> unsubscribeFromPagerModel [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updateElement [
+	self updatePanesColumnHeight.
+	self updatePaneAndEdgeElements
+]
+
+{ #category : #'private - updating' }
+GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 	| displayedElements edgeElements |
 	displayedElements := OrderedCollection new.
 
@@ -133,7 +144,7 @@ GtTreePagerFlowPanesElement >> updateElement [
 			panesElement: self;
 			displayedPaneElements: displayedElements;
 			build.
-			
+
 	self addChildren: edgeElements.
 	displayedElements addAll: edgeElements.
 
@@ -141,6 +152,6 @@ GtTreePagerFlowPanesElement >> updateElement [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> updateElementDueTo: aPaneModel addedFollowingPanes: addedFollowingPanes removedFollowingPanes: removedFollowingPanes [
-	self updateElement
+GtTreePagerFlowPanesElement >> updatePanesColumnHeight [
+	self layoutDo: [ :l | l rowCount: self pagerModel settings columnHeight ]
 ]
