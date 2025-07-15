@@ -43,7 +43,13 @@ GtTreePagerPanePreviewFocusListener >> onInstalledIn: aPaneElement [
 	super onInstalledIn: aPaneElement.
 
 	aPaneElement hasFocus
-		ifTrue: [ scrollbarElement selectPreviewElement: previewElement ]
+		ifTrue: [ scrollbarElement selectPreviewElement: previewElement ].
+		
+	aPaneElement deepestFocusedChild
+		ifNotNil: [ :aFocusedElement |
+			previewElement userData
+				at: #previousFocusedElement
+				put: aFocusedElement asWeakReference ]
 ]
 
 { #category : #'api - accessing' }

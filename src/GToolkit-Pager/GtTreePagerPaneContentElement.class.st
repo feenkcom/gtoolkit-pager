@@ -15,6 +15,7 @@ GtTreePagerPaneContentElement >> initialize [
 	self background: self theme default contentBackground.
 	self matchParent.
 	self clipChildren: false.
+	self beFocusable.
 
 	self
 		when: GtPhlowObjectToSelect

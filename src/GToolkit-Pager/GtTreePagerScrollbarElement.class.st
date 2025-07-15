@@ -5,7 +5,6 @@ Class {
 	#classTraits : 'TBlHorizontalTreeFlowLayoutRowCountVisitor classTrait',
 	#instVars : [
 		'scrollbarElement',
-		'pageModelsAndElements',
 		'columnHeightElement',
 		'previewsElement',
 		'panesElement'
@@ -69,13 +68,11 @@ GtTreePagerScrollbarElement >> initialize [
 	self hMatchParent.
 	self vFitContent.
 
-	pageModelsAndElements := OrderedCollection new.
-
 	previewsElement := BlElement new.
 	previewsElement
 		clipChildren: false;
 		layout: (BlHorizontalTreeFlowLayout new
-				displayAllColumns;
+				numberOfVisibleColumns: 2;
 				firstVisibleColumn: 1;
 				horizontalOffset: 0;
 				cellSpacing: 2);
@@ -99,8 +96,8 @@ GtTreePagerScrollbarElement >> initialize [
 
 	previewContainer := BrVerticalPane new
 			fitContent;
-			addChild: previewsElement;
-			addChild: scrollbarElement.
+			addChild: previewsElement";
+			addChild: scrollbarElement".
 
 	toolbarElement := BrToolbar new
 			aptitude: (BrGlamorousToolbarAptitude new spacing: 5);
@@ -194,7 +191,8 @@ GtTreePagerScrollbarElement >> newPreviewElementForPaneModel: aPaneModel paneEle
 			theElement graph
 				beNode;
 				model: aPaneModel ];
-		when: BlClickEvent do: [ :anEvent | self onPaneElementClick: anEvent ];
+		when: BlClickEvent
+			do: [ :anEvent | self onPaneElementClick: anEvent paneElement: aPaneElement ];
 		addAptitude: (BrGlamorousWithExplicitTooltipAptitude new
 				content: [ BrElementAsFormPreview
 						forElement: aPaneElement contentElement
@@ -251,12 +249,26 @@ GtTreePagerScrollbarElement >> onPagerModelChanged [
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerScrollbarElement >> onPaneElementClick: anEvent [
+GtTreePagerScrollbarElement >> onPaneElementClick: anEvent paneElement: aPaneElement [
+	| aFocusTarget |
 	anEvent consumed: true.
 
 	self
 		fireEvent: (GtTreePagerScrollToColumnWish new
-				column: anEvent currentTarget constraints horizontalTreeFlow depth)
+				column: anEvent currentTarget constraints horizontalTreeFlow depth).
+
+	aFocusTarget := anEvent currentTarget userData
+			at: #previousFocusedElement
+			ifPresent: [ :aWeakReference | 
+				(aWeakReference at: 1)
+					ifNotNil: [ :aPreviouslyFocusedElement | 
+						(aPreviouslyFocusedElement hasParent: aPaneElement)
+							ifTrue: [ aPreviouslyFocusedElement ]
+							ifFalse: [ aPaneElement ] ]
+					ifNil: [ aPaneElement ] ]
+			ifAbsent: [ aPaneElement ].
+
+	aFocusTarget ifNotNil: #requestFocus
 ]
 
 { #category : #accessing }
@@ -322,7 +334,7 @@ GtTreePagerScrollbarElement >> updateElement [
 
 { #category : #'private - updating' }
 GtTreePagerScrollbarElement >> updatePreviewsElement [
-	| displayedElements paneElements |
+	| displayedElements paneElements maxDepth |
 	displayedElements := OrderedCollection new.
 
 	paneElements := panesElement children
@@ -331,7 +343,13 @@ GtTreePagerScrollbarElement >> updatePreviewsElement [
 	paneElements
 		do: [ :eachPaneElement | displayedElements add: (self ensurePreviewForPaneElement: eachPaneElement) ].
 
-	(previewsElement children difference: displayedElements) do: #removeFromParent
+	maxDepth := 1.
+	paneElements
+		do: [ :eachPaneElement | eachPaneElement constraints horizontalTreeFlow depth max: maxDepth ].
+
+	(previewsElement children difference: displayedElements) do: #removeFromParent.
+
+	previewsElement layoutDo: [ :l | l numberOfVisibleColumns: maxDepth ]
 ]
 
 { #category : #'private - updating' }

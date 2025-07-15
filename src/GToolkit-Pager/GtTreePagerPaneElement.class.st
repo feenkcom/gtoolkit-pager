@@ -19,6 +19,11 @@ GtTreePagerPaneElement >> defaultLayout [
 	^ BlLinearLayout horizontal
 ]
 
+{ #category : #'focus requesting' }
+GtTreePagerPaneElement >> focusTarget [
+	^ contentElement
+]
+
 { #category : #'accessing - ui' }
 GtTreePagerPaneElement >> incomingLinkElements [
 	^ followingsElement incomingLinkElements
