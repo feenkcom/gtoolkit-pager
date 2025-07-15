@@ -6,15 +6,16 @@ Class {
 	#instVars : [
 		'scrollbarElement',
 		'pageModelsAndElements',
-		'panesElement',
-		'columnHeightElement'
+		'columnHeightElement',
+		'previewsElement',
+		'panesElement'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #'api - children enumeration' }
 GtTreePagerScrollbarElement >> childNodeForPaneModel: aPaneModel ifFound: aFoundBlock ifNone: aNoneBlock [
-	^ panesElement children
+	^ previewsElement children
 		detect: [ :eachElement | eachElement graph isNode and: [ eachElement paneModel = aPaneModel ] ]
 		ifFound: aFoundBlock
 		ifNone: aNoneBlock
@@ -26,36 +27,53 @@ GtTreePagerScrollbarElement >> defaultLayout [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerScrollbarElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex depth: aDepthIndex span: aSpanIndex [
-	| anElement |
-	anElement := self
-			childNodeForPaneModel: aPaneModel
+GtTreePagerScrollbarElement >> ensurePreviewForPaneElement: aPaneElement [
+	| aPreviewElement |
+	aPreviewElement := self
+			childNodeForPaneModel: aPaneElement paneModel
 			ifFound: [ :theElement | theElement ]
-			ifNone: [ self newNodeElementForPaneModel: aPaneModel ].
+			ifNone: [ self
+					newPreviewElementForPaneModel: aPaneElement paneModel
+					paneElement: aPaneElement ].
 
-	anElement
+	aPreviewElement
 		constraintsDo: [ :c | 
+			| layoutConstraints |
+			layoutConstraints := aPaneElement constraints horizontalTreeFlow.
 			c horizontalTreeFlow
-				row: aRowIndex;
-				depth: aDepthIndex;
-				span: aSpanIndex ].
+				row: layoutConstraints row;
+				depth: layoutConstraints depth;
+				span: layoutConstraints span ].
 
-	anElement hasParent ifFalse: [ panesElement addChild: anElement ].
-	
-	^ anElement
+	aPaneElement
+		removeEventHandlersSuchThat: [ :each | each isKindOf: GtTreePagerPanePreviewResizeListener ].
+	aPaneElement
+		removeEventHandlersSuchThat: [ :each | each isKindOf: GtTreePagerPanePreviewFocusListener ].
+	aPaneElement
+		addEventHandler: (GtTreePagerPanePreviewResizeListener new previewElement: aPreviewElement).
+	aPaneElement
+		addEventHandler: (GtTreePagerPanePreviewFocusListener new
+				previewElement: aPreviewElement;
+				scrollbarElement: self).
+
+	aPreviewElement hasParent
+		ifFalse: [ previewsElement addChild: aPreviewElement ].
+
+	^ aPreviewElement
 ]
 
 { #category : #initialization }
 GtTreePagerScrollbarElement >> initialize [
-	| containerElement panePreviewElement toolbarElement |
+	| rootContainer previewContainer toolbarElement |
 	super initialize.
 	self hMatchParent.
 	self vFitContent.
 
 	pageModelsAndElements := OrderedCollection new.
 
-	panesElement := BlElement new.
-	panesElement
+	previewsElement := BlElement new.
+	previewsElement
+		clipChildren: false;
 		layout: (BlHorizontalTreeFlowLayout new
 				displayAllColumns;
 				firstVisibleColumn: 1;
@@ -79,9 +97,9 @@ GtTreePagerScrollbarElement >> initialize [
 						c frame vertical alignCenter ];
 					aptitude: BrGlamorousFadedButtonExteriourAptitude).
 
-	panePreviewElement := BrVerticalPane new
+	previewContainer := BrVerticalPane new
 			fitContent;
-			addChild: panesElement;
+			addChild: previewsElement;
 			addChild: scrollbarElement.
 
 	toolbarElement := BrToolbar new
@@ -99,15 +117,15 @@ GtTreePagerScrollbarElement >> initialize [
 						label: 'Use whole column height';
 						action: [ :aButton | self onChangeColumnHeightSettingsFrom: aButton ]).
 
-	containerElement := BrHorizontalPane new
+	rootContainer := BrHorizontalPane new
 			margin: (BlInsets top: 5);
 			alignCenter;
 			hMatchParent;
 			vFitContent;
-			addChild: panePreviewElement;
+			addChild: previewContainer;
 			addChild: toolbarElement.
 
-	self addChild: containerElement
+	self addChild: rootContainer
 ]
 
 { #category : #'private - updating' }
@@ -164,7 +182,7 @@ GtTreePagerScrollbarElement >> newFillRowHeightIcon [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerScrollbarElement >> newNodeElementForPaneModel: aPaneModel [
+GtTreePagerScrollbarElement >> newPreviewElementForPaneModel: aPaneModel paneElement: aPaneElement [
 	^ GtTreePagerPaneScrollPreviewElement new
 		hExact: 15;
 		vMatchParent;
@@ -176,7 +194,13 @@ GtTreePagerScrollbarElement >> newNodeElementForPaneModel: aPaneModel [
 			theElement graph
 				beNode;
 				model: aPaneModel ];
-		when: BlClickEvent do: [ :anEvent | self onPaneElementClick: anEvent ]
+		when: BlClickEvent do: [ :anEvent | self onPaneElementClick: anEvent ];
+		addAptitude: (BrGlamorousWithExplicitTooltipAptitude new
+				content: [ BrElementAsFormPreview
+						forElement: aPaneElement contentElement
+						preferredExtent: 400 @ 400 ];
+				showDelay: 100 milliSeconds;
+				hideDelay: 50 milliSeconds)
 ]
 
 { #category : #'private - event handling' }
@@ -191,10 +215,16 @@ GtTreePagerScrollbarElement >> onChangeColumnHeightSettingsFrom: aButton [
 ]
 
 { #category : #'private - event handling' }
+GtTreePagerScrollbarElement >> onGtTreePagerFlowPaneElementsChanged: anEvent [
+	anEvent consumed: true.
+	self updatePreviewsElement
+]
+
+{ #category : #'private - event handling' }
 GtTreePagerScrollbarElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
 	anAnnouncement linkModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
-	BlTaskAction enqueueElement: self action: [ self updatePanesElement ]
+	BlTaskAction enqueueElement: self action: [ self updatePreviewsElement ]
 ]
 
 { #category : #'private - event handling' }
@@ -203,7 +233,7 @@ GtTreePagerScrollbarElement >> onGtTreePagerModelColumnHeightChanged: anAnnounce
 
 	BlTaskAction
 		enqueueElement: self
-		action: [ self updatePanesColumnHeight.
+		action: [ self updatePreviewsElementLayoutColumnHeight.
 			self updateColumnHeightSettingsElement ]
 ]
 
@@ -211,7 +241,7 @@ GtTreePagerScrollbarElement >> onGtTreePagerModelColumnHeightChanged: anAnnounce
 GtTreePagerScrollbarElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
 	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
-	BlTaskAction enqueueElement: self action: [ self updatePanesElement ]
+	BlTaskAction enqueueElement: self action: [ self updatePreviewsElement ]
 ]
 
 { #category : #'api - pager model' }
@@ -229,22 +259,52 @@ GtTreePagerScrollbarElement >> onPaneElementClick: anEvent [
 				column: anEvent currentTarget constraints horizontalTreeFlow depth)
 ]
 
+{ #category : #accessing }
+GtTreePagerScrollbarElement >> panesElement [
+	"Return panes element that have pane elements as its direct children."
+
+	^ panesElement
+]
+
+{ #category : #accessing }
+GtTreePagerScrollbarElement >> panesElement: aPanesElement [
+	"Set panes element that have pane elements as its direct children."
+
+	self assert: [ panesElement isNil ].
+	self assert: [ aPanesElement isNotNil ].
+
+	panesElement := aPanesElement.
+
+	aPanesElement
+		when: GtTreePagerFlowPaneElementsChanged
+		do: [ :anEvent | self onGtTreePagerFlowPaneElementsChanged: anEvent ]
+]
+
+{ #category : #'api - selection' }
+GtTreePagerScrollbarElement >> selectPreviewElement: aPreviewElement [
+	previewsElement children
+		do: [ :eachPreview | eachPreview dispatchEvent: (BlElementSelectedStateWish selected: false) ].
+
+	aPreviewElement dispatchEvent: (BlElementSelectedStateWish selected: true)
+]
+
 { #category : #'api - pager model' }
 GtTreePagerScrollbarElement >> subscribeToPagerModel [
+	"It is not necessary to subscribe for spanwned pane changes,
+	since we listen to panesElement changes and take the values from there."
+
+	super subscribeToPagerModel.
+
 	self pagerModel announcer weak
-		when: GtTreePagerPaneModelFollowingLinksChanged
-			send: #onGtTreePagerPaneModelFollowingPanesChanged:
-			to: self;
-		when: GtTreePagerLinkModelStateChanged
-			send: #onGtTreePagerLinkModelStateChanged:
-			to: self;
 		when: GtTreePagerModelColumnHeightChanged
-			send: #onGtTreePagerModelColumnHeightChanged:
-			to: self
+		send: #onGtTreePagerModelColumnHeightChanged:
+		to: self
 ]
 
 { #category : #'api - pager model' }
 GtTreePagerScrollbarElement >> unsubscribeFromPagerModel [
+	super unsubscribeFromPagerModel.
+
 	self pagerModel unsubscribe: self
 ]
 
@@ -256,35 +316,27 @@ GtTreePagerScrollbarElement >> updateColumnHeightSettingsElement [
 { #category : #'private - updating' }
 GtTreePagerScrollbarElement >> updateElement [
 	self updateColumnHeightSettingsElement.
-	self updatePanesColumnHeight.
-	self updatePanesElement
+	self updatePreviewsElementLayoutColumnHeight.
+	self updatePreviewsElement
 ]
 
 { #category : #'private - updating' }
-GtTreePagerScrollbarElement >> updatePanesColumnHeight [
-	panesElement
-		layoutDo: [ :l | l rowCount: self pagerModel settings columnHeight ].
-
-	
-]
-
-{ #category : #'private - updating' }
-GtTreePagerScrollbarElement >> updatePanesElement [
-	| displayedElements |
+GtTreePagerScrollbarElement >> updatePreviewsElement [
+	| displayedElements paneElements |
 	displayedElements := OrderedCollection new.
 
-	GtTreePagerHorizontalTreeFlowBuilder new
-		linkModels: self pagerModel linkModels;
-		forEachPaneModelDo: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
-			displayedElements
-				add: (self
-						ensureNodeForPaneModel: aLinkModel paneModel
-						row: aRowIndex
-						depth: aDepthIndex
-						span: aSpanIndex) ];
-		build.
+	paneElements := panesElement children
+			select: [ :eachChild | eachChild graph isNode ].
 
-	(panesElement children difference: displayedElements) do: #removeFromParent
+	paneElements
+		do: [ :eachPaneElement | displayedElements add: (self ensurePreviewForPaneElement: eachPaneElement) ].
+
+	(previewsElement children difference: displayedElements) do: #removeFromParent
+]
+
+{ #category : #'private - updating' }
+GtTreePagerScrollbarElement >> updatePreviewsElementLayoutColumnHeight [
+	previewsElement layoutDo: [ :l | l rowCount: self pagerModel settings columnHeight ]
 ]
 
 { #category : #visiting }

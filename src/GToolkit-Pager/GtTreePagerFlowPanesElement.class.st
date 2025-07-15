@@ -74,7 +74,7 @@ GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelStateChanged: anAnnouncemen
 GtTreePagerFlowPanesElement >> onGtTreePagerModelColumnHeightChanged: anAnnouncement [
 	self pagerModel settings = anAnnouncement settings ifFalse: [ ^ self ].
 
-	BlTaskAction enqueueElement: self action: [ self updatePanesColumnHeight ]
+	BlTaskAction enqueueElement: self action: [ self updatePreviewsElementLayoutColumnHeight ]
 ]
 
 { #category : #'private - event handling' }
@@ -120,7 +120,7 @@ GtTreePagerFlowPanesElement >> unsubscribeFromPagerModel [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updateElement [
-	self updatePanesColumnHeight.
+	self updatePreviewsElementLayoutColumnHeight.
 	self updatePaneAndEdgeElements
 ]
 
@@ -148,10 +148,12 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 	self addChildren: edgeElements.
 	displayedElements addAll: edgeElements.
 
-	(self children difference: displayedElements) do: #removeFromParent
+	(self children difference: displayedElements) do: #removeFromParent.
+
+	self dispatchEvent: GtTreePagerFlowPaneElementsChanged new
 ]
 
 { #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> updatePanesColumnHeight [
+GtTreePagerFlowPanesElement >> updatePreviewsElementLayoutColumnHeight [
 	self layoutDo: [ :l | l rowCount: self pagerModel settings columnHeight ]
 ]
