@@ -9,6 +9,11 @@ Class {
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
+{ #category : #accessing }
+GtTreePagerPaneElement >> contentElement [
+	^ contentElement
+]
+
 { #category : #initialization }
 GtTreePagerPaneElement >> defaultLayout [
 	^ BlLinearLayout horizontal

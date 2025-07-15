@@ -27,32 +27,14 @@ GtTreePagerScrollbarElement >> defaultLayout [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerScrollbarElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex depth: aDepthIndex span: aSpanIndex [
-	| anElement |
-	anElement := self
-			childNodeForPaneModel: aPaneModel
-			ifFound: [ :theElement | theElement ]
-			ifNone: [ self newNodeElementForPaneModel: aPaneModel ].
-
-	anElement
-		constraintsDo: [ :c | 
-			c horizontalTreeFlow
-				row: aRowIndex;
-				depth: aDepthIndex;
-				span: aSpanIndex ].
-
-	anElement hasParent ifFalse: [ previewsElement addChild: anElement ].
-	
-	^ anElement
-]
-
-{ #category : #'private - updating' }
 GtTreePagerScrollbarElement >> ensurePreviewForPaneElement: aPaneElement [
 	| aPreviewElement |
 	aPreviewElement := self
 			childNodeForPaneModel: aPaneElement paneModel
 			ifFound: [ :theElement | theElement ]
-			ifNone: [ self newNodeElementForPaneModel: aPaneElement paneModel ].
+			ifNone: [ self
+					newPreviewElementForPaneModel: aPaneElement paneModel
+					paneElement: aPaneElement ].
 
 	aPreviewElement
 		constraintsDo: [ :c | 
@@ -66,7 +48,13 @@ GtTreePagerScrollbarElement >> ensurePreviewForPaneElement: aPaneElement [
 	aPaneElement
 		removeEventHandlersSuchThat: [ :each | each isKindOf: GtTreePagerPanePreviewResizeListener ].
 	aPaneElement
+		removeEventHandlersSuchThat: [ :each | each isKindOf: GtTreePagerPanePreviewFocusListener ].
+	aPaneElement
 		addEventHandler: (GtTreePagerPanePreviewResizeListener new previewElement: aPreviewElement).
+	aPaneElement
+		addEventHandler: (GtTreePagerPanePreviewFocusListener new
+				previewElement: aPreviewElement;
+				scrollbarElement: self).
 
 	aPreviewElement hasParent
 		ifFalse: [ previewsElement addChild: aPreviewElement ].
@@ -93,7 +81,7 @@ GtTreePagerScrollbarElement >> initialize [
 				cellSpacing: 2);
 		constraintsDo: [ :c | 
 			c horizontal fitContent.
-			c vertical fitContent ].
+			c vertical exact: 20 ].
 
 	scrollbarElement := BlHorizontalScrollbarElement new
 			disableClickToScroll;
@@ -194,7 +182,7 @@ GtTreePagerScrollbarElement >> newFillRowHeightIcon [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerScrollbarElement >> newNodeElementForPaneModel: aPaneModel [
+GtTreePagerScrollbarElement >> newPreviewElementForPaneModel: aPaneModel paneElement: aPaneElement [
 	^ GtTreePagerPaneScrollPreviewElement new
 		hExact: 15;
 		vMatchParent;
@@ -206,7 +194,13 @@ GtTreePagerScrollbarElement >> newNodeElementForPaneModel: aPaneModel [
 			theElement graph
 				beNode;
 				model: aPaneModel ];
-		when: BlClickEvent do: [ :anEvent | self onPaneElementClick: anEvent ]
+		when: BlClickEvent do: [ :anEvent | self onPaneElementClick: anEvent ];
+		addAptitude: (BrGlamorousWithExplicitTooltipAptitude new
+				content: [ BrElementAsFormPreview
+						forElement: aPaneElement contentElement
+						preferredExtent: 400 @ 400 ];
+				showDelay: 100 milliSeconds;
+				hideDelay: 50 milliSeconds)
 ]
 
 { #category : #'private - event handling' }
@@ -284,6 +278,14 @@ GtTreePagerScrollbarElement >> panesElement: aPanesElement [
 	aPanesElement
 		when: GtTreePagerFlowPaneElementsChanged
 		do: [ :anEvent | self onGtTreePagerFlowPaneElementsChanged: anEvent ]
+]
+
+{ #category : #'api - selection' }
+GtTreePagerScrollbarElement >> selectPreviewElement: aPreviewElement [
+	previewsElement children
+		do: [ :eachPreview | eachPreview dispatchEvent: (BlElementSelectedStateWish selected: false) ].
+
+	aPreviewElement dispatchEvent: (BlElementSelectedStateWish selected: true)
 ]
 
 { #category : #'api - pager model' }
