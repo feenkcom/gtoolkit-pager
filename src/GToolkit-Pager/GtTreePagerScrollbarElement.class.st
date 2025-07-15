@@ -132,7 +132,14 @@ GtTreePagerScrollbarElement >> newFillColumnHeightIcon [
 				background: self theme button fadedBackgroundColor);
 		addChild: (BlElement new
 				size: 7 @ 14;
-				background: self theme button fadedBackgroundColor)
+				background: self theme button fadedBackgroundColor);
+		in: [ :theIcon | 
+			theIcon
+				addAptitude: BrGlamorousFadedButtonExteriourAptitude new
+						/ [ :each | (theIcon childAt: 1) == each ];
+				addAptitude: BrGlamorousFadedButtonExteriourAptitude new
+						/ [ :each | (theIcon childAt: 2) == each ] ];
+		yourself
 ]
 
 { #category : #visiting }
@@ -146,7 +153,14 @@ GtTreePagerScrollbarElement >> newFillRowHeightIcon [
 				background: self theme button fadedBackgroundColor);
 		addChild: (BlElement new
 				size: 7 @ 7;
-				background: self theme button fadedBackgroundColor)
+				background: self theme button fadedBackgroundColor);
+		in: [ :theIcon | 
+			theIcon
+				addAptitude: BrGlamorousFadedButtonExteriourAptitude new
+						/ [ :each | (theIcon childAt: 1) == each ];
+				addAptitude: BrGlamorousFadedButtonExteriourAptitude new
+						/ [ :each | (theIcon childAt: 2) == each ] ];
+		yourself
 ]
 
 { #category : #'private - updating' }
