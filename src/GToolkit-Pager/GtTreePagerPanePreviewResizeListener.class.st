@@ -3,14 +3,18 @@ Class {
 	#superclass : #BlCustomEventHandler,
 	#instVars : [
 		'previewElement',
-		'height'
+		'width'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #'element handlers' }
 GtTreePagerPanePreviewResizeListener >> elementExtentChangedEvent: anEvent [
-	self updateSizeFrom: anEvent currentTarget
+	self updateSizeFrom: anEvent currentTarget.
+
+	BlTaskAction
+		enqueueElement: self previewElement
+		action: [ self updateSizeFrom: anEvent currentTarget ]
 ]
 
 { #category : #'api - accessing' }
@@ -18,28 +22,22 @@ GtTreePagerPanePreviewResizeListener >> eventsToHandle [
 	^ { BlElementExtentChangedEvent }
 ]
 
-{ #category : #accessing }
-GtTreePagerPanePreviewResizeListener >> height [
-	^ height
-]
-
-{ #category : #accessing }
-GtTreePagerPanePreviewResizeListener >> height: anObject [
-	height := anObject
-]
-
 { #category : #initialization }
 GtTreePagerPanePreviewResizeListener >> initialize [
 	super initialize.
 	
-	height := 10
+	width := 5
 ]
 
 { #category : #'api - hooks' }
-GtTreePagerPanePreviewResizeListener >> onInstalledIn: aPageElement [
-	super onInstalledIn: aPageElement.
-	
-	self updateSizeFrom: aPageElement
+GtTreePagerPanePreviewResizeListener >> onInstalledIn: aPaneElement [
+	super onInstalledIn: aPaneElement.
+
+	self updateSizeFrom: aPaneElement.
+
+	BlTaskAction
+		enqueueElement: self previewElement
+		action: [ self updateSizeFrom: aPaneElement ]
 ]
 
 { #category : #accessing }
@@ -53,27 +51,27 @@ GtTreePagerPanePreviewResizeListener >> previewElement: anObject [
 ]
 
 { #category : #'element handlers' }
-GtTreePagerPanePreviewResizeListener >> updateSizeFrom: aPageElement [
-	| aPageExtent aScale aPreviewExtent |
+GtTreePagerPanePreviewResizeListener >> updateSizeFrom: aPaneElement [
+	| aPaneExtent anExtentRatio aPreviewWidth |
+	aPaneExtent := aPaneElement extent max: 1 @ 1.
+	anExtentRatio := aPaneExtent x / aPaneExtent y.
 
-	aPageExtent := aPageElement extent max: 1@1.
-	aScale := (aPageExtent y / 10).
-	
-	self
-		assert: [ aScale isZero not ]
-		description: [ 'Scale must not be zero' ].
-	
-	aScale < 1
-		ifTrue: [
-			aScale := 1.
-			aPageExtent := self height asPoint ].
-
-	aPreviewExtent := (aPageExtent / aScale).
-	aPreviewExtent := ((aPreviewExtent x / (aPreviewExtent y / self height)) @ self height) ceiling.
+	aPreviewWidth := (self previewElement height * anExtentRatio) ceiling.
+	aPreviewWidth < 1 ifTrue: [ aPreviewWidth := self width ].
 
 	self
-		assert: [ aPreviewExtent isIntegerPoint ]
+		assert: [ aPreviewWidth isInteger ]
 		description: [ 'Extent must be an integer point' ].
-	
-	self previewElement size: aPreviewExtent
+
+	self previewElement hExact: aPreviewWidth
+]
+
+{ #category : #accessing }
+GtTreePagerPanePreviewResizeListener >> width [
+	^ width
+]
+
+{ #category : #accessing }
+GtTreePagerPanePreviewResizeListener >> width: anObject [
+	width := anObject
 ]

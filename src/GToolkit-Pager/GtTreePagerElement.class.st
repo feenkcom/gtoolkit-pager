@@ -18,8 +18,10 @@ GtTreePagerElement >> initialize [
 	super initialize.
 	self matchParent.
 
-	scrollbarElement := GtTreePagerScrollbarElement new margin: (BlInsets top: 10).
 	panesElement := GtTreePagerFlowPanesElement new matchParent.
+	scrollbarElement := GtTreePagerScrollbarElement new
+			panesElement: panesElement;
+			margin: (BlInsets top: 10).
 	self addChild: scrollbarElement.
 	self addChild: panesElement.
 
