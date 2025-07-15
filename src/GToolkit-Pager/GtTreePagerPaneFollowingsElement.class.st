@@ -17,7 +17,7 @@ GtTreePagerPaneFollowingsElement >> incomingLinkElements [
 { #category : #initialization }
 GtTreePagerPaneFollowingsElement >> initialize [
 	super initialize.
-	self hFitContent.
+	self hExact: 26.
 	self vMatchParent
 ]
 
