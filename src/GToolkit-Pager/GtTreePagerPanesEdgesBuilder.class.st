@@ -51,8 +51,8 @@ GtTreePagerPanesEdgesBuilder >> collectEdgeToIncomingLink [
 			zIndex: -1;
 			border: (BlBorder paint: self panesElement theme button fadedBackgroundColor);
 			beAutomatic;
-			fixedDistance: 10;
-			cornerRadius: 10;
+			fixedDistance: GtTreePagerConstants edgeFixedDistance;
+			cornerRadius: GtTreePagerConstants edgeCornerRadius;
 			fromAnchor: (BlElementCenterRightAnchor element: currentLinkElement);
 			toAnchor: (BlElementTopCenterAnchor element: anIncomingElement).
 	self styleLineElement: aLineElement.
@@ -73,10 +73,10 @@ GtTreePagerPanesEdgesBuilder >> collectEdgeToSpawnedPane [
 			zIndex: -1;
 			border: (BlBorder paint: self panesElement theme button fadedBackgroundColor);
 			beFixedTo;
-			fixedDistance: 10;
-			cornerRadius: 10;
+			fixedDistance: GtTreePagerConstants edgeFixedDistance;
+			cornerRadius: GtTreePagerConstants edgeCornerRadius;
 			fromAnchor: (BlElementCenterRightAnchor element: currentLinkElement);
-			toAnchor: (BlElementCenterLeftAnchor element: aPaneElement).
+			toAnchor: (BlElementCenterLeftAnchor element: aPaneElement contentElement).
 	self styleLineElement: aLineElement.
 	elementsStream nextPut: aLineElement
 ]

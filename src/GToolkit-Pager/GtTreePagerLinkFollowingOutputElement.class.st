@@ -35,7 +35,6 @@ GtTreePagerLinkFollowingOutputElement >> initialize [
 		constraintsDo: [ :c | 
 			c linear horizontal alignRight.
 			c linear vertical alignCenter ];
-		margin: (BlInsets all: 2);
 		outskirts: BlOutskirts centered;
 		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ];
 		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
@@ -82,11 +81,11 @@ GtTreePagerLinkFollowingOutputElement >> initializeGeometryAndSizeStyling [
 			when: BrListOrientationState horizontal & BrSizeAdjustmentState small
 				style: [ :aStyle | 
 					aStyle geometry: BlRectangleGeometry new.
-					aStyle do: [ :aWidget | aWidget exact: 6 @ 1 ] ];
+					aStyle do: [ :aWidget | aWidget exact: GtTreePagerConstants outputLenght @ 1 ] ];
 			when: BrListOrientationState vertical & BrSizeAdjustmentState small
 				style: [ :aStyle | 
 					aStyle geometry: BlRectangleGeometry new.
-					aStyle do: [ :aWidget | aWidget exact: 1 @ 6 ] ];
+					aStyle do: [ :aWidget | aWidget exact: 1 @ GtTreePagerConstants outputLenght ] ];
 			normal: [ :aStyle | 
 				aStyle geometry: self normalSizeGeometry.
 				aStyle
@@ -146,12 +145,12 @@ GtTreePagerLinkFollowingOutputElement >> subscribeToLinkModel [
 
 { #category : #initialization }
 GtTreePagerLinkFollowingOutputElement >> triangleHeight [
-	^ 32
+	^ GtTreePagerConstants triangleHeight
 ]
 
 { #category : #initialization }
 GtTreePagerLinkFollowingOutputElement >> triangleWidth [
-	^ 16
+	^ GtTreePagerConstants triangleWidth
 ]
 
 { #category : #'api - pane model' }

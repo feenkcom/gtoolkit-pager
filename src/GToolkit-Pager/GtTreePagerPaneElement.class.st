@@ -43,16 +43,15 @@ GtTreePagerPaneElement >> initialize [
 	self
 		addChild: (BrHorizontalPane new
 				clipChildren: false;
+				margin: (BlInsets left: 9);
 				matchParent;
 				addChild: contentElement;
-				addChild: (disappearElement := self newDisappearElement)).
+				addChild: (disappearElement := self newDisappearElement);
+				addAptitude: (BrGlamorousWithMaximizerAptitude new
+						// #tool;
+						preferredBackground: Color white)).
 
-	self addChild: followingsElement.
-
-	self
-		addAptitude: (BrGlamorousWithMaximizerAptitude new
-				// #tool;
-				preferredBackground: Color white)
+	self addChild: followingsElement
 ]
 
 { #category : #initialization }
