@@ -54,8 +54,18 @@ GtTreePagerFlowPanesElement >> initialize [
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
 	^ GtTreePagerPaneElement new
-		in: [ :theElement | 
-			theElement graph
+		in: [ :aPaneElement | 
+			aPaneElement
+				contentElementDo: [ :aContentElement | 
+					aContentElement
+						addAptitude: (BrGlamorousWithHorizontalResizerAptitude new
+								beRight;
+								resizerDo: [ :aResizer | 
+									aResizer
+										when: BlDoubleClickEvent
+										do: [ :anEvent | self onPaneElement: aPaneElement resizerDoubleClickEvent: anEvent ] ];
+								whenResizedDo: [ :anEvent | self onPaneElement: aPaneElement resizedEvent: anEvent ]) ].
+			aPaneElement graph
 				beNode;
 				model: aPaneModel ];
 		paneModel: aPaneModel
@@ -88,6 +98,23 @@ GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAn
 GtTreePagerFlowPanesElement >> onPagerModelChanged [
 	super onPagerModelChanged.
 	self updateElement
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerFlowPanesElement >> onPaneElement: aPaneElement resizedEvent: anEvent [
+	anEvent consumed: true.
+	aPaneElement hFitContent
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerFlowPanesElement >> onPaneElement: aPaneElement resizerDoubleClickEvent: anEvent [
+	"I do not understand why I have to call `aPaneElement contentElement hMatchParent`.
+	I think the resizer used in `GtTreePagerPaneElement>>#initialize` should handle this case nicely."
+
+	anEvent consumed: true.
+
+	aPaneElement hMatchParent.
+	aPaneElement contentElement hMatchParent
 ]
 
 { #category : #'api - scrolling' }
