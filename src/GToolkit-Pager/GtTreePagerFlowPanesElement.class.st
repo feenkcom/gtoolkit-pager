@@ -91,6 +91,26 @@ GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
 						addAptitude: (BrGlamorousWithHorizontalResizerAptitude new
 								beRight;
 								resizerDo: [ :aResizer | 
+									aPaneElement
+										addAptitude: (BrLazyStyleCommonAptitude new
+												default: [ :aStyle | 
+													aStyle
+														do: [ :aWidget | 
+															aPaneElement hideMaximizeButton.
+															aPaneElement hideDisappearElement.
+															aResizer visibility: BlVisibility hidden ]
+														after: [ :aWidget |  ] ];
+												hovered: [ :aStyle | 
+													aStyle
+														do: [ :aWidget | 
+															aPaneElement showMaximizeButton.
+															aPaneElement showDisappearElement.
+															aResizer visibility: BlVisibility visible ]
+														after: [ :aWidget | 
+															aPaneElement hideMaximizeButton.
+															aPaneElement hideDisappearElement.
+															aResizer visibility: BlVisibility hidden ] ]).
+
 									aResizer
 										when: BlDoubleClickEvent
 										do: [ :anEvent | self onPaneElement: aPaneElement resizerDoubleClickEvent: anEvent ] ];
