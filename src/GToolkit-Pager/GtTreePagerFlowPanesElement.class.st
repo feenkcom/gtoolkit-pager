@@ -21,9 +21,18 @@ GtTreePagerFlowPanesElement >> childrenNodesAtColumn: aDepth do: aDoBlock [
 
 { #category : #'api - children enumeration' }
 GtTreePagerFlowPanesElement >> childrenNodesDo: aBlock [
-	^ self childrenDo: [ :eachElement | 
+	self childrenDo: [ :eachElement | 
 		eachElement graph isNode ifTrue: [ 
 			aBlock value: eachElement ] ]
+]
+
+{ #category : #'api - children enumeration' }
+GtTreePagerFlowPanesElement >> childrenNodesLastColumn [
+	| maxDepth |
+	maxDepth := 0.
+	self childrenNodesDo: [ :eachNodeElement | 
+		maxDepth := maxDepth max: eachNodeElement constraints horizontalTreeFlow depth ].
+	^ maxDepth
 ]
 
 { #category : #'api - children enumeration' }
@@ -127,10 +136,16 @@ GtTreePagerFlowPanesElement >> onPaneElement: aPaneElement resizedEvent: anEvent
 	anEvent consumed: true.
 	aPaneElement hFitContent.
 
+	aDepth := aPaneElement constraints horizontalTreeFlow depth.
+	
+	"Let's keep the last column inside of the parent element bounds."
+	((self childrenNodesLastColumn = aDepth) and: [ 
+		anEvent originalExtent x < anEvent extent x ]) ifTrue: [
+			self scrollToColumn: aDepth ].
+	
 	anEvent modifiers isPrimaryModifier ifTrue: [ ^ self ].
 	
 	"Let's resize all panes in the same column"
-	aDepth := aPaneElement constraints horizontalTreeFlow depth.
 	self
 		childrenNodesAtColumn: aDepth
 		do: [ :eachPaneElement | 
