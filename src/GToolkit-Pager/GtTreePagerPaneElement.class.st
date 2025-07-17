@@ -14,6 +14,11 @@ GtTreePagerPaneElement >> contentElement [
 	^ contentElement
 ]
 
+{ #category : #accessing }
+GtTreePagerPaneElement >> contentElementDo: aBlock [
+	aBlock value: contentElement
+]
+
 { #category : #initialization }
 GtTreePagerPaneElement >> defaultLayout [
 	^ BlLinearLayout horizontal
@@ -31,6 +36,7 @@ GtTreePagerPaneElement >> incomingLinkElements [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> initialize [
+	| contentContainer |
 	super initialize.
 	self matchParent.
 	self clipChildren: false.
@@ -41,18 +47,25 @@ GtTreePagerPaneElement >> initialize [
 			margin: (BlInsets left: 5).
 
 	self
-		addChild: (BrHorizontalPane new
-				clipChildren: false;
-				matchParent;
-				addChild: contentElement;
-				addChild: (disappearElement := self newDisappearElement)).
+		addChild: (contentContainer := BrHorizontalPane new
+					clipChildren: false;
+					margin: (BlInsets left: 9);
+					matchParent;
+					addChild: contentElement;
+					addChild: (disappearElement := self newDisappearElement);
+					addAptitude: (BrGlamorousWithMaximizerAptitude new
+							// #tool;
+							preferredBackground: Color white);
+					addAptitude: (BrLayoutResizerAptitude new
+							hMatchParentToMatchParent: contentElement;
+							vInherit: contentElement)).
 
 	self addChild: followingsElement.
 
 	self
-		addAptitude: (BrGlamorousWithMaximizerAptitude new
-				// #tool;
-				preferredBackground: Color white)
+		addAptitude: (BrLayoutResizerAptitude new
+				inherit: contentContainer;
+				vInherit: followingsElement)
 ]
 
 { #category : #initialization }

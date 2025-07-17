@@ -17,8 +17,9 @@ GtTreePagerPaneFollowingsElement >> incomingLinkElements [
 { #category : #initialization }
 GtTreePagerPaneFollowingsElement >> initialize [
 	super initialize.
-	self hExact: 26.
-	self vMatchParent
+	self hExact: GtTreePagerConstants triangleWidth.
+	self vMatchParent.
+	self clipChildren: false.
 ]
 
 { #category : #'private - updating' }

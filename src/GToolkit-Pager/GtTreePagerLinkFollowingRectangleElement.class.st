@@ -14,19 +14,18 @@ GtTreePagerLinkFollowingRectangleElement >> initialize [
 	super initialize.
 
 	self
-		exact: 16 @ 16;
+		exact: GtTreePagerConstants rectangleLength @ GtTreePagerConstants rectangleLength;
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 2);
 		outskirts: BlOutskirts inside;
 		constraintsDo: [ :c | 
 			c linear horizontal alignRight.
 			c linear vertical alignCenter ];
-		margin: (BlInsets all: 0);
 		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ];
 		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
 				handleSubmenu: [ self newContextMenu ]);
 		addAptitude: (BrLazyStyleCommonAptitude new
 				default: [ :aStyle | 
-					aStyle background:  self theme button fadedBackgroundColor.
+					aStyle background: self theme button fadedBackgroundColor.
 					aStyle border: self theme button fadedBackgroundColor ];
 				hovered: [ :aStyle | 
 					aStyle background: self theme button focusedFadedBackgroundColor.

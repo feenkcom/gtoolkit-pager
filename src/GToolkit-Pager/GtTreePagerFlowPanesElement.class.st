@@ -12,13 +12,43 @@ GtTreePagerFlowPanesElement >> childNodeForPaneModel: aPaneModel ifFound: aFound
 		ifNone: aNoneBlock
 ]
 
+{ #category : #'api - children enumeration' }
+GtTreePagerFlowPanesElement >> childrenNodesAtColumn: aDepth do: aDoBlock [
+	self
+		childrenNodesSuchThat: [ :eachNodeElement | eachNodeElement constraints horizontalTreeFlow depth = aDepth ]
+		do: aDoBlock
+]
+
+{ #category : #'api - children enumeration' }
+GtTreePagerFlowPanesElement >> childrenNodesDo: aBlock [
+	self childrenDo: [ :eachElement | 
+		eachElement graph isNode ifTrue: [ 
+			aBlock value: eachElement ] ]
+]
+
+{ #category : #'api - children enumeration' }
+GtTreePagerFlowPanesElement >> childrenNodesLastColumn [
+	| maxDepth |
+	maxDepth := 0.
+	self childrenNodesDo: [ :eachNodeElement | 
+		maxDepth := maxDepth max: eachNodeElement constraints horizontalTreeFlow depth ].
+	^ maxDepth
+]
+
+{ #category : #'api - children enumeration' }
+GtTreePagerFlowPanesElement >> childrenNodesSuchThat: aConditionBlock do: aDoBlock [
+	self childrenNodesDo: [ :eachNodeElement | 
+		(aConditionBlock value: eachNodeElement) ifTrue: [ 
+			aDoBlock value: eachNodeElement ] ]
+]
+
 { #category : #initialization }
 GtTreePagerFlowPanesElement >> defaultLayout [
 	^ BlHorizontalTreeFlowLayout new
 		numberOfVisibleColumns: 2;
 		firstVisibleColumn: 1;
 		horizontalOffset: 0;
-		cellSpacing: 20
+		cellSpacing: GtTreePagerConstants cellSpacing
 ]
 
 { #category : #'private - updating' }
@@ -54,8 +84,18 @@ GtTreePagerFlowPanesElement >> initialize [
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
 	^ GtTreePagerPaneElement new
-		in: [ :theElement | 
-			theElement graph
+		in: [ :aPaneElement | 
+			aPaneElement
+				contentElementDo: [ :aContentElement | 
+					aContentElement
+						addAptitude: (BrGlamorousWithHorizontalResizerAptitude new
+								beRight;
+								resizerDo: [ :aResizer | 
+									aResizer
+										when: BlDoubleClickEvent
+										do: [ :anEvent | self onPaneElement: aPaneElement resizerDoubleClickEvent: anEvent ] ];
+								whenResizedDo: [ :anEvent | self onPaneElement: aPaneElement resizedEvent: anEvent ]) ].
+			aPaneElement graph
 				beNode;
 				model: aPaneModel ];
 		paneModel: aPaneModel
@@ -88,6 +128,53 @@ GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAn
 GtTreePagerFlowPanesElement >> onPagerModelChanged [
 	super onPagerModelChanged.
 	self updateElement
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerFlowPanesElement >> onPaneElement: aPaneElement resizedEvent: anEvent [
+	| aDepth |
+	anEvent consumed: true.
+	aPaneElement hFitContent.
+
+	aDepth := aPaneElement constraints horizontalTreeFlow depth.
+	
+	"Let's keep the last column inside of the parent element bounds."
+	((self childrenNodesLastColumn = aDepth) and: [ 
+		anEvent originalExtent x < anEvent extent x ]) ifTrue: [
+			self scrollToColumn: aDepth ].
+	
+	anEvent modifiers isPrimaryModifier ifTrue: [ ^ self ].
+	
+	"Let's resize all panes in the same column"
+	self
+		childrenNodesAtColumn: aDepth
+		do: [ :eachPaneElement | 
+			aPaneElement ~= eachPaneElement ifTrue: [ 
+				eachPaneElement contentElement hExact: anEvent extent x.
+				eachPaneElement hFitContent ] ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerFlowPanesElement >> onPaneElement: aPaneElement resizerDoubleClickEvent: anEvent [
+	"I do not understand why I have to call `aPaneElement contentElement hMatchParent`.
+	I think the resizer used in `GtTreePagerPaneElement>>#initialize` should handle this case nicely."
+
+	| aDepth |
+	anEvent consumed: true.
+
+	aPaneElement hMatchParent.
+	aPaneElement contentElement hMatchParent.
+
+	anEvent modifiers isPrimaryModifier ifTrue: [ ^ self ].
+	
+	"Let's resize all panes in the same column"
+	aDepth := aPaneElement constraints horizontalTreeFlow depth.
+	self
+		childrenNodesAtColumn: aDepth
+		do: [ :eachPaneElement | 
+			aPaneElement ~= eachPaneElement ifTrue: [
+				eachPaneElement hMatchParent.
+				eachPaneElement contentElement hMatchParent ] ]
 ]
 
 { #category : #'api - scrolling' }
