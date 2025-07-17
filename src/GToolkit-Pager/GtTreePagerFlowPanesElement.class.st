@@ -163,7 +163,7 @@ GtTreePagerFlowPanesElement >> onPaneElement: aPaneElement resizedEvent: anEvent
 	"Let's keep the last column inside of the parent element bounds."
 	((self childrenNodesLastColumn = aDepth) and: [ 
 		anEvent originalExtent x < anEvent extent x ]) ifTrue: [
-			self smoothScrollToColumn: aDepth ].
+			self scrollToColumn: aDepth ].
 	
 	anEvent modifiers isPrimaryModifier ifTrue: [ ^ self ].
 	
