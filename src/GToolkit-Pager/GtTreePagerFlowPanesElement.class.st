@@ -1,6 +1,8 @@
 Class {
 	#name : #GtTreePagerFlowPanesElement,
 	#superclass : #GtTreePagerBasicElement,
+	#traits : 'TBlHorizontalTreeFlowLayoutScrollable',
+	#classTraits : 'TBlHorizontalTreeFlowLayoutScrollable classTrait',
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
@@ -161,7 +163,7 @@ GtTreePagerFlowPanesElement >> onPaneElement: aPaneElement resizedEvent: anEvent
 	"Let's keep the last column inside of the parent element bounds."
 	((self childrenNodesLastColumn = aDepth) and: [ 
 		anEvent originalExtent x < anEvent extent x ]) ifTrue: [
-			self scrollToColumn: aDepth ].
+			self smoothScrollToColumn: aDepth ].
 	
 	anEvent modifiers isPrimaryModifier ifTrue: [ ^ self ].
 	
@@ -195,15 +197,6 @@ GtTreePagerFlowPanesElement >> onPaneElement: aPaneElement resizerDoubleClickEve
 			aPaneElement ~= eachPaneElement ifTrue: [
 				eachPaneElement hMatchParent.
 				eachPaneElement contentElement hMatchParent ] ]
-]
-
-{ #category : #'api - scrolling' }
-GtTreePagerFlowPanesElement >> scrollToColumn: aColumn [
-	self
-		layoutDo: [ :l | 
-			l
-				firstVisibleColumn: aColumn;
-				horizontalOffset: 0 ]
 ]
 
 { #category : #'api - pager model' }
