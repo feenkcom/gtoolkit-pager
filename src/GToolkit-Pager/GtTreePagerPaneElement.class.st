@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'contentElement',
 		'followingsElement',
-		'disappearElement'
+		'disappearElement',
+		'maximizerAptitude'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -27,6 +28,16 @@ GtTreePagerPaneElement >> defaultLayout [
 { #category : #'focus requesting' }
 GtTreePagerPaneElement >> focusTarget [
 	^ contentElement
+]
+
+{ #category : #'api - updating' }
+GtTreePagerPaneElement >> hideDisappearElement [
+	^ disappearElement visibility: BlVisibility gone
+]
+
+{ #category : #'api - updating' }
+GtTreePagerPaneElement >> hideMaximizeButton [
+	maximizerAptitude hideMaximizeButton
 ]
 
 { #category : #'accessing - ui' }
@@ -53,9 +64,9 @@ GtTreePagerPaneElement >> initialize [
 					matchParent;
 					addChild: contentElement;
 					addChild: (disappearElement := self newDisappearElement);
-					addAptitude: (BrGlamorousWithMaximizerAptitude new
-							// #tool;
-							preferredBackground: Color white);
+					addAptitude: (maximizerAptitude := BrGlamorousWithMaximizerAptitude new
+								// #tool;
+								preferredBackground: Color white);
 					addAptitude: (BrLayoutResizerAptitude new
 							hMatchParentToMatchParent: contentElement;
 							vInherit: contentElement)).
@@ -116,6 +127,19 @@ GtTreePagerPaneElement >> outgoingLinkElements [
 	^ followingsElement outgoingLinkElements
 ]
 
+{ #category : #'api - updating' }
+GtTreePagerPaneElement >> showDisappearElement [
+	self hasPaneModel ifFalse: [ ^ self ].
+	self paneModel depthIndex = 1 ifTrue: [ ^ self ].
+	
+	disappearElement visibility: BlVisibility visible
+]
+
+{ #category : #'api - updating' }
+GtTreePagerPaneElement >> showMaximizeButton [
+	maximizerAptitude showMaximizeButton
+]
+
 { #category : #'api - pane model' }
 GtTreePagerPaneElement >> subscribeToPaneModel [
 	super subscribeToPaneModel.
@@ -139,7 +163,7 @@ GtTreePagerPaneElement >> unsubscribeFromPaneModel [
 { #category : #'private - updating' }
 GtTreePagerPaneElement >> updateDisappearElement [
 	self paneModel depthIndex = 1 ifTrue: [
-		disappearElement visibility:  BlVisibility gone.
+		self hideDisappearElement.
 		^ self ].
 
 	self paneModel followingSpawnedPaneModels isEmpty
