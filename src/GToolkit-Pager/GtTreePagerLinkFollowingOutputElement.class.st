@@ -111,12 +111,14 @@ GtTreePagerLinkFollowingOutputElement >> normalSizeGeometry [
 
 { #category : #'private - event management' }
 GtTreePagerLinkFollowingOutputElement >> onClickEvent: anEvent [
-	| aToolModel |
 	self visibility isVisible ifFalse: [ ^ self ].
-	self linkModel ifNil: [ ^ self ].
+	self hasLinkModel ifFalse: [ ^ self ].
 	anEvent consumed: true.
 
-	aToolModel := self linkModel expand
+	GtTreePagerLinkFollowingOutputClickResolver new 
+		element: self;
+		linkModel: self linkModel;
+		resolve.
 ]
 
 { #category : #'private - event handling' }
