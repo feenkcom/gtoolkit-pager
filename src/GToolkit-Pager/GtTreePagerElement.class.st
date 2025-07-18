@@ -33,6 +33,7 @@ GtTreePagerElement >> initialize [
 						background: self theme default contentBackground;
 						layout: BlFrameLayout new;
 						clipChildren: false;
+						in: [ :theElement | theElement states addState: GtPhlowToolDetailState detailed ];
 						constraintsDo: [ :c | 
 							c horizontal matchParent.
 							c vertical matchParent ];
