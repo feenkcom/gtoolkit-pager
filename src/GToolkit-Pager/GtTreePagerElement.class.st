@@ -50,7 +50,7 @@ GtTreePagerElement >> initialize [
 { #category : #initialization }
 GtTreePagerElement >> onGtTreePagerScrollToColumnWish: aWish [
 	aWish consumed: true.
-	panesElement scrollToColumn: aWish column
+	panesElement smoothScrollToColumn: aWish column
 ]
 
 { #category : #'api - pager model' }
