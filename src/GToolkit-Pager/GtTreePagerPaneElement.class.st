@@ -53,7 +53,9 @@ GtTreePagerPaneElement >> initialize [
 	self clipChildren: false.
 
 	contentElement := GtTreePagerPaneContentElement new
-			addAptitude: BrGlamorousFocusableShadowAptitude new.
+			addAptitude: BrGlamorousFocusableShadowAptitude new;
+			when: BrMaximizerElementMinimized do: [ :anEvent | anEvent currentTarget requestStyle ];
+			when: BrMaximizerElementMaximized do: [ :anEvent | anEvent currentTarget requestStyle ].
 	followingsElement := GtTreePagerPaneFollowingsElement new
 			margin: (BlInsets left: 5).
 
@@ -85,7 +87,9 @@ GtTreePagerPaneElement >> initialize [
 		when: GtPhlowObjectToDeselect
 			do: [ :anEvent | self onGtPhlowObjectToDeselect: anEvent ];
 		when: GtPhlowObjectToSpawn
-			do: [ :anEvent | self onGtPhlowObjectToSpawn: anEvent ]
+			do: [ :anEvent | self onGtPhlowObjectToSpawn: anEvent ].
+			
+	self states addState: GtPhlowToolDetailState normal
 ]
 
 { #category : #'api - requests' }
