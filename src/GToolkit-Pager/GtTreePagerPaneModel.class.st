@@ -408,6 +408,12 @@ GtTreePagerPaneModel >> replaceFollowingLink: anOldLinkModel by: aNewLinkModel [
 	self followingLinks: aNewCollection
 ]
 
+{ #category : #'api - previous panes' }
+GtTreePagerPaneModel >> selectInPreviousPane [
+	self previousLink
+		ifNotNil: [ :aPreviousLink | aPreviousLink select ]
+]
+
 { #category : #'api - following links' }
 GtTreePagerPaneModel >> selectPane: aNewPaneModel [
 	| anOldLinkModel aNewLinkModel |
