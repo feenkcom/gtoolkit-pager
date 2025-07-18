@@ -30,6 +30,11 @@ GtTreePagerModel >> announcer [
 	^ announcer
 ]
 
+{ #category : #converting }
+GtTreePagerModel >> asElement [
+	^ GtTreePager new pagerModel: self
+]
+
 { #category : #'api - panes' }
 GtTreePagerModel >> children [
 	<return: #Collection of: #TGtTreePagerLinkModel>
@@ -54,7 +59,7 @@ GtTreePagerModel >> gtDefaultInspectorTool [
 		addTool: (GtPhlowExplicitTool new
 				name: 'pager';
 				icon: BrGlamorousIcons tree;
-				stencil: [ GtTreePagerElement new pagerModel: self ]);
+				stencil: [ GtTreePager new pagerModel: self ]);
 		addTool: super gtDefaultInspectorTool
 ]
 
@@ -64,7 +69,7 @@ GtTreePagerModel >> gtLiveFor: aView [
 	^ aView explicit
 		title: 'Live';
 		priority: 10;
-		stencil: [ GtTreePagerElement new pagerModel: self ]
+		stencil: [ GtTreePager new pagerModel: self ]
 ]
 
 { #category : #views }

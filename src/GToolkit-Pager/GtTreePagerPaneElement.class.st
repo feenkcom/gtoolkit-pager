@@ -5,7 +5,8 @@ Class {
 		'contentElement',
 		'followingsElement',
 		'disappearElement',
-		'maximizerAptitude'
+		'maximizerAptitude',
+		'contentContainer'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -47,7 +48,6 @@ GtTreePagerPaneElement >> incomingLinkElements [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> initialize [
-	| contentContainer |
 	super initialize.
 	self matchParent.
 	self clipChildren: false.
@@ -59,14 +59,15 @@ GtTreePagerPaneElement >> initialize [
 
 	self
 		addChild: (contentContainer := BrHorizontalPane new
+					id: #container;
 					clipChildren: false;
 					margin: (BlInsets left: 9);
 					matchParent;
 					addChild: contentElement;
 					addChild: (disappearElement := self newDisappearElement);
 					addAptitude: (maximizerAptitude := BrGlamorousWithMaximizerAptitude new
-								// #tool;
-								preferredBackground: Color white);
+								/ GtTreePagerPaneContentElement;
+								preferredBackground: self theme default backdropBackground);
 					addAptitude: (BrLayoutResizerAptitude new
 							hMatchParentToMatchParent: contentElement;
 							vInherit: contentElement)).
@@ -76,7 +77,20 @@ GtTreePagerPaneElement >> initialize [
 	self
 		addAptitude: (BrLayoutResizerAptitude new
 				inherit: contentContainer;
-				vInherit: followingsElement)
+				vInherit: followingsElement).
+
+	self
+		when: GtPhlowObjectToSelect
+			do: [ :anEvent | self onGtPhlowObjectToSelect: anEvent ];
+		when: GtPhlowObjectToDeselect
+			do: [ :anEvent | self onGtPhlowObjectToDeselect: anEvent ];
+		when: GtPhlowObjectToSpawn
+			do: [ :anEvent | self onGtPhlowObjectToSpawn: anEvent ]
+]
+
+{ #category : #'api - requests' }
+GtTreePagerPaneElement >> maximize [
+	maximizerAptitude dispatchEvent: BrWithMaximizerAptitudeMaximizeWish new
 ]
 
 { #category : #initialization }
@@ -101,6 +115,44 @@ GtTreePagerPaneElement >> onDisappearClick: anEvent [
 	self paneModel followingSpawnedPaneModels isEmpty
 		ifFalse: [ self paneModel collapse ]
 		ifTrue: [ self paneModel removeFromPreviousPane ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerPaneElement >> onGtPhlowObjectToDeselect: anEvent [
+	self paneModel ifNil: [ ^ self ].
+	anEvent consumed: true.
+	self paneModel removeLink
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerPaneElement >> onGtPhlowObjectToSelect: anEvent [
+	| aSelectedPane |
+	self paneModel ifNil: [ ^ self ].
+	anEvent consumed: true.
+	aSelectedPane := GtTreePagerPaneModel new phlowTool: anEvent tool.
+	self paneModel selectPane: aSelectedPane.
+
+	aSelectedPane isSpawned ifFalse: [ ^ self ].
+	BlTaskAction
+		enqueueElement: self
+		action: [ self
+				fireEvent: (GtTreePagerScrollToColumnWish new column: self paneModel depthIndex) ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerPaneElement >> onGtPhlowObjectToSpawn: anEvent [
+	| aSpawnedPane |
+	self paneModel ifNil: [ ^ self ].
+	anEvent consumed: true.
+	aSpawnedPane := GtTreePagerPaneModel new
+			phlowTool: anEvent tool;
+			expand.
+	self paneModel spawnPane: aSpawnedPane.
+
+	BlTaskAction
+		enqueueElement: self
+		action: [ self
+				fireEvent: (GtTreePagerScrollToColumnWish new column: self paneModel depthIndex) ]
 ]
 
 { #category : #'private - event handling' }

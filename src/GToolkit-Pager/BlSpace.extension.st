@@ -12,7 +12,7 @@ BlSpace >> inPager: anElementStencil configured: aPagerConfiguration [
 	"Add a pager with a given element."
 
 	| aPager |
-	aPager := GtPager createWrappedOn: anElementStencil.
+	aPager := GtPagerSettings usedPager createWrappedOn: anElementStencil.
 	aPager maximized.
 	aPagerConfiguration ifNotNil: [
 		aPagerConfiguration applyOn: aPager ].
@@ -42,7 +42,7 @@ BlSpace >> paneInTreePager: aPaneModel [
 
 	aPagerModel := GtTreePagerModel new paneModel: aPaneModel.
 
-	self addChild: (GtTreePagerElement new pagerModel: aPagerModel)
+	self addChild: (GtTreePager new pagerModel: aPagerModel)
 ]
 
 { #category : #'*GToolkit-Pager' }

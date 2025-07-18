@@ -17,6 +17,7 @@ TGtTreePagerWithModel >> onPagerModelChanged [
 
 { #category : #'api - pager model' }
 TGtTreePagerWithModel >> pagerModel [
+	<return: #GtTreePagerModel>
 	^ pagerModel
 ]
 
