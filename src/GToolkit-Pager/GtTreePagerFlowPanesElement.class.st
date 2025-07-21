@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerFlowPanesElement,
 	#superclass : #GtTreePagerBasicElement,
-	#traits : 'TBlHorizontalTreeFlowLayoutScrollable',
-	#classTraits : 'TBlHorizontalTreeFlowLayoutScrollable classTrait',
+	#traits : 'TBlHorizontalTreeFlowLayoutSmooth',
+	#classTraits : 'TBlHorizontalTreeFlowLayoutSmooth classTrait',
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
@@ -242,8 +242,7 @@ GtTreePagerFlowPanesElement >> updateElementLayoutColumnHeight [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updateElementLayoutNumberOfVisibleColumns [
-	self
-		layoutDo: [ :l | l numberOfVisibleColumns: self pagerModel settings numberOfVisibleColumns ]
+	self smoothNumberOfVisibleColumns: self pagerModel settings numberOfVisibleColumns
 ]
 
 { #category : #'private - updating' }
