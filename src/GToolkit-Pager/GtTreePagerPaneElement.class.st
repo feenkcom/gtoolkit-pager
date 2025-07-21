@@ -54,8 +54,10 @@ GtTreePagerPaneElement >> initialize [
 
 	contentElement := GtTreePagerPaneContentElement new
 			addAptitude: BrGlamorousFocusableShadowAptitude new;
-			when: BrMaximizerElementMinimized do: [ :anEvent | anEvent currentTarget requestStyle ];
-			when: BrMaximizerElementMaximized do: [ :anEvent | anEvent currentTarget requestStyle ].
+			when: BrMaximizerElementMinimized
+				do: [ :anEvent | anEvent currentTarget requestStyle ];
+			when: BrMaximizerElementMaximized
+				do: [ :anEvent | anEvent currentTarget requestStyle ].
 	followingsElement := GtTreePagerPaneFollowingsElement new
 			margin: (BlInsets left: 5).
 
@@ -76,6 +78,8 @@ GtTreePagerPaneElement >> initialize [
 
 	self addChild: followingsElement.
 
+	self updateDisappearElementToCollapseIcon.
+	
 	self
 		addAptitude: (BrLayoutResizerAptitude new
 				inherit: contentContainer;
@@ -88,7 +92,9 @@ GtTreePagerPaneElement >> initialize [
 			do: [ :anEvent | self onGtPhlowObjectToDeselect: anEvent ];
 		when: GtPhlowObjectToSpawn
 			do: [ :anEvent | self onGtPhlowObjectToSpawn: anEvent ].
-			
+
+	self when: BlMouseMoveEvent do: [ :anEvent | self onMouseMoveEvent: anEvent ].
+
 	self states addState: GtPhlowToolDetailState normal
 ]
 
@@ -98,16 +104,28 @@ GtTreePagerPaneElement >> maximize [
 ]
 
 { #category : #initialization }
+GtTreePagerPaneElement >> newDisappearCollapseIcon [
+	^ BlElement new
+		size: 2 @ 10;
+		background: Color gray
+]
+
+{ #category : #initialization }
 GtTreePagerPaneElement >> newDisappearElement [
 	^ GtInspectorRoundButtonStencil small asElement
-		icon: BrPlusIconStencil close asElement;
-		label: 'Close pane';
+		addAptitude: BrGlamorousButtonWithLabelTooltipAptitude2;
 		id: GtPagerMaximizeButtonElementId;
 		action: [ :aButton :aButtonModel :anEvent | self onDisappearClick: anEvent ];
+		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDisappearClick: anEvent ];
 		constraintsDo: [ :c | 
 			c ignoreByLayout.
 			c ignored horizontal alignCenterAt: 1.0.
 			c ignored vertical alignCenterAt: 0.0 ]
+]
+
+{ #category : #initialization }
+GtTreePagerPaneElement >> newDisappearRemoveIcon [
+	^ BrPlusIconStencil close asElement
 ]
 
 { #category : #'private - event management' }
@@ -115,6 +133,10 @@ GtTreePagerPaneElement >> onDisappearClick: anEvent [
 	anEvent consumed: true.
 	self hasPaneModel ifFalse: [ ^ self ].
 	self paneModel depthIndex = 1 ifTrue: [ ^ self ].
+
+	anEvent modifiers isPrimaryModifier
+		ifTrue: [ self paneModel removeFromPreviousPane.
+			^ self ].
 
 	self paneModel followingSpawnedPaneModels isEmpty
 		ifFalse: [ self paneModel collapse ]
@@ -169,6 +191,14 @@ GtTreePagerPaneElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnounc
 	BlTaskAction enqueueElement: self action: [ self updateDisappearElement ]
 ]
 
+{ #category : #initialization }
+GtTreePagerPaneElement >> onMouseMoveEvent: anEvent [
+	anEvent consumed: true.
+	^ anEvent modifiers isPrimaryModifier
+		ifTrue: [ self updateDisappearElementToRemoveIcon ]
+		ifFalse: [ self updateDisappearElementToCollapseIcon ]
+]
+
 { #category : #accessing }
 GtTreePagerPaneElement >> onPaneModelChanged [
 	super onPaneModelChanged.
@@ -218,19 +248,35 @@ GtTreePagerPaneElement >> unsubscribeFromPaneModel [
 
 { #category : #'private - updating' }
 GtTreePagerPaneElement >> updateDisappearElement [
-	self paneModel depthIndex = 1 ifTrue: [
-		self hideDisappearElement.
-		^ self ].
+	self paneModel depthIndex = 1 ifTrue: [ self hideDisappearElement ]
+]
 
-	self paneModel followingSpawnedPaneModels isEmpty
-		ifFalse: [ disappearElement
-				icon: (BlElement new
-						size: 2 @ 10;
-						background: Color gray);
-				label: 'Collapse pane' ]
-		ifTrue: [ disappearElement
-				icon: BrPlusIconStencil close asElement;
-				label: 'Remove pane' ]
+{ #category : #'private - updating' }
+GtTreePagerPaneElement >> updateDisappearElementToCollapseIcon [
+	disappearElement userData
+		at: #gtTreePagerIsCollapseIcon
+		ifPresent: [ :aBoolean | aBoolean ifTrue: [ ^ self ] ]
+		ifAbsent: [  ].
+
+	disappearElement userData at: #gtTreePagerIsCollapseIcon put: true.
+
+	^ disappearElement
+		icon: self newDisappearCollapseIcon;
+		label: 'Collapse pane'
+]
+
+{ #category : #'private - updating' }
+GtTreePagerPaneElement >> updateDisappearElementToRemoveIcon [
+	disappearElement userData
+		at: #gtTreePagerIsCollapseIcon
+		ifPresent: [ :aBoolean | aBoolean ifFalse: [ ^ self ] ]
+		ifAbsent: [  ].
+
+	disappearElement userData at: #gtTreePagerIsCollapseIcon put: false.
+
+	^ disappearElement
+		icon: self newDisappearRemoveIcon;
+		label: 'Remove pane'
 ]
 
 { #category : #'private - updating' }
