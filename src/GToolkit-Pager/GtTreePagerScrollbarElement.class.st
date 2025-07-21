@@ -7,7 +7,8 @@ Class {
 		'scrollbarElement',
 		'columnHeightElement',
 		'previewsElement',
-		'panesElement'
+		'panesElement',
+		'numberOfVisibleColumnsElement'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -112,7 +113,35 @@ GtTreePagerScrollbarElement >> initialize [
 						aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
 						icon: self newFillRowHeightIcon;
 						label: 'Use whole column height';
-						action: [ :aButton | self onChangeColumnHeightSettingsFrom: aButton ]).
+						action: [ :aButton | self onChangeColumnHeightSettingsFrom: aButton ]);
+			addItem: (BlElement new 
+				layout: BlLinearLayout horizontal;
+				viewModel: BrWidgetModel new;
+				constraintsDo: [ :c |
+					c horizontal fitContent.
+					c vertical fitContent ]; 
+				addChild: (BrButton new
+					aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
+					icon: (BrGlamorousVectorIcons remove asElement background: self theme button fadedBackgroundColor);
+					label: 'Decrease number of columns';
+					action: [ :aButton | self onDecreaseNumberOfVisibleColumnsSettingsFrom: aButton ];
+					constraintsDo: [ :c | 
+						c linear horizontal alignLeft.
+						c linear vertical alignCenter. ]); 
+				addChild: (numberOfVisibleColumnsElement := BrLabel new 
+					text: 2 asString; 
+					aptitude: (BrGlamorousLabelAptitude new foreground: self theme button fadedBackgroundColor);
+					constraintsDo: [ :c | 
+						c linear horizontal alignLeft.
+						c linear vertical alignCenter. ]);
+				addChild: (BrButton new
+					aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
+					icon: (BrGlamorousVectorIcons add asElement background: self theme button fadedBackgroundColor);
+					label: 'Increase number of columns';
+					action: [ :aButton | self onIncreaseNumberOfVisibleColumnsSettingsFrom: aButton ];
+					constraintsDo: [ :c | 
+						c linear horizontal alignLeft.
+						c linear vertical alignCenter. ])).
 
 	rootContainer := BrHorizontalPane new
 			margin: (BlInsets top: 5);
@@ -213,6 +242,11 @@ GtTreePagerScrollbarElement >> onChangeColumnHeightSettingsFrom: aButton [
 ]
 
 { #category : #'private - event handling' }
+GtTreePagerScrollbarElement >> onDecreaseNumberOfVisibleColumnsSettingsFrom: aButton [
+	self pagerModel settings decreaseNumberOfVisibleColumns
+]
+
+{ #category : #'private - event handling' }
 GtTreePagerScrollbarElement >> onGtTreePagerFlowPaneElementsChanged: anEvent [
 	anEvent consumed: true.
 	self updatePreviewsElement
@@ -231,8 +265,17 @@ GtTreePagerScrollbarElement >> onGtTreePagerModelColumnHeightChanged: anAnnounce
 
 	BlTaskAction
 		enqueueElement: self
-		action: [ self updatePreviewsElementLayoutColumnHeight.
+		action: [ self updateElementLayoutColumnHeight.
 			self updateColumnHeightSettingsElement ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerScrollbarElement >> onGtTreePagerModelNumberOfVisibleColumnsChanged: anAnnouncement [
+	self pagerModel settings = anAnnouncement settings ifFalse: [ ^ self ].
+
+	BlTaskAction
+		enqueueElement: self
+		action: [ self updateNumberOfVisibleColumnsSettingsElement ]
 ]
 
 { #category : #'private - event handling' }
@@ -240,6 +283,11 @@ GtTreePagerScrollbarElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAn
 	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
 	BlTaskAction enqueueElement: self action: [ self updatePreviewsElement ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerScrollbarElement >> onIncreaseNumberOfVisibleColumnsSettingsFrom: aButton [
+	self pagerModel settings increaseNumberOfVisibleColumns
 ]
 
 { #category : #'api - pager model' }
@@ -310,7 +358,10 @@ GtTreePagerScrollbarElement >> subscribeToPagerModel [
 	self pagerModel announcer weak
 		when: GtTreePagerModelColumnHeightChanged
 		send: #onGtTreePagerModelColumnHeightChanged:
-		to: self
+		to: self;
+		when: GtTreePagerModelNumberOfVisibleColumnsChanged
+			send: #onGtTreePagerModelNumberOfVisibleColumnsChanged:
+			to: self
 ]
 
 { #category : #'api - pager model' }
@@ -328,8 +379,19 @@ GtTreePagerScrollbarElement >> updateColumnHeightSettingsElement [
 { #category : #'private - updating' }
 GtTreePagerScrollbarElement >> updateElement [
 	self updateColumnHeightSettingsElement.
-	self updatePreviewsElementLayoutColumnHeight.
+	self updateElementLayoutColumnHeight.
 	self updatePreviewsElement
+]
+
+{ #category : #'private - updating' }
+GtTreePagerScrollbarElement >> updateElementLayoutColumnHeight [
+	previewsElement layoutDo: [ :l | l rowCount: self pagerModel settings columnHeight ]
+]
+
+{ #category : #'private - updating' }
+GtTreePagerScrollbarElement >> updateNumberOfVisibleColumnsSettingsElement [
+	numberOfVisibleColumnsElement
+		text: self pagerModel settings numberOfVisibleColumns asString
 ]
 
 { #category : #'private - updating' }
@@ -350,11 +412,6 @@ GtTreePagerScrollbarElement >> updatePreviewsElement [
 	(previewsElement children difference: displayedElements) do: #removeFromParent.
 
 	previewsElement layoutDo: [ :l | l numberOfVisibleColumns: maxDepth ]
-]
-
-{ #category : #'private - updating' }
-GtTreePagerScrollbarElement >> updatePreviewsElementLayoutColumnHeight [
-	previewsElement layoutDo: [ :l | l rowCount: self pagerModel settings columnHeight ]
 ]
 
 { #category : #visiting }

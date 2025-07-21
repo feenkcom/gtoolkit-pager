@@ -74,7 +74,7 @@ GtTreePagerExamples >> assertTreeFlowBuilderCallbacks: aBuilderCallbacks equalsP
 GtTreePagerExamples >> basicPagerElement [
 	<gtExample>
 	| aPagerElement |
-	aPagerElement := GtTreePagerElement new.
+	aPagerElement := GtTreePager new.
 
 	^ aPagerElement
 ]

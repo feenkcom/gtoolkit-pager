@@ -44,6 +44,11 @@ GtTreePagerModelSettings >> columnHeight: aLayoutCount [
 ]
 
 { #category : #'api - settings' }
+GtTreePagerModelSettings >> decreaseNumberOfVisibleColumns [
+	self numberOfVisibleColumns: self numberOfVisibleColumns - 1
+]
+
+{ #category : #'api - settings' }
 GtTreePagerModelSettings >> fillEntireColumnHeight [
 	"Each column height is equally filled by available children"
 
@@ -56,4 +61,35 @@ GtTreePagerModelSettings >> fillRowHeight [
 	In other words, the column height might not be used completely."
 
 	self columnHeight: BlHorizontalTreeFlowLayoutRowGrowingCount new
+]
+
+{ #category : #'api - settings' }
+GtTreePagerModelSettings >> increaseNumberOfVisibleColumns [
+	self numberOfVisibleColumns: self numberOfVisibleColumns + 1
+]
+
+{ #category : #'api - settings' }
+GtTreePagerModelSettings >> numberOfVisibleColumns [
+	^ self optionAt: #numberOfVisibleColumns ifAbsentPut: [ 2 ]
+]
+
+{ #category : #'api - settings' }
+GtTreePagerModelSettings >> numberOfVisibleColumns: aLayoutColumnCount [
+	| aNewValue |
+	self assert: [ aLayoutColumnCount isInteger ].
+	
+	aNewValue := aLayoutColumnCount max: 1.
+
+	self
+		optionAt: #numberOfVisibleColumns
+		ifPresent: [ :anExistingCount | 
+			anExistingCount = aNewValue
+				ifFalse: [ self optionAt: #numberOfVisibleColumns put: aNewValue ]
+				ifTrue: [ ^ self ] ]
+		ifAbsentPut: [ aNewValue ].
+
+	self announcer
+		announce: (GtTreePagerModelNumberOfVisibleColumnsChanged new
+				settings: self;
+				amount: aNewValue)
 ]

@@ -30,11 +30,19 @@ GtTreePagerElement >> initialize [
 		addAptitude: (BrGlamorousMaximizerOverlayHostAptitude new
 				contentElement: [ BlElement new
 						addAptitude: BrGlamorousFocusableShadowAptitude new;
+						background: self theme default contentBackground;
 						layout: BlFrameLayout new;
 						clipChildren: false;
+						in: [ :theElement | theElement states addState: GtPhlowToolDetailState detailed ];
 						constraintsDo: [ :c | 
 							c horizontal matchParent.
-							c vertical matchParent ] ];
+							c vertical matchParent ];
+						when: GtPhlowObjectToSelect
+							do: [ :anEvent | self onMaximizerGtPhlowObjectToSelect: anEvent ];
+						when: GtPhlowObjectToDeselect
+							do: [ :anEvent | self onMaximizerGtPhlowObjectToDeselect: anEvent ];
+						when: GtPhlowObjectToSpawn
+							do: [ :anEvent | self onMaximizerGtPhlowObjectToSpawn: anEvent ] ];
 				closeButton: [ GtInspectorRoundButtonStencil small asElement
 						icon: BrGlamorousVectorIcons remove;
 						label: 'Minimize pane';
@@ -51,6 +59,32 @@ GtTreePagerElement >> initialize [
 GtTreePagerElement >> onGtTreePagerScrollToColumnWish: aWish [
 	aWish consumed: true.
 	panesElement smoothScrollToColumn: aWish column
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerElement >> onMaximizerGtPhlowObjectToDeselect: anEvent [
+	anEvent consumed: true
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerElement >> onMaximizerGtPhlowObjectToSelect: anEvent [
+	anEvent consumed: true
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerElement >> onMaximizerGtPhlowObjectToSpawn: anEvent [
+	| aWish aMaximizerContainer |
+	aWish := BrMaximizerHostMaximizedElementWish new.
+	anEvent currentTarget fireEvent: aWish.
+	
+	aWish maximizedElementDo: [ :anElement | 
+		aMaximizerContainer := anElement parent ].
+	
+	anEvent currentTarget fireEvent: BrMaximizerHostMinimizeWish new.
+
+	aWish maximizedElementDo: [ :anElement | 
+		aMaximizerContainer ~= anElement parent ifTrue: [
+			anElement phlow spawnPreviousEvent: anEvent ] ]
 ]
 
 { #category : #'api - pager model' }

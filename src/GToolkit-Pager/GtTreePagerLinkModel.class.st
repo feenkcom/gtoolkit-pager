@@ -251,6 +251,11 @@ GtTreePagerLinkModel >> removeLink [
 	self paneModel removeLink
 ]
 
+{ #category : #'api - state' }
+GtTreePagerLinkModel >> select [
+	self state: self state select
+]
+
 { #category : #'api - following links' }
 GtTreePagerLinkModel >> selectPane: aPaneModel [
 	self paneModel selectPane: aPaneModel
