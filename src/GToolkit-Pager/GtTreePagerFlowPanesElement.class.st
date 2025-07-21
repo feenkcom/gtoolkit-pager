@@ -136,7 +136,14 @@ GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelStateChanged: anAnnouncemen
 GtTreePagerFlowPanesElement >> onGtTreePagerModelColumnHeightChanged: anAnnouncement [
 	self pagerModel settings = anAnnouncement settings ifFalse: [ ^ self ].
 
-	BlTaskAction enqueueElement: self action: [ self updatePreviewsElementLayoutColumnHeight ]
+	BlTaskAction enqueueElement: self action: [ self updateElementLayoutColumnHeight ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerFlowPanesElement >> onGtTreePagerModelNumberOfVisibleColumnsChanged: anAnnouncement [
+	self pagerModel settings = anAnnouncement settings ifFalse: [ ^ self ].
+
+	BlTaskAction enqueueElement: self action: [ self updateElementLayoutNumberOfVisibleColumns ]
 ]
 
 { #category : #'private - event handling' }
@@ -210,6 +217,9 @@ GtTreePagerFlowPanesElement >> subscribeToPagerModel [
 			to: self;
 		when: GtTreePagerModelColumnHeightChanged
 			send: #onGtTreePagerModelColumnHeightChanged:
+			to: self;
+		when: GtTreePagerModelNumberOfVisibleColumnsChanged
+			send: #onGtTreePagerModelNumberOfVisibleColumnsChanged:
 			to: self
 ]
 
@@ -220,8 +230,20 @@ GtTreePagerFlowPanesElement >> unsubscribeFromPagerModel [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updateElement [
-	self updatePreviewsElementLayoutColumnHeight.
+	self updateElementLayoutNumberOfVisibleColumns.
+	self updateElementLayoutColumnHeight.
 	self updatePaneAndEdgeElements
+]
+
+{ #category : #'private - updating' }
+GtTreePagerFlowPanesElement >> updateElementLayoutColumnHeight [
+	self layoutDo: [ :l | l rowCount: self pagerModel settings columnHeight ]
+]
+
+{ #category : #'private - updating' }
+GtTreePagerFlowPanesElement >> updateElementLayoutNumberOfVisibleColumns [
+	self
+		layoutDo: [ :l | l numberOfVisibleColumns: self pagerModel settings numberOfVisibleColumns ]
 ]
 
 { #category : #'private - updating' }
@@ -251,9 +273,4 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 	(self children difference: displayedElements) do: #removeFromParent.
 
 	self dispatchEvent: GtTreePagerFlowPaneElementsChanged new
-]
-
-{ #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> updatePreviewsElementLayoutColumnHeight [
-	self layoutDo: [ :l | l rowCount: self pagerModel settings columnHeight ]
 ]
