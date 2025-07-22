@@ -1,8 +1,6 @@
 Class {
 	#name : #GtTreePagerScrollbarElement,
 	#superclass : #GtTreePagerBasicElement,
-	#traits : 'TBlHorizontalTreeFlowLayoutRowCountVisitor',
-	#classTraits : 'TBlHorizontalTreeFlowLayoutRowCountVisitor classTrait',
 	#instVars : [
 		'scrollbarElement',
 		'previewsElement',
