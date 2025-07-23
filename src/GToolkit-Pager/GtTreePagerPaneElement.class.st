@@ -55,9 +55,40 @@ GtTreePagerPaneElement >> initialize [
 	contentElement := GtTreePagerPaneContentElement new
 			addAptitude: BrGlamorousFocusableShadowAptitude new;
 			when: BrMaximizerElementMinimized
-				do: [ :anEvent | anEvent currentTarget requestStyle ];
+				do: [ :anEvent | 
+					anEvent currentTarget
+						realToolElementDo: [ :aToolElement | 
+							aToolElement userData
+								at: #previousToolDetailPositionState
+								ifPresent: [ :aState | 
+									aToolElement states addState: aState.
+									aToolElement userData removeKey: #previousToolDetailPositionState ]
+								ifAbsent: [  ].
+							aToolElement userData
+								at: #previousToolDetailState
+								ifPresent: [ :aState | 
+									aToolElement states addState: aState.
+									aToolElement userData removeKey: #previousToolDetailState ]
+								ifAbsent: [  ] ].
+					anEvent currentTarget requestStyle ];
 			when: BrMaximizerElementMaximized
-				do: [ :anEvent | anEvent currentTarget requestStyle ].
+				do: [ :anEvent | 
+					anEvent currentTarget
+						realToolElementDo: [ :aToolElement | 
+							aToolElement states
+								stateLike: GtPhlowToolDetailPositionState left
+								ifFound: [ :aState | 
+									aToolElement userData at: #previousToolDetailPositionState put: aState.
+									aToolElement states removeState: aState ]
+								ifNone: [  ].
+							aToolElement states
+								stateLike: GtPhlowToolDetailState normal
+								ifFound: [ :aState | 
+									aToolElement userData at: #previousToolDetailState put: aState.
+									aToolElement states removeState: aState ]
+								ifNone: [  ] ].
+					anEvent currentTarget requestStyle ].
+	
 	followingsElement := GtTreePagerPaneFollowingsElement new
 			margin: (BlInsets left: 5).
 
@@ -79,7 +110,7 @@ GtTreePagerPaneElement >> initialize [
 	self addChild: followingsElement.
 
 	self updateDisappearElementToCollapseIcon.
-	
+
 	self
 		addAptitude: (BrLayoutResizerAptitude new
 				inherit: contentContainer;
@@ -237,6 +268,16 @@ GtTreePagerPaneElement >> subscribeToPaneModel [
 		when: GtTreePagerLinkModelStateChanged
 			send: #onGtTreePagerLinkModelStateChanged:
 			to: self
+]
+
+{ #category : #accessing }
+GtTreePagerPaneElement >> toolElement [
+	^ contentElement toolElement
+]
+
+{ #category : #accessing }
+GtTreePagerPaneElement >> toolElementDo: aBlock [
+	self toolElement ifNotNil: aBlock
 ]
 
 { #category : #'api - pane model' }

@@ -41,11 +41,27 @@ GtPagerMaximizer >> maximize [
 
 { #category : #private }
 GtPagerMaximizer >> minimize [
+	self
+		realToolElementDo: [ :aToolElement | 
+			aToolElement userData
+				at: #previousToolDetailPositionState
+				ifPresent: [ :aState | 
+					aToolElement states addState: aState.
+					aToolElement userData removeKey: #previousToolDetailPositionState ]
+				ifAbsent: [  ].
+			aToolElement userData
+				at: #previousToolDetailState
+				ifPresent: [ :aState | 
+					aToolElement states addState: aState.
+					aToolElement userData removeKey: #previousToolDetailState ]
+				ifAbsent: [  ] ].
+
 	self contentElement beNormalLevel.
-	originalParent ifNotNil: [ :aParent |
-		self contentElement removeFromParent.
-		aParent addChildFirst: self contentElement ].
-	overlayElement ifNotNil: [ :anOverlay | anOverlay removeFromParent ].
+	originalParent
+		ifNotNil: [ :aParent | 
+			self contentElement removeFromParent.
+			aParent addChildFirst: self contentElement ].
+	overlayElement ifNotNil: [ :anOverlay | anOverlay removeFromParent ]
 ]
 
 { #category : #'instance creation' }
@@ -81,14 +97,40 @@ GtPagerMaximizer >> newOverlayContent [
 		addChild: self newMinimizeIcon.
 ]
 
+{ #category : #accessing }
+GtPagerMaximizer >> realToolElementDo: aBlock [
+	(self contentElement isKindOf: GtPagerWrapperElement)
+		ifTrue: [ self contentElement tool ifNotNil: aBlock ]
+		ifFalse: [ self contentElement ifNotNil: aBlock ]
+]
+
 { #category : #'api - actions' }
 GtPagerMaximizer >> syncMaximize [
 	"I must be called in a UI process"
+
 	self assertPreMaximizeConditions.
 	originalParent := self contentElement parent.
 	self contentElement removeFromParent.
+
+	self
+		realToolElementDo: [ :aToolElement | 
+			aToolElement states
+				stateLike: GtPhlowToolDetailPositionState left
+				ifFound: [ :aState | 
+					aToolElement userData at: #previousToolDetailPositionState put: aState.
+					aToolElement states removeState: aState ]
+				ifNone: [  ].
+			aToolElement states
+				stateLike: GtPhlowToolDetailState normal
+				ifFound: [ :aState | 
+					aToolElement userData at: #previousToolDetailState put: aState.
+					aToolElement states removeState: aState ]
+				ifNone: [  ] ].
+
 	self contentElement beDetailedLevel.
+	self contentElement states addState: GtPhlowToolDetailPositionState left.
+
 	overlayElement := self newOverlay.
 	overlayElement addChild: self newOverlayContent.
-	self pager addChild: overlayElement.
+	self pager addChild: overlayElement
 ]
