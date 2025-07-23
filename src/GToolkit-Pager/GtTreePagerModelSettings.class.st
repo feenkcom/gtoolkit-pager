@@ -6,8 +6,21 @@ Class {
 	#instVars : [
 		'announcer'
 	],
+	#classInstVars : [
+		'defaultNumberOfVisibleColumns'
+	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
+
+{ #category : #'api - settings' }
+GtTreePagerModelSettings class >> defaultNumberOfVisibleColumns [
+	^ defaultNumberOfVisibleColumns ifNil: [ 2 ]
+]
+
+{ #category : #'api - settings' }
+GtTreePagerModelSettings class >> defaultNumberOfVisibleColumns: aNumber [
+	defaultNumberOfVisibleColumns := aNumber
+]
 
 { #category : #announcer }
 GtTreePagerModelSettings >> announcer [
@@ -70,7 +83,7 @@ GtTreePagerModelSettings >> increaseNumberOfVisibleColumns [
 
 { #category : #'api - settings' }
 GtTreePagerModelSettings >> numberOfVisibleColumns [
-	^ self optionAt: #numberOfVisibleColumns ifAbsentPut: [ 2 ]
+	^ self optionAt: #numberOfVisibleColumns ifAbsentPut: [ self class defaultNumberOfVisibleColumns ]
 ]
 
 { #category : #'api - settings' }
