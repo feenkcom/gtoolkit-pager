@@ -29,6 +29,17 @@ GtTreePagerPaneContentElement >> onPaneModelChanged [
 ]
 
 { #category : #accessing }
+GtTreePagerPaneContentElement >> realToolElementDo: aBlock [
+	"Temporary solution, as some tool elements are wrapped. Such cases must be eliminated."
+
+	self
+		toolElementDo: [ :anElement | 
+			(anElement isKindOf: GtPagerWrapperElement)
+				ifTrue: [ anElement tool ifNotNil: aBlock ]
+				ifFalse: [ anElement ifNotNil: aBlock ] ]
+]
+
+{ #category : #accessing }
 GtTreePagerPaneContentElement >> toolElement [
 	| targetId |
 	targetId := #tool asBlocElementId.
@@ -36,4 +47,9 @@ GtTreePagerPaneContentElement >> toolElement [
 		childrenDo: [ :eachChild | eachChild id = targetId ifTrue: [ ^ eachChild ] ].
 
 	^ nil
+]
+
+{ #category : #accessing }
+GtTreePagerPaneContentElement >> toolElementDo: aBlock [
+	self toolElement ifNotNil: aBlock
 ]
