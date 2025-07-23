@@ -253,8 +253,6 @@ GtTreePagerScrollbarElement >> onChangeColumnHeightSettingsFrom: aButton [
 	GtTreePagerColumnHeightChanger new 
 		settings: self pagerModel settings;
 		change.
-	
-	self visitLayoutRowCount: self pagerModel settings columnHeight
 ]
 
 { #category : #'private - event handling' }
