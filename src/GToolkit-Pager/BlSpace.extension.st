@@ -46,6 +46,17 @@ BlSpace >> paneInTreePager: aPaneModel [
 ]
 
 { #category : #'*GToolkit-Pager' }
+BlSpace class >> spawnObject: anObject from: anElement [
+	"An object is either:
+	- spawned to the next pager pane, or
+	- displayed as a new GtWorld tab, or
+	- opened in a new window."
+
+	<return: #BlSpace or: nil>
+	^ self spawnTool: [ anObject gtDefaultInspectorTool ] from: anElement
+]
+
+{ #category : #'*GToolkit-Pager' }
 BlSpace class >> spawnTool: aPhlowToolBlock from: anElement [
 	"A Phlow tool is either:
 	- spawned to the next GtPager pane, or
