@@ -169,7 +169,9 @@ GtTreePagerPaneElement >> onDisappearClick: anEvent [
 		ifTrue: [ self paneModel removeFromPreviousPane.
 			^ self ].
 
-	self paneModel collapse
+	self paneModel followingSpawnedPaneModels isEmpty
+		ifFalse: [ self paneModel collapse ]
+		ifTrue: [ self paneModel selectInPreviousPane ]
 ]
 
 { #category : #'private - event handling' }
