@@ -3,6 +3,9 @@ Class {
 	#superclass : #GtTreePagerBasicElement,
 	#traits : 'TBlHorizontalTreeFlowLayoutSmooth',
 	#classTraits : 'TBlHorizontalTreeFlowLayoutSmooth classTrait',
+	#instVars : [
+		'paneElementsCache'
+	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
@@ -59,7 +62,13 @@ GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex
 	anElement := self
 			childNodeForPaneModel: aPaneModel
 			ifFound: [ :theElement | theElement ]
-			ifNone: [ self newNodeElementForPaneModel: aPaneModel ].
+			ifNone: [ paneElementsCache
+					ifNotNil: [ :aCollection | 
+						aCollection
+							detect: [ :eachPaneElement | eachPaneElement paneModel = aPaneModel ]
+							ifFound: [ :theElement | theElement ]
+							ifNone: [ self newNodeElementForPaneModel: aPaneModel ] ]
+					ifNil: [ self newNodeElementForPaneModel: aPaneModel ] ].
 
 	anElement
 		constraintsDo: [ :c | 
@@ -69,7 +78,7 @@ GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex
 				span: aSpanIndex ].
 
 	anElement hasParent ifFalse: [ self addChild: anElement ].
-	
+
 	^ anElement
 ]
 
@@ -247,13 +256,19 @@ GtTreePagerFlowPanesElement >> updateElementLayoutNumberOfVisibleColumns [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
-	| displayedElements edgeElements |
-	displayedElements := OrderedCollection new.
+	| spawnedElements edgeElements nonSpawnedElements |
+	spawnedElements := OrderedCollection new.
+	nonSpawnedElements := OrderedCollection new.
 
 	GtTreePagerHorizontalTreeFlowBuilder new
 		linkModels: self pagerModel linkModels;
-		forEachPaneModelDo: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
-			displayedElements
+		nonSpawnedLinkModelBlock: [ :aLinkModel | 
+			self
+				childNodeForPaneModel: aLinkModel paneModel
+				ifFound: [ :aPaneElement | nonSpawnedElements add: aPaneElement ]
+				ifNone: [  ] ];
+		spawnedLinkModelBlock: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
+			spawnedElements
 				add: (self
 						ensureNodeForPaneModel: aLinkModel paneModel
 						row: aRowIndex
@@ -263,13 +278,14 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 
 	edgeElements := GtTreePagerPanesEdgesBuilder new
 			panesElement: self;
-			displayedPaneElements: displayedElements;
+			displayedPaneElements: spawnedElements;
 			build.
 
 	self addChildren: edgeElements.
-	displayedElements addAll: edgeElements.
+	spawnedElements addAll: edgeElements.
 
-	(self children difference: displayedElements) do: #removeFromParent.
+	(self children difference: spawnedElements) do: #removeFromParent.
+	paneElementsCache := nonSpawnedElements.
 
 	self dispatchEvent: GtTreePagerFlowPaneElementsChanged new
 ]
