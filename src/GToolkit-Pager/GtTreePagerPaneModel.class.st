@@ -470,7 +470,7 @@ GtTreePagerPaneModel >> stencil: aBlStencil [
 
 { #category : #accessing }
 GtTreePagerPaneModel >> title [
-	^ title ifNil: [ self phlowTool title ]
+	^ title ifNil: [ self phlowTool ifNotNil: #title ]
 ]
 
 { #category : #accessing }

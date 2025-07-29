@@ -8,16 +8,28 @@ Class {
 }
 
 { #category : #factory }
+GtTreePager class >> createOn: anElementStencil [
+	^ self createWrappedOn: anElementStencil
+]
+
+{ #category : #factory }
 GtTreePager class >> createWrappedOn: anElementStencil [
 	| aPaneModel aPagerModel aPagerElement |
-	(anElementStencil isKindOf: BlElement)
-		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: anElementStencil ].
+	(anElementStencil isKindOf: GtPagerWrapperElement)
+		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: [ anElementStencil tool removeFromParent ] ].
+		
+	(aPaneModel isNil and: [ anElementStencil isKindOf: BlElement ])
+		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: [ anElementStencil removeFromParent ] ].
+		
 	(anElementStencil isKindOf: BlStencil)
 		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: anElementStencil ].
+		
 	(anElementStencil isKindOf: GtPhlowAbstractTool)
 		ifTrue: [ aPaneModel := GtTreePagerPaneModel new phlowTool: anElementStencil ].
+		
 	anElementStencil isClosure
 		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: anElementStencil ].
+		
 	aPaneModel
 		ifNil: [ aPaneModel := GtTreePagerPaneModel new object: anElementStencil ].
 
@@ -37,4 +49,11 @@ GtTreePager >> maximized [
 		childrenNodesDo: [ :eachPaneElement | 
 			eachPaneElement maximize.
 			^ self ]
+]
+
+{ #category : #'backward compatibility' }
+GtTreePager >> pages [
+	^ self pagerModel
+		ifNotNil: [ :aPagerModel | aPagerModel paneModels ]
+		ifNil: [ #() ]
 ]

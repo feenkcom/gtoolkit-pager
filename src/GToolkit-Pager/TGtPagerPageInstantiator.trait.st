@@ -14,7 +14,7 @@ TGtPagerPageInstantiator >> asPagerPageElement [
 { #category : #opening }
 TGtPagerPageInstantiator >> createInPager [
 	<return: #GtPager>
-	^ GtPager createOn: self asPagerPageElement
+	^ GtPagerSettings usedPager createOn: self asPagerPageElement
 ]
 
 { #category : #'instance creation' }
