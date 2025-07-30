@@ -109,6 +109,7 @@ GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
 														do: [ :aWidget | 
 															aPaneElement hideMaximizeButton.
 															aPaneElement hideDisappearElement.
+															aPaneElement hideTopLeftToolbarElement.
 															aResizer visibility: BlVisibility hidden ]
 														after: [ :aWidget |  ] ];
 												hovered: [ :aStyle | 
@@ -116,10 +117,12 @@ GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
 														do: [ :aWidget | 
 															aPaneElement showMaximizeButton.
 															aPaneElement showDisappearElement.
+															aPaneElement showTopLeftToolbarElement.
 															aResizer visibility: BlVisibility visible ]
 														after: [ :aWidget | 
 															aPaneElement hideMaximizeButton.
 															aPaneElement hideDisappearElement.
+															aPaneElement hideTopLeftToolbarElement.
 															aResizer visibility: BlVisibility hidden ] ]).
 
 									aResizer
