@@ -14,7 +14,7 @@ TGtPagerPageInstantiator >> asPagerPageElement [
 { #category : #opening }
 TGtPagerPageInstantiator >> createInPager [
 	<return: #GtPager>
-	^ GtPager createOn: self asPagerPageElement
+	^ GtPagerSettings usedPager createOn: self asPagerPageElement
 ]
 
 { #category : #'instance creation' }
@@ -44,18 +44,27 @@ TGtPagerPageInstantiator >> openInPagerFrom: aSourceElement [
 { #category : #opening }
 TGtPagerPageInstantiator >> openInPagerWithTitle: aTitle [
 	<return: #GtPager>
-	^ GtPager 
-		openOn: self asPagerPageElement 
-		title: aTitle
+	| aSpace |
+	aSpace := BlSpace new
+			inPager: self;
+			withSceneDriller;
+			title: aTitle;
+			show.
+
+	^ aSpace root childAt: 1
 ]
 
 { #category : #opening }
 TGtPagerPageInstantiator >> openInPagerWithTitle: aTitle from: aSourceElement [
 	<return: #GtPager>
-	^ GtPager 
-		openOn: self asPagerPageElement 
-		title: aTitle
-		from: aSourceElement.
+	| aSpace |
+	aSpace := BlSpace new
+			inPager: self;
+			withSceneDriller;
+			title: aTitle;
+			showFrom: aSourceElement.
+
+	^ aSpace root childAt: 1
 ]
 
 { #category : #opening }

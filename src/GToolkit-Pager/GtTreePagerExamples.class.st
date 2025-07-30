@@ -37,17 +37,34 @@ GtTreePagerExamples >> assertPager: aPager columnPaneTitles: aPanesCollection [
 ]
 
 { #category : #'examples - tree flow builder' }
-GtTreePagerExamples >> assertTreeFlowBuilderCallbacks: aBuilderCallbacks equalsPaneCharacters: aPanesCollection [
+GtTreePagerExamples >> assertTreeFlowBuilderNonSpawnedCallbacks: aBuilderCallbacks equalsPaneCharacters: aPanesCollection [
 	| aTitlesCollection |
 	aTitlesCollection := aPanesCollection
-			collect: [ :anArray | anArray collect: [ :anObject | anObject ifNotNil: #printString ] ].
+			collect: [ :anObject | anObject ifNotNil: #printString ].
 	self
-		assertTreeFlowBuilderCallbacks: aBuilderCallbacks
+		assertTreeFlowBuilderNonSpawnedCallbacks: aBuilderCallbacks
 		equalsPaneTitles: aTitlesCollection
 ]
 
 { #category : #'examples - tree flow builder' }
-GtTreePagerExamples >> assertTreeFlowBuilderCallbacks: aBuilderCallbacks equalsPaneTitles: aTitlesCollection [
+GtTreePagerExamples >> assertTreeFlowBuilderNonSpawnedCallbacks: aBuilderCallbacks equalsPaneTitles: aTitlesCollection [
+	self
+		assert: (aBuilderCallbacks collect: #title as: Array)
+		equals: aTitlesCollection
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> assertTreeFlowBuilderSpawnedCallbacks: aBuilderCallbacks equalsPaneCharacters: aPanesCollection [
+	| aTitlesCollection |
+	aTitlesCollection := aPanesCollection
+			collect: [ :anArray | anArray collect: [ :anObject | anObject ifNotNil: #printString ] ].
+	self
+		assertTreeFlowBuilderSpawnedCallbacks: aBuilderCallbacks
+		equalsPaneTitles: aTitlesCollection
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> assertTreeFlowBuilderSpawnedCallbacks: aBuilderCallbacks equalsPaneTitles: aTitlesCollection [
 	aTitlesCollection
 		withIndexDo: [ :eachPaneCollection :eachDepthIndex | 
 			eachPaneCollection
@@ -564,84 +581,16 @@ GtTreePagerExamples >> paneModelWithTwoFollowingTools [
 { #category : #'examples - tree flow builder' }
 GtTreePagerExamples >> treeFlowBuilderWithCollapsedFCPanes [
 	<gtExample>
-	| aPager allCallbacks |
+	| aPager allSpawnedCallbacks allNonSpawnedCallbacks |
 	aPager := self pagerWithCollapsedFCPanes.
-	allCallbacks := OrderedCollection new.
+	allSpawnedCallbacks := OrderedCollection new.
+	allNonSpawnedCallbacks := OrderedCollection new.
 
 	GtTreePagerHorizontalTreeFlowBuilder new
 		linkModels: aPager linkModels;
-		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
-			allCallbacks
-				add: {aPaneModel.
-						aRowIndex.
-						aDepthIndex.
-						aSpanIndex} ];
-		build.
-
-	self
-		assertTreeFlowBuilderCallbacks: allCallbacks
-		equalsPaneCharacters: #(#($A) #($B) #($E $G $D)).
-	^ allCallbacks
-]
-
-{ #category : #'examples - tree flow builder' }
-GtTreePagerExamples >> treeFlowBuilderWithCollapsedFPane [
-	<gtExample>
-	| aPager allCallbacks |
-	aPager := self pagerWithCollapsedFPane.
-	allCallbacks := OrderedCollection new.
-
-	GtTreePagerHorizontalTreeFlowBuilder new
-		linkModels: aPager linkModels;
-		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
-			allCallbacks
-				add: {aPaneModel.
-						aRowIndex.
-						aDepthIndex.
-						aSpanIndex} ];
-		build.
-
-	self
-		assertTreeFlowBuilderCallbacks: allCallbacks
-		equalsPaneCharacters: #(#($A) #($B) #($C $D) #($E $G)).
-	^ allCallbacks
-]
-
-{ #category : #'examples - tree flow builder' }
-GtTreePagerExamples >> treeFlowBuilderWithFivePanes [
-	<gtExample>
-	| aPager allCallbacks |
-	aPager := self pagerWithFivePanes.
-	allCallbacks := OrderedCollection new.
-
-	GtTreePagerHorizontalTreeFlowBuilder new
-		linkModels: aPager linkModels;
-		forEachPaneModelDo: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
-			allCallbacks
-				add: {aPaneModel.
-						aRowIndex.
-						aDepthIndex.
-						aSpanIndex} ];
-		build.
-
-	self
-		assertTreeFlowBuilderCallbacks: allCallbacks
-		equalsPaneCharacters: #(#($A) #($B) #($C $D) #($E $F) #($G)).
-
-	^ allCallbacks
-]
-
-{ #category : #'examples - tree flow builder' }
-GtTreePagerExamples >> treeFlowBuilderWithHiddenCPaneCollapsedFPane [
-	<gtExample>
-	| aPager allCallbacks |
-	aPager := self pagerWithHiddenCPaneCollapsedFPane.
-	allCallbacks := OrderedCollection new.
-
-	GtTreePagerHorizontalTreeFlowBuilder new
-		linkModels: aPager linkModels;
-		forEachPaneModelDo: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
-			allCallbacks
+		nonSpawnedLinkModelBlock: [ :aLinkModel | allNonSpawnedCallbacks add: aLinkModel ];
+		spawnedLinkModelBlock: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
+			allSpawnedCallbacks
 				add: {aLinkModel.
 						aRowIndex.
 						aDepthIndex.
@@ -649,7 +598,95 @@ GtTreePagerExamples >> treeFlowBuilderWithHiddenCPaneCollapsedFPane [
 		build.
 
 	self
-		assertTreeFlowBuilderCallbacks: allCallbacks
-		equalsPaneCharacters: #(#($A) #($B) #($D)).
+		assertTreeFlowBuilderSpawnedCallbacks: allSpawnedCallbacks
+		equalsPaneCharacters: #(#($A) #($B) #($E $G $D)).
+	self
+		assertTreeFlowBuilderNonSpawnedCallbacks: allNonSpawnedCallbacks
+		equalsPaneCharacters: #($C $F).
+	^ allSpawnedCallbacks
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> treeFlowBuilderWithCollapsedFPane [
+	<gtExample>
+	| aPager allCallbacks allNonSpawnedCallbacks |
+	aPager := self pagerWithCollapsedFPane.
+	allCallbacks := OrderedCollection new.
+	allNonSpawnedCallbacks := OrderedCollection new.
+
+	GtTreePagerHorizontalTreeFlowBuilder new
+		linkModels: aPager linkModels;
+		nonSpawnedLinkModelBlock: [ :aLinkModel | allNonSpawnedCallbacks add: aLinkModel ];
+		spawnedLinkModelBlock: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
+			allCallbacks
+				add: {aPaneModel.
+						aRowIndex.
+						aDepthIndex.
+						aSpanIndex} ];
+		build.
+
+	self
+		assertTreeFlowBuilderSpawnedCallbacks: allCallbacks
+		equalsPaneCharacters: #(#($A) #($B) #($C $D) #($E $G)).
+	self
+		assertTreeFlowBuilderNonSpawnedCallbacks: allNonSpawnedCallbacks
+		equalsPaneCharacters: #($F).
 	^ allCallbacks
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> treeFlowBuilderWithFivePanes [
+	<gtExample>
+	| aPager allCallbacks allNonSpawnedCallbacks |
+	aPager := self pagerWithFivePanes.
+	allCallbacks := OrderedCollection new.
+	allNonSpawnedCallbacks := OrderedCollection new.
+
+	GtTreePagerHorizontalTreeFlowBuilder new
+		linkModels: aPager linkModels;
+		nonSpawnedLinkModelBlock: [ :aLinkModel | allNonSpawnedCallbacks add: aLinkModel ];
+		spawnedLinkModelBlock: [ :aPaneModel :aRowIndex :aDepthIndex :aSpanIndex | 
+			allCallbacks
+				add: {aPaneModel.
+						aRowIndex.
+						aDepthIndex.
+						aSpanIndex} ];
+		build.
+
+	self
+		assertTreeFlowBuilderSpawnedCallbacks: allCallbacks
+		equalsPaneCharacters: #(#($A) #($B) #($C $D) #($E $F) #($G)).
+	self
+		assertTreeFlowBuilderNonSpawnedCallbacks: allNonSpawnedCallbacks
+		equalsPaneCharacters: #().
+
+	^ allCallbacks
+]
+
+{ #category : #'examples - tree flow builder' }
+GtTreePagerExamples >> treeFlowBuilderWithHiddenCPaneCollapsedFPane [
+	<gtExample>
+	| aPager allSpawnedCallbacks allNonSpawnedCallbacks |
+	aPager := self pagerWithHiddenCPaneCollapsedFPane.
+	allSpawnedCallbacks := OrderedCollection new.
+	allNonSpawnedCallbacks := OrderedCollection new.
+
+	GtTreePagerHorizontalTreeFlowBuilder new
+		linkModels: aPager linkModels;
+		nonSpawnedLinkModelBlock: [ :aLinkModel | allNonSpawnedCallbacks add: aLinkModel ];
+		spawnedLinkModelBlock: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
+			allSpawnedCallbacks
+				add: {aLinkModel.
+						aRowIndex.
+						aDepthIndex.
+						aSpanIndex} ];
+		build.
+
+	self
+		assertTreeFlowBuilderSpawnedCallbacks: allSpawnedCallbacks
+		equalsPaneCharacters: #(#($A) #($B) #($D)).
+	self
+		assertTreeFlowBuilderNonSpawnedCallbacks: allNonSpawnedCallbacks
+		equalsPaneCharacters: #($C $E $F $G).
+	^ allSpawnedCallbacks
 ]

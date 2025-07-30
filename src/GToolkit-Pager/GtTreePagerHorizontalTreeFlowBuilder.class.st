@@ -4,21 +4,23 @@ Class {
 	#traits : 'TGtTreePagerLinkStateVisitor',
 	#classTraits : 'TGtTreePagerLinkStateVisitor classTrait',
 	#instVars : [
-		'paneModelBlock',
 		'row',
 		'depth',
 		'currentPaneModel',
 		'sameDepthQueue',
 		'nextDepthQueue',
 		'currentNode',
-		'linkModels'
+		'linkModels',
+		'nonSpawnedLinkModelBlock',
+		'spawnedLinkModelBlock'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #building }
 GtTreePagerHorizontalTreeFlowBuilder >> build [
-	self assert: [ paneModelBlock isNotNil ].
+	self assert: [ spawnedLinkModelBlock isNotNil ].
+	self assert: [ nonSpawnedLinkModelBlock isNotNil ].
 	self assert: [ linkModels isNotNil ].
 
 	row := 1.
@@ -40,7 +42,7 @@ GtTreePagerHorizontalTreeFlowBuilder >> buildCollapsedCurrentNode [
 GtTreePagerHorizontalTreeFlowBuilder >> buildSpawnedCurrentNode [
 	"row := row max: currentNode row."
 
-	paneModelBlock
+	spawnedLinkModelBlock
 		value: currentNode linkModel
 		value: row
 		value: depth
@@ -49,11 +51,6 @@ GtTreePagerHorizontalTreeFlowBuilder >> buildSpawnedCurrentNode [
 	nextDepthQueue
 		addAll: (self nodesFromLinkModels: currentNode linkModel followingLinks).
 	row := row + 1
-]
-
-{ #category : #accessing }
-GtTreePagerHorizontalTreeFlowBuilder >> forEachPaneModelDo: aBlock [
-	self paneModelBlock: aBlock
 ]
 
 { #category : #accessing }
@@ -76,24 +73,32 @@ GtTreePagerHorizontalTreeFlowBuilder >> nodesFromLinkModels: aCollectionOfPaneMo
 ]
 
 { #category : #accessing }
+GtTreePagerHorizontalTreeFlowBuilder >> nonSpawnedLinkModelBlock [
+	^ nonSpawnedLinkModelBlock
+]
+
+{ #category : #accessing }
+GtTreePagerHorizontalTreeFlowBuilder >> nonSpawnedLinkModelBlock: anObject [
+	nonSpawnedLinkModelBlock := anObject
+]
+
+{ #category : #accessing }
 GtTreePagerHorizontalTreeFlowBuilder >> paneModel: aPaneModel [
 	self paneModels: {aPaneModel}
-]
-
-{ #category : #accessing }
-GtTreePagerHorizontalTreeFlowBuilder >> paneModelBlock [
-	^ paneModelBlock
-]
-
-{ #category : #accessing }
-GtTreePagerHorizontalTreeFlowBuilder >> paneModelBlock: anObject [
-	paneModelBlock := anObject
 ]
 
 { #category : #private }
 GtTreePagerHorizontalTreeFlowBuilder >> processNode: aNode [
 	currentNode := aNode.
-	self visitCurrentNode
+	self visitCurrentNode.
+	currentNode := nil.
+]
+
+{ #category : #private }
+GtTreePagerHorizontalTreeFlowBuilder >> processNonSpawnedCurrentNode [
+	currentNode linkModel isSpawned ifTrue: [ ^ self ].
+	
+	nonSpawnedLinkModelBlock value: currentNode linkModel
 ]
 
 { #category : #building }
@@ -107,22 +112,54 @@ GtTreePagerHorizontalTreeFlowBuilder >> processQueue [
 			row := 1 ]
 ]
 
+{ #category : #accessing }
+GtTreePagerHorizontalTreeFlowBuilder >> spawnedLinkModelBlock [
+	^ spawnedLinkModelBlock
+]
+
+{ #category : #accessing }
+GtTreePagerHorizontalTreeFlowBuilder >> spawnedLinkModelBlock: anObject [
+	spawnedLinkModelBlock := anObject
+]
+
 { #category : #private }
 GtTreePagerHorizontalTreeFlowBuilder >> visitCurrentNode [
 	currentNode linkModel state acceptVisitor: self
 ]
 
 { #category : #visiting }
+GtTreePagerHorizontalTreeFlowBuilder >> visitGtTreePagerLinkActiveSelectedState: aState [
+	self visitGtTreePagerLinkState: aState.
+	currentNode linkModel allLinkModelsBreadthFirstDo: [ :eachLinkModel | 
+		nonSpawnedLinkModelBlock value: eachLinkModel ]
+]
+
+{ #category : #visiting }
 GtTreePagerHorizontalTreeFlowBuilder >> visitGtTreePagerLinkActiveSpawnedState: aState [
-	self buildSpawnedCurrentNode
+	self buildSpawnedCurrentNode.
+	self visitGtTreePagerLinkState: aState
 ]
 
 { #category : #visiting }
 GtTreePagerHorizontalTreeFlowBuilder >> visitGtTreePagerLinkInactiveCollapsedState: aState [
-	self buildCollapsedCurrentNode
+	self buildCollapsedCurrentNode.
+	self visitGtTreePagerLinkState: aState
+]
+
+{ #category : #visiting }
+GtTreePagerHorizontalTreeFlowBuilder >> visitGtTreePagerLinkInactiveHiddenState: aState [
+	self visitGtTreePagerLinkState: aState.
+	currentNode linkModel allLinkModelsBreadthFirstDo: [ :eachLinkModel | 
+		nonSpawnedLinkModelBlock value: eachLinkModel ]
 ]
 
 { #category : #visiting }
 GtTreePagerHorizontalTreeFlowBuilder >> visitGtTreePagerLinkInactiveSpawnedState: aState [
-	self buildSpawnedCurrentNode
+	self buildSpawnedCurrentNode.
+	self visitGtTreePagerLinkState: aState
+]
+
+{ #category : #visiting }
+GtTreePagerHorizontalTreeFlowBuilder >> visitGtTreePagerLinkState: aState [
+	self processNonSpawnedCurrentNode
 ]

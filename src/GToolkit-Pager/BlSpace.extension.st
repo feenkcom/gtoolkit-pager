@@ -46,6 +46,34 @@ BlSpace >> paneInTreePager: aPaneModel [
 ]
 
 { #category : #'*GToolkit-Pager' }
+BlSpace class >> showTool: aPhlowToolBlock from: anElement [
+	"A Phlow tool is either:
+	- displayed as a new GtWorld tab, or
+	- opened in a new window."
+
+	<return: #BlSpace or: nil>
+	| aPhlowTool |
+	self
+		assert: [ aPhlowToolBlock isNotNil ]
+		description: [ 'Phlow tool block must be non-nil' ].
+	aPhlowTool := aPhlowToolBlock value.
+	self
+		assert: [ aPhlowTool isNotNil ]
+		description: [ 'Phlow tool must be non-nil: { 1 }' format: { aPhlowToolBlock } ].
+	
+	anElement ifNil: [ 
+		^ self new
+			inPager: aPhlowTool;
+			withSceneDriller;
+			show ].
+
+	^ self new
+		inPager: aPhlowTool;
+		withSceneDriller;
+		showFrom: anElement
+]
+
+{ #category : #'*GToolkit-Pager' }
 BlSpace class >> spawnObject: anObject from: anElement [
 	"An object is either:
 	- spawned to the next pager pane, or
