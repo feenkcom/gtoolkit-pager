@@ -76,13 +76,13 @@ GtTreePagerColumnHeightElementBuilder >> preview [
 { #category : #visiting }
 GtTreePagerColumnHeightElementBuilder >> visitBlHorizontalTreeFlowLayoutRowCount: aCount [
 	icon := self newFillRowHeightIcon.
-	label := 'Fill column height'.
-	preview := 'instead of row height'
+	label := 'Fill row height'.
+	preview := 'instead of column height'
 ]
 
 { #category : #visiting }
 GtTreePagerColumnHeightElementBuilder >> visitBlHorizontalTreeFlowLayoutRowGrowingCount: aCount [
 	icon := self newFillColumnHeightIcon.
-	label := 'Fill row height'.
-	preview := 'instead of column height'
+	label := 'Fill column height'.
+	preview := 'instead of row height'
 ]

@@ -75,6 +75,15 @@ GtTreePagerLinkContextMenuBuilder >> newInactivateLinkActionItem [
 ]
 
 { #category : #private }
+GtTreePagerLinkContextMenuBuilder >> newRebuildPaneToolElementActionItem [
+	^ BrMenuActionItem new
+		id: #'menu--rebuild-pane-tool-element';
+		label: 'Update tool' preview: [ self linkModel title ];
+		action: [ :anElement :aButtonModel :anEvent | self paneModel requestRebuildPaneTool ];
+		yourself
+]
+
+{ #category : #private }
 GtTreePagerLinkContextMenuBuilder >> newRemoveLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'menu--remove-pane';
@@ -94,6 +103,11 @@ GtTreePagerLinkContextMenuBuilder >> newWorldTabActionItem [
 				withSceneDriller;
 				showFrom: anElement ];
 		yourself
+]
+
+{ #category : #accessing }
+GtTreePagerLinkContextMenuBuilder >> paneModel [
+	^ self linkModel paneModel
 ]
 
 { #category : #private }
@@ -125,6 +139,7 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedState: aSt
 			menu addItem: self newCollapseLinkActionItem.
 			menu addItem: self newHideLinkActionItem ].
 	menu addItem: self newWorldTabActionItem.
+	menu addItem: self newRebuildPaneToolElementActionItem.
 	self linkModel depthIndex = 1
 		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]
@@ -153,6 +168,7 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveSpawnedState: a
 			menu addItem: self newCollapseLinkActionItem.
 			menu addItem: self newHideLinkActionItem ].
 	menu addItem: self newWorldTabActionItem.
+	menu addItem: self newRebuildPaneToolElementActionItem.
 	self linkModel depthIndex = 1
 		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]
@@ -160,6 +176,7 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveSpawnedState: a
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkState: aState [
 	menu addItem: self newWorldTabActionItem.
+	menu addItem: self newRebuildPaneToolElementActionItem.
 	self linkModel depthIndex = 1
 		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]

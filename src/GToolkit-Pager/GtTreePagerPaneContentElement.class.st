@@ -18,14 +18,16 @@ GtTreePagerPaneContentElement >> initialize [
 	self beFocusable
 ]
 
-{ #category : #accessing }
-GtTreePagerPaneContentElement >> onPaneModelChanged [
-	| targetId |
-	targetId := #tool asBlocElementId.
-	self childrenDo: [ :eachChild | eachChild id = targetId 
-		ifTrue: [ eachChild removeFromParent ] ].
+{ #category : #'private - event handling' }
+GtTreePagerPaneContentElement >> onGtTreePagerPaneModelRebuildToolRequest: anAnnouncement [
+	self paneModel = anAnnouncement paneModel ifFalse: [ ^ self ].
 
-	self addChild: self paneModel asElement as: targetId
+	BlTaskAction enqueueElement: self action: [ self updateToolElement ]
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerPaneContentElement >> onPaneModelChanged [
+	self updateElement
 ]
 
 { #category : #accessing }
@@ -37,6 +39,14 @@ GtTreePagerPaneContentElement >> realToolElementDo: aBlock [
 			(anElement isKindOf: GtPagerWrapperElement)
 				ifTrue: [ anElement tool ifNotNil: aBlock ]
 				ifFalse: [ anElement ifNotNil: aBlock ] ]
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerPaneContentElement >> subscribeToPaneModel [
+	self paneModel weak
+		when: GtTreePagerPaneModelRebuildToolRequest
+		send: #onGtTreePagerPaneModelRebuildToolRequest:
+		to: self
 ]
 
 { #category : #accessing }
@@ -52,4 +62,24 @@ GtTreePagerPaneContentElement >> toolElement [
 { #category : #accessing }
 GtTreePagerPaneContentElement >> toolElementDo: aBlock [
 	self toolElement ifNotNil: aBlock
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerPaneContentElement >> unsubscribeFromPaneModel [
+	self paneModel unsubscribe: self
+]
+
+{ #category : #'private - updating' }
+GtTreePagerPaneContentElement >> updateElement [
+	self updateToolElement
+]
+
+{ #category : #'private - updating' }
+GtTreePagerPaneContentElement >> updateToolElement [
+	| targetId |
+	targetId := #tool asBlocElementId.
+	self
+		childrenDo: [ :eachChild | eachChild id = targetId ifTrue: [ eachChild removeFromParent ] ].
+
+	self addChild: self paneModel asElement as: targetId
 ]

@@ -6,7 +6,8 @@ Class {
 		'followingsElement',
 		'disappearElement',
 		'maximizerAptitude',
-		'contentContainer'
+		'contentContainer',
+		'topLeftToolbarElement'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -39,6 +40,11 @@ GtTreePagerPaneElement >> hideDisappearElement [
 { #category : #'api - updating' }
 GtTreePagerPaneElement >> hideMaximizeButton [
 	maximizerAptitude hideMaximizeButton
+]
+
+{ #category : #'api - updating' }
+GtTreePagerPaneElement >> hideTopLeftToolbarElement [
+	^ topLeftToolbarElement visibility: BlVisibility gone
 ]
 
 { #category : #'accessing - ui' }
@@ -88,7 +94,7 @@ GtTreePagerPaneElement >> initialize [
 									aToolElement states removeState: aState ]
 								ifNone: [  ] ].
 					anEvent currentTarget requestStyle ].
-	
+
 	followingsElement := GtTreePagerPaneFollowingsElement new
 			margin: (BlInsets left: 5).
 
@@ -99,6 +105,15 @@ GtTreePagerPaneElement >> initialize [
 					margin: (BlInsets left: 9);
 					matchParent;
 					addChild: contentElement;
+					addChild: (topLeftToolbarElement := BrHorizontalPane new
+							fitContent;
+							padding: (BlInsets left: 10);
+							addChild: self newDropdownMenuElement;
+							clipChildren: false;
+							constraintsDo: [ :c | 
+								c ignoreByLayout.
+								c ignored horizontal alignLeft.
+								c ignored vertical alignCenterAt: 0 ]);
 					addChild: (disappearElement := self newDisappearElement);
 					addAptitude: (maximizerAptitude := BrGlamorousWithMaximizerAptitude new
 								/ GtTreePagerPaneContentElement;
@@ -157,6 +172,34 @@ GtTreePagerPaneElement >> newDisappearElement [
 { #category : #initialization }
 GtTreePagerPaneElement >> newDisappearRemoveIcon [
 	^ BrPlusIconStencil close asElement
+]
+
+{ #category : #initialization }
+GtTreePagerPaneElement >> newDropdownMenuElement [
+	^ GtInspectorRoundButtonStencil small asElement
+		id: #'gt-pager-dropdown-menu-button';
+		icon: BrGlamorousVectorIcons downwards;
+		addAptitude: (BrGlamorousWithExplicitDropdownAptitude
+				handle: [ BrButton new
+						size: 16 @ 16;
+						background: Color white;
+						aptitude: BrIconAptitude;
+						geometry: BlEllipseGeometry new;
+						layout: BlLinearLayout horizontal alignCenter;
+						icon: BrGlamorousVectorIcons downwards ]
+				menu: [ self newDropdownMenuModel ])
+]
+
+{ #category : #initialization }
+GtTreePagerPaneElement >> newDropdownMenuModel [
+	| aLinkModel |
+	self hasPaneModel ifFalse: [ ^ nil ].
+	aLinkModel := self paneModel previousLink.
+	aLinkModel ifNil: [ ^ nil ].
+
+	^ GtTreePagerLinkContextMenuBuilder new
+		linkModel: aLinkModel;
+		build
 ]
 
 { #category : #'private - event management' }
@@ -255,6 +298,11 @@ GtTreePagerPaneElement >> showDisappearElement [
 { #category : #'api - updating' }
 GtTreePagerPaneElement >> showMaximizeButton [
 	maximizerAptitude showMaximizeButton
+]
+
+{ #category : #'api - updating' }
+GtTreePagerPaneElement >> showTopLeftToolbarElement [
+	^ topLeftToolbarElement visibility: BlVisibility visible
 ]
 
 { #category : #'api - pane model' }

@@ -301,6 +301,12 @@ GtTreePagerPaneModel >> notifyFollowingLinksChanged: anOldFollowingLinks [
 	self allPreviousPanesDo: [ :aPreviousPane | aPreviousPane announcer announce: anAnnouncement ]
 ]
 
+{ #category : #'private - notifying' }
+GtTreePagerPaneModel >> notifyRebuildPaneTool [
+	self announcer
+		announce: (GtTreePagerPaneModelRebuildToolRequest new paneModel: self)
+]
+
 { #category : #'api - phlow' }
 GtTreePagerPaneModel >> object: anObject [
 	self phlowTool: anObject gtDefaultInspectorTool
@@ -406,6 +412,11 @@ GtTreePagerPaneModel >> replaceFollowingLink: anOldLinkModel by: aNewLinkModel [
 			at: anIndex put: aNewLinkModel;
 			yourself.
 	self followingLinks: aNewCollection
+]
+
+{ #category : #'api - requests' }
+GtTreePagerPaneModel >> requestRebuildPaneTool [
+	self notifyRebuildPaneTool
 ]
 
 { #category : #'api - previous panes' }
