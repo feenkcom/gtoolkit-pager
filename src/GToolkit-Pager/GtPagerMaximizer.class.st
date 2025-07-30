@@ -109,6 +109,13 @@ GtPagerMaximizer >> syncMaximize [
 	"I must be called in a UI process"
 
 	self assertPreMaximizeConditions.
+	
+	"Ensure only one maximized pane"
+	pager children 
+		detect: [ :each | each id = GtPagerMaximizedPageElementId asBlocElementId] 
+		ifFound: [ :anElement | ^ self ] 
+		ifNone: [  ].
+	
 	originalParent := self contentElement parent.
 	self contentElement removeFromParent.
 
