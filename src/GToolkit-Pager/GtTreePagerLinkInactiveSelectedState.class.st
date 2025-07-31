@@ -1,34 +1,34 @@
 Class {
-	#name : #GtTreePagerLinkInactiveHiddenState,
+	#name : #GtTreePagerLinkInactiveSelectedState,
 	#superclass : #GtTreePagerLinkState,
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #visiting }
-GtTreePagerLinkInactiveHiddenState >> acceptVisitor: aVisitor [
+GtTreePagerLinkInactiveSelectedState >> acceptVisitor: aVisitor [
 	^ aVisitor visitGtTreePagerLinkInactiveHiddenState: self
 ]
 
 { #category : #'api - state' }
-GtTreePagerLinkInactiveHiddenState >> activate [
+GtTreePagerLinkInactiveSelectedState >> activate [
 	"Return an active state"
 
 	^ GtTreePagerLinkState spawned
 ]
 
 { #category : #'api - state' }
-GtTreePagerLinkInactiveHiddenState >> expand [
+GtTreePagerLinkInactiveSelectedState >> expand [
 	"Return an expanded state"
 
 	^ GtTreePagerLinkState inactive
 ]
 
 { #category : #'api - state' }
-GtTreePagerLinkInactiveHiddenState >> hide [
+GtTreePagerLinkInactiveSelectedState >> hide [
 	^ self
 ]
 
 { #category : #'api - state' }
-GtTreePagerLinkInactiveHiddenState >> isHidden [
+GtTreePagerLinkInactiveSelectedState >> isHidden [
 	^ true
 ]
