@@ -1,12 +1,27 @@
 Class {
 	#name : #GtTreePagerPaneContentElement,
 	#superclass : #GtTreePagerPaneBasicElement,
+	#instVars : [
+		'navigationContext'
+	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #initialization }
 GtTreePagerPaneContentElement >> defaultLayout [
 	^ BlLinearLayout horizontal
+]
+
+{ #category : #views }
+GtTreePagerPaneContentElement >> gtNavigationContextFor: aView [
+	<gtView>
+	navigationContext ifNil: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Navigation context';
+		priority: 1.5;
+		object: [ navigationContext ];
+		view: #gtNavigationContextsFor:
 ]
 
 { #category : #initialization }
@@ -16,6 +31,25 @@ GtTreePagerPaneContentElement >> initialize [
 	self matchParent.
 	self clipChildren: false.
 	self beFocusable
+]
+
+{ #category : #'api - navigation' }
+GtTreePagerPaneContentElement >> navigationContext [
+	<return: #GtTreePagerPaneNavigationContext>
+	^ navigationContext
+]
+
+{ #category : #'api - navigation' }
+GtTreePagerPaneContentElement >> navigationContext: aNavigationContext [
+	"Set navigation context.
+	Note that the navigation context must be set before pane model, as it is likely to change GtPhlowContext that must be passed to a phlow tool before its tool element is created.
+	See 
+	- GtInspectorTool>>#contextWithNavigationContext:
+	- GtTreePagerPaneContentElement>>#updateToolElement"
+
+	self assert: [ self paneModel isNil ].
+	
+	navigationContext := aNavigationContext
 ]
 
 { #category : #'private - event handling' }
@@ -76,10 +110,15 @@ GtTreePagerPaneContentElement >> updateElement [
 
 { #category : #'private - updating' }
 GtTreePagerPaneContentElement >> updateToolElement [
-	| targetId |
+	| targetId aToolElement |
 	targetId := #tool asBlocElementId.
 	self
 		childrenDo: [ :eachChild | eachChild id = targetId ifTrue: [ eachChild removeFromParent ] ].
 
-	self addChild: self paneModel asElement as: targetId
+	self navigationContext
+		ifNotNil: [ :aContext | self paneModel phlowTool contextWithNavigationContext: aContext ].
+
+	aToolElement := self paneModel asElement.
+
+	self addChild: aToolElement as: targetId
 ]
