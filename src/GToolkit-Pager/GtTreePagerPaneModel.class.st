@@ -63,7 +63,11 @@ GtTreePagerPaneModel >> announcer [
 { #category : #converting }
 GtTreePagerPaneModel >> asElement [
 	<return: #BlElement>
-	^ self phlowTool asElement
+	| aToolElement |
+	aToolElement := [ self phlowTool asToolElementDo: [ :anElement | anElement ] ]
+			onErrorDo: [ :anError | anError asDebuggableElement ].
+
+	^ aToolElement
 ]
 
 { #category : #accessing }
@@ -339,7 +343,8 @@ GtTreePagerPaneModel >> postSimilarPaneCopy [
 	newLinks := self followingLinks
 			collect: [ :eachLink | eachLink similarLinkCopy ].
 	followingLinks := GtTreePagerPaneLinks new paneModel: self.
-	self followingLinks: newLinks
+	self followingLinks: newLinks.
+	phlowTool := phlowTool ifNotNil: #similarToolCopy
 ]
 
 { #category : #'api - previous panes' }

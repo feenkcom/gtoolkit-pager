@@ -32,6 +32,18 @@ GtTreePagerPaneElement >> focusTarget [
 	^ contentElement
 ]
 
+{ #category : #views }
+GtTreePagerPaneElement >> gtNavigationContextFor: aView [
+	<gtView>
+	self navigationContext ifNil: [ ^ aView empty ].
+
+	^ aView forward
+		title: 'Navigation context';
+		priority: 1.5;
+		object: [ self navigationContext ];
+		view: #gtNavigationContextsFor:
+]
+
 { #category : #'api - updating' }
 GtTreePagerPaneElement >> hideDisappearElement [
 	^ disappearElement visibility: BlVisibility gone
@@ -147,6 +159,14 @@ GtTreePagerPaneElement >> initialize [
 { #category : #'api - requests' }
 GtTreePagerPaneElement >> maximize [
 	maximizerAptitude dispatchEvent: BrWithMaximizerAptitudeMaximizeWish new
+]
+
+{ #category : #accessing }
+GtTreePagerPaneElement >> navigationContext [
+	<return: #GtTreePagerPaneNavigationContext>
+	self contentElementDo: [ :aContentElement |
+		^ aContentElement navigationContext ].
+	^ nil
 ]
 
 { #category : #initialization }
@@ -285,6 +305,12 @@ GtTreePagerPaneElement >> onPaneModelChanged [
 { #category : #'accessing - ui' }
 GtTreePagerPaneElement >> outgoingLinkElements [
 	^ followingsElement outgoingLinkElements
+]
+
+{ #category : #accessing }
+GtTreePagerPaneElement >> realToolElementDo: aBlock [
+	self contentElementDo: [ :aContentElement | 
+		aContentElement realToolElementDo: aBlock ]
 ]
 
 { #category : #'api - updating' }

@@ -60,15 +60,9 @@ GtTreePagerFlowPanesElement >> defaultLayout [
 GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex depth: aDepthIndex span: aSpanIndex [
 	| anElement |
 	anElement := self
-			childNodeForPaneModel: aPaneModel
+			usedOrCachedChildNodeForPaneModel: aPaneModel
 			ifFound: [ :theElement | theElement ]
-			ifNone: [ paneElementsCache
-					ifNotNil: [ :aCollection | 
-						aCollection
-							detect: [ :eachPaneElement | eachPaneElement paneModel = aPaneModel ]
-							ifFound: [ :theElement | theElement ]
-							ifNone: [ self newNodeElementForPaneModel: aPaneModel ] ]
-					ifNil: [ self newNodeElementForPaneModel: aPaneModel ] ].
+			ifNone: [ self newNodeElementForPaneModel: aPaneModel ].
 
 	anElement
 		constraintsDo: [ :c | 
@@ -99,6 +93,9 @@ GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
 			aPaneElement
 				contentElementDo: [ :aContentElement | 
 					aContentElement
+						navigationContext: (GtTreePagerPaneNavigationContext new
+								pagerElement: self;
+								paneElement: aPaneElement);
 						addAptitude: (BrGlamorousWithHorizontalResizerAptitude new
 								beRight;
 								resizerDo: [ :aResizer | 
@@ -291,4 +288,18 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 	paneElementsCache := nonSpawnedElements.
 
 	self dispatchEvent: GtTreePagerFlowPaneElementsChanged new
+]
+
+{ #category : #'api - children enumeration' }
+GtTreePagerFlowPanesElement >> usedOrCachedChildNodeForPaneModel: aPaneModel ifFound: aFoundBlock ifNone: aNoneBlock [
+	^ self
+		childNodeForPaneModel: aPaneModel
+		ifFound: aFoundBlock
+		ifNone: [ paneElementsCache
+				ifNotNil: [ :aCollection | 
+					aCollection
+						detect: [ :eachPaneElement | eachPaneElement paneModel = aPaneModel ]
+						ifFound: aFoundBlock
+						ifNone: aNoneBlock ]
+				ifNil: aNoneBlock ]
 ]
