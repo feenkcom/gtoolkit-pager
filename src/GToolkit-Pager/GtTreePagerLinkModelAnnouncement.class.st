@@ -16,3 +16,8 @@ GtTreePagerLinkModelAnnouncement >> linkModel [
 GtTreePagerLinkModelAnnouncement >> linkModel: anObject [
 	linkModel := anObject
 ]
+
+{ #category : #accessing }
+GtTreePagerLinkModelAnnouncement >> paneModel [
+	^ self linkModel paneModel
+]

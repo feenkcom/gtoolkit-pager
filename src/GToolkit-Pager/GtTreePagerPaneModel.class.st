@@ -87,6 +87,13 @@ GtTreePagerPaneModel >> collapse: aBoolean [
 		aLinkModel collapse: aBoolean ]
 ]
 
+{ #category : #'api - previous panes' }
+GtTreePagerPaneModel >> collapseOrSelect [
+	self followingSpawnedPaneModels isEmpty
+		ifFalse: [ self collapse ]
+		ifTrue: [ self selectInPreviousPane ].
+]
+
 { #category : #accessing }
 GtTreePagerPaneModel >> collapsedChainCount [
 	self isCollapsed ifFalse: [ ^ 0 ].
@@ -306,6 +313,12 @@ GtTreePagerPaneModel >> notifyFollowingLinksChanged: anOldFollowingLinks [
 ]
 
 { #category : #'private - notifying' }
+GtTreePagerPaneModel >> notifyMaximizePane [
+	self announcer
+		announce: (GtTreePagerPaneModelMaximizeRequest new paneModel: self)
+]
+
+{ #category : #'private - notifying' }
 GtTreePagerPaneModel >> notifyRebuildPaneTool [
 	self announcer
 		announce: (GtTreePagerPaneModelRebuildToolRequest new paneModel: self)
@@ -417,6 +430,11 @@ GtTreePagerPaneModel >> replaceFollowingLink: anOldLinkModel by: aNewLinkModel [
 			at: anIndex put: aNewLinkModel;
 			yourself.
 	self followingLinks: aNewCollection
+]
+
+{ #category : #'api - requests' }
+GtTreePagerPaneModel >> requestMaximizePane [
+	self notifyMaximizePane
 ]
 
 { #category : #'api - requests' }
