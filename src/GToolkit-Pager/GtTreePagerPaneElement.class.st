@@ -69,7 +69,52 @@ GtTreePagerPaneElement >> initialize [
 	super initialize.
 	self matchParent.
 	self clipChildren: false.
+	
+	self initializeContentElement.
+	self initializeContentContainerElement.
+	self initializeFollowingsElement.
+	self addChild: contentContainer.
+	self addChild: followingsElement.
+	
+	self updateDisappearElementToCollapseIcon.
+	
+	self initializeEventHandlers.
+	self
+		addAptitude: (BrLayoutResizerAptitude new
+				inherit: contentContainer;
+				vInherit: followingsElement).
+	
+	self states addState: GtPhlowToolDetailState normal
+]
 
+{ #category : #initialization }
+GtTreePagerPaneElement >> initializeContentContainerElement [
+	contentContainer := BrHorizontalPane new
+			id: #container;
+			clipChildren: false;
+			margin: (BlInsets left: 9);
+			matchParent;
+			addChild: contentElement;
+			addChild: (topLeftToolbarElement := BrHorizontalPane new
+						fitContent;
+						padding: (BlInsets left: 10);
+						addChild: self newDropdownMenuElement;
+						clipChildren: false;
+						constraintsDo: [ :c | 
+							c ignoreByLayout.
+							c ignored horizontal alignLeft.
+							c ignored vertical alignCenterAt: 0 ]);
+			addChild: (disappearElement := self newDisappearElement);
+			addAptitude: (maximizerAptitude := BrGlamorousWithMaximizerAptitude new
+						/ GtTreePagerPaneContentElement;
+						preferredBackground: self theme default backdropBackground);
+			addAptitude: (BrLayoutResizerAptitude new
+					hMatchParentToMatchParent: contentElement;
+					vInherit: contentElement)
+]
+
+{ #category : #initialization }
+GtTreePagerPaneElement >> initializeContentElement [
 	contentElement := GtTreePagerPaneContentElement new
 			addAptitude: BrGlamorousFocusableShadowAptitude new;
 			when: BrMaximizerElementMinimized
@@ -106,43 +151,10 @@ GtTreePagerPaneElement >> initialize [
 									aToolElement states removeState: aState ]
 								ifNone: [  ] ].
 					anEvent currentTarget requestStyle ].
+]
 
-	followingsElement := GtTreePagerPaneFollowingsElement new
-			margin: (BlInsets left: 5).
-
-	self
-		addChild: (contentContainer := BrHorizontalPane new
-					id: #container;
-					clipChildren: false;
-					margin: (BlInsets left: 9);
-					matchParent;
-					addChild: contentElement;
-					addChild: (topLeftToolbarElement := BrHorizontalPane new
-							fitContent;
-							padding: (BlInsets left: 10);
-							addChild: self newDropdownMenuElement;
-							clipChildren: false;
-							constraintsDo: [ :c | 
-								c ignoreByLayout.
-								c ignored horizontal alignLeft.
-								c ignored vertical alignCenterAt: 0 ]);
-					addChild: (disappearElement := self newDisappearElement);
-					addAptitude: (maximizerAptitude := BrGlamorousWithMaximizerAptitude new
-								/ GtTreePagerPaneContentElement;
-								preferredBackground: self theme default backdropBackground);
-					addAptitude: (BrLayoutResizerAptitude new
-							hMatchParentToMatchParent: contentElement;
-							vInherit: contentElement)).
-
-	self addChild: followingsElement.
-
-	self updateDisappearElementToCollapseIcon.
-
-	self
-		addAptitude: (BrLayoutResizerAptitude new
-				inherit: contentContainer;
-				vInherit: followingsElement).
-
+{ #category : #initialization }
+GtTreePagerPaneElement >> initializeEventHandlers [
 	self
 		when: GtPhlowObjectToSelect
 			do: [ :anEvent | self onGtPhlowObjectToSelect: anEvent ];
@@ -151,9 +163,13 @@ GtTreePagerPaneElement >> initialize [
 		when: GtPhlowObjectToSpawn
 			do: [ :anEvent | self onGtPhlowObjectToSpawn: anEvent ].
 
-	self when: BlMouseMoveEvent do: [ :anEvent | self onMouseMoveEvent: anEvent ].
+	self when: BlMouseMoveEvent do: [ :anEvent | self onMouseMoveEvent: anEvent ]
+]
 
-	self states addState: GtPhlowToolDetailState normal
+{ #category : #initialization }
+GtTreePagerPaneElement >> initializeFollowingsElement [
+	followingsElement := GtTreePagerPaneFollowingsElement new
+			margin: (BlInsets left: 5)
 ]
 
 { #category : #'api - requests' }
