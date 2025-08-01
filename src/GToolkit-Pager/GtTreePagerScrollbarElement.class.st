@@ -218,7 +218,7 @@ GtTreePagerScrollbarElement >> newContextMenuFor: aPaneModel [
 	aLinkModel := aPaneModel previousLink.
 	aLinkModel ifNil: [ ^ nil ].
 
-	^ GtTreePagerLinkContextMenuBuilder new
+	^ GtTreePagerPanePreviewContextMenuBuilder new
 		linkModel: aLinkModel;
 		build
 ]

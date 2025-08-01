@@ -4,10 +4,9 @@ Class {
 	#instVars : [
 		'contentElement',
 		'followingsElement',
-		'disappearElement',
 		'maximizerAptitude',
 		'contentContainer',
-		'topLeftToolbarElement'
+		'dropdownElement'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -44,19 +43,24 @@ GtTreePagerPaneElement >> gtNavigationContextFor: aView [
 		view: #gtNavigationContextsFor:
 ]
 
-{ #category : #'api - updating' }
+{ #category : #deprecated }
 GtTreePagerPaneElement >> hideDisappearElement [
-	^ disappearElement visibility: BlVisibility gone
+	
 ]
 
 { #category : #'api - updating' }
+GtTreePagerPaneElement >> hideDropdownElement [
+	dropdownElement ifNotNil: [ :anElement | anElement visibility: BlVisibility gone ].
+]
+
+{ #category : #deprecated }
 GtTreePagerPaneElement >> hideMaximizeButton [
-	maximizerAptitude hideMaximizeButton
+	
 ]
 
-{ #category : #'api - updating' }
+{ #category : #deprecated }
 GtTreePagerPaneElement >> hideTopLeftToolbarElement [
-	^ topLeftToolbarElement visibility: BlVisibility gone
+	self hideDropdownElement
 ]
 
 { #category : #'accessing - ui' }
@@ -76,8 +80,6 @@ GtTreePagerPaneElement >> initialize [
 	self addChild: contentContainer.
 	self addChild: followingsElement.
 	
-	self updateDisappearElementToCollapseIcon.
-	
 	self initializeEventHandlers.
 	self
 		addAptitude: (BrLayoutResizerAptitude new
@@ -95,17 +97,9 @@ GtTreePagerPaneElement >> initializeContentContainerElement [
 			margin: (BlInsets left: 9);
 			matchParent;
 			addChild: contentElement;
-			addChild: (topLeftToolbarElement := BrHorizontalPane new
-						fitContent;
-						padding: (BlInsets left: 10);
-						addChild: self newDropdownMenuElement;
-						clipChildren: false;
-						constraintsDo: [ :c | 
-							c ignoreByLayout.
-							c ignored horizontal alignLeft.
-							c ignored vertical alignCenterAt: 0 ]);
-			addChild: (disappearElement := self newDisappearElement);
+			addChild: (dropdownElement := self newDropdownMenuElement);
 			addAptitude: (maximizerAptitude := BrGlamorousWithMaximizerAptitude new
+						hideMaximizeButton;
 						/ GtTreePagerPaneContentElement;
 						preferredBackground: self theme default backdropBackground);
 			addAptitude: (BrLayoutResizerAptitude new
@@ -186,44 +180,42 @@ GtTreePagerPaneElement >> navigationContext [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneElement >> newDisappearCollapseIcon [
+GtTreePagerPaneElement >> newDropdownCollapseIcon [
 	^ BlElement new
 		size: 2 @ 10;
 		background: Color gray
 ]
 
 { #category : #initialization }
-GtTreePagerPaneElement >> newDisappearElement [
-	^ GtInspectorRoundButtonStencil small asElement
-		addAptitude: BrGlamorousButtonWithLabelTooltipAptitude2;
-		id: GtPagerMaximizeButtonElementId;
-		action: [ :aButton :aButtonModel :anEvent | self onDisappearClick: anEvent ];
-		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDisappearClick: anEvent ];
-		constraintsDo: [ :c | 
-			c ignoreByLayout.
-			c ignored horizontal alignCenterAt: 1.0.
-			c ignored vertical alignCenterAt: 0.0 ]
+GtTreePagerPaneElement >> newDropdownDownwardsIcon [
+	^ BrGlamorousVectorIcons downwards
 ]
 
 { #category : #initialization }
-GtTreePagerPaneElement >> newDisappearRemoveIcon [
-	^ BrPlusIconStencil close asElement
+GtTreePagerPaneElement >> newDropdownMaximizeIcon [
+	^ BrPlusIconStencil new radius: 4
 ]
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newDropdownMenuElement [
 	^ GtInspectorRoundButtonStencil small asElement
 		id: #'gt-pager-dropdown-menu-button';
-		icon: BrGlamorousVectorIcons downwards;
-		addAptitude: (BrGlamorousWithExplicitDropdownAptitude
+		icon: self newDropdownDownwardsIcon;
+		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDropdownWithModifiersCollapseClick: anEvent ];
+		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDropdownWithModifiersMaximizeClick: anEvent ];
+		addAptitude: (BrGlamorousWithExplicitDropdownAptitude new
 				handle: [ BrButton new
-						size: 16 @ 16;
-						background: Color white;
-						aptitude: BrIconAptitude;
-						geometry: BlEllipseGeometry new;
-						layout: BlLinearLayout horizontal alignCenter;
-						icon: BrGlamorousVectorIcons downwards ]
-				menu: [ self newDropdownMenuModel ])
+							size: 16 @ 16;
+							background: Color white;
+							aptitude: BrIconAptitude;
+							geometry: BlEllipseGeometry new;
+							layout: BlLinearLayout horizontal alignCenter;
+							icon: BrGlamorousVectorIcons downwards ]
+					menu: [ self newDropdownMenuModel ]);
+		constraintsDo: [ :c | 
+			c ignoreByLayout.
+			c ignored horizontal alignCenterAt: 1.0.
+			c ignored vertical alignCenterAt: 0.0 ]
 ]
 
 { #category : #initialization }
@@ -233,24 +225,32 @@ GtTreePagerPaneElement >> newDropdownMenuModel [
 	aLinkModel := self paneModel previousLink.
 	aLinkModel ifNil: [ ^ nil ].
 
-	^ GtTreePagerLinkContextMenuBuilder new
+	^ GtTreePagerPaneContextMenuBuilder new
 		linkModel: aLinkModel;
 		build
 ]
 
 { #category : #'private - event management' }
-GtTreePagerPaneElement >> onDisappearClick: anEvent [
+GtTreePagerPaneElement >> onDropdownWithModifiersCollapseClick: anEvent [
 	anEvent consumed: true.
 	self hasPaneModel ifFalse: [ ^ self ].
 	self paneModel depthIndex = 1 ifTrue: [ ^ self ].
 
-	anEvent modifiers isPrimaryModifier
-		ifTrue: [ self paneModel removeFromPreviousPane.
-			^ self ].
+	anEvent modifiers isSoftPrimaryModifierOnly ifFalse: [ ^ self ].
 
-	self paneModel followingSpawnedPaneModels isEmpty
-		ifFalse: [ self paneModel collapse ]
-		ifTrue: [ self paneModel selectInPreviousPane ]
+	dropdownElement dispatchEvent: BrDropdownHideWish new.
+	self paneModel collapseOrSelect
+]
+
+{ #category : #'private - event management' }
+GtTreePagerPaneElement >> onDropdownWithModifiersMaximizeClick: anEvent [
+	anEvent consumed: true.
+	self hasPaneModel ifFalse: [ ^ self ].
+
+	anEvent modifiers isSoftShiftPrimaryModifierOnly ifFalse: [ ^ self ].
+
+	dropdownElement dispatchEvent: BrDropdownHideWish new.
+	self maximize
 ]
 
 { #category : #'private - event handling' }
@@ -291,22 +291,34 @@ GtTreePagerPaneElement >> onGtPhlowObjectToSpawn: anEvent [
 				fireEvent: (GtTreePagerScrollToColumnWish new column: self paneModel depthIndex) ]
 ]
 
-{ #category : #'private - event handling' }
+{ #category : #deprecated }
 GtTreePagerPaneElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
-	BlTaskAction enqueueElement: self action: [ self updateDisappearElement ]
+	
+]
+
+{ #category : #deprecated }
+GtTreePagerPaneElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
+	anAnnouncement paneModel = self paneModel ifFalse: [ ^ self ]
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerPaneElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
-	BlTaskAction enqueueElement: self action: [ self updateDisappearElement ]
+GtTreePagerPaneElement >> onGtTreePagerPaneModelMaximizeRequest: anAnnouncement [
+	anAnnouncement paneModel = self paneModel ifFalse: [ ^ self ].
+
+	BlTaskAction enqueueElement: self action: [ self maximize ]
 ]
 
 { #category : #initialization }
 GtTreePagerPaneElement >> onMouseMoveEvent: anEvent [
 	anEvent consumed: true.
-	^ anEvent modifiers isPrimaryModifier
-		ifTrue: [ self updateDisappearElementToRemoveIcon ]
-		ifFalse: [ self updateDisappearElementToCollapseIcon ]
+
+	anEvent modifiers isSoftPrimaryModifierOnly
+		ifTrue: [ ^ self updateDropdownElementToCollapseIcon ].
+
+	anEvent modifiers isSoftShiftPrimaryModifierOnly
+		ifTrue: [ ^ self updateDropdownElementToMaximizeIcon ].
+
+	self updateDropdownElementToDownwardsIcon
 ]
 
 { #category : #accessing }
@@ -329,22 +341,25 @@ GtTreePagerPaneElement >> realToolElementDo: aBlock [
 		aContentElement realToolElementDo: aBlock ]
 ]
 
-{ #category : #'api - updating' }
+{ #category : #deprecated }
 GtTreePagerPaneElement >> showDisappearElement [
-	self hasPaneModel ifFalse: [ ^ self ].
-	self paneModel depthIndex = 1 ifTrue: [ ^ self ].
 	
-	disappearElement visibility: BlVisibility visible
 ]
 
 { #category : #'api - updating' }
+GtTreePagerPaneElement >> showDropdownElement [
+	dropdownElement
+		ifNotNil: [ :anElement | anElement visibility: BlVisibility visible ]
+]
+
+{ #category : #deprecated }
 GtTreePagerPaneElement >> showMaximizeButton [
-	maximizerAptitude showMaximizeButton
+	
 ]
 
-{ #category : #'api - updating' }
+{ #category : #deprecated }
 GtTreePagerPaneElement >> showTopLeftToolbarElement [
-	^ topLeftToolbarElement visibility: BlVisibility visible
+	self showDropdownElement
 ]
 
 { #category : #'api - pane model' }
@@ -352,11 +367,8 @@ GtTreePagerPaneElement >> subscribeToPaneModel [
 	super subscribeToPaneModel.
 
 	self paneModel announcer weak
-		when: GtTreePagerPaneModelFollowingLinksChanged
-			send: #onGtTreePagerPaneModelFollowingPanesChanged:
-			to: self;
-		when: GtTreePagerLinkModelStateChanged
-			send: #onGtTreePagerLinkModelStateChanged:
+		when: GtTreePagerPaneModelMaximizeRequest
+			send: #onGtTreePagerPaneModelMaximizeRequest:
 			to: self
 ]
 
@@ -378,40 +390,54 @@ GtTreePagerPaneElement >> unsubscribeFromPaneModel [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerPaneElement >> updateDisappearElement [
-	self paneModel depthIndex = 1 ifTrue: [ self hideDisappearElement ]
-]
+GtTreePagerPaneElement >> updateDropdownElementToCollapseIcon [
+	dropdownElement ifNil: [ ^ self ].
 
-{ #category : #'private - updating' }
-GtTreePagerPaneElement >> updateDisappearElementToCollapseIcon [
-	disappearElement userData
-		at: #gtTreePagerIsCollapseIcon
-		ifPresent: [ :aBoolean | aBoolean ifTrue: [ ^ self ] ]
+	dropdownElement userData
+		at: #gtTreePagerDropdownElementState
+		ifPresent: [ :aSymbol | aSymbol = #collapse ifTrue: [ ^ self ] ]
 		ifAbsent: [  ].
 
-	disappearElement userData at: #gtTreePagerIsCollapseIcon put: true.
+	dropdownElement userData at: #gtTreePagerDropdownElementState put: #collapse.
 
-	^ disappearElement
-		icon: self newDisappearCollapseIcon;
+	^ dropdownElement
+		icon: self newDropdownCollapseIcon;
 		label: 'Collapse pane'
 ]
 
 { #category : #'private - updating' }
-GtTreePagerPaneElement >> updateDisappearElementToRemoveIcon [
-	disappearElement userData
-		at: #gtTreePagerIsCollapseIcon
-		ifPresent: [ :aBoolean | aBoolean ifFalse: [ ^ self ] ]
+GtTreePagerPaneElement >> updateDropdownElementToDownwardsIcon [
+	dropdownElement ifNil: [ ^ self ].
+
+	dropdownElement userData
+		at: #gtTreePagerDropdownElementState
+		ifPresent: [ :aSymbol | aSymbol = #downwards ifTrue: [ ^ self ] ]
 		ifAbsent: [  ].
 
-	disappearElement userData at: #gtTreePagerIsCollapseIcon put: false.
+	dropdownElement userData at: #gtTreePagerDropdownElementState put: #downwards.
 
-	^ disappearElement
-		icon: self newDisappearRemoveIcon;
-		label: 'Remove pane'
+	^ dropdownElement
+		icon: self newDropdownDownwardsIcon;
+		label: 'Display menu'
+]
+
+{ #category : #'private - updating' }
+GtTreePagerPaneElement >> updateDropdownElementToMaximizeIcon [
+	dropdownElement ifNil: [ ^ self ].
+
+	dropdownElement userData
+		at: #gtTreePagerDropdownElementState
+		ifPresent: [ :aSymbol | aSymbol = #maximize ifTrue: [ ^ self ] ]
+		ifAbsent: [  ].
+
+	dropdownElement userData at: #gtTreePagerDropdownElementState put: #maximize.
+
+	^ dropdownElement
+		icon: self newDropdownMaximizeIcon;
+		label: 'Maximize pane'
 ]
 
 { #category : #'private - updating' }
 GtTreePagerPaneElement >> updateElement [
-	self updateDisappearElement
-
+	
 ]
