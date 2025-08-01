@@ -209,12 +209,15 @@ GtTreePagerPaneModel >> gtFollowingPanesFor: aView [
 		children: #followingLinks;
 		expandUpTo: 1;
 		column: 'Title' text: [ :each | each title ];
+		column: 'State'
+			text: [ :each | 
+				each state label ] weight: 0.4;
 		column: 'Active'
 			text: [ :each | 
 				each isActive
 					ifTrue: [ 'yes' ]
 					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
-			width: 70;
+			width: 50;
 		column: 'Spawned'
 			text: [ :each | 
 				each isSpawned
@@ -226,7 +229,7 @@ GtTreePagerPaneModel >> gtFollowingPanesFor: aView [
 				each isHidden
 					ifTrue: [ 'yes' ]
 					ifFalse: [ 'no' asRopedText foreground: BlTheme default button disabledTextColor ] ]
-			width: 70;
+			width: 55;
 		column: 'Collapsed'
 			text: [ :each | 
 				each isCollapsed
