@@ -1,21 +1,22 @@
 Extension { #name : #BlSpace }
 
 { #category : #'*GToolkit-Pager' }
-BlSpace >> inPager: anElementStencil [
-	"Add a pager with a given element."
+BlSpace >> inPager: anElementStencilOrPhlowTool [
+	"Add a pager with a given element.
+	We should prefer to pass GtPhlowTool objects as the first argument."
 
-	self inPager: anElementStencil configured: nil
+	self inPager: anElementStencilOrPhlowTool configured: nil
 ]
 
 { #category : #'*GToolkit-Pager' }
-BlSpace >> inPager: anElementStencil configured: aPagerConfiguration [
-	"Add a pager with a given element."
+BlSpace >> inPager: anElementStencilOrPhlowTool configured: aPagerConfiguration [
+	"Add a pager with a given element.
+	We should prefer to pass GtPhlowTool objects as the first argument."
 
 	| aPager |
-	aPager := GtPagerSettings usedPager createWrappedOn: anElementStencil.
+	aPager := GtPagerSettings usedPager createWrappedOn: anElementStencilOrPhlowTool.
 	aPager maximized.
-	aPagerConfiguration ifNotNil: [
-		aPagerConfiguration applyOn: aPager ].
+	aPagerConfiguration ifNotNil: [ aPagerConfiguration applyOn: aPager ].
 	self addChild: aPager
 ]
 

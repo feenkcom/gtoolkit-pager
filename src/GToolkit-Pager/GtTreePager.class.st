@@ -13,25 +13,25 @@ GtTreePager class >> createOn: anElementStencil [
 ]
 
 { #category : #factory }
-GtTreePager class >> createWrappedOn: anElementStencil [
+GtTreePager class >> createWrappedOn: anElementStencilOrPhlowTool [
 	| aPaneModel aPagerModel aPagerElement |
-	(anElementStencil isKindOf: GtPagerWrapperElement)
-		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: [ anElementStencil tool removeFromParent ] ].
+	(anElementStencilOrPhlowTool isKindOf: GtPagerWrapperElement)
+		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: [ anElementStencilOrPhlowTool tool removeFromParent ] ].
 		
-	(aPaneModel isNil and: [ anElementStencil isKindOf: BlElement ])
-		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: [ anElementStencil removeFromParent ] ].
+	(aPaneModel isNil and: [ anElementStencilOrPhlowTool isKindOf: BlElement ])
+		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: [ anElementStencilOrPhlowTool removeFromParent ] ].
 		
-	(anElementStencil isKindOf: BlStencil)
-		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: anElementStencil ].
+	(anElementStencilOrPhlowTool isKindOf: BlStencil)
+		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: anElementStencilOrPhlowTool ].
 		
-	(anElementStencil isKindOf: GtPhlowAbstractTool)
-		ifTrue: [ aPaneModel := GtTreePagerPaneModel new phlowTool: anElementStencil ].
+	(anElementStencilOrPhlowTool isKindOf: GtPhlowAbstractTool)
+		ifTrue: [ aPaneModel := GtTreePagerPaneModel new phlowTool: anElementStencilOrPhlowTool ].
 		
-	anElementStencil isClosure
-		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: anElementStencil ].
+	anElementStencilOrPhlowTool isClosure
+		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: anElementStencilOrPhlowTool ].
 		
 	aPaneModel
-		ifNil: [ aPaneModel := GtTreePagerPaneModel new object: anElementStencil ].
+		ifNil: [ aPaneModel := GtTreePagerPaneModel new object: anElementStencilOrPhlowTool ].
 
 	aPagerModel := GtTreePagerModel new paneModel: aPaneModel.
 	aPagerElement := self new pagerModel: aPagerModel.

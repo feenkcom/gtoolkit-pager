@@ -110,7 +110,7 @@ GtPagerWrapperElement >> tool [
 { #category : #accessing }
 GtPagerWrapperElement >> tool: anElement [
 	self toolArea
-		addChild: anElement asElement 
+		addChild: anElement asStencil asElement
 		as: self toolIdentificator
 ]
 

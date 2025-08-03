@@ -10,7 +10,7 @@ Class {
 { #category : #'instance creation' }
 GtPager class >> createOn: anElement [
 	| aPager theElement |
-	theElement := anElement asElement.
+	theElement := anElement asStencil asElement.
 	self 
 		assert: [ theElement viewModel isKindOf: BrPagerPageModel ] 
 		description: [ 'The tool element must have ', BrPagerPageModel name asString, ' view model' ].
