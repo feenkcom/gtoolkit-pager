@@ -82,7 +82,7 @@ GtTreePagerModel >> gtPanesFor: aView [
 		children: #children;
 		expandUpTo: 10;
 		column: 'Value' text: [ :eachLink | eachLink gtDisplayString ];
-		column: 'State' text: [ :eachLink | eachLink state gtDisplayString ];
+		column: 'State' text: [ :eachLink | eachLink state label ];
 		column: 'Active'
 			text: [ :eachLink | 
 				eachLink isActive

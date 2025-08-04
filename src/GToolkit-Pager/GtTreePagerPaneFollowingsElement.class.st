@@ -83,10 +83,7 @@ GtTreePagerPaneFollowingsElement >> unsubscribeFromPaneModel [
 
 { #category : #'api - pane model' }
 GtTreePagerPaneFollowingsElement >> updateElement [
-	GtTreePagerPaneFollowingsElementUpdater new 
+	GtTreePagerPaneFollowingsElementUpdater new
 		followingsElement: self;
-		update. 
-
-	self hasChildren ifFalse: [ 
-		self addChild: (self newPaneElement visibility: BlVisibility hidden) ]
+		update
 ]

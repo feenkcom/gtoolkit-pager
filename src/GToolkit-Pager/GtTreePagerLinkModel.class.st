@@ -136,6 +136,17 @@ GtTreePagerLinkModel >> gtLiveFor: aView [
 				addChild: (GtTreePagerPaneElement new paneModel: self paneModel) ]
 ]
 
+{ #category : #views }
+GtTreePagerLinkModel >> gtPaneModelFor: aView [
+	<gtView>
+	paneModel ifNil: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Links';
+		object: [ paneModel ];
+		view: #gtFollowingPanesFor:
+]
+
 { #category : #'api - visibility' }
 GtTreePagerLinkModel >> hide [
 	self state: self state hide
