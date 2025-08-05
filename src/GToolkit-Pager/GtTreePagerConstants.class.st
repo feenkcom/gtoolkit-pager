@@ -21,7 +21,8 @@ GtTreePagerConstants class >> edgeFixedDistance [
 
 { #category : #constants }
 GtTreePagerConstants class >> leftShift [
-	^ self triangleWidth - (self rectangleLength // 2)
+	"^ self triangleWidth - (self rectangleLength // 2)"
+	^ 0
 ]
 
 { #category : #constants }
