@@ -162,7 +162,7 @@ GtTreePagerPaneElement >> initializeEventHandlers [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> initializeFollowingsElement [
-	followingsElement := GtTreePagerPaneFollowingsElement new
+	followingsElement := GtTreePagerPaneCompressedFollowingsElement new
 			margin: (BlInsets left: 5)
 ]
 

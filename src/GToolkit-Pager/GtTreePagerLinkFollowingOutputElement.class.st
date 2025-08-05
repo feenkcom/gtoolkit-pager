@@ -41,7 +41,8 @@ GtTreePagerLinkFollowingOutputElement >> initialize [
 				handleSubmenu: [ self newContextMenu ]).
 
 	self initializeElementStyling.
-	self initializeGeometryAndSizeStyling
+	self initializeGeometryAndSizeStyling.
+	self initializeOutgoingLinkElements.
 ]
 
 { #category : #initialization }
@@ -78,11 +79,11 @@ GtTreePagerLinkFollowingOutputElement >> initializeElementStyling [
 GtTreePagerLinkFollowingOutputElement >> initializeGeometryAndSizeStyling [
 	| anAptitude |
 	anAptitude := BrSizeAdjustmentAptitude new
-			when: BrListOrientationState horizontal & BrSizeAdjustmentState small
+			when: BrListOrientationState vertical & BrSizeAdjustmentState small
 				style: [ :aStyle | 
 					aStyle geometry: BlRectangleGeometry new.
 					aStyle do: [ :aWidget | aWidget exact: GtTreePagerConstants outputLenght @ 1 ] ];
-			when: BrListOrientationState vertical & BrSizeAdjustmentState small
+			when: BrListOrientationState horizontal & BrSizeAdjustmentState small
 				style: [ :aStyle | 
 					aStyle geometry: BlRectangleGeometry new.
 					aStyle do: [ :aWidget | aWidget exact: 1 @ GtTreePagerConstants outputLenght ] ];
@@ -92,6 +93,30 @@ GtTreePagerLinkFollowingOutputElement >> initializeGeometryAndSizeStyling [
 					do: [ :aWidget | aWidget exact: self triangleWidth @ self triangleHeight ] ].
 
 	self addAptitude: anAptitude
+]
+
+{ #category : #initialization }
+GtTreePagerLinkFollowingOutputElement >> initializeOutgoingLinkElements [
+	self
+		addAptitude: (BrLazyStyleCommonAptitude new
+				hovered: [ :aStyle | 
+					aStyle
+						do: [ :aWidget | 
+							aWidget userData
+								at: #outgoingLineElement
+								ifPresent: [ :aCollection | 
+									aCollection
+										do: [ :eachLinkElement | 
+											eachLinkElement
+												border: (BlBorder paint: self theme button focusedFadedBackgroundColor) ] ]
+								ifAbsent: [  ] ]
+						after: [ :aWidget | 
+							aWidget userData
+								at: #outgoingLineElement
+								ifPresent: [ :aCollection | 
+									aCollection
+										do: [ :eachLinkElement | eachLinkElement border: (BlBorder paint: self theme button fadedBackgroundColor) ] ]
+								ifAbsent: [  ] ] ])
 ]
 
 { #category : #initialization }

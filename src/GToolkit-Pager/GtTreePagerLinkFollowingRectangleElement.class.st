@@ -14,7 +14,7 @@ GtTreePagerLinkFollowingRectangleElement >> initialize [
 	super initialize.
 
 	self
-		exact: GtTreePagerConstants rectangleLength @ GtTreePagerConstants rectangleLength;
+		matchParent;
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 2);
 		outskirts: BlOutskirts inside;
 		constraintsDo: [ :c | 

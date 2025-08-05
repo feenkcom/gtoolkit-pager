@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerPaneModel,
 	#superclass : #Object,
-	#traits : 'TGtAnnouncer + TGtTreePagerPaneModelEnumerable + TGtTreePagerLinkModelState + TGtTreePagerPaneModel',
-	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerPaneModelEnumerable classTrait + TGtTreePagerLinkModelState classTrait + TGtTreePagerPaneModel classTrait',
+	#traits : 'TGtAnnouncer + TGtTreePagerModelEnumerable + TGtTreePagerLinkModelState + TGtTreePagerPaneModel',
+	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerModelEnumerable classTrait + TGtTreePagerLinkModelState classTrait + TGtTreePagerPaneModel classTrait',
 	#instVars : [
 		'title',
 		'icon',
@@ -44,6 +44,16 @@ GtTreePagerPaneModel >> allFollowingPanesCount [
 	anIndex := 0.
 	self allPaneModelsDepthFirstDo: [ :aPane | anIndex := anIndex + 1 ].
 	^ anIndex
+]
+
+{ #category : #'api - previous links' }
+GtTreePagerPaneModel >> allPreviousLinkAndPanesDo: aBlock [
+	"Iterate previous links and panes hierarchy"
+
+	self previousLink
+		ifNotNil: [ :aPreviousLink | 
+			aBlock value: aPreviousLink.
+			aPreviousLink allPreviousLinkAndPanesDo: aBlock ]
 ]
 
 { #category : #'api - previous links' }
@@ -312,7 +322,8 @@ GtTreePagerPaneModel >> notifyFollowingLinksChanged: anOldFollowingLinks [
 			newFollowingLinks: self followingLinks;
 			oldFollowingLinks: anOldFollowingLinks.
 	self announcer announce: anAnnouncement.
-	self allPreviousPanesDo: [ :aPreviousPane | aPreviousPane announcer announce: anAnnouncement ]
+	self allPreviousLinkAndPanesDo: [ :aPreviousModel | 
+		aPreviousModel announcer announce: anAnnouncement ]
 ]
 
 { #category : #'private - notifying' }
