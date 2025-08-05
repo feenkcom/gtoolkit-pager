@@ -16,7 +16,7 @@ GtTreePagerLinkFollowingRotatedCollapsedElement >> defaultLayout [
 
 { #category : #'accessing - ui' }
 GtTreePagerLinkFollowingRotatedCollapsedElement >> incomingLinkElements [
-	^ Array with: rectangleElement
+	^ Array empty. "Array with: rectangleElement"
 ]
 
 { #category : #initialization }
