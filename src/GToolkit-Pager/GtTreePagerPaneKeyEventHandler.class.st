@@ -2,7 +2,8 @@ Class {
 	#name : #GtTreePagerPaneKeyEventHandler,
 	#superclass : #BlCustomEventHandler,
 	#instVars : [
-		'paneElement'
+		'paneElement',
+		'installedIn'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -36,11 +37,25 @@ GtTreePagerPaneKeyEventHandler >> keyUpEvent: anEvent [
 	self onModifiersEvent: aCopy
 ]
 
+{ #category : #'api - hooks' }
+GtTreePagerPaneKeyEventHandler >> onInstalledIn: anObject [
+	self assert: [ installedIn isNil ].
+	super onInstalledIn: anObject.
+
+	installedIn := anObject
+]
+
 { #category : #'api - event managing' }
 GtTreePagerPaneKeyEventHandler >> onModifiersEvent: anEvent [
 	paneElement ifNil: [ ^ self ].
 
 	paneElement onModifiersEvent: anEvent
+]
+
+{ #category : #'api - hooks' }
+GtTreePagerPaneKeyEventHandler >> onUninstalledIn: anObject [
+	super onUninstalledIn: anObject.
+	installedIn := nil
 ]
 
 { #category : #accessing }
@@ -52,4 +67,9 @@ GtTreePagerPaneKeyEventHandler >> paneElement [
 GtTreePagerPaneKeyEventHandler >> paneElement: anElement [
 	self assert: [ paneElement isNil ].
 	paneElement := anElement
+]
+
+{ #category : #'api - hooks' }
+GtTreePagerPaneKeyEventHandler >> uninstall [
+	installedIn ifNotNil: [ :anObject | anObject removeEventFilter: self ]
 ]
