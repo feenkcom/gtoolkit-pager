@@ -1,10 +1,10 @@
 Trait {
-	#name : #TGtTreePagerPaneModelEnumerable,
+	#name : #TGtTreePagerModelEnumerable,
 	#category : #'GToolkit-Pager-Tree Pager'
 }
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> allLinkModelsBreadthFirstDo: aBlock [
+TGtTreePagerModelEnumerable >> allLinkModelsBreadthFirstDo: aBlock [
 	| aQueue |
 	aQueue := LinkedList withAll: self enumerableLinkModels.
 	[ aQueue notEmpty ]
@@ -16,14 +16,14 @@ TGtTreePagerPaneModelEnumerable >> allLinkModelsBreadthFirstDo: aBlock [
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> allLinkModelsDepthFirstDo: aBlock [
+TGtTreePagerModelEnumerable >> allLinkModelsDepthFirstDo: aBlock [
 	self enumerableLinkModels
 		do: [ :each | each allLinkModelsDepthFirstDo: aBlock ].
 	self enumerableLinkModels do: aBlock
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> allPaneModelsBreadthFirstDo: aBlock [
+TGtTreePagerModelEnumerable >> allPaneModelsBreadthFirstDo: aBlock [
 	| aQueue |
 	aQueue := LinkedList withAll: self enumerablePaneModels.
 	[ aQueue notEmpty ]
@@ -35,21 +35,21 @@ TGtTreePagerPaneModelEnumerable >> allPaneModelsBreadthFirstDo: aBlock [
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> allPaneModelsDepthFirstDo: aBlock [
+TGtTreePagerModelEnumerable >> allPaneModelsDepthFirstDo: aBlock [
 	self enumerablePaneModels
 		do: [ :each | each allPaneModelsDepthFirstDo: aBlock ].
 	self enumerablePaneModels do: aBlock
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> detectLinkModel: aDetectBlock [
+TGtTreePagerModelEnumerable >> detectLinkModel: aDetectBlock [
 	^ self
 		detectLinkModel: aDetectBlock
 		ifNone: [ NotFound signalFor: aDetectBlock in: self enumerableLinkModels ]
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> detectLinkModel: aDetectBlock ifFound: aFoundBlock ifNone: aNoneBlock [
+TGtTreePagerModelEnumerable >> detectLinkModel: aDetectBlock ifFound: aFoundBlock ifNone: aNoneBlock [
 	self
 		allLinkModelsBreadthFirstDo: [ :eachPaneModel | 
 			(aDetectBlock value: eachPaneModel)
@@ -59,7 +59,7 @@ TGtTreePagerPaneModelEnumerable >> detectLinkModel: aDetectBlock ifFound: aFound
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> detectLinkModel: aDetectBlock ifNone: aNoneBlock [
+TGtTreePagerModelEnumerable >> detectLinkModel: aDetectBlock ifNone: aNoneBlock [
 	^ self
 		detectLinkModel: aDetectBlock
 		ifFound: [ :aPaneModel | aPaneModel ]
@@ -67,14 +67,14 @@ TGtTreePagerPaneModelEnumerable >> detectLinkModel: aDetectBlock ifNone: aNoneBl
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> detectPaneModel: aDetectBlock [
+TGtTreePagerModelEnumerable >> detectPaneModel: aDetectBlock [
 	^ self
 		detectPaneModel: aDetectBlock
 		ifNone: [ NotFound signalFor: aDetectBlock in: self enumerablePaneModels ]
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> detectPaneModel: aDetectBlock ifFound: aFoundBlock ifNone: aNoneBlock [
+TGtTreePagerModelEnumerable >> detectPaneModel: aDetectBlock ifFound: aFoundBlock ifNone: aNoneBlock [
 	self
 		allPaneModelsBreadthFirstDo: [ :eachPaneModel | 
 			(aDetectBlock value: eachPaneModel)
@@ -84,7 +84,7 @@ TGtTreePagerPaneModelEnumerable >> detectPaneModel: aDetectBlock ifFound: aFound
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> detectPaneModel: aDetectBlock ifNone: aNoneBlock [
+TGtTreePagerModelEnumerable >> detectPaneModel: aDetectBlock ifNone: aNoneBlock [
 	^ self
 		detectPaneModel: aDetectBlock
 		ifFound: [ :aPaneModel | aPaneModel ]
@@ -92,13 +92,13 @@ TGtTreePagerPaneModelEnumerable >> detectPaneModel: aDetectBlock ifNone: aNoneBl
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> enumerableLinkModels [
+TGtTreePagerModelEnumerable >> enumerableLinkModels [
 	<return: #Collection of: #TGtTreePagerLinkModel>
 	^ self explicitRequirement
 ]
 
 { #category : #'api - enumeration' }
-TGtTreePagerPaneModelEnumerable >> enumerablePaneModels [
+TGtTreePagerModelEnumerable >> enumerablePaneModels [
 	<return: #Collection of: #GtTreePagerPaneModel>
 	^ self explicitRequirement
 ]

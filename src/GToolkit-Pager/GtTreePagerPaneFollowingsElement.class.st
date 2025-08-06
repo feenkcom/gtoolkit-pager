@@ -22,18 +22,6 @@ GtTreePagerPaneFollowingsElement >> initialize [
 	self clipChildren: false.
 ]
 
-{ #category : #'private - updating' }
-GtTreePagerPaneFollowingsElement >> newPaneElement [
-	^ GtTreePagerLinkFollowingContainerElement triangle
-]
-
-{ #category : #'private - updating' }
-GtTreePagerPaneFollowingsElement >> newPaneElementFor: aPaneModel [
-	^ self newPaneElement
-		paneModel: aPaneModel;
-		yourself
-]
-
 { #category : #'private - event management' }
 GtTreePagerPaneFollowingsElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateElement ]

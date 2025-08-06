@@ -41,7 +41,8 @@ GtTreePagerLinkFollowingOutputElement >> initialize [
 				handleSubmenu: [ self newContextMenu ]).
 
 	self initializeElementStyling.
-	self initializeGeometryAndSizeStyling
+	self initializeGeometryAndSizeStyling.
+	self initializeOutgoingLinkElements.
 ]
 
 { #category : #initialization }
@@ -78,20 +79,52 @@ GtTreePagerLinkFollowingOutputElement >> initializeElementStyling [
 GtTreePagerLinkFollowingOutputElement >> initializeGeometryAndSizeStyling [
 	| anAptitude |
 	anAptitude := BrSizeAdjustmentAptitude new
-			when: BrListOrientationState horizontal & BrSizeAdjustmentState small
-				style: [ :aStyle | 
-					aStyle geometry: BlRectangleGeometry new.
-					aStyle do: [ :aWidget | aWidget exact: GtTreePagerConstants outputLenght @ 1 ] ];
 			when: BrListOrientationState vertical & BrSizeAdjustmentState small
 				style: [ :aStyle | 
 					aStyle geometry: BlRectangleGeometry new.
-					aStyle do: [ :aWidget | aWidget exact: 1 @ GtTreePagerConstants outputLenght ] ];
-			normal: [ :aStyle | 
-				aStyle geometry: self normalSizeGeometry.
-				aStyle
-					do: [ :aWidget | aWidget exact: self triangleWidth @ self triangleHeight ] ].
+					aStyle
+						do: [ :aWidget | aWidget exact: GtTreePagerConstants outputLenght @ 1 ] ];
+			when: BrListOrientationState horizontal & BrSizeAdjustmentState small
+				style: [ :aStyle | 
+					aStyle geometry: BlRectangleGeometry new.
+					aStyle
+						do: [ :aWidget | aWidget exact: 1 @ GtTreePagerConstants outputLenght ] ];
+			when: BrListOrientationState horizontal & BrSizeAdjustmentState normal
+				style: [ :aStyle | 
+					aStyle geometry: self normalSizeGeometry.
+					aStyle
+						do: [ :aWidget | aWidget exact: self triangleWidth @ self triangleHeight ] ];
+			when: BrListOrientationState vertical & BrSizeAdjustmentState normal
+				style: [ :aStyle | 
+					aStyle geometry: self normalSizeCollapsedGeometry.
+					aStyle
+						do: [ :aWidget | aWidget exact: GtTreePagerConstants rectangleLength @ (GtTreePagerConstants rectangleLength // 2) ] ].
 
 	self addAptitude: anAptitude
+]
+
+{ #category : #initialization }
+GtTreePagerLinkFollowingOutputElement >> initializeOutgoingLinkElements [
+	self
+		addAptitude: (BrLazyStyleCommonAptitude new
+				hovered: [ :aStyle | 
+					aStyle
+						do: [ :aWidget | 
+							aWidget userData
+								at: #outgoingLineElement
+								ifPresent: [ :aCollection | 
+									aCollection
+										do: [ :eachLinkElement | 
+											eachLinkElement
+												border: (BlBorder paint: self theme button focusedFadedBackgroundColor) ] ]
+								ifAbsent: [  ] ]
+						after: [ :aWidget | 
+							aWidget userData
+								at: #outgoingLineElement
+								ifPresent: [ :aCollection | 
+									aCollection
+										do: [ :eachLinkElement | eachLinkElement border: (BlBorder paint: self theme button fadedBackgroundColor) ] ]
+								ifAbsent: [  ] ] ])
 ]
 
 { #category : #initialization }
@@ -99,6 +132,14 @@ GtTreePagerLinkFollowingOutputElement >> newContextMenu [
 	^ GtTreePagerLinkContextMenuBuilder new
 		linkModel: self linkModel;
 		build
+]
+
+{ #category : #initialization }
+GtTreePagerLinkFollowingOutputElement >> normalSizeCollapsedGeometry [
+	^ BlPolygonGeometry
+		vertices: {0 @ 0.
+				GtTreePagerConstants rectangleLength @ 0.
+				(GtTreePagerConstants rectangleLength // 2) @ (GtTreePagerConstants rectangleLength // 2)}
 ]
 
 { #category : #initialization }
@@ -164,5 +205,10 @@ GtTreePagerLinkFollowingOutputElement >> unsubscribeFromLinkModel [
 GtTreePagerLinkFollowingOutputElement >> updateElement [
 	self linkModel isActive
 		ifTrue: [ self states addState: BlElementState selected ]
-		ifFalse: [ self states removeState: BlElementState selected ]
+		ifFalse: [ self states removeState: BlElementState selected ].
+
+	((self states hasState: BrSizeAdjustmentState normal)
+		and: [ self linkModel isCollapsed ])
+		ifTrue: [ self states addState: BrListOrientationState vertical ]
+		ifFalse: [ self states addState: BrListOrientationState horizontal ]
 ]

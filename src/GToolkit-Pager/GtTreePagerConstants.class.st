@@ -20,8 +20,19 @@ GtTreePagerConstants class >> edgeFixedDistance [
 ]
 
 { #category : #constants }
+GtTreePagerConstants class >> leftShift [
+	"^ self triangleWidth - (self rectangleLength // 2)"
+	^ 0
+]
+
+{ #category : #constants }
 GtTreePagerConstants class >> outputLenght [
 	^ 1
+]
+
+{ #category : #constants }
+GtTreePagerConstants class >> previewCellSpacing [
+	^ 2
 ]
 
 { #category : #constants }

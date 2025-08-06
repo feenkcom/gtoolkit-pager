@@ -517,15 +517,15 @@ GtTreePagerExamples >> paneModelWithOneFollowingTool [
 { #category : #'examples - panes' }
 GtTreePagerExamples >> paneModelWithPhlowBuilderFor: anObject [
 	<gtExample>
-	| aToolModel |
-	aToolModel := self basicPaneModel.
-	aToolModel object: anObject.
+	| aPaneModel |
+	aPaneModel := self basicPaneModel.
+	aPaneModel object: anObject.
 
-	self assert: aToolModel phlowTool object equals: anObject.
-	self assert: (aToolModel asElement isKindOf: BlElement).
-	self assert: aToolModel isCollapsed not.
+	self assert: aPaneModel phlowTool object equals: anObject.
+	self assert: (aPaneModel asElement isKindOf: BlElement).
+	self assert: aPaneModel isCollapsed not.
 
-	^ aToolModel
+	^ aPaneModel
 ]
 
 { #category : #'examples - panes' }

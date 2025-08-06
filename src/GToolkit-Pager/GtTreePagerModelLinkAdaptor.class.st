@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerModelLinkAdaptor,
 	#superclass : #Object,
-	#traits : 'TGtTreePagerLinkModel + TGtTreePagerLinkModelState + TGtAnnouncer + TGtTreePagerPaneModelEnumerable',
-	#classTraits : 'TGtTreePagerLinkModel classTrait + TGtTreePagerLinkModelState classTrait + TGtAnnouncer classTrait + TGtTreePagerPaneModelEnumerable classTrait',
+	#traits : 'TGtTreePagerLinkModel + TGtTreePagerLinkModelState + TGtAnnouncer + TGtTreePagerModelEnumerable',
+	#classTraits : 'TGtTreePagerLinkModel classTrait + TGtTreePagerLinkModelState classTrait + TGtAnnouncer classTrait + TGtTreePagerModelEnumerable classTrait',
 	#instVars : [
 		'pagerModel',
 		'paneModel'
@@ -23,7 +23,7 @@ GtTreePagerModelLinkAdaptor >> allFollowingPanesCount [
 	^ paneModel allFollowingPanesCount
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'api - previous links' }
 GtTreePagerModelLinkAdaptor >> allPreviousPanesDo: aFullBlockClosure [
 	"Iterate previous panes hierarchy."
 

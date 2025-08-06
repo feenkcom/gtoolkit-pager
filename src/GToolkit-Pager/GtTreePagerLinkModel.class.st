@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerLinkModel,
 	#superclass : #Object,
-	#traits : 'TGtAnnouncer + TGtTreePagerLinkModelState + TGtTreePagerLinkModel + TGtTreePagerPaneModel + TGtTreePagerPaneModelEnumerable',
-	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerLinkModelState classTrait + TGtTreePagerLinkModel classTrait + TGtTreePagerPaneModel classTrait + TGtTreePagerPaneModelEnumerable classTrait',
+	#traits : 'TGtAnnouncer + TGtTreePagerLinkModelState + TGtTreePagerLinkModel + TGtTreePagerPaneModel + TGtTreePagerModelEnumerable',
+	#classTraits : 'TGtAnnouncer classTrait + TGtTreePagerLinkModelState classTrait + TGtTreePagerLinkModel classTrait + TGtTreePagerPaneModel classTrait + TGtTreePagerModelEnumerable classTrait',
 	#instVars : [
 		'paneModel',
 		'previousPane',
@@ -29,7 +29,7 @@ GtTreePagerLinkModel >> allFollowingPanesCount [
 	^ paneModel allFollowingPanesCount
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'api - previous links' }
 GtTreePagerLinkModel >> allPreviousPanesDo: aBlock [
 	"Iterate previous panes hierarchy"
 
@@ -200,8 +200,8 @@ GtTreePagerLinkModel >> notifyStateChangedFrom: anOldState [
 			newState: self state.
 
 	self announcer announce: anAnnouncement.
-	self
-		allPreviousPanesDo: [ :aPreviousPane | aPreviousPane announcer announce: anAnnouncement ]
+	self allPreviousPanesDo: [ :aPreviousModel | 
+		aPreviousModel announcer announce: anAnnouncement ]
 ]
 
 { #category : #accessing }

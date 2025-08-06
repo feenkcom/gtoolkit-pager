@@ -1,5 +1,5 @@
 Class {
-	#name : #GtTreePagerLinkFollowingCollapsedElement,
+	#name : #GtTreePagerLinkFollowingRotatedCollapsedElement,
 	#superclass : #GtTreePagerLinkBasicElement,
 	#instVars : [
 		'rectangleElement',
@@ -10,17 +10,17 @@ Class {
 }
 
 { #category : #initialization }
-GtTreePagerLinkFollowingCollapsedElement >> defaultLayout [
-	^ BlGridLayout horizontal columnCount: 2
+GtTreePagerLinkFollowingRotatedCollapsedElement >> defaultLayout [
+	^ BlFrameLayout new
 ]
 
 { #category : #'accessing - ui' }
-GtTreePagerLinkFollowingCollapsedElement >> incomingLinkElements [
-	^ Array with: rectangleElement
+GtTreePagerLinkFollowingRotatedCollapsedElement >> incomingLinkElements [
+	^ Array empty
 ]
 
 { #category : #initialization }
-GtTreePagerLinkFollowingCollapsedElement >> initialize [
+GtTreePagerLinkFollowingRotatedCollapsedElement >> initialize [
 	super initialize.
 
 	self fitContent.
@@ -30,36 +30,54 @@ GtTreePagerLinkFollowingCollapsedElement >> initialize [
 	self initializeBottomOutputsElement.
 
 	self
-		addChildren: {rectangleElement.
-				rightOutputsElement.
-				bottomOutputsElement}
+		addChildren: {rightOutputsElement.
+				bottomOutputsElement.
+				rectangleElement}.
+
+	self initializeOutgoingLinkElementsStyling
 ]
 
 { #category : #initialization }
-GtTreePagerLinkFollowingCollapsedElement >> initializeBottomOutputsElement [
-	bottomOutputsElement := BrHorizontalPane new
+GtTreePagerLinkFollowingRotatedCollapsedElement >> initializeBottomOutputsElement [
+	bottomOutputsElement := BrVerticalPane new
+			id: #'link--bottom-outputs';
 			fitContent;
 			constraintsDo: [ :c | 
-				c grid horizontal alignCenter.
-				c grid vertical alignTop ]
+				c frame horizontal alignRight.
+				c frame vertical alignCenter ]
 ]
 
 { #category : #initialization }
-GtTreePagerLinkFollowingCollapsedElement >> initializeRectangleElement [
+GtTreePagerLinkFollowingRotatedCollapsedElement >> initializeOutgoingLinkElementsStyling [
+	self
+		addAptitude: (BrLazyStyleCommonAptitude new
+				hovered: [ :aStyle | 
+					aStyle
+						do: [ :aWidget | 
+							aWidget outgoingLinkElements
+								do: [ :anElement | anElement states addState: BlElementState hovered ] ]
+						after: [ :aWidget | 
+							aWidget outgoingLinkElements
+								do: [ :anElement | anElement states removeState: BlElementState hovered ] ] ])
+]
+
+{ #category : #initialization }
+GtTreePagerLinkFollowingRotatedCollapsedElement >> initializeRectangleElement [
 	rectangleElement := GtTreePagerLinkFollowingRectangleElement new
 ]
 
 { #category : #initialization }
-GtTreePagerLinkFollowingCollapsedElement >> initializeRightOutputsElement [
-	rightOutputsElement := BrVerticalPane new
+GtTreePagerLinkFollowingRotatedCollapsedElement >> initializeRightOutputsElement [
+	rightOutputsElement := BrHorizontalPane new
+			id: #'link--right-outputs';
 			fitContent;
 			constraintsDo: [ :c | 
-				c grid horizontal alignLeft.
-				c grid vertical alignCenter ]
+				c frame horizontal alignCenter.
+				c frame vertical alignTop ]
 ]
 
 { #category : #'private - updating' }
-GtTreePagerLinkFollowingCollapsedElement >> newOutputElementForLinkModel: aLinkModel [
+GtTreePagerLinkFollowingRotatedCollapsedElement >> newOutputElementForLinkModel: aLinkModel [
 	| anElement |
 	anElement := GtTreePagerLinkFollowingOutputElement new
 			beSmallSize;
@@ -70,28 +88,28 @@ GtTreePagerLinkFollowingCollapsedElement >> newOutputElementForLinkModel: aLinkM
 			anElement margin: (BlInsets top: 1 bottom: 1) ]
 		ifFalse: [ anElement beVertical.
 			anElement margin: (BlInsets left: 1 right: 1) ].
-
+			
 	^ anElement
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerLinkFollowingCollapsedElement >> onGtTreePagerPaneModelFollowingLinksChanged: anAnnouncement [
+GtTreePagerLinkFollowingRotatedCollapsedElement >> onGtTreePagerPaneModelFollowingLinksChanged: anAnnouncement [
 ]
 
 { #category : #'api - pane model' }
-GtTreePagerLinkFollowingCollapsedElement >> onLinkModelChanged [
+GtTreePagerLinkFollowingRotatedCollapsedElement >> onLinkModelChanged [
 	rectangleElement linkModel: self linkModel.
 	self updateElement
 ]
 
 { #category : #'accessing - ui' }
-GtTreePagerLinkFollowingCollapsedElement >> outgoingLinkElements [
+GtTreePagerLinkFollowingRotatedCollapsedElement >> outgoingLinkElements [
 	^ (rightOutputsElement children flatCollect: #outgoingLinkElements)
 		, (bottomOutputsElement children flatCollect: #outgoingLinkElements)
 ]
 
 { #category : #'api - link model' }
-GtTreePagerLinkFollowingCollapsedElement >> subscribeToLinkModel [
+GtTreePagerLinkFollowingRotatedCollapsedElement >> subscribeToLinkModel [
 	super subscribeToLinkModel.
 
 	self linkModel announcer weak
@@ -101,20 +119,20 @@ GtTreePagerLinkFollowingCollapsedElement >> subscribeToLinkModel [
 ]
 
 { #category : #'api - link model' }
-GtTreePagerLinkFollowingCollapsedElement >> unsubscribeFromLinkModel [
+GtTreePagerLinkFollowingRotatedCollapsedElement >> unsubscribeFromLinkModel [
 	super unsubscribeFromLinkModel.
 
 	self linkModel announcer unsubscribe: self
 ]
 
 { #category : #'private - updating' }
-GtTreePagerLinkFollowingCollapsedElement >> updateElement [
+GtTreePagerLinkFollowingRotatedCollapsedElement >> updateElement [
 	self updateRectangleElement.
 	self updateOutputElements
 ]
 
 { #category : #'private - updating' }
-GtTreePagerLinkFollowingCollapsedElement >> updateOutputElements [
+GtTreePagerLinkFollowingRotatedCollapsedElement >> updateOutputElements [
 	| someElements |
 	someElements := self linkModel followingLinks
 			collect: [ :eachLink | self newOutputElementForLinkModel: eachLink ]
@@ -130,6 +148,6 @@ GtTreePagerLinkFollowingCollapsedElement >> updateOutputElements [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerLinkFollowingCollapsedElement >> updateRectangleElement [
+GtTreePagerLinkFollowingRotatedCollapsedElement >> updateRectangleElement [
 	
 ]

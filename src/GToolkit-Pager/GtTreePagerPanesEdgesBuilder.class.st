@@ -7,7 +7,6 @@ Class {
 		'panesElement',
 		'pagerModel',
 		'elementsStream',
-		'currentFromLink',
 		'displayedPaneElements',
 		'incomingLinkElements',
 		'currentLinkElement'
@@ -23,6 +22,11 @@ GtTreePagerPanesEdgesBuilder >> build [
 	incomingLinkElements := self displayedPaneElements
 			flatCollect: [ :eachPaneElement | eachPaneElement incomingLinkElements ].
 
+	outgoingLinkElements do: [ :anElement | 
+		anElement userData 
+			removeKey: #outgoingLineElement 
+			ifAbsent: [ nil ] ].
+
 	^ Array
 		streamContents: [ :aStream | 
 			elementsStream := aStream.
@@ -34,7 +38,8 @@ GtTreePagerPanesEdgesBuilder >> build [
 { #category : #building }
 GtTreePagerPanesEdgesBuilder >> collectEdgeFromOutgoingLink: aLinkElement [ 
 	currentLinkElement := aLinkElement.
-	self visitLinkState: aLinkElement linkModel state
+	self visitLinkState: aLinkElement linkModel state.
+	currentLinkElement := nil.
 ]
 
 { #category : #private }
@@ -43,19 +48,21 @@ GtTreePagerPanesEdgesBuilder >> collectEdgeToIncomingLink [
 	anIncomingElement := self currentLinkIncomingElement.
 	anIncomingElement ifNil: [ ^ self ].
 
-	aLineElement := BlManhattanLineElement new
+	aLineElement := BlLineElement new
 			in: [ :theElement | 
 				theElement graph
 					beEdge;
 					model: currentLinkElement linkModel ];
 			zIndex: -1;
 			border: (BlBorder paint: self panesElement theme button fadedBackgroundColor);
-			beAutomatic;
-			fixedDistance: GtTreePagerConstants edgeFixedDistance;
-			cornerRadius: GtTreePagerConstants edgeCornerRadius;
 			fromAnchor: (BlElementCenterRightAnchor element: currentLinkElement);
 			toAnchor: (BlElementTopCenterAnchor element: anIncomingElement).
 	self styleLineElement: aLineElement.
+
+	currentLinkElement userData
+		at: #outgoingLineElement
+		ifPresent: [ :aCollection | aCollection add: aLineElement ]
+		ifAbsentPut: [ OrderedCollection with: aLineElement ].
 	elementsStream nextPut: aLineElement
 ]
 
@@ -78,6 +85,10 @@ GtTreePagerPanesEdgesBuilder >> collectEdgeToSpawnedPane [
 			fromAnchor: (BlElementCenterRightAnchor element: currentLinkElement);
 			toAnchor: (BlElementCenterLeftAnchor element: aPaneElement contentElement).
 	self styleLineElement: aLineElement.
+	currentLinkElement userData
+		at: #outgoingLineElement
+		ifPresent: [ :aCollection | aCollection add: aLineElement ]
+		ifAbsentPut: [ OrderedCollection with: aLineElement ].
 	elementsStream nextPut: aLineElement
 ]
 

@@ -6,12 +6,10 @@ Class {
 
 { #category : #factory }
 GtTreePagerLinkFollowingContainerElement class >> collapsed [
-	| leftShift |
-	leftShift := GtTreePagerConstants triangleWidth - (GtTreePagerConstants  rectangleLength // 2).
 	^ self new
-		addChild: (GtTreePagerLinkFollowingCollapsedElement new
+		addChild: (GtTreePagerLinkFollowingRotatedCollapsedElement new
 				constraintsDo: [ :c | 
-					c margin: (BlInsets left: leftShift).
+					c margin: (BlInsets left: GtTreePagerConstants leftShift).
 					c frame vertical alignCenter.
 					c frame horizontal alignLeft ])
 ]

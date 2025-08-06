@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerModel,
 	#superclass : #Object,
-	#traits : 'TGtTreePagerPaneModelEnumerable + TGtAnnouncer + TGtOptions',
-	#classTraits : 'TGtTreePagerPaneModelEnumerable classTrait + TGtAnnouncer classTrait + TGtOptions classTrait',
+	#traits : 'TGtTreePagerModelEnumerable + TGtAnnouncer + TGtOptions',
+	#classTraits : 'TGtTreePagerModelEnumerable classTrait + TGtAnnouncer classTrait + TGtOptions classTrait',
 	#instVars : [
 		'announcer',
 		'linkModels',
@@ -15,6 +15,13 @@ Class {
 GtTreePagerModel >> allFollowingPanes [
 	^ Array
 		streamContents: [ :aStream | self allPaneModelsBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
+]
+
+{ #category : #'api - previous links' }
+GtTreePagerModel >> allPreviousLinkAndPanesDo: aBlock [
+	"Iterate previous links and panes hierarchy"
+
+	
 ]
 
 { #category : #'api - previous links' }
@@ -150,6 +157,11 @@ GtTreePagerModel >> paneModels: aCollection [
 	self
 		linkModels: (aCollection
 				collect: [ :eachPane | GtTreePagerModelLinkAdaptor new paneModel: eachPane ])
+]
+
+{ #category : #'api - previous links' }
+GtTreePagerModel >> previousLink [
+	^ nil
 ]
 
 { #category : #accessing }
