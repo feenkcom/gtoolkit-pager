@@ -24,6 +24,8 @@ GtTreePagerPaneKeyEventHandler >> keyUpEvent: anEvent [
 	| aCopy |
 	paneElement ifNil: [ ^ self ].
 
+	"Let's process an event for which 
+	the modifiers does not include released keys."
 	(anEvent key isPrimary or: [ anEvent key isShift ])
 		ifTrue: [ aCopy := anEvent copy modifiers: anEvent modifiers copy.
 			anEvent key isMeta ifTrue: [ aCopy modifiers cmd: false ].
