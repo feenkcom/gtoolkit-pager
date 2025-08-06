@@ -206,7 +206,7 @@ GtTreePagerLinkFollowingOutputElement >> updateElement [
 		ifFalse: [ self states removeState: BlElementState selected ].
 
 	((self states hasState: BrSizeAdjustmentState normal)
-		and: [ self linkModel isCollapsed ])
-		ifTrue: [ self states addState: BrListOrientationState vertical ]
-		ifFalse: [ self states addState: BrListOrientationState horizontal ]
+		and: [ self linkModel isSpawned ])
+		ifFalse: [ self states addState: BrListOrientationState vertical ]
+		ifTrue: [ self states addState: BrListOrientationState horizontal ]
 ]

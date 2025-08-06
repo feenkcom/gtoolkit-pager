@@ -26,8 +26,7 @@ GtTreePagerPaneModel >> activeLink: aLinkModel [
 
 { #category : #'api - following links' }
 GtTreePagerPaneModel >> addFollowingLink: aLinkModel [
-	self isSpawned ifFalse: [ 
-		self previousLink ifNotNil: #expand ].
+	self isSpawned ifFalse: [ self expand ].
 
 	followingLinks addLink: aLinkModel
 ]
@@ -89,9 +88,7 @@ GtTreePagerPaneModel >> collapse: aBoolean [
 
 { #category : #'api - previous panes' }
 GtTreePagerPaneModel >> collapseOrSelect [
-	self followingSpawnedPaneModels isEmpty
-		ifFalse: [ self collapse ]
-		ifTrue: [ self selectInPreviousPane ].
+	self collapse
 ]
 
 { #category : #accessing }
