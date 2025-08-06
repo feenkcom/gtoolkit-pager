@@ -54,7 +54,6 @@ GtTreePagerPanesEdgesBuilder >> collectEdgeToIncomingLink [
 					beEdge;
 					model: currentLinkElement linkModel ];
 			zIndex: -1;
-			border: (BlBorder paint: self panesElement theme button fadedBackgroundColor);
 			fromAnchor: (BlElementCenterRightAnchor element: currentLinkElement);
 			toAnchor: (BlElementTopCenterAnchor element: anIncomingElement).
 	self styleLineElement: aLineElement.
@@ -78,9 +77,6 @@ GtTreePagerPanesEdgesBuilder >> collectEdgeToSpawnedPane [
 					beEdge;
 					model: currentLinkElement linkModel ];
 			zIndex: -1;
-			border: (BlBorder paint: self panesElement theme button fadedBackgroundColor);
-			beFixedTo;
-			fixedDistance: GtTreePagerConstants edgeFixedDistance;
 			cornerRadius: GtTreePagerConstants edgeCornerRadius;
 			fromAnchor: (BlElementCenterRightAnchor element: currentLinkElement);
 			toAnchor: (BlElementCenterLeftAnchor element: aPaneElement contentElement).
@@ -140,7 +136,7 @@ GtTreePagerPanesEdgesBuilder >> panesElement: anObject [
 GtTreePagerPanesEdgesBuilder >> styleLineElement: aLineElement [
 	| anAptitude |
 	anAptitude := BrLazyStyleCommonAptitude new
-			default: [ :aStyle | aStyle border: aLineElement theme button fadedBackgroundColor ];
+			default: [ :aStyle | aStyle border: aLineElement theme default backdropEmphasisBackground ];
 			hovered: [ :aStyle | aStyle border: aLineElement theme button focusedFadedBackgroundColor ].
 
 	aLineElement addAptitude: anAptitude

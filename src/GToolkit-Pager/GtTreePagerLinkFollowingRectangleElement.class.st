@@ -25,8 +25,8 @@ GtTreePagerLinkFollowingRectangleElement >> initialize [
 				handleSubmenu: [ self newContextMenu ]);
 		addAptitude: (BrLazyStyleCommonAptitude new
 				default: [ :aStyle | 
-					aStyle background: self theme button fadedBackgroundColor.
-					aStyle border: self theme button fadedBackgroundColor ];
+					aStyle background: self theme default backdropEmphasisBackground.
+					aStyle border: self theme default backdropEmphasisBackground ];
 				hovered: [ :aStyle | 
 					aStyle background: self theme button focusedFadedBackgroundColor.
 					aStyle border: self theme button focusedFadedBackgroundColor ])
