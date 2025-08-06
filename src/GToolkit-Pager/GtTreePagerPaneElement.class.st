@@ -43,11 +43,6 @@ GtTreePagerPaneElement >> gtNavigationContextFor: aView [
 		view: #gtNavigationContextsFor:
 ]
 
-{ #category : #deprecated }
-GtTreePagerPaneElement >> hideDisappearElement [
-	
-]
-
 { #category : #'api - updating' }
 GtTreePagerPaneElement >> hideDropdownElement [
 	dropdownElement ifNotNil: [ :anElement | anElement visibility: BlVisibility gone ].
@@ -55,12 +50,13 @@ GtTreePagerPaneElement >> hideDropdownElement [
 
 { #category : #deprecated }
 GtTreePagerPaneElement >> hideMaximizeButton [
-	
+	maximizerAptitude hideMaximizeButton
 ]
 
 { #category : #deprecated }
-GtTreePagerPaneElement >> hideTopLeftToolbarElement [
-	self hideDropdownElement
+GtTreePagerPaneElement >> hideToolbarElements [
+	self hideDropdownElement.
+	self hideMaximizeButton.
 ]
 
 { #category : #'accessing - ui' }
@@ -341,11 +337,6 @@ GtTreePagerPaneElement >> realToolElementDo: aBlock [
 		aContentElement realToolElementDo: aBlock ]
 ]
 
-{ #category : #deprecated }
-GtTreePagerPaneElement >> showDisappearElement [
-	
-]
-
 { #category : #'api - updating' }
 GtTreePagerPaneElement >> showDropdownElement [
 	dropdownElement
@@ -354,12 +345,13 @@ GtTreePagerPaneElement >> showDropdownElement [
 
 { #category : #deprecated }
 GtTreePagerPaneElement >> showMaximizeButton [
-	
+	maximizerAptitude showMaximizeButton
 ]
 
-{ #category : #deprecated }
-GtTreePagerPaneElement >> showTopLeftToolbarElement [
-	self showDropdownElement
+{ #category : #'api - updating' }
+GtTreePagerPaneElement >> showToolbarElements [
+	self showDropdownElement.
+	self showMaximizeButton
 ]
 
 { #category : #'api - pane model' }
