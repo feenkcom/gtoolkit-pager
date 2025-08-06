@@ -24,16 +24,6 @@ GtTreePagerModelLinkAdaptor >> allFollowingPanesCount [
 ]
 
 { #category : #'api - previous links' }
-GtTreePagerModelLinkAdaptor >> allPreviousLinkAndPanesDo: aBlock [
-	"Iterate previous links and panes hierarchy"
-
-	self pagerModel
-		ifNotNil: [ :aPagerModel | 
-			aBlock value: aPagerModel.
-			aPagerModel allPreviousLinkAndPanesDo: aBlock ]
-]
-
-{ #category : #'api - previous links' }
 GtTreePagerModelLinkAdaptor >> allPreviousPanesDo: aFullBlockClosure [
 	"Iterate previous panes hierarchy."
 

@@ -30,16 +30,6 @@ GtTreePagerLinkModel >> allFollowingPanesCount [
 ]
 
 { #category : #'api - previous links' }
-GtTreePagerLinkModel >> allPreviousLinkAndPanesDo: aBlock [
-	"Iterate previous links and panes hierarchy"
-
-	self previousPane
-		ifNotNil: [ :aPreviousPane | 
-			aBlock value: aPreviousPane.
-			aPreviousPane allPreviousLinkAndPanesDo: aBlock ]
-]
-
-{ #category : #'api - previous links' }
 GtTreePagerLinkModel >> allPreviousPanesDo: aBlock [
 	"Iterate previous panes hierarchy"
 
@@ -210,7 +200,7 @@ GtTreePagerLinkModel >> notifyStateChangedFrom: anOldState [
 			newState: self state.
 
 	self announcer announce: anAnnouncement.
-	self allPreviousLinkAndPanesDo: [ :aPreviousModel | 
+	self allPreviousPanesDo: [ :aPreviousModel | 
 		aPreviousModel announcer announce: anAnnouncement ]
 ]
 
