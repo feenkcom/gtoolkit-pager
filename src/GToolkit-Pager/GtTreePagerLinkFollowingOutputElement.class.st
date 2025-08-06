@@ -53,10 +53,10 @@ GtTreePagerLinkFollowingOutputElement >> initializeElementStyling [
 						& BlElementState hovered not
 				style: [ :aStyle | 
 					aStyle background: BlBackground transparent.
-					aStyle border: self theme button fadedBackgroundColor ];
+					aStyle border: (BlBorder paint: self theme default backdropEmphasisBackground width: 1) ];
 			when: BrSizeAdjustmentState small & BlElementState selected not
 						& BlElementState hovered not
-				style: [ :aStyle | aStyle background: self theme button fadedBackgroundColor ];
+				style: [ :aStyle | aStyle background: self theme default backdropEmphasisBackground ];
 			when: BrSizeAdjustmentState normal & BlElementState hovered
 				style: [ :aStyle | 
 					aStyle background: self theme button focusedFadedBackgroundColor.
@@ -66,11 +66,11 @@ GtTreePagerLinkFollowingOutputElement >> initializeElementStyling [
 			when: BrSizeAdjustmentState normal & BlElementState selected
 						& BlElementState hovered not
 				style: [ :aStyle | 
-					aStyle background: self theme button fadedBackgroundColor.
-					aStyle border: self theme button fadedBackgroundColor ];
+					aStyle background: self theme default backdropEmphasisBackground .
+					aStyle border: self theme default backdropEmphasisBackground  ];
 			when: BrSizeAdjustmentState small & BlElementState selected
 						& BlElementState hovered not
-				style: [ :aStyle | aStyle background: self theme button fadedBackgroundColor ].
+				style: [ :aStyle | aStyle background: self theme default backdropEmphasisBackground  ].
 
 	self addAptitude: anAptitude
 ]
@@ -114,16 +114,14 @@ GtTreePagerLinkFollowingOutputElement >> initializeOutgoingLinkElements [
 								at: #outgoingLineElement
 								ifPresent: [ :aCollection | 
 									aCollection
-										do: [ :eachLinkElement | 
-											eachLinkElement
-												border: (BlBorder paint: self theme button focusedFadedBackgroundColor) ] ]
+										do: [ :eachLinkElement | eachLinkElement states addState: BlElementState hovered ] ]
 								ifAbsent: [  ] ]
 						after: [ :aWidget | 
 							aWidget userData
 								at: #outgoingLineElement
 								ifPresent: [ :aCollection | 
 									aCollection
-										do: [ :eachLinkElement | eachLinkElement border: (BlBorder paint: self theme button fadedBackgroundColor) ] ]
+										do: [ :eachLinkElement | eachLinkElement states removeState: BlElementState hovered ] ]
 								ifAbsent: [  ] ] ])
 ]
 
