@@ -155,9 +155,9 @@ GtTreePagerPaneElement >> initializeEventHandlers [
 			do: [ :anEvent | self onGtPhlowObjectToSpawn: anEvent ].
 
 	keysEventHandler := GtTreePagerPaneKeyEventHandler new paneElement: self.
-	
+	"
 	self when: BlMouseEnterEvent do: [ :anEvent | self onBlMouseEnterEvent: anEvent ].
-	self when: BlMouseLeaveEvent do: [ :anEvent | self onBlMouseLeaveEvent: anEvent ]
+	self when: BlMouseLeaveEvent do: [ :anEvent | self onBlMouseLeaveEvent: anEvent ]"
 ]
 
 { #category : #initialization }
