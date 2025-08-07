@@ -6,6 +6,8 @@ Class {
 
 { #category : #constants }
 GtTreePagerConstants class >> cellSpacing [
+	"Space used between pane elements"
+
 	^ 10
 ]
 
