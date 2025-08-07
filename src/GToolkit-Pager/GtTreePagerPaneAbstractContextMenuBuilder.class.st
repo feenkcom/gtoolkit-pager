@@ -12,6 +12,8 @@ GtTreePagerPaneAbstractContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedSt
 			menu addItem: self newHideLinkActionItem ].
 	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRebuildPaneToolElementActionItem.
+	self linkModel depthIndex > 1 ifTrue: [
+		menu addItem: self newRemoveLinkActionItem ]
 ]
 
 { #category : #visiting }
@@ -23,10 +25,14 @@ GtTreePagerPaneAbstractContextMenuBuilder >> visitGtTreePagerLinkInactiveSpawned
 			menu addItem: self newHideLinkActionItem ].
 	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRebuildPaneToolElementActionItem.
+	self linkModel depthIndex > 1 ifTrue: [
+		menu addItem: self newRemoveLinkActionItem ]
 ]
 
 { #category : #visiting }
 GtTreePagerPaneAbstractContextMenuBuilder >> visitGtTreePagerLinkState: aState [
 	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRebuildPaneToolElementActionItem.
+	self linkModel depthIndex > 1 ifTrue: [
+		menu addItem: self newRemoveLinkActionItem ]
 ]

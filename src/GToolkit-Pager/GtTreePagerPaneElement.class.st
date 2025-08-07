@@ -6,7 +6,8 @@ Class {
 		'followingsElement',
 		'maximizerAptitude',
 		'contentContainer',
-		'dropdownElement'
+		'dropdownElement',
+		'keysEventHandler'
 	],
 	#category : #'GToolkit-Pager-Tree Pager'
 }
@@ -43,11 +44,6 @@ GtTreePagerPaneElement >> gtNavigationContextFor: aView [
 		view: #gtNavigationContextsFor:
 ]
 
-{ #category : #deprecated }
-GtTreePagerPaneElement >> hideDisappearElement [
-	
-]
-
 { #category : #'api - updating' }
 GtTreePagerPaneElement >> hideDropdownElement [
 	dropdownElement ifNotNil: [ :anElement | anElement visibility: BlVisibility gone ].
@@ -55,12 +51,13 @@ GtTreePagerPaneElement >> hideDropdownElement [
 
 { #category : #deprecated }
 GtTreePagerPaneElement >> hideMaximizeButton [
-	
+	maximizerAptitude hideMaximizeButton
 ]
 
 { #category : #deprecated }
-GtTreePagerPaneElement >> hideTopLeftToolbarElement [
-	self hideDropdownElement
+GtTreePagerPaneElement >> hideToolbarElements [
+	self hideDropdownElement.
+	self hideMaximizeButton.
 ]
 
 { #category : #'accessing - ui' }
@@ -157,7 +154,10 @@ GtTreePagerPaneElement >> initializeEventHandlers [
 		when: GtPhlowObjectToSpawn
 			do: [ :anEvent | self onGtPhlowObjectToSpawn: anEvent ].
 
-	self when: BlMouseMoveEvent do: [ :anEvent | self onMouseMoveEvent: anEvent ]
+	keysEventHandler := GtTreePagerPaneKeyEventHandler new paneElement: self.
+	
+	self when: BlMouseEnterEvent do: [ :anEvent | self onBlMouseEnterEvent: anEvent ].
+	self when: BlMouseLeaveEvent do: [ :anEvent | self onBlMouseLeaveEvent: anEvent ]
 ]
 
 { #category : #initialization }
@@ -228,6 +228,21 @@ GtTreePagerPaneElement >> newDropdownMenuModel [
 	^ GtTreePagerPaneContextMenuBuilder new
 		linkModel: aLinkModel;
 		build
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerPaneElement >> onBlMouseEnterEvent: anEvent [
+	self isAttachedToSceneGraph ifFalse: [ ^ self ].
+
+	self space addEventFilter: keysEventHandler.
+	self onModifiersEvent: anEvent
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerPaneElement >> onBlMouseLeaveEvent: anEvent [
+	self isAttachedToSceneGraph ifFalse: [ ^ self ].
+
+	self space removeEventFilter: keysEventHandler
 ]
 
 { #category : #'private - event management' }
@@ -308,9 +323,9 @@ GtTreePagerPaneElement >> onGtTreePagerPaneModelMaximizeRequest: anAnnouncement 
 	BlTaskAction enqueueElement: self action: [ self maximize ]
 ]
 
-{ #category : #initialization }
-GtTreePagerPaneElement >> onMouseMoveEvent: anEvent [
-	anEvent consumed: true.
+{ #category : #'api - event managing' }
+GtTreePagerPaneElement >> onModifiersEvent: anEvent [
+	"I update the dropdown element based on event modifiers"
 
 	anEvent modifiers isSoftPrimaryModifierOnly
 		ifTrue: [ ^ self updateDropdownElementToCollapseIcon ].
@@ -330,6 +345,12 @@ GtTreePagerPaneElement >> onPaneModelChanged [
 	self updateElement.
 ]
 
+{ #category : #'hooks - children' }
+GtTreePagerPaneElement >> onRemovedFromSceneGraph [
+	super onRemovedFromSceneGraph.
+	keysEventHandler uninstall
+]
+
 { #category : #'accessing - ui' }
 GtTreePagerPaneElement >> outgoingLinkElements [
 	^ followingsElement outgoingLinkElements
@@ -341,11 +362,6 @@ GtTreePagerPaneElement >> realToolElementDo: aBlock [
 		aContentElement realToolElementDo: aBlock ]
 ]
 
-{ #category : #deprecated }
-GtTreePagerPaneElement >> showDisappearElement [
-	
-]
-
 { #category : #'api - updating' }
 GtTreePagerPaneElement >> showDropdownElement [
 	dropdownElement
@@ -354,12 +370,13 @@ GtTreePagerPaneElement >> showDropdownElement [
 
 { #category : #deprecated }
 GtTreePagerPaneElement >> showMaximizeButton [
-	
+	maximizerAptitude showMaximizeButton
 ]
 
-{ #category : #deprecated }
-GtTreePagerPaneElement >> showTopLeftToolbarElement [
-	self showDropdownElement
+{ #category : #'api - updating' }
+GtTreePagerPaneElement >> showToolbarElements [
+	self showDropdownElement.
+	self showMaximizeButton
 ]
 
 { #category : #'api - pane model' }
@@ -392,6 +409,10 @@ GtTreePagerPaneElement >> unsubscribeFromPaneModel [
 { #category : #'private - updating' }
 GtTreePagerPaneElement >> updateDropdownElementToCollapseIcon [
 	dropdownElement ifNil: [ ^ self ].
+
+	self paneModel ifNil: [ ^ self ].
+	self paneModel depthIndex = 1
+		ifTrue: [ ^ self updateDropdownElementToDownwardsIcon ].
 
 	dropdownElement userData
 		at: #gtTreePagerDropdownElementState
