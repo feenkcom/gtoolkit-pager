@@ -71,5 +71,6 @@ GtTreePagerPaneKeyEventHandler >> paneElement: anElement [
 
 { #category : #'api - hooks' }
 GtTreePagerPaneKeyEventHandler >> uninstall [
-	installedIn ifNotNil: [ :anObject | anObject removeEventFilter: self ]
+	installedIn ifNotNil: [ :anObject | anObject removeEventFilter: self ].
+	installedIn := nil.
 ]
