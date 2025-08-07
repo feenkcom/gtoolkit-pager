@@ -50,7 +50,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newCollapseLinkActionItem [
 { #category : #'menu items' }
 GtTreePagerLinkAbstractContextMenuBuilder >> newCollapseOrSelectPaneActionItem [
 	^ BrMenuActionItem new
-		id: #'menu--collapse-or-select-pane';
+		id: #'tree-pager--menu-collapse';
 		label: 'Collapse' preview: [ self linkModel title ];
 		action: [ :anElement :aButtonModel :anEvent | self paneModel collapseOrSelect ];
 		yourself

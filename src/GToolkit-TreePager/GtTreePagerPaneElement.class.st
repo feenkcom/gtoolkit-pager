@@ -199,7 +199,7 @@ GtTreePagerPaneElement >> newDropdownMaximizeIcon [
 { #category : #initialization }
 GtTreePagerPaneElement >> newDropdownMenuElement [
 	^ GtInspectorRoundButtonStencil small asElement
-		id: #'gt-pager-dropdown-menu-button';
+		id: #'tree-pager--dropdown-menu-button';
 		icon: self newDropdownDownwardsIcon;
 		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDropdownWithModifiersCollapseClick: anEvent ];
 		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDropdownWithModifiersMaximizeClick: anEvent ];

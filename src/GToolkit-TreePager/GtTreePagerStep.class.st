@@ -73,6 +73,17 @@ GtTreePagerStep >> closeConfigurationDropdownMenu [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> hoverPaneModel: aPaneModel [
+	^ self mouseMoveOver
+		label: ('Move mouse to pane "{1}"' format: {aPaneModel title});
+		// GtTreePagerFlowPanesElement;
+		/ GtTreePagerPaneElement;
+		@ [ :each | each paneModel = aPaneModel ];
+		referenceSender;
+		onParentStepTarget: self
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> increaseNumberOfVisibleColumns [
 	| aRootStep |
 	aRootStep := self
@@ -107,7 +118,20 @@ GtTreePagerStep >> increaseNumberOfVisibleColumns [
 	^ aRootStep
 ]
 
-{ #category : #'steps - checks' }
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> openDropdownPaneModel: aPaneModel [
+	^ self menuStep
+		openDropdown;
+		label: ('Open dropdown for pane "{1}"' format: {aPaneModel title});
+		// GtTreePagerFlowPanesElement;
+		/ GtTreePagerPaneElement;
+		@ [ :each | each paneModel = aPaneModel ];
+		// #'tree-pager--dropdown-menu-button';
+		referenceSender;
+		onParentStepTarget: self
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> previewScrollToPane: aPaneModel [
 	^ self click
 		label: ('Scroll from preview to pane "{1}"' format: {aPaneModel title});

@@ -1,7 +1,7 @@
 Extension { #name : #TBlDevScripterTarget }
 
 { #category : #'*GToolkit-TreePager' }
-TBlDevScripterTarget >> onPaneElement: aPaneModel [
+TBlDevScripterTarget >> onPaneModel: aPaneModel [
 	self
 		// GtTreePagerFlowPanesElement;
 		// GtTreePagerPaneElement;
