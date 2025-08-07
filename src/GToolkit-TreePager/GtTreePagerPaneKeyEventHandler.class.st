@@ -13,6 +13,19 @@ GtTreePagerPaneKeyEventHandler >> eventsToHandle [
 	^ { BlKeyDownEvent. BlKeyUpEvent}
 ]
 
+{ #category : #'as yet unclassified' }
+GtTreePagerPaneKeyEventHandler >> installIn: anObject [ 
+	installedIn == anObject ifTrue: [ ^ self ].
+	
+	installedIn ifNotNil: [ self uninstall ].
+	anObject addEventHandler: self
+]
+
+{ #category : #'as yet unclassified' }
+GtTreePagerPaneKeyEventHandler >> installedIn [
+	^ installedIn
+]
+
 { #category : #'api - event managing' }
 GtTreePagerPaneKeyEventHandler >> keyDownEvent: anEvent [
 	paneElement ifNil: [ ^ self ].
@@ -35,6 +48,14 @@ GtTreePagerPaneKeyEventHandler >> keyUpEvent: anEvent [
 		ifFalse: [ aCopy := anEvent ].
 
 	self onModifiersEvent: aCopy
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerPaneKeyEventHandler >> onBlMouseEnterEvent: anEvent [ 
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerPaneKeyEventHandler >> onBlMouseLeaveEvent: anEvent [ 
 ]
 
 { #category : #'api - hooks' }
@@ -66,7 +87,10 @@ GtTreePagerPaneKeyEventHandler >> paneElement [
 { #category : #accessing }
 GtTreePagerPaneKeyEventHandler >> paneElement: anElement [
 	self assert: [ paneElement isNil ].
-	paneElement := anElement
+	paneElement := anElement.
+	
+	paneElement when: BlMouseEnterEvent do: [ :anEvent | self onBlMouseEnterEvent: anEvent ].
+	paneElement when: BlMouseLeaveEvent do: [ :anEvent | self onBlMouseLeaveEvent: anEvent ]
 ]
 
 { #category : #'api - hooks' }
