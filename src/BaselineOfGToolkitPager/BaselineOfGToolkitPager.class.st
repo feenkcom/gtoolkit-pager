@@ -15,7 +15,11 @@ BaselineOfGToolkitPager >> baseline: spec [
 			baseline: 'GToolkitBasicUtility' with: [
 				spec repository: 'github://feenkcom/gtoolkit-utility:v0.8.389/src' ].
 
-		spec package: 'GToolkit-Pager' with: [
+		spec package: 'GToolkit-CommonPager' with: [
 			spec requires: #(#GToolkitPhlow #GToolkitBasicUtility) ].
+		spec package: 'GToolkit-Pager' with: [
+			spec requires: #(#'GToolkit-CommonPager' #GToolkitPhlow #GToolkitBasicUtility) ].
+		spec package: 'GToolkit-TreePager' with: [
+			spec requires: #(#'GToolkit-CommonPager' #GToolkitPhlow #GToolkitBasicUtility) ].
 	]
 ]
