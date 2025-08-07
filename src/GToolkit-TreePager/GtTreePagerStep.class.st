@@ -106,3 +106,15 @@ GtTreePagerStep >> increaseNumberOfVisibleColumns [
 
 	^ aRootStep
 ]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> previewScrollToPane: aPaneModel [
+	^ self click
+		label: ('Scroll from preview to pane "{1}"' format: {aPaneModel title});
+		// GtTreePagerScrollbarElement;
+		// #'tree-pager--previews';
+		/ GtTreePagerPaneScrollPreviewElement;
+		@ [ :each | each paneModel = aPaneModel ];
+		referenceSender;
+		onParentStepTarget: self
+]

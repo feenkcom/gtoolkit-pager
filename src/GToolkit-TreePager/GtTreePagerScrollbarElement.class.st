@@ -67,6 +67,7 @@ GtTreePagerScrollbarElement >> initialize [
 
 	previewsElement := BlElement new.
 	previewsElement
+		id: #'tree-pager--previews';
 		clipChildren: false;
 		layout: (BlHorizontalTreeFlowLayout new
 				numberOfVisibleColumns: 2;
@@ -232,6 +233,7 @@ GtTreePagerScrollbarElement >> newContextMenuFor: aPaneModel [
 { #category : #'private - updating' }
 GtTreePagerScrollbarElement >> newPreviewElementForPaneModel: aPaneModel paneElement: aPaneElement [
 	^ GtTreePagerPaneScrollPreviewElement new
+		paneModel: aPaneModel;
 		hExact: 15;
 		vMatchParent;
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 2);
