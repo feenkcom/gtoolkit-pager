@@ -5,6 +5,118 @@ Class {
 }
 
 { #category : #'steps - checks' }
+GtTreePagerStep >> assertCollapsedRectangleLinkModel: aLinkModel [
+	| aLabel |
+	aLabel := 'Assert collapsed rectangle link element for {1}'
+			format: {aLinkModel title}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aPanesElement | 
+				((aPanesElement query // GtTreePagerLinkFollowingRotatedCollapsedElement)
+					@ [ :eachElement | eachElement linkModel = aLinkModel ]) result size ]
+			equals: 1;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertEdgeElementsPositions [
+	^ self assert
+		label: 'Assert following pane edges positions';
+		satisfies: [ :aPanesElement | 
+				| paneElements outgoingElements edgeElements misplacedEdges edgesWithoutTriangle |
+				misplacedEdges := OrderedCollection new.
+				edgesWithoutTriangle := OrderedCollection new.
+				aPanesElement userData
+					at: #misplacedEdges put: misplacedEdges;
+					at: #edgesWithoutTriangle put: edgesWithoutTriangle.
+
+				paneElements := aPanesElement children
+						select: [ :eachChild | eachChild graph isNode ].
+				outgoingElements := paneElements flatCollect: #outgoingLinkElements.
+				edgeElements := aPanesElement children
+						select: [ :eachChild | eachChild graph isEdge ].
+
+				edgeElements
+					do: [ :eachEdge | 
+						| eachLinkModel |
+						eachLinkModel := eachEdge graph model.
+						outgoingElements
+							detect: [ :eachTriangle | eachTriangle linkModel = eachLinkModel ]
+							ifFound: [ :aTriangle | 
+								aTriangle bounds inSpace bounds right = eachEdge bounds inSpace bounds left
+									ifFalse: [ misplacedEdges
+											add: {eachEdge.
+													aTriangle} ] ]
+							ifNone: [ edgesWithoutTriangle add: {eachEdge} ] ].
+				misplacedEdges isEmpty and: [ edgesWithoutTriangle isEmpty ] ]
+			description: [ :aPanesElement | 
+				'Misplaced link edges: {1}; missing pane outgoing elements for: {2}'
+					format: {(aPanesElement userData at: #misplacedEdges)
+								collect: [ :each | (each at: 1) graph model title ]
+								as: Array.
+							(aPanesElement userData at: #edgesWithoutTriangle)
+								collect: [ :each | (each at: 1) graph model title ]
+								as: Array} ];
+		// GtTreePagerFlowPanesElement;
+		referenceSender;
+		onParentStepTarget: self
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertNumberOfCollapsedRectangleLinkElements: anInteger [
+	| aLabel |
+	aLabel := 'Assert number of collapsed rectangle link elements is {1}'
+			format: {anInteger}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aPanesElement | 
+				(aPanesElement query // GtTreePagerLinkFollowingRotatedCollapsedElement) result
+					size ]
+			equals: anInteger;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertNumberOfCollapsedTriangleLinkElements: anInteger [
+	| aLabel |
+	aLabel := 'Assert number of collapsed triangle link elements is {1}'
+			format: {anInteger}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aPanesElement | 
+				(aPanesElement query // GtTreePagerLinkFollowingOutputElement @ [ :eachElement |
+					eachElement states hasState: BrListOrientationState vertical ]) result
+					size ]
+			equals: anInteger;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertNumberOfEdgeElements: anInteger [
+	| aLabel |
+	aLabel := 'Assert number of edge elements is {1}' format: {anInteger}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aPanesElement | 
+				((aPanesElement query // BlCurveElement)
+					@ [ :each | each graph model isKindOf: GtTreePagerLinkModel ]) result size ]
+			equals: anInteger;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement
+]
+
+{ #category : #'steps - checks' }
 GtTreePagerStep >> assertNumberOfPaneElements: anInteger [
 	| aLabel |
 	aLabel := 'Assert number of pane elements is {1}' format: {anInteger}.
@@ -12,6 +124,75 @@ GtTreePagerStep >> assertNumberOfPaneElements: anInteger [
 	^ self assert
 		label: aLabel;
 		value: [ :aPanesElement | (aPanesElement query // GtTreePagerPaneElement) result size ]
+			equals: anInteger;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertNumberOfSpawnedNormalTriangleLinkElements: anInteger [
+	"I include from spanwed pane to spawned pane link output elements only"
+
+	| aLabel |
+	aLabel := 'Assert number of spawned normal triangle link elements is {1}'
+			format: {anInteger}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aPanesElement | 
+				| aQuery |
+				aQuery := (aPanesElement query // GtTreePagerLinkFollowingOutputElement)
+						@ [ :eachElement | eachElement states hasState: BrListOrientationState horizontal ]
+						@ [ :eachElement | eachElement states hasState: BrSizeAdjustmentState normal ].
+				aPanesElement userData at: aLabel put: aQuery.
+				aQuery result size ]
+			equals: anInteger;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertNumberOfSpawnedSmallTriangleLinkElements: anInteger [
+	"I include from collapsed pane to spawned pane link output elements only"
+
+	| aLabel |
+	aLabel := 'Assert number of spawned small triangle link elements is {1}'
+			format: {anInteger}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aPanesElement | 
+				| aQuery |
+				aQuery := (aPanesElement query // GtTreePagerLinkFollowingOutputElement)
+						@ [ :eachElement | eachElement states hasState: BrListOrientationState horizontal ]
+						@ [ :eachElement | eachElement states hasState: BrSizeAdjustmentState small ].
+				aPanesElement userData at: aLabel put: aQuery.
+				aQuery result size ]
+			equals: anInteger;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertNumberOfSpawnedTriangleLinkElements: anInteger [
+	"Note, that I include all link output elements to spawned panes,
+	including from the collapsed rectangle link elements"
+
+	| aLabel |
+	aLabel := 'Assert number of spawned triangle link elements is {1}'
+			format: {anInteger}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aPanesElement | 
+				| aQuery |
+				aQuery := (aPanesElement query // GtTreePagerLinkFollowingOutputElement)
+						@ [ :eachElement | eachElement states hasState: BrListOrientationState horizontal ].
+				aPanesElement userData at: aLabel put: aQuery.
+				aQuery result size ]
 			equals: anInteger;
 		referenceSender;
 		onParentStepTarget: self;
@@ -59,6 +240,35 @@ GtTreePagerStep >> assertPaneModel: aPaneModel position: aPoint [
 		@ [ :each | each paneModel = aPaneModel ];
 		referenceSender;
 		onParentStepTarget: self
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertSpawnedTriangleLinkModel: aLinkModel [
+	| aLabel |
+	aLabel := 'Assert spawned triangle link element for {1}'
+			format: {aLinkModel title}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aPanesElement | 
+				| aQuery |
+				aQuery := (aPanesElement query // GtTreePagerLinkFollowingOutputElement)
+						@ [ :eachElement | eachElement states hasState: BrListOrientationState horizontal ]
+						@ [ :eachElement | eachElement linkModel = aLinkModel ].
+				aPanesElement userData at: aLabel put: aQuery.
+				aQuery result size ]
+			equals: 1;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> clickDropdownCollapseMenuItem [
+	^ self menuStep
+		clickMenuItemWithId: #'tree-pager--menu-collapse';
+		onMenuContainer;
+		referenceSender
 ]
 
 { #category : #'steps - interactions' }

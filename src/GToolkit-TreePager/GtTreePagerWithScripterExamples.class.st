@@ -7,9 +7,10 @@ Class {
 { #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns [
 	<gtExample>
-	| aPager aScripter aPaneA |
+	| aPager aScripter aPaneA aPaneB |
 	aPager := GtTreePagerExamples new pagerWithFourPanesInFourColumns.
 	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
 
 	aScripter := BlScripter new
 			model: aPager;
@@ -20,19 +21,28 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns [
 		assertNumberOfVisiblePanes: 2;
 		assertPaneModel: aPaneA
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 3;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 3;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 3;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertSpawnedTriangleLinkModel: aPaneB previousLink;
+		assertEdgeElementsPositions;
 		play.
-		
+
 	^ aScripter
 ]
 
 { #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_BCDVisiblePanes [
 	<gtExample>
-	| aPager aScripter aPaneA aPaneB |
+	| aPager aScripter aPaneA aPaneB aPaneC |
 	aScripter := self pagerWithFourPanesInFourColumns.
 	aPager := aScripter model.
 	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
 	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = $C printString ].
 
 	aScripter treePager
 		assertNumberOfPaneElements: 4;
@@ -42,9 +52,19 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_BCDVisiblePan
 		assertNumberOfVisiblePanes: 3;
 		assertPaneModel: aPaneA
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertEdgeElementsPositions;
 		previewScrollToPane: aPaneB;
 		assertPaneModel: aPaneB
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 3;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 3;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 3;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertSpawnedTriangleLinkModel: aPaneB previousLink;
+		assertSpawnedTriangleLinkModel: aPaneC previousLink;
+		assertEdgeElementsPositions;
 		play.
 
 	^ aScripter
@@ -63,19 +83,21 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseC [
 	aScripter treePager
 		hoverPaneModel: aPaneC;
 		openDropdownPaneModel: aPaneC;
-		play.
-
-	aScripter menuStep
-		clickMenuItemWithId: #'tree-pager--menu-collapse';
-		onMenuContainer;
-		play.
-
-	aScripter treePager
+		clickDropdownCollapseMenuItem;
 		assertNumberOfPaneElements: 3;
 		assertNumberOfVisiblePanes: 3;
 		flag: 'TODO: We want Pane B to remain in its position (only B and D should be visible)';
 		assertPaneModel: (false ifTrue: [ aPaneB ] ifFalse: [ aPaneA ])
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 2;
+		assertNumberOfCollapsedRectangleLinkElements: 1;
+		assertNumberOfCollapsedTriangleLinkElements: 1;
+		assertNumberOfSpawnedTriangleLinkElements: 2;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 1;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 1;
+		assertCollapsedRectangleLinkModel: aPaneC previousLink;
+		assertSpawnedTriangleLinkModel: aPaneB previousLink;
+		assertEdgeElementsPositions;
 		play.
 
 	^ aScripter
@@ -94,19 +116,18 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseD [
 	aScripter treePager
 		hoverPaneModel: aPaneD;
 		openDropdownPaneModel: aPaneD;
-		play.
-
-	aScripter menuStep
-		clickMenuItemWithId: #'tree-pager--menu-collapse';
-		onMenuContainer;
-		play.
-
-	aScripter treePager
+		clickDropdownCollapseMenuItem;
 		assertNumberOfPaneElements: 3;
 		assertNumberOfVisiblePanes: 3;
-		flag: 'TODO: We want Pane B to remain in its position (only B and C)';
+		flag: 'TODO: We want Pane B to remain in its position (only B and C should be visible)';
 		assertPaneModel: (false ifTrue: [ aPaneB ] ifFalse: [ aPaneA ])
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 2;
+		assertNumberOfCollapsedRectangleLinkElements: 1;
+		assertNumberOfCollapsedTriangleLinkElements: 1;
+		assertNumberOfSpawnedTriangleLinkElements: 2;
+		assertCollapsedRectangleLinkModel: aPaneD previousLink;
+		assertEdgeElementsPositions;
 		play.
 
 	^ aScripter
@@ -132,6 +153,11 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_spawnFromB [
 		flag: 'TODO: We want Pane B to remain in its position (only B and the newly spawned pane should be visible)';
 		assertPaneModel: (false ifTrue: [ aPaneB ] ifFalse: [ aPaneA ])
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 2;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 2;
+		assertEdgeElementsPositions;
 		play.
 
 	^ aScripter
@@ -140,9 +166,10 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_spawnFromB [
 { #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithSevenPanesInFiveColumns [
 	<gtExample>
-	| aPager aScripter aPaneA |
+	| aPager aScripter aPaneA aPaneB |
 	aPager := GtTreePagerExamples new pagerWithSevenPanesInFiveColumns.
 	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
 
 	aScripter := BlScripter new
 			model: aPager;
@@ -153,6 +180,14 @@ GtTreePagerWithScripterExamples >> pagerWithSevenPanesInFiveColumns [
 		assertNumberOfVisiblePanes: 2;
 		assertPaneModel: aPaneA
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 6;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 6;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 6;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertSpawnedTriangleLinkModel: aPaneB previousLink;
+		assertEdgeElementsPositions;
 		play.
 
 	^ aScripter
