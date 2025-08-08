@@ -20,8 +20,9 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns [
 		assertNumberOfVisiblePanes: 2;
 		assertPaneModel: aPaneA
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertEdgeElementsPositions;
 		play.
-		
+
 	^ aScripter
 ]
 
@@ -42,9 +43,12 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_BCDVisiblePan
 		assertNumberOfVisiblePanes: 3;
 		assertPaneModel: aPaneA
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertEdgeElementsPositions;
 		previewScrollToPane: aPaneB;
 		assertPaneModel: aPaneB
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 3;
+		assertEdgeElementsPositions;
 		play.
 
 	^ aScripter
@@ -63,19 +67,14 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseC [
 	aScripter treePager
 		hoverPaneModel: aPaneC;
 		openDropdownPaneModel: aPaneC;
-		play.
-
-	aScripter menuStep
-		clickMenuItemWithId: #'tree-pager--menu-collapse';
-		onMenuContainer;
-		play.
-
-	aScripter treePager
+		clickDropdownCollapseMenuItem;
 		assertNumberOfPaneElements: 3;
 		assertNumberOfVisiblePanes: 3;
 		flag: 'TODO: We want Pane B to remain in its position (only B and D should be visible)';
 		assertPaneModel: (false ifTrue: [ aPaneB ] ifFalse: [ aPaneA ])
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 2;
+		assertEdgeElementsPositions;
 		play.
 
 	^ aScripter
@@ -84,6 +83,7 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseC [
 { #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseD [
 	<gtExample>
+	<noTest>
 	| aPager aScripter aPaneA aPaneB aPaneD |
 	aScripter := self pagerWithFourPanesInFourColumns_BCDVisiblePanes.
 	aPager := aScripter model.
@@ -94,19 +94,14 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseD [
 	aScripter treePager
 		hoverPaneModel: aPaneD;
 		openDropdownPaneModel: aPaneD;
-		play.
-
-	aScripter menuStep
-		clickMenuItemWithId: #'tree-pager--menu-collapse';
-		onMenuContainer;
-		play.
-
-	aScripter treePager
+		clickDropdownCollapseMenuItem;
 		assertNumberOfPaneElements: 3;
 		assertNumberOfVisiblePanes: 3;
-		flag: 'TODO: We want Pane B to remain in its position (only B and C)';
+		flag: 'TODO: We want Pane B to remain in its position (only B and C should be visible)';
 		assertPaneModel: (false ifTrue: [ aPaneB ] ifFalse: [ aPaneA ])
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 2;
+		assertEdgeElementsPositions;
 		play.
 
 	^ aScripter

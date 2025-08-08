@@ -5,6 +5,66 @@ Class {
 }
 
 { #category : #'steps - checks' }
+GtTreePagerStep >> assertEdgeElementsPositions [
+	^ self assert
+		label: 'Assert following pane edges positions';
+		satisfies: [ :aPanesElement | 
+				| paneElements outgoingElements edgeElements misplacedEdges edgesWithoutTriangle |
+				misplacedEdges := OrderedCollection new.
+				edgesWithoutTriangle := OrderedCollection new.
+				aPanesElement userData
+					at: #misplacedEdges put: misplacedEdges;
+					at: #edgesWithoutTriangle put: edgesWithoutTriangle.
+
+				paneElements := aPanesElement children
+						select: [ :eachChild | eachChild graph isNode ].
+				outgoingElements := paneElements flatCollect: #outgoingLinkElements.
+				edgeElements := aPanesElement children
+						select: [ :eachChild | eachChild graph isEdge ].
+
+				edgeElements
+					do: [ :eachEdge | 
+						| eachLinkModel |
+						eachLinkModel := eachEdge graph model.
+						outgoingElements
+							detect: [ :eachTriangle | eachTriangle linkModel = eachLinkModel ]
+							ifFound: [ :aTriangle | 
+								aTriangle bounds inSpace bounds right = eachEdge bounds inSpace bounds left
+									ifFalse: [ misplacedEdges
+											add: {eachEdge.
+													aTriangle} ] ]
+							ifNone: [ edgesWithoutTriangle add: {eachEdge} ] ].
+				misplacedEdges isEmpty and: [ edgesWithoutTriangle isEmpty ] ]
+			description: [ :aPanesElement | 
+				'Misplaced link edges: {1}; missing pane outgoing elements for: {2}'
+					format: {(aPanesElement userData at: #misplacedEdges)
+								collect: [ :each | (each at: 1) graph model title ]
+								as: Array.
+							(aPanesElement userData at: #edgesWithoutTriangle)
+								collect: [ :each | (each at: 1) graph model title ]
+								as: Array} ];
+		// GtTreePagerFlowPanesElement;
+		referenceSender;
+		onParentStepTarget: self
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertNumberOfEdgeElements: anInteger [
+	| aLabel |
+	aLabel := 'Assert number of edge elements is {1}' format: {anInteger}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aPanesElement | 
+				((aPanesElement query // BlCurveElement)
+					@ [ :each | each graph model isKindOf: GtTreePagerLinkModel ]) result size ]
+			equals: anInteger;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement
+]
+
+{ #category : #'steps - checks' }
 GtTreePagerStep >> assertNumberOfPaneElements: anInteger [
 	| aLabel |
 	aLabel := 'Assert number of pane elements is {1}' format: {anInteger}.
@@ -59,6 +119,14 @@ GtTreePagerStep >> assertPaneModel: aPaneModel position: aPoint [
 		@ [ :each | each paneModel = aPaneModel ];
 		referenceSender;
 		onParentStepTarget: self
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> clickDropdownCollapseMenuItem [
+	^ self menuStep
+		clickMenuItemWithId: #'tree-pager--menu-collapse';
+		onMenuContainer;
+		referenceSender
 ]
 
 { #category : #'steps - interactions' }
