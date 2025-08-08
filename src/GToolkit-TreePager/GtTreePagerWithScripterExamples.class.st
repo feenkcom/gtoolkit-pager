@@ -28,10 +28,11 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns [
 { #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_BCDVisiblePanes [
 	<gtExample>
-	| aPager aScripter aPaneA |
+	| aPager aScripter aPaneA aPaneB |
 	aScripter := self pagerWithFourPanesInFourColumns.
 	aPager := aScripter model.
 	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
 
 	aScripter treePager
 		assertNumberOfPaneElements: 4;
@@ -40,6 +41,96 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_BCDVisiblePan
 		closeConfigurationDropdownMenu;
 		assertNumberOfVisiblePanes: 3;
 		assertPaneModel: aPaneA
+			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		previewScrollToPane: aPaneB;
+		assertPaneModel: aPaneB
+			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseC [
+	<gtExample>
+	| aPager aScripter aPaneA aPaneB aPaneC |
+	aScripter := self pagerWithFourPanesInFourColumns_BCDVisiblePanes.
+	aPager := aScripter model.
+	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = $C printString ].
+
+	aScripter treePager
+		hoverPaneModel: aPaneC;
+		openDropdownPaneModel: aPaneC;
+		play.
+
+	aScripter menuStep
+		clickMenuItemWithId: #'tree-pager--menu-collapse';
+		onMenuContainer;
+		play.
+
+	aScripter treePager
+		assertNumberOfPaneElements: 3;
+		assertNumberOfVisiblePanes: 3;
+		flag: 'TODO: We want Pane B to remain in its position (only B and D should be visible)';
+		assertPaneModel: (false ifTrue: [ aPaneB ] ifFalse: [ aPaneA ])
+			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseD [
+	<gtExample>
+	| aPager aScripter aPaneA aPaneB aPaneD |
+	aScripter := self pagerWithFourPanesInFourColumns_BCDVisiblePanes.
+	aPager := aScripter model.
+	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
+	aPaneD := aPager detectPaneModel: [ :each | each title = $D printString ].
+
+	aScripter treePager
+		hoverPaneModel: aPaneD;
+		openDropdownPaneModel: aPaneD;
+		play.
+
+	aScripter menuStep
+		clickMenuItemWithId: #'tree-pager--menu-collapse';
+		onMenuContainer;
+		play.
+
+	aScripter treePager
+		assertNumberOfPaneElements: 3;
+		assertNumberOfVisiblePanes: 3;
+		flag: 'TODO: We want Pane B to remain in its position (only B and C)';
+		assertPaneModel: (false ifTrue: [ aPaneB ] ifFalse: [ aPaneA ])
+			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_spawnFromB [
+	<gtExample>
+	| aPager aScripter aPaneA aPaneB |
+	aScripter := self pagerWithFourPanesInFourColumns_BCDVisiblePanes.
+	aPager := aScripter model.
+	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
+
+	aScripter inspectorStep
+		clickOnBrowseButton;
+		onPaneModel: aPaneB;
+		play.
+
+	aScripter treePager
+		assertNumberOfPaneElements: 3;
+		assertNumberOfVisiblePanes: 3;
+		flag: 'TODO: We want Pane B to remain in its position (only B and the newly spawned pane should be visible)';
+		assertPaneModel: (false ifTrue: [ aPaneB ] ifFalse: [ aPaneA ])
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
 		play.
 
