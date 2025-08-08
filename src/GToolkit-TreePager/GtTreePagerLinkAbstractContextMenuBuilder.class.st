@@ -5,7 +5,8 @@ Class {
 	#classTraits : 'TGtTreePagerLinkStateVisitor classTrait',
 	#instVars : [
 		'linkModel',
-		'menu'
+		'menu',
+		'paneElement'
 	],
 	#category : #'GToolkit-TreePager-Support'
 }
@@ -27,6 +28,12 @@ GtTreePagerLinkAbstractContextMenuBuilder >> linkModel: aLinkModel [
 	self assert: [ linkModel isNil ].
 
 	linkModel := aLinkModel
+]
+
+{ #category : #accessing }
+GtTreePagerLinkAbstractContextMenuBuilder >> navigationContext [
+	<return: #GtTreePagerPaneNavigationContext>
+	^ self paneElement ifNotNil: #navigationContext
 ]
 
 { #category : #'menu items' }
@@ -121,6 +128,16 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newWorldTabActionItem [
 				withSceneDriller;
 				showFrom: anElement ];
 		yourself
+]
+
+{ #category : #accessing }
+GtTreePagerLinkAbstractContextMenuBuilder >> paneElement [
+	^ paneElement
+]
+
+{ #category : #accessing }
+GtTreePagerLinkAbstractContextMenuBuilder >> paneElement: anObject [
+	paneElement := anObject
 ]
 
 { #category : #accessing }

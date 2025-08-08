@@ -227,6 +227,7 @@ GtTreePagerPaneElement >> newDropdownMenuModel [
 
 	^ GtTreePagerPaneContextMenuBuilder new
 		linkModel: aLinkModel;
+		paneElement: self;
 		build
 ]
 
