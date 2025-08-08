@@ -20,6 +20,7 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns [
 		assertNumberOfVisiblePanes: 2;
 		assertPaneModel: aPaneA
 			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 3;
 		assertEdgeElementsPositions;
 		play.
 
@@ -83,7 +84,6 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseC [
 { #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseD [
 	<gtExample>
-	<noTest>
 	| aPager aScripter aPaneA aPaneB aPaneD |
 	aScripter := self pagerWithFourPanesInFourColumns_BCDVisiblePanes.
 	aPager := aScripter model.

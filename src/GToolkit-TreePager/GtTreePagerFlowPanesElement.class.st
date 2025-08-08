@@ -275,10 +275,12 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 			displayedPaneElements: spawnedElements;
 			build.
 
-	self addChildren: edgeElements.
 	spawnedElements addAll: edgeElements.
-
 	(self children difference: spawnedElements) do: #removeFromParent.
+	"For some reason I have to add edges later.
+	Covered by `GtTreePagerWithScripterExamples>>#pagerWithFourPanesInFourColumns_collapseD`."
+	self addChildren: edgeElements.
+	
 	paneElementsCache := nonSpawnedElements.
 
 	self dispatchEvent: GtTreePagerFlowPaneElementsChanged new
