@@ -134,6 +134,59 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseD [
 ]
 
 { #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_dropdownIcon [
+	<gtExample>
+	<noTest>
+	| aPager aScripter aPaneA aPaneB aPaneC |
+	aScripter := self pagerWithFourPanesInFourColumns.
+	aPager := aScripter model.
+	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = $C printString ].
+
+	aScripter treePager
+		hoverPaneModel: aPaneB;
+		assertDropdownButtonIsHiddenInPaneModel: aPaneA;
+		assertDropdownButtonIsVisibleInPaneModel: aPaneB;
+		assertDropdownButtonHasDefaultIconInPaneModel: aPaneB;
+		play.
+
+	aScripter keyDown
+		key: BlKeyboardKey primaryLeft;
+		play.
+
+	aScripter treePager
+		assertDropdownButtonHasCollapseIconInPaneModel: aPaneB;
+		play.
+
+	aScripter keyDown
+		key: BlKeyboardKey shiftLeft;
+		play.
+
+	aScripter treePager
+		assertDropdownButtonHasMaximizeIconInPaneModel: aPaneB;
+		play.
+		
+	aScripter keyUp
+		key: BlKeyboardKey shiftLeft;
+		play.
+		
+	aScripter treePager
+		assertDropdownButtonHasCollapseIconInPaneModel: aPaneB;
+		play.
+		
+	aScripter keyUp
+		key: BlKeyboardKey primaryLeft;
+		play.
+		
+	aScripter treePager
+		assertDropdownButtonHasDefaultIconInPaneModel: aPaneB;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_spawnFromB [
 	<gtExample>
 	| aPager aScripter aPaneA aPaneB |

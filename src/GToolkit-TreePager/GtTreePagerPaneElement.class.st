@@ -155,9 +155,6 @@ GtTreePagerPaneElement >> initializeEventHandlers [
 			do: [ :anEvent | self onGtPhlowObjectToSpawn: anEvent ].
 
 	keysEventHandler := GtTreePagerPaneKeyEventHandler new paneElement: self.
-	"
-	self when: BlMouseEnterEvent do: [ :anEvent | self onBlMouseEnterEvent: anEvent ].
-	self when: BlMouseLeaveEvent do: [ :anEvent | self onBlMouseLeaveEvent: anEvent ]"
 ]
 
 { #category : #initialization }
@@ -231,19 +228,18 @@ GtTreePagerPaneElement >> newDropdownMenuModel [
 		build
 ]
 
-{ #category : #'private - event handling' }
-GtTreePagerPaneElement >> onBlMouseEnterEvent: anEvent [
-	self isAttachedToSceneGraph ifFalse: [ ^ self ].
+{ #category : #'as yet unclassified' }
+GtTreePagerPaneElement >> onBlMouseEnterEvent: aBlMouseEnterEvent [
+	"Can be removed"
 
-	self space addEventFilter: keysEventHandler.
-	self onModifiersEvent: anEvent
+	
 ]
 
-{ #category : #'private - event handling' }
+{ #category : #initialization }
 GtTreePagerPaneElement >> onBlMouseLeaveEvent: anEvent [
-	self isAttachedToSceneGraph ifFalse: [ ^ self ].
+	"Can be removed"
 
-	self space removeEventFilter: keysEventHandler
+	
 ]
 
 { #category : #'private - event management' }
@@ -326,7 +322,8 @@ GtTreePagerPaneElement >> onGtTreePagerPaneModelMaximizeRequest: anAnnouncement 
 
 { #category : #'api - event managing' }
 GtTreePagerPaneElement >> onModifiersEvent: anEvent [
-	"I update the dropdown element based on event modifiers"
+	"I update the dropdown element based on event modifiers.
+	NOTE: can be deleted, it was moved to `GtTreePagerPaneKeyEventHandler>>#onModifiersEvent:`"
 
 	anEvent modifiers isSoftPrimaryModifierOnly
 		ifTrue: [ ^ self updateDropdownElementToCollapseIcon ].
