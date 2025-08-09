@@ -15,8 +15,7 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSelectedState: aS
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedState: aState [
 	self linkModel depthIndex = 1
 		ifFalse: [ menu addItem: self newInactivateLinkActionItem.
-			menu addItem: self newCollapseLinkActionItem.
-			menu addItem: self newHideLinkActionItem ].
+			menu addItem: self newCollapseLinkActionItem ].
 	self linkModel depthIndex = 1
 		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]
@@ -24,7 +23,6 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedState: aSt
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveCollapsedState: aState [
 	menu addItem: self newExpandLinkActionItem.
-	menu addItem: self newHideLinkActionItem.
 	self linkModel depthIndex = 1
 		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]
@@ -39,8 +37,7 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveHiddenState: aS
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveSpawnedState: aState [
 	self linkModel depthIndex = 1
 		ifFalse: [ menu addItem: self newActivateLinkActionItem.
-			menu addItem: self newCollapseLinkActionItem.
-			menu addItem: self newHideLinkActionItem ].
+			menu addItem: self newCollapseLinkActionItem ].
 	self linkModel depthIndex = 1
 		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]

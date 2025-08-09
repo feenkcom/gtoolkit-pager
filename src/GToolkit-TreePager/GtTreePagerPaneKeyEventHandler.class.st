@@ -13,19 +13,6 @@ GtTreePagerPaneKeyEventHandler >> eventsToHandle [
 	^ { BlKeyDownEvent. BlKeyUpEvent}
 ]
 
-{ #category : #'as yet unclassified' }
-GtTreePagerPaneKeyEventHandler >> installIn: anObject [ 
-	installedIn == anObject ifTrue: [ ^ self ].
-	
-	installedIn ifNotNil: [ self uninstall ].
-	anObject addEventHandler: self
-]
-
-{ #category : #'as yet unclassified' }
-GtTreePagerPaneKeyEventHandler >> installedIn [
-	^ installedIn
-]
-
 { #category : #'api - event managing' }
 GtTreePagerPaneKeyEventHandler >> keyDownEvent: anEvent [
 	paneElement ifNil: [ ^ self ].
@@ -51,16 +38,25 @@ GtTreePagerPaneKeyEventHandler >> keyUpEvent: anEvent [
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerPaneKeyEventHandler >> onBlMouseEnterEvent: anEvent [ 
+GtTreePagerPaneKeyEventHandler >> onBlMouseEnterEvent: anEvent [
+	paneElement ifNil: [ ^ self ].
+
+	self onModifiersEvent: anEvent
 ]
 
 { #category : #'private - event handling' }
 GtTreePagerPaneKeyEventHandler >> onBlMouseLeaveEvent: anEvent [ 
 ]
 
+{ #category : #'private - event handling' }
+GtTreePagerPaneKeyEventHandler >> onHovered [
+	paneElement isAttachedToSceneGraph ifFalse: [ ^ self ].
+
+	paneElement space addEventFilter: self
+]
+
 { #category : #'api - hooks' }
 GtTreePagerPaneKeyEventHandler >> onInstalledIn: anObject [
-	self assert: [ installedIn isNil ].
 	super onInstalledIn: anObject.
 
 	installedIn := anObject
@@ -68,9 +64,23 @@ GtTreePagerPaneKeyEventHandler >> onInstalledIn: anObject [
 
 { #category : #'api - event managing' }
 GtTreePagerPaneKeyEventHandler >> onModifiersEvent: anEvent [
+	"I update the dropdown element based on event modifiers"
 	paneElement ifNil: [ ^ self ].
 
-	paneElement onModifiersEvent: anEvent
+	anEvent modifiers isSoftPrimaryModifierOnly
+		ifTrue: [ ^ paneElement updateDropdownElementToCollapseIcon ].
+
+	anEvent modifiers isSoftShiftPrimaryModifierOnly
+		ifTrue: [ ^ paneElement updateDropdownElementToMaximizeIcon ].
+
+	paneElement updateDropdownElementToDownwardsIcon
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerPaneKeyEventHandler >> onUnhovered [
+	paneElement isAttachedToSceneGraph ifFalse: [ ^ self ].
+
+	paneElement space removeEventFilter: self
 ]
 
 { #category : #'api - hooks' }
@@ -88,9 +98,14 @@ GtTreePagerPaneKeyEventHandler >> paneElement [
 GtTreePagerPaneKeyEventHandler >> paneElement: anElement [
 	self assert: [ paneElement isNil ].
 	paneElement := anElement.
-	
-	paneElement when: BlMouseEnterEvent do: [ :anEvent | self onBlMouseEnterEvent: anEvent ].
-	paneElement when: BlMouseLeaveEvent do: [ :anEvent | self onBlMouseLeaveEvent: anEvent ]
+
+	paneElement
+		when: BlElementRemovedFromSceneGraphEvent do: [ :anEvent | self uninstall ];
+		when: BlMouseEnterEvent do: [ :anEvent | self onBlMouseEnterEvent: anEvent ].
+
+	paneElement
+		addAptitude: (BrLazyStyleCommonAptitude new
+				hovered: [ :aStyle | aStyle do: [ :aWidget | self onHovered ] after: [ :aWidget | self onUnhovered ] ])
 ]
 
 { #category : #'api - hooks' }

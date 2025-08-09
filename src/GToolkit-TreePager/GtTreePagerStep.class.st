@@ -22,6 +22,108 @@ GtTreePagerStep >> assertCollapsedRectangleLinkModel: aLinkModel [
 ]
 
 { #category : #'steps - checks' }
+GtTreePagerStep >> assertDropdownButtonHasCollapseIconInPaneModel: aPaneModel [
+	| aLabel |
+	aLabel := 'Assert dropdown button has collapse icon for {1}'
+			format: {aPaneModel title}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aDropdownButton | 
+				aDropdownButton userData
+					at: #gtTreePagerDropdownElementState
+					ifPresent: [ :aSymbol | aSymbol ]
+					ifAbsent: [ #downwards ] ]
+			equals: #collapse;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement;
+		/ GtTreePagerPaneElement;
+		@ [ :each | each paneModel = aPaneModel ];
+		// #'tree-pager--dropdown-menu-button'
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertDropdownButtonHasDefaultIconInPaneModel: aPaneModel [
+	| aLabel |
+	aLabel := 'Assert dropdown button has default icon for {1}'
+			format: {aPaneModel title}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aDropdownButton | 
+				aDropdownButton userData
+					at: #gtTreePagerDropdownElementState
+					ifPresent: [ :aSymbol | aSymbol ]
+					ifAbsent: [ #downwards ] ]
+			equals: #downwards;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement;
+		/ GtTreePagerPaneElement;
+		@ [ :each | each paneModel = aPaneModel ];
+		// #'tree-pager--dropdown-menu-button'
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertDropdownButtonHasMaximizeIconInPaneModel: aPaneModel [
+	| aLabel |
+	aLabel := 'Assert dropdown button has maximize icon for {1}'
+			format: {aPaneModel title}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aDropdownButton | 
+				aDropdownButton userData
+					at: #gtTreePagerDropdownElementState
+					ifPresent: [ :aSymbol | aSymbol ]
+					ifAbsent: [ #downwards ] ]
+			equals: #maximize;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement;
+		/ GtTreePagerPaneElement;
+		@ [ :each | each paneModel = aPaneModel ];
+		// #'tree-pager--dropdown-menu-button'
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertDropdownButtonIsHiddenInPaneModel: aPaneModel [
+	| aLabel |
+	aLabel := 'Assert dropdown button is hidden for {1}'
+			format: {aPaneModel title}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aDropdownButton | aDropdownButton visibility ]
+			equals: BlVisibility gone;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement;
+		/ GtTreePagerPaneElement;
+		@ [ :each | each paneModel = aPaneModel ];
+		// #'tree-pager--dropdown-menu-button'
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertDropdownButtonIsVisibleInPaneModel: aPaneModel [
+	| aLabel |
+	aLabel := 'Assert dropdown button is visible for {1}'
+			format: {aPaneModel title}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aDropdownButton | aDropdownButton visibility ]
+			equals: BlVisibility visible;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement;
+		/ GtTreePagerPaneElement;
+		@ [ :each | each paneModel = aPaneModel ];
+		// #'tree-pager--dropdown-menu-button'
+]
+
+{ #category : #'steps - checks' }
 GtTreePagerStep >> assertEdgeElementsPositions [
 	^ self assert
 		label: 'Assert following pane edges positions';
