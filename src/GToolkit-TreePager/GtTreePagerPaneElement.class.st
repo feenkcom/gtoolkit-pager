@@ -91,7 +91,7 @@ GtTreePagerPaneElement >> initializeContentContainerElement [
 	contentContainer := BrHorizontalPane new
 			id: #container;
 			clipChildren: false;
-			margin: (BlInsets left: 9);
+			margin: (BlInsets left: 0);
 			matchParent;
 			addChild: contentElement;
 			addChild: (dropdownElement := self newDropdownMenuElement);
