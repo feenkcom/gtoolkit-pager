@@ -195,10 +195,11 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_spawnFromB [
 	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
 	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
 
-	aScripter inspectorStep
-		clickOnBrowseButton;
-		onPaneModel: aPaneB;
-		play.
+	GtTreePagerAnimationFeatures
+		disableDuring: [ aScripter inspectorStep
+				clickOnBrowseButton;
+				onPaneModel: aPaneB;
+				play ].
 
 	aScripter treePager
 		assertNumberOfPaneElements: 3;
