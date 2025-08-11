@@ -49,28 +49,30 @@ GtTreePagerLinkFollowingOutputElement >> initialize [
 GtTreePagerLinkFollowingOutputElement >> initializeElementStyling [
 	| anAptitude |
 	anAptitude := BrLazyStyleCommonAptitude new
+			when: BrSizeAdjustmentState normal & BlElementState selected
+						& BlElementState hovered not
+				style: [ :aStyle | 
+					aStyle background: self theme default backdropEmphasisBackground.
+					aStyle border: self theme button focusedFadedBackgroundColor.
+					];
 			when: BrSizeAdjustmentState normal & BlElementState selected not
 						& BlElementState hovered not
 				style: [ :aStyle | 
-					aStyle background: BlBackground transparent.
-					aStyle border: (BlBorder paint: self theme default backdropEmphasisBackground width: 1) ];
-			when: BrSizeAdjustmentState small & BlElementState selected not
-						& BlElementState hovered not
-				style: [ :aStyle | aStyle background: self theme default backdropEmphasisBackground ];
+					aStyle background: self theme default backdropEmphasisBackground.
+					aStyle
+						border: (BlBorder paint: self theme default backdropEmphasisBackground width: 1) ];
 			when: BrSizeAdjustmentState normal & BlElementState hovered
 				style: [ :aStyle | 
 					aStyle background: self theme button focusedFadedBackgroundColor.
 					aStyle border: self theme button focusedFadedBackgroundColor ];
+			when: BrSizeAdjustmentState small & BlElementState selected not
+						& BlElementState hovered not
+				style: [ :aStyle | aStyle background: self theme default backdropEmphasisBackground ];
 			when: BrSizeAdjustmentState small & BlElementState hovered
 				style: [ :aStyle | aStyle background: self theme button focusedFadedBackgroundColor ];
-			when: BrSizeAdjustmentState normal & BlElementState selected
-						& BlElementState hovered not
-				style: [ :aStyle | 
-					aStyle background: self theme default backdropEmphasisBackground .
-					aStyle border: self theme default backdropEmphasisBackground  ];
 			when: BrSizeAdjustmentState small & BlElementState selected
 						& BlElementState hovered not
-				style: [ :aStyle | aStyle background: self theme default backdropEmphasisBackground  ].
+				style: [ :aStyle | aStyle background: self theme default backdropEmphasisBackground ].
 
 	self addAptitude: anAptitude
 ]

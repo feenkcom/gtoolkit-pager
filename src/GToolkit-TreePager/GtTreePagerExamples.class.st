@@ -227,7 +227,7 @@ GtTreePagerExamples >> pagerWithCWithFollowingEFHPanes [
 { #category : #'examples - pager' }
 GtTreePagerExamples >> pagerWithCWithFollowingHFPanes [
 	<gtExample>
-	| aPager aPaneC aPaneH aLinkF |
+	| aPager aPaneC aPaneH aLinkH aLinkF |
 	aPager := self pagerWithSevenPanesInFiveColumns.
 	aPaneC := aPager detectPaneModel: [ :each | each title = '$C' ].
 	self assert: aPaneC isExpanded.
@@ -239,7 +239,11 @@ GtTreePagerExamples >> pagerWithCWithFollowingHFPanes [
 	self assert: aPaneC activeLink equals: aLinkF.
 	aPaneC spawnPane: aPaneH.
 
-	self assert: aPaneC followingPanes size equals: 2.
+	aLinkH := aPaneH previousLink.
+	self assert: aPaneC followingLinks size equals: 2.
+	self assert: aPaneC followingLinks second equals: aLinkH.
+	self assert: aLinkH previousPane equals: aPaneC.
+	self assert: aLinkH replacedLink equals: aLinkF.
 
 	^ aPager
 ]

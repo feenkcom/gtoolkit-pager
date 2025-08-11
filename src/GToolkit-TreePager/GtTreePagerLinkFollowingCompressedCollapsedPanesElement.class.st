@@ -73,8 +73,7 @@ GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> newContextMenuFor: aL
 GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> newNodeElementForPaneModel: aLinkModel [
 	^ GtTreePagerLinkFollowingRotatedCollapsedElement new
 		linkModel: aLinkModel;
-		hExact: GtTreePagerConstants rectangleLength
-				- (GtTreePagerConstants previewCellSpacing * 2);
+		hExact: GtTreePagerConstants rectangleLengthWithoutSpacing;
 		vMatchParent;
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 2);
 		addAptitude: BrGlamorousFadedButtonExteriourAptitude;

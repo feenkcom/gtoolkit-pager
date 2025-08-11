@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'outputElement',
 		'collapsedPanesElement',
-		'containerElement'
+		'containerElement',
+		'replacedLinkElement'
 	],
 	#category : #'GToolkit-TreePager-UI'
 }
@@ -27,9 +28,11 @@ GtTreePagerLinkOutputAndCollapsedPanesElement >> initialize [
 		hFitContent.
 
 	self initializeContainerElement.
+	self initializeReplacedLinkElement.
 	self initializeOutputElement.
 	self initializeCollapsedPanesElement.
 
+	containerElement addChild: replacedLinkElement as: #replaced.
 	containerElement addChild: outputElement as: #output.
 	containerElement addChild: collapsedPanesElement as: #collapsed.
 	self addChild: containerElement
@@ -48,6 +51,7 @@ GtTreePagerLinkOutputAndCollapsedPanesElement >> initializeCollapsedPanesElement
 GtTreePagerLinkOutputAndCollapsedPanesElement >> initializeContainerElement [
 	containerElement := BrVerticalPane new
 			fitContent;
+			clipChildren: false;
 			constraintsDo: [ :c | 
 				c frame horizontal alignLeft.
 				c frame vertical alignCenter ]
@@ -62,9 +66,21 @@ GtTreePagerLinkOutputAndCollapsedPanesElement >> initializeOutputElement [
 				c linear horizontal alignLeft ]
 ]
 
+{ #category : #initialization }
+GtTreePagerLinkOutputAndCollapsedPanesElement >> initializeReplacedLinkElement [
+	replacedLinkElement := GtTreePagerLinkReplacedElement new
+			constraintsDo: [ :c | 
+				c ignoreByLayout.
+				c ignored vertical alignBottomAt: 1.0.
+				c ignored horizontal alignCenter.
+				c linear vertical alignTop.
+				c linear horizontal alignLeft ]
+]
+
 { #category : #'api - link model' }
 GtTreePagerLinkOutputAndCollapsedPanesElement >> onLinkModelChanged [
 	super onLinkModelChanged.
+	replacedLinkElement linkModel: self linkModel.
 	outputElement linkModel: self linkModel.
 	collapsedPanesElement linkModel: self linkModel
 ]

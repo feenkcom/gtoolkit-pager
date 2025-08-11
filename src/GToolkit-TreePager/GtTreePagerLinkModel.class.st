@@ -6,7 +6,8 @@ Class {
 	#instVars : [
 		'paneModel',
 		'previousPane',
-		'state'
+		'state',
+		'replacedLink'
 	],
 	#category : #'GToolkit-TreePager-Model'
 }
@@ -260,6 +261,26 @@ GtTreePagerLinkModel >> removeFromPreviousPane [
 { #category : #'api - following links' }
 GtTreePagerLinkModel >> removeLink [
 	self paneModel removeLink
+]
+
+{ #category : #'api - replaced link' }
+GtTreePagerLinkModel >> replacedLink [
+	^ replacedLink
+]
+
+{ #category : #'api - replaced link' }
+GtTreePagerLinkModel >> replacedLink: anObject [
+	replacedLink := anObject
+]
+
+{ #category : #'api - replaced link' }
+GtTreePagerLinkModel >> restoreReplacedLink [
+	| aReplacedLink aParentPane |
+	aReplacedLink := self replacedLink ifNil: [ ^ self ].
+	aParentPane := self previousPane ifNil: [ ^ self ].
+
+	self replacedLink: nil.
+	aParentPane addFollowingLink: aReplacedLink before: self
 ]
 
 { #category : #'api - state' }

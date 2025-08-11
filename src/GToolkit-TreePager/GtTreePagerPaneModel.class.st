@@ -32,6 +32,24 @@ GtTreePagerPaneModel >> addFollowingLink: aLinkModel [
 ]
 
 { #category : #'api - following links' }
+GtTreePagerPaneModel >> addFollowingLink: aNewLinkModel before: aLinkModel [
+	| aNewCollection |
+	self followingLinks
+		detectIndex: [ :each | each == aLinkModel ]
+		ifNone: [ NotFound signalFor: aLinkModel in: self followingLinks ].
+
+	aNewLinkModel previousPane: self.
+	aNewCollection := Array
+			new: self followingLinks size + 1
+			streamContents: [ :aStream | 
+				self followingLinks
+					do: [ :eachLink | 
+						eachLink == aLinkModel ifTrue: [ aStream nextPut: aNewLinkModel ].
+						aStream nextPut: eachLink ] ].
+	self followingLinks: aNewCollection
+]
+
+{ #category : #'api - following links' }
 GtTreePagerPaneModel >> allFollowingPanes [
 	^ Array
 		streamContents: [ :aStream | self allPaneModelsBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ]
@@ -427,6 +445,7 @@ GtTreePagerPaneModel >> replaceFollowingLink: anOldLinkModel by: aNewLinkModel [
 			ifNone: [ NotFound signalFor: anOldLinkModel in: self followingLinks ].
 
 	aNewLinkModel previousPane: self.
+	aNewLinkModel replacedLink: anOldLinkModel.
 	aNewCollection := self followingLinks copy
 			at: anIndex put: aNewLinkModel;
 			yourself.
