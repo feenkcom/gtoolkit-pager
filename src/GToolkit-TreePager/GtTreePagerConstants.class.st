@@ -43,6 +43,11 @@ GtTreePagerConstants class >> rectangleLength [
 ]
 
 { #category : #constants }
+GtTreePagerConstants class >> rectangleLengthWithoutSpacing [
+	^ self rectangleLength - (self previewCellSpacing * 2)
+]
+
+{ #category : #constants }
 GtTreePagerConstants class >> replacedLinkRestoration [
 	"The time for which a replaced link remains accessible to a user for its restoration"
 

@@ -4,7 +4,7 @@
 Class {
 	#name : #GtTreePagerAnimationFeatures,
 	#superclass : #DynamicVariable,
-	#category : #'GToolkit-Pager-Support'
+	#category : #'GToolkit-TreePager-Support'
 }
 
 { #category : #controlling }

@@ -13,7 +13,7 @@ GtTreePagerLinkReplacedElement >> initialize [
 	super initialize.
 
 	self
-		exact: GtTreePagerConstants triangleWidth @ GtTreePagerConstants triangleWidth;
+		exact: GtTreePagerConstants rectangleLengthWithoutSpacing @ GtTreePagerConstants rectangleLengthWithoutSpacing;
 		geometry: self newGeometry;
 		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ].
 

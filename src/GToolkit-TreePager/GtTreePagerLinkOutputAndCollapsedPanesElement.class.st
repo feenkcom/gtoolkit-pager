@@ -71,8 +71,8 @@ GtTreePagerLinkOutputAndCollapsedPanesElement >> initializeReplacedLinkElement [
 	replacedLinkElement := GtTreePagerLinkReplacedElement new
 			constraintsDo: [ :c | 
 				c ignoreByLayout.
-				c ignored vertical alignCenterAt: 0.0.
-				c ignored horizontal alignRight.
+				c ignored vertical alignBottomAt: 1.0.
+				c ignored horizontal alignCenter.
 				c linear vertical alignTop.
 				c linear horizontal alignLeft ]
 ]
