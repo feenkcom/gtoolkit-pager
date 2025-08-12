@@ -8,7 +8,7 @@ Class {
 GtTreePagerConstants class >> cellSpacing [
 	"Space used between pane elements"
 
-	^ 10
+	^ self horizontalCellSpacing @ self verticalCellSpacing
 ]
 
 { #category : #constants }
@@ -19,6 +19,13 @@ GtTreePagerConstants class >> edgeCornerRadius [
 { #category : #constants }
 GtTreePagerConstants class >> edgeFixedDistance [
 	^ 8
+]
+
+{ #category : #constants }
+GtTreePagerConstants class >> horizontalCellSpacing [
+	"Space used between pane elements"
+
+	^ 10
 ]
 
 { #category : #constants }
@@ -62,4 +69,11 @@ GtTreePagerConstants class >> triangleHeight [
 { #category : #constants }
 GtTreePagerConstants class >> triangleWidth [
 	^ 12
+]
+
+{ #category : #constants }
+GtTreePagerConstants class >> verticalCellSpacing [
+	"Space used between pane elements"
+
+	^ 20
 ]

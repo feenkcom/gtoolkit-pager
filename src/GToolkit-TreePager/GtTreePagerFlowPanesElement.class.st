@@ -53,7 +53,8 @@ GtTreePagerFlowPanesElement >> defaultLayout [
 		numberOfVisibleColumns: 2;
 		firstVisibleColumn: 1;
 		horizontalOffset: 0;
-		cellSpacing: GtTreePagerConstants cellSpacing
+		horizontalCellSpacing: GtTreePagerConstants horizontalCellSpacing;
+		verticalCellSpacing: GtTreePagerConstants verticalCellSpacing
 ]
 
 { #category : #'private - updating' }
