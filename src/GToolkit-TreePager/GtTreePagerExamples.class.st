@@ -249,6 +249,33 @@ GtTreePagerExamples >> pagerWithCWithFollowingHFPanes [
 ]
 
 { #category : #'examples - pager' }
+GtTreePagerExamples >> pagerWithCWithFollowingHFPanes_selected [
+	<gtExample>
+	| aPager aPaneC aPaneH aLinkH aLinkF |
+	aPager := self pagerWithSevenPanesInFiveColumns.
+	aPaneC := aPager detectPaneModel: [ :each | each title = '$C' ].
+	self assert: aPaneC isExpanded.
+
+	aPaneH := self paneModelWithPhlowBuilderFor: $H.
+	aLinkF := aPaneC followingLinks second.
+	self assert: aLinkF title equals: '$F'.
+	aLinkF beActiveLink.
+	aLinkF select.
+	self assert: aPaneC activeLink equals: aLinkF.
+	self assert: aLinkF state equals: GtTreePagerLinkState selected.
+	aPaneC spawnPane: aPaneH.
+
+	aLinkH := aPaneH previousLink.
+	self assert: aPaneC followingLinks size equals: 2.
+	self assert: aPaneC followingLinks second equals: aLinkH.
+	self assert: aLinkH previousPane equals: aPaneC.
+	self assert: aLinkH replacedLink equals: nil.
+	self assert: aLinkF state equals: GtTreePagerLinkState selected.
+
+	^ aPager
+]
+
+{ #category : #'examples - pager' }
 GtTreePagerExamples >> pagerWithCWithFollowingHPane [
 	<gtExample>
 	| aPager aPaneC aPaneH |

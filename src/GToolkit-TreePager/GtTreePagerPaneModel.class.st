@@ -445,7 +445,10 @@ GtTreePagerPaneModel >> replaceFollowingLink: anOldLinkModel by: aNewLinkModel [
 			ifNone: [ NotFound signalFor: anOldLinkModel in: self followingLinks ].
 
 	aNewLinkModel previousPane: self.
-	aNewLinkModel replacedLink: anOldLinkModel.
+	GtTreePagerReplacedLinkUpdater new 
+		newLinkModel: aNewLinkModel;
+		replacedLinkModel: anOldLinkModel;
+		update.
 	aNewCollection := self followingLinks copy
 			at: anIndex put: aNewLinkModel;
 			yourself.
