@@ -162,8 +162,10 @@ GtTreePagerLinkReplacedElement >> stopAnimation [
 { #category : #'private - updating' }
 GtTreePagerLinkReplacedElement >> updateElement [
 	self hasLinkModel ifFalse: [ ^ self ].
+
 	self linkModel replacedLink
-		ifNil: [ self visibility: BlVisibility gone ]
+		ifNil: [ 
+			self visibility: BlVisibility gone ]
 		ifNotNil: [ 
 			self visibility: BlVisibility visible.
 			self startAnimation ]
