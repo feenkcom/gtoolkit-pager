@@ -12,6 +12,11 @@ GtTreePagerConstants class >> cellSpacing [
 ]
 
 { #category : #constants }
+GtTreePagerConstants class >> cornerButtonSize [
+	^ 20 @ 20
+]
+
+{ #category : #constants }
 GtTreePagerConstants class >> edgeCornerRadius [
 	^ 2
 ]
