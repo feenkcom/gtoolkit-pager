@@ -96,6 +96,11 @@ GtTreePagerPaneElement >> initializeContentContainerElement [
 			addChild: contentElement;
 			addChild: (dropdownElement := self newDropdownMenuElement);
 			addAptitude: (maximizerAptitude := BrGlamorousWithMaximizerAptitude new
+						actionButtonDo: [ :aButton | 
+							aButton
+								id: #'tree-pager--maximize-pane-button';
+								icon: BrPlusIconStencil new;
+								exact: GtTreePagerConstants cornerButtonSize ];
 						hideMaximizeButton;
 						/ GtTreePagerPaneContentElement;
 						preferredBackground: self theme default backdropBackground);
@@ -185,7 +190,8 @@ GtTreePagerPaneElement >> newDropdownCollapseIcon [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newDropdownDownwardsIcon [
-	^ BrGlamorousVectorIcons downwards
+	^ BrGlamorousVectorIcons downwards asElement asScalableElement
+		size: GtTreePagerConstants cornerButtonSize
 ]
 
 { #category : #initialization }
@@ -195,19 +201,20 @@ GtTreePagerPaneElement >> newDropdownMaximizeIcon [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newDropdownMenuElement [
-	^ GtInspectorRoundButtonStencil small asElement
+	^ GtInspectorRoundButtonStencil new asElement
 		id: #'tree-pager--dropdown-menu-button';
+		exact: GtTreePagerConstants cornerButtonSize;
 		icon: self newDropdownDownwardsIcon;
 		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDropdownWithModifiersCollapseClick: anEvent ];
 		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDropdownWithModifiersMaximizeClick: anEvent ];
 		addAptitude: (BrGlamorousWithExplicitDropdownAptitude new
 				handle: [ BrButton new
-							size: 16 @ 16;
+							exact: GtTreePagerConstants cornerButtonSize;
 							background: Color white;
 							aptitude: BrIconAptitude;
 							geometry: BlEllipseGeometry new;
 							layout: BlLinearLayout horizontal alignCenter;
-							icon: BrGlamorousVectorIcons downwards ]
+							icon: self newDropdownDownwardsIcon ]
 					menu: [ self newDropdownMenuModel ]);
 		constraintsDo: [ :c | 
 			c ignoreByLayout.
