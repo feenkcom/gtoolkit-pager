@@ -25,7 +25,8 @@ GtTreePagerLinkOutputAndCollapsedPanesElement >> initialize [
 	super initialize.
 	self
 		vMatchParent;
-		hFitContent.
+		hFitContent;
+		clipChildren: false.
 
 	self initializeContainerElement.
 	self initializeReplacedLinkElement.
