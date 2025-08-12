@@ -30,7 +30,10 @@ GtTreePagerPaneContentElement >> initialize [
 	self background: self theme default contentBackground.
 	self matchParent.
 	self clipChildren: false.
-	self beFocusable
+	self beFocusable.
+	self
+		when: BrPopoverWhoToPinToEvent
+		do: [ :anEvent | self onMenuWhoToPinToEvent: anEvent ]
 ]
 
 { #category : #'api - navigation' }
@@ -57,6 +60,12 @@ GtTreePagerPaneContentElement >> onGtTreePagerPaneModelRebuildToolRequest: anAnn
 	self paneModel = anAnnouncement paneModel ifFalse: [ ^ self ].
 
 	BlTaskAction enqueueElement: self action: [ self updateToolElement ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerPaneContentElement >> onMenuWhoToPinToEvent: anEvent [
+	anEvent consumed: true.
+	anEvent anchorElement: self
 ]
 
 { #category : #'api - pane model' }
