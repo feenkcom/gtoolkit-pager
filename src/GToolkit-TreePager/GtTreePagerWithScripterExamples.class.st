@@ -19,8 +19,7 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns [
 	aScripter treePager
 		assertNumberOfPaneElements: 4;
 		assertNumberOfVisiblePanes: 2;
-		assertPaneModel: aPaneA
-			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertPaneModel: aPaneA position: GtTreePagerConstants cellSpacing;
 		assertNumberOfEdgeElements: 3;
 		assertNumberOfCollapsedRectangleLinkElements: 0;
 		assertNumberOfCollapsedTriangleLinkElements: 0;
@@ -50,12 +49,10 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_BCDVisiblePan
 		increaseNumberOfVisibleColumns;
 		closeConfigurationDropdownMenu;
 		assertNumberOfVisiblePanes: 3;
-		assertPaneModel: aPaneA
-			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertPaneModel: aPaneA position: GtTreePagerConstants cellSpacing;
 		assertEdgeElementsPositions;
 		previewScrollToPane: aPaneB;
-		assertPaneModel: aPaneB
-			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertPaneModel: aPaneB position: GtTreePagerConstants cellSpacing;
 		assertNumberOfEdgeElements: 3;
 		assertNumberOfCollapsedRectangleLinkElements: 0;
 		assertNumberOfCollapsedTriangleLinkElements: 0;
@@ -88,7 +85,7 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseC [
 		assertNumberOfVisiblePanes: 3;
 		flag: 'TODO: We want Pane B to remain in its position (only B and D should be visible)';
 		assertPaneModel: (false ifTrue: [ aPaneB ] ifFalse: [ aPaneA ])
-			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+			position: GtTreePagerConstants cellSpacing;
 		assertNumberOfEdgeElements: 2;
 		assertNumberOfCollapsedRectangleLinkElements: 1;
 		assertNumberOfCollapsedTriangleLinkElements: 1;
@@ -121,7 +118,7 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseD [
 		assertNumberOfVisiblePanes: 3;
 		flag: 'TODO: We want Pane B to remain in its position (only B and C should be visible)';
 		assertPaneModel: (false ifTrue: [ aPaneB ] ifFalse: [ aPaneA ])
-			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+			position: GtTreePagerConstants cellSpacing;
 		assertNumberOfEdgeElements: 2;
 		assertNumberOfCollapsedRectangleLinkElements: 1;
 		assertNumberOfCollapsedTriangleLinkElements: 1;
@@ -206,7 +203,7 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_spawnFromB [
 		assertNumberOfVisiblePanes: 3;
 		flag: 'TODO: We want Pane B to remain in its position (only B and the newly spawned pane should be visible)';
 		assertPaneModel: (false ifTrue: [ aPaneB ] ifFalse: [ aPaneA ])
-			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+			position: GtTreePagerConstants cellSpacing;
 		assertNumberOfEdgeElements: 2;
 		assertNumberOfCollapsedRectangleLinkElements: 0;
 		assertNumberOfCollapsedTriangleLinkElements: 0;
@@ -232,8 +229,7 @@ GtTreePagerWithScripterExamples >> pagerWithSevenPanesInFiveColumns [
 	aScripter treePager
 		assertNumberOfPaneElements: 7;
 		assertNumberOfVisiblePanes: 2;
-		assertPaneModel: aPaneA
-			position: GtTreePagerConstants cellSpacing @ GtTreePagerConstants cellSpacing;
+		assertPaneModel: aPaneA position: GtTreePagerConstants cellSpacing;
 		assertNumberOfEdgeElements: 6;
 		assertNumberOfCollapsedRectangleLinkElements: 0;
 		assertNumberOfCollapsedTriangleLinkElements: 0;

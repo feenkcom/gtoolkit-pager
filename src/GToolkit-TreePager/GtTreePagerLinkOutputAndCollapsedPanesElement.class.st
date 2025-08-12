@@ -56,7 +56,7 @@ GtTreePagerLinkOutputAndCollapsedPanesElement >> initializeContainerElement [
 			constraintsDo: [ :c | 
 				"For some reason the replacedLinkElement jumps if we use ignoreByLayout with vertical alignBottomAt:.
 				As a workaround, we use linear layout and move the container up."
-				c padding: (BlInsets top: GtTreePagerConstants rectangleLengthWithoutSpacing negated).
+				c padding: (BlInsets top: GtTreePagerConstants rectangleLengthWithoutSpacing negated + (GtTreePagerConstants previewCellSpacing * 2)).
 				
 				c frame horizontal alignLeft.
 				c frame vertical alignCenter ]

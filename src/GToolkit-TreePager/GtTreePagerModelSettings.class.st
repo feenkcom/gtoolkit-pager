@@ -9,7 +9,7 @@ Class {
 	#classInstVars : [
 		'defaultNumberOfVisibleColumns'
 	],
-	#category : #'GToolkit-TreePager-Settings'
+	#category : #'GToolkit-TreePager-Model'
 }
 
 { #category : #'api - settings' }
