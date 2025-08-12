@@ -53,7 +53,7 @@ GtTreePagerPanesEdgesBuilder >> collectEdgeToIncomingLink [
 				theElement graph
 					beEdge;
 					model: currentLinkElement linkModel ];
-			zIndex: -1;
+			zIndex: -2;
 			fromAnchor: (BlElementCenterRightAnchor element: currentLinkElement);
 			toAnchor: (BlElementTopCenterAnchor element: anIncomingElement).
 	self styleLineElement: aLineElement.
@@ -76,7 +76,7 @@ GtTreePagerPanesEdgesBuilder >> collectEdgeToSpawnedPane [
 				theElement graph
 					beEdge;
 					model: currentLinkElement linkModel ];
-			zIndex: -1;
+			zIndex: -2;
 			cornerRadius: GtTreePagerConstants edgeCornerRadius;
 			fromAnchor: (BlElementCenterRightAnchor element: currentLinkElement);
 			toAnchor: (BlElementCenterLeftAnchor element: aPaneElement contentElement).
@@ -137,7 +137,11 @@ GtTreePagerPanesEdgesBuilder >> styleLineElement: aLineElement [
 	| anAptitude |
 	anAptitude := BrLazyStyleCommonAptitude new
 			default: [ :aStyle | aStyle border: aLineElement theme default backdropEmphasisBackground ];
-			hovered: [ :aStyle | aStyle border: aLineElement theme button focusedFadedBackgroundColor ].
+			hovered: [ :aStyle | 
+				aStyle border: aLineElement theme button focusedFadedBackgroundColor.
+				aStyle
+					do: [ :aWidget | aWidget zIndex: -1 ]
+					after: [ :aWidget | aWidget zIndex: -2 ] ].
 
 	aLineElement addAptitude: anAptitude
 ]

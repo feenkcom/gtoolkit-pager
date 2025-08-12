@@ -6,7 +6,7 @@ Class {
 
 { #category : #initialization }
 GtTreePagerPaneCompressedFollowingsElement >> defaultLayout [
-	^ BlLinearLayout vertical
+	^ BlLinearLayout vertical cellSpacing: GtTreePagerConstants verticalCellSpacing
 ]
 
 { #category : #'accessing - ui' }
@@ -20,6 +20,10 @@ GtTreePagerPaneCompressedFollowingsElement >> initialize [
 	self hExact: GtTreePagerConstants triangleWidth.
 	self vMatchParent.
 	self clipChildren: false.
+	self
+		padding: (BlInsets
+				top: GtTreePagerConstants verticalCellSpacing negated
+				bottom: GtTreePagerConstants verticalCellSpacing negated)
 ]
 
 { #category : #'private - updating' }
