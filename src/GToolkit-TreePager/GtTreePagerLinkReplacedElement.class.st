@@ -8,6 +8,11 @@ Class {
 	#category : #'GToolkit-TreePager-UI'
 }
 
+{ #category : #'private - updating' }
+GtTreePagerLinkReplacedElement >> hide [
+	^ self visibility: BlVisibility hidden
+]
+
 { #category : #initialization }
 GtTreePagerLinkReplacedElement >> initialize [
 	super initialize.
@@ -35,7 +40,7 @@ GtTreePagerLinkReplacedElement >> newAnimation [
 	^ BlNumberTransition new
 		onStepDo: [ :eachOffset | 
 			self
-				geometry: (self geometry
+				geometry: (self newGeometry
 						startAngle: eachOffset;
 						endAngle: 270) ];
 		from: -90;
@@ -77,8 +82,8 @@ GtTreePagerLinkReplacedElement >> onAnimationFinished [
 	timeAnimation := nil.
 	self geometry: self newGeometry.
 	timeAnimationState = #paused ifTrue: [ ^ self ].
-
-	self visibility: BlVisibility gone.
+	
+	self hide.
 	self hasLinkModel ifFalse: [ ^ self ].
 	self linkModel replacedLink: nil
 ]
@@ -91,9 +96,9 @@ GtTreePagerLinkReplacedElement >> onClickEvent: anEvent [
 	anEvent consumed: true.
 
 	self linkModel restoreReplacedLink.
-	
+
 	timeAnimationState := nil.
-	self visibility: BlVisibility gone.
+	self hide
 ]
 
 { #category : #'private - event handling' }
@@ -116,10 +121,16 @@ GtTreePagerLinkReplacedElement >> onLinkModelChanged [
 GtTreePagerLinkReplacedElement >> onRemoveReplacedLinkClick: aButton [
 	self hasLinkModel ifFalse: [ ^ self ].
 	self linkModel replacedLink: nil.
-	
+
 	timeAnimationState := nil.
 	self stopAnimation.
-	self visibility: BlVisibility gone.
+	self hide
+]
+
+{ #category : #'hooks - children' }
+GtTreePagerLinkReplacedElement >> onRemovedFromSceneGraph [
+	super onRemovedFromSceneGraph.
+	self stopAnimation
 ]
 
 { #category : #'private - event handling' }
@@ -130,7 +141,7 @@ GtTreePagerLinkReplacedElement >> onRestoreReplacedLinkClick: aButton [
 
 	timeAnimationState := nil.
 	self stopAnimation.
-	self visibility: BlVisibility gone
+	self hide
 ]
 
 { #category : #'private - event handling' }
@@ -140,6 +151,11 @@ GtTreePagerLinkReplacedElement >> onUnhovered [
 
 	timeAnimationState := nil.
 	self startAnimation.
+]
+
+{ #category : #'private - updating' }
+GtTreePagerLinkReplacedElement >> show [
+	self visibility: BlVisibility visible
 ]
 
 { #category : #animation }
@@ -165,8 +181,8 @@ GtTreePagerLinkReplacedElement >> updateElement [
 
 	self linkModel replacedLink
 		ifNil: [ 
-			self visibility: BlVisibility gone ]
+			self hide ]
 		ifNotNil: [ 
-			self visibility: BlVisibility visible.
+			self show.
 			self startAnimation ]
 ]

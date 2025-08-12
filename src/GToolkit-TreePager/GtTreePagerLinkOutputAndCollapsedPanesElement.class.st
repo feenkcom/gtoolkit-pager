@@ -53,6 +53,10 @@ GtTreePagerLinkOutputAndCollapsedPanesElement >> initializeContainerElement [
 			fitContent;
 			clipChildren: false;
 			constraintsDo: [ :c | 
+				"For some reason the replacedLinkElement jumps if we use ignoreByLayout with vertical alignBottomAt:.
+				As a workaround, we use linear layout and move the container up."
+				c padding: (BlInsets top: GtTreePagerConstants rectangleLengthWithoutSpacing negated).
+				
 				c frame horizontal alignLeft.
 				c frame vertical alignCenter ]
 ]
@@ -70,11 +74,11 @@ GtTreePagerLinkOutputAndCollapsedPanesElement >> initializeOutputElement [
 GtTreePagerLinkOutputAndCollapsedPanesElement >> initializeReplacedLinkElement [
 	replacedLinkElement := GtTreePagerLinkReplacedElement new
 			constraintsDo: [ :c | 
-				c ignoreByLayout.
+				"c ignoreByLayout."
 				c ignored vertical alignBottomAt: 1.0.
 				c ignored horizontal alignCenter.
 				c linear vertical alignTop.
-				c linear horizontal alignLeft ]
+				c linear horizontal alignCenter ]
 ]
 
 { #category : #'api - link model' }
