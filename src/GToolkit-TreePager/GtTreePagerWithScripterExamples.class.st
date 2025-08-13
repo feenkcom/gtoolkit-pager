@@ -1,8 +1,72 @@
 Class {
 	#name : #GtTreePagerWithScripterExamples,
 	#superclass : #Object,
+	#instVars : [
+		'semaphore'
+	],
 	#category : #'GToolkit-TreePager-Examples'
 }
+
+{ #category : #'as yet unclassified' }
+GtTreePagerWithScripterExamples >> closePageWithPendingFuture [
+	<gtExample>
+	<after: #signalSemaphor>
+	<return: #BlScripter>
+	| scripter paneModel paneElement childElement toolElement eventHandler future futureStarted futureScheduled futureResult hasEventHandler |
+	scripter := self pagerWithFourPanesInFourColumns.
+
+	futureResult := nil.
+	futureStarted := false.
+	futureScheduled := false.
+	semaphore := Semaphore new.
+
+	future := [ futureStarted := true.
+		semaphore wait.
+		true ] asAsyncFuture.
+	paneModel := scripter model detectPaneModel: [ :eachPane | eachPane title = $B printString].
+	paneElement := (scripter element query // GtTreePagerPaneElement @ [ :eachElement | eachElement paneModel = paneModel ]) anyOne.
+	childElement := (paneElement query // GtPhlowCompositeViewElementId) anyOne.
+
+	childElement
+		withAsyncFutureDo: [ :anElementFuture | 
+			anElementFuture
+				shouldFireScheduledEvent: true;
+				whenSuccess: [ :anElement :aFutureResult | futureResult := aFutureResult ];
+				whenPending: [ :anElement :anInitialValue | futureResult := anInitialValue ];
+				whenError: [ :anElement :anError | futureResult := anError ] ].
+
+	paneElement
+		when: BrAsyncElementFutureScheduledEvent
+		do: [ futureScheduled := true ].
+
+	scripter do
+		action: [ childElement asyncFuture future: future ];
+		playNoPulse.
+
+	[ 20 milliSeconds wait.
+	futureStarted and: [ futureScheduled ] ] whileFalse: [ scripter pulse ].
+
+	toolElement := paneElement toolElement.
+	hasEventHandler := toolElement eventDispatcher hasEventHandlerSuchThat: [ :eachEventHandler | 
+		| result |
+		result := eachEventHandler class = BrAsyncElementFutureScheduledEventHandler.
+		result ifTrue: [ eventHandler := eachEventHandler ].
+		result ].
+	self assert: hasEventHandler.
+	scripter userData at: #pendingFuturePromises put: eventHandler pendingFuturePromises.
+	self assert: eventHandler pendingFuturePromises size equals: 1.
+
+	scripter doStep: [ :s | s action: [ :anElement | paneModel removeFromPreviousPane ] ].
+
+	self assert: eventHandler pendingFuturePromises size equals: 0.
+	
+	"because an element was removed from the scene graph, an update is not scheduled, therefore
+	whenError: block is not executed, it is expected and actually quite nice"
+	self assert: futureResult isNil.
+	semaphore signal.
+
+	^ scripter
+]
 
 { #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns [
@@ -241,4 +305,9 @@ GtTreePagerWithScripterExamples >> pagerWithSevenPanesInFiveColumns [
 		play.
 
 	^ aScripter
+]
+
+{ #category : #support }
+GtTreePagerWithScripterExamples >> signalSemaphor [
+	semaphore ifNotNil: #signal
 ]

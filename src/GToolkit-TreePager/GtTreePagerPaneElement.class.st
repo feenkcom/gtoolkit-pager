@@ -350,12 +350,6 @@ GtTreePagerPaneElement >> onPaneModelChanged [
 	self updateElement.
 ]
 
-{ #category : #'hooks - children' }
-GtTreePagerPaneElement >> onRemovedFromSceneGraph [
-	super onRemovedFromSceneGraph.
-	keysEventHandler uninstall
-]
-
 { #category : #'accessing - ui' }
 GtTreePagerPaneElement >> outgoingLinkElements [
 	^ followingsElement outgoingLinkElements

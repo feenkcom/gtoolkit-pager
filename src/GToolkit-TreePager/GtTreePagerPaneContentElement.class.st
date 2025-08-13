@@ -122,12 +122,16 @@ GtTreePagerPaneContentElement >> updateToolElement [
 	| targetId aToolElement |
 	targetId := #tool asBlocElementId.
 	self
-		childrenDo: [ :eachChild | eachChild id = targetId ifTrue: [ eachChild removeFromParent ] ].
+		childrenDo: [ :eachChild | 
+			eachChild id = targetId ifTrue: [ 
+				eachChild removeFromParent.
+				BrWidgetPermanentlyRemovedEvent notifyWithAllChildren: eachChild. ] ].
 
 	self navigationContext
 		ifNotNil: [ :aContext | self paneModel phlowTool contextWithNavigationContext: aContext ].
 
 	aToolElement := self paneModel asElement.
+	BrAsyncElementFutureScheduledEventHandler ensureEventHandlerIn: aToolElement.
 
 	self addChild: aToolElement as: targetId
 ]
