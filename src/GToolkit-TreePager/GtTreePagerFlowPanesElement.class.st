@@ -251,7 +251,7 @@ GtTreePagerFlowPanesElement >> updateElementLayoutNumberOfVisibleColumns [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
-	| spawnedElements edgeElements nonSpawnedElements |
+	| spawnedElements edgeElements nonSpawnedElements remainingChildren |
 	spawnedElements := OrderedCollection new.
 	nonSpawnedElements := OrderedCollection new.
 
@@ -277,7 +277,13 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 			build.
 
 	spawnedElements addAll: edgeElements.
-	(self children difference: spawnedElements) do: #removeFromParent.
+	remainingChildren := (self children difference: spawnedElements).	
+	remainingChildren do: [ :eachChild | 
+		eachChild removeFromParent.
+		(nonSpawnedElements identityIncludes: eachChild) ifFalse: [ 
+			"Let's notify not-used elements that they are permanently removed."
+			BrWidgetPermanentlyRemovedEvent notifyWithAllChildren: eachChild ] ].
+	
 	"For some reason I have to add edges later.
 	Covered by `GtTreePagerWithScripterExamples>>#pagerWithFourPanesInFourColumns_collapseD`."
 	self addChildren: edgeElements.
