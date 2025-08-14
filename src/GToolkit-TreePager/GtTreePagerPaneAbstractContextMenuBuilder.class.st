@@ -10,8 +10,7 @@ GtTreePagerPaneAbstractContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedSt
 	self linkModel depthIndex = 1
 		ifFalse: [ 
 			menu addItem: self newCollapseOrSelectPaneActionItem.
-			self linkModel spawnedFollowingLinks ifNotEmpty: [ 
-				menu addItem: self newHideLinkActionItem ] ].
+			self mayAddHideLinkActionItem. ].
 	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRebuildPaneToolElementActionItem.
 	self linkModel depthIndex > 1
@@ -24,8 +23,7 @@ GtTreePagerPaneAbstractContextMenuBuilder >> visitGtTreePagerLinkInactiveSpawned
 	self linkModel depthIndex = 1
 		ifFalse: [ 
 			menu addItem: self newCollapseOrSelectPaneActionItem.
-			self linkModel spawnedFollowingLinks ifNotEmpty: [ 
-				menu addItem: self newHideLinkActionItem ] ].
+			self mayAddHideLinkActionItem. ].
 	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRebuildPaneToolElementActionItem.
 	self linkModel depthIndex > 1

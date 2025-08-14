@@ -31,6 +31,17 @@ GtTreePagerLinkModel >> allFollowingPanesCount [
 ]
 
 { #category : #'api - previous links' }
+GtTreePagerLinkModel >> allPreviousLinksDo: aBlock [
+	"Iterate previous links hierarchy"
+
+	self previousPane
+		ifNotNil: [ :aPreviousPane | 
+			aPreviousPane previousLink ifNotNil: [ :aPreviousLink | 
+				aBlock value: aPreviousLink.
+				aPreviousLink allPreviousLinksDo: aBlock ] ]
+]
+
+{ #category : #'api - previous links' }
 GtTreePagerLinkModel >> allPreviousPanesDo: aBlock [
 	"Iterate previous panes hierarchy"
 
@@ -146,6 +157,19 @@ GtTreePagerLinkModel >> gtPaneModelFor: aView [
 		title: 'Links';
 		object: [ paneModel ];
 		view: #gtFollowingPanesFor:
+]
+
+{ #category : #views }
+GtTreePagerLinkModel >> gtPreviousLinksFor: aView [
+	<gtView>
+	^ aView columnedList
+		title: 'Previous links';
+		items: [ self withAllPreviousLinks ];
+		column: 'Index'
+			text: [ :_ :anIndex | anIndex ]
+			width: 40;
+		column: 'Link' text: #gtDisplayString;
+		column: 'State' text: [ :eachLink | eachLink state label ]
 ]
 
 { #category : #'api - visibility' }
@@ -342,4 +366,12 @@ GtTreePagerLinkModel >> state: aState [
 { #category : #accessing }
 GtTreePagerLinkModel >> title [
 	^ paneModel title
+]
+
+{ #category : #'api - previous links' }
+GtTreePagerLinkModel >> withAllPreviousLinks [
+	^ Array
+		streamContents: [ :aStream | 
+			aStream nextPut: self.
+			self allPreviousLinksDo: [ :eachLink | aStream nextPut: eachLink ] ]
 ]

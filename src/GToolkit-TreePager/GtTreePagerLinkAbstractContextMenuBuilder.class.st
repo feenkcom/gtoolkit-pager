@@ -30,6 +30,14 @@ GtTreePagerLinkAbstractContextMenuBuilder >> linkModel: aLinkModel [
 	linkModel := aLinkModel
 ]
 
+{ #category : #'menu items' }
+GtTreePagerLinkAbstractContextMenuBuilder >> mayAddHideLinkActionItem [
+	GtTreePagerSettings isDisplayHideMenuItem ifFalse: [ ^ self ].
+	self linkModel depthIndex = 1 ifTrue: [ ^ self ].
+	self linkModel spawnedFollowingLinks ifEmpty: [ ^ self ].
+	menu addItem: self newHideLinkActionItem
+]
+
 { #category : #accessing }
 GtTreePagerLinkAbstractContextMenuBuilder >> navigationContext [
 	<return: #GtTreePagerPaneNavigationContext>
@@ -75,7 +83,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newExpandLinkActionItem [
 { #category : #'menu items' }
 GtTreePagerLinkAbstractContextMenuBuilder >> newHideLinkActionItem [
 	^ BrMenuActionItem new
-		id: #'menu--hide-link';
+		id: #'tree-pager--menu--hide';
 		label: 'Collapse all' preview: [ self thisAndOtherPanesPreviewString ];
 		action: [ :anElement :aButtonModel :anEvent | self linkModel hide ];
 		yourself
