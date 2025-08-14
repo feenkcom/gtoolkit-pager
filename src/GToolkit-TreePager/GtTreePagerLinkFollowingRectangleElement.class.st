@@ -38,9 +38,12 @@ GtTreePagerLinkFollowingRectangleElement >> newContextMenu [
 	aMenu := BrMenuItems new.
 
 	anActionItem := BrMenuActionItem new
-			id: #'menu--expand-pane';
-			label: 'Expand' preview: [ self linkModel title ];
+			id: #'tree-pager--menu--expand';
+			label: 'Expand' preview: [ self linkModel isInHiddenLink 
+				ifFalse: [ self linkModel title ]
+				ifTrue: [ 'Expand top link first' ] ];
 			action: [ :anElement :aButtonModel :anEvent | self linkModel expand ];
+			disableIf: [ :aMenuItem | self linkModel isInHiddenLink ];
 			yourself.
 	aMenu addItem: anActionItem.
 

@@ -29,6 +29,7 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveCollapsedState:
 
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveHiddenState: aState [
+	menu addItem: self newExpandLinkActionItem.
 	self linkModel depthIndex = 1
 		ifFalse: [ menu addItem: self newRemoveLinkActionItem ]
 ]
