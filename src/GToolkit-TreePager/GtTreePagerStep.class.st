@@ -374,6 +374,14 @@ GtTreePagerStep >> clickDropdownCollapseMenuItem [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> clickDropdownRemoveMenuItem [
+	^ self menuStep
+		clickMenuItemWithId: #'tree-pager--menu-remove';
+		onMenuContainer;
+		referenceSender
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> closeConfigurationDropdownMenu [
 	^ self menuStep
 		referenceSender;

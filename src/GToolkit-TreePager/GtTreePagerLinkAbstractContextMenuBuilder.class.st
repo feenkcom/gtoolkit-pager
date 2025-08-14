@@ -76,7 +76,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newExpandLinkActionItem [
 GtTreePagerLinkAbstractContextMenuBuilder >> newHideLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'menu--hide-link';
-		label: 'Hide' preview: [ self thisAndOtherPanesPreviewString ];
+		label: 'Collapse all' preview: [ self thisAndOtherPanesPreviewString ];
 		action: [ :anElement :aButtonModel :anEvent | self linkModel hide ];
 		yourself
 ]
@@ -111,7 +111,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newRebuildPaneToolElementActionItem
 { #category : #'menu items' }
 GtTreePagerLinkAbstractContextMenuBuilder >> newRemoveLinkActionItem [
 	^ BrMenuActionItem new
-		id: #'menu--remove-pane';
+		id: #'tree-pager--menu-remove';
 		label: 'Remove' preview: [ self thisAndOtherPanesPreviewString ];
 		action: [ :anElement :aButtonModel :anEvent | self linkModel removeFromPreviousPane ];
 		yourself

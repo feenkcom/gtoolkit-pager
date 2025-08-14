@@ -189,6 +189,18 @@ GtTreePagerLinkModel >> isHidden [
 	^ state isHidden
 ]
 
+{ #category : #'api - previous links' }
+GtTreePagerLinkModel >> isInHiddenLink [
+	"Return true if this links is in a tree branch that is hidden or selected.
+	Following links of a hidden and selected parent link are not displayed as spawned panes"
+
+	self allPreviousPanesDo: [ :aPaneModel | 
+		aPaneModel isHidden ifTrue: [ ^ true ].
+		aPaneModel isSelected ifTrue: [ ^ true ] ].
+	
+	^ false
+]
+
 { #category : #'private - notifying' }
 GtTreePagerLinkModel >> notifyStateChangedFrom: anOldState [
 	| anAnnouncement |
@@ -302,6 +314,14 @@ GtTreePagerLinkModel >> similarPaneCopy [
 { #category : #'api - following links' }
 GtTreePagerLinkModel >> spawnPane: aPaneModel [
 	self paneModel spawnPane: aPaneModel
+]
+
+{ #category : #'api - following links' }
+GtTreePagerLinkModel >> spawnedFollowingLinks [
+	"Return collection of following links that are spawned"
+
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self paneModel spawnedFollowingLinks
 ]
 
 { #category : #'api - state' }

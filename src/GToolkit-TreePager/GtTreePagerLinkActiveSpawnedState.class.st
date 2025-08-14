@@ -35,3 +35,10 @@ GtTreePagerLinkActiveSpawnedState >> isSpawned [
 	<return: #Boolean>
 	^ true
 ]
+
+{ #category : #'api - state' }
+GtTreePagerLinkActiveSpawnedState >> select [
+	"Return a selected state"
+
+	^ GtTreePagerLinkState selected
+]

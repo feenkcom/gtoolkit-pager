@@ -106,7 +106,13 @@ GtTreePagerPaneModel >> collapse: aBoolean [
 
 { #category : #'api - previous panes' }
 GtTreePagerPaneModel >> collapseOrSelect [
-	self collapse
+	"If the pane does not have any spawned panes, set select link state.
+	Changing state to a select state keeps #isActive value.
+	Changing state to a collapse state change #isActive value to false."
+
+	self spawnedFollowingLinks
+		ifEmpty: [ self select ]
+		ifNotEmpty: [ self collapse ]
 ]
 
 { #category : #accessing }
@@ -465,6 +471,12 @@ GtTreePagerPaneModel >> requestRebuildPaneTool [
 	self notifyRebuildPaneTool
 ]
 
+{ #category : #'api - state' }
+GtTreePagerPaneModel >> select [
+	self previousLink ifNotNil: [ :aLinkModel | 
+		aLinkModel select ]
+]
+
 { #category : #'api - previous panes' }
 GtTreePagerPaneModel >> selectInPreviousPane [
 	self previousLink
@@ -510,6 +522,14 @@ GtTreePagerPaneModel >> spawnSiblingPane: aNewPaneModel [
 	aNewLinkModel expand.
 
 	self addFollowingLink: aNewLinkModel
+]
+
+{ #category : #'api - following links' }
+GtTreePagerPaneModel >> spawnedFollowingLinks [
+	"Return collection of following links that are spawned"
+
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self followingLinks select: #isSpawned
 ]
 
 { #category : #'api - state' }
