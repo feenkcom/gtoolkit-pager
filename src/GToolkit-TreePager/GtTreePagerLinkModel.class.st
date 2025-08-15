@@ -31,6 +31,17 @@ GtTreePagerLinkModel >> allFollowingPanesCount [
 ]
 
 { #category : #'api - previous links' }
+GtTreePagerLinkModel >> allPreviousLinksDo: aBlock [
+	"Iterate previous links hierarchy"
+
+	self previousPane
+		ifNotNil: [ :aPreviousPane | 
+			aPreviousPane previousLink ifNotNil: [ :aPreviousLink | 
+				aBlock value: aPreviousLink.
+				aPreviousLink allPreviousLinksDo: aBlock ] ]
+]
+
+{ #category : #'api - previous links' }
 GtTreePagerLinkModel >> allPreviousPanesDo: aBlock [
 	"Iterate previous panes hierarchy"
 
@@ -148,6 +159,19 @@ GtTreePagerLinkModel >> gtPaneModelFor: aView [
 		view: #gtFollowingPanesFor:
 ]
 
+{ #category : #views }
+GtTreePagerLinkModel >> gtPreviousLinksFor: aView [
+	<gtView>
+	^ aView columnedList
+		title: 'Previous links';
+		items: [ self withAllPreviousLinks ];
+		column: 'Index'
+			text: [ :_ :anIndex | anIndex ]
+			width: 40;
+		column: 'Link' text: #gtDisplayString;
+		column: 'State' text: [ :eachLink | eachLink state label ]
+]
+
 { #category : #'api - visibility' }
 GtTreePagerLinkModel >> hide [
 	self state: self state hide
@@ -187,6 +211,18 @@ GtTreePagerLinkModel >> isExpanded [
 { #category : #'api - visibility' }
 GtTreePagerLinkModel >> isHidden [
 	^ state isHidden
+]
+
+{ #category : #'api - previous links' }
+GtTreePagerLinkModel >> isInHiddenLink [
+	"Return true if this links is in a tree branch that is hidden or selected.
+	Following links of a hidden and selected parent link are not displayed as spawned panes"
+
+	self allPreviousPanesDo: [ :aPaneModel | 
+		aPaneModel isHidden ifTrue: [ ^ true ].
+		aPaneModel isSelected ifTrue: [ ^ true ] ].
+	
+	^ false
 ]
 
 { #category : #'private - notifying' }
@@ -304,6 +340,14 @@ GtTreePagerLinkModel >> spawnPane: aPaneModel [
 	self paneModel spawnPane: aPaneModel
 ]
 
+{ #category : #'api - following links' }
+GtTreePagerLinkModel >> spawnedFollowingLinks [
+	"Return collection of following links that are spawned"
+
+	<return: #Collection of: #TGtTreePagerLinkModel>
+	^ self paneModel spawnedFollowingLinks
+]
+
 { #category : #'api - state' }
 GtTreePagerLinkModel >> state [
 	^ state
@@ -322,4 +366,12 @@ GtTreePagerLinkModel >> state: aState [
 { #category : #accessing }
 GtTreePagerLinkModel >> title [
 	^ paneModel title
+]
+
+{ #category : #'api - previous links' }
+GtTreePagerLinkModel >> withAllPreviousLinks [
+	^ Array
+		streamContents: [ :aStream | 
+			aStream nextPut: self.
+			self allPreviousLinksDo: [ :eachLink | aStream nextPut: eachLink ] ]
 ]

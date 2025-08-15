@@ -30,21 +30,23 @@ GtTreePagerLinkState class >> gtAllBooleanSelectors [
 GtTreePagerLinkState class >> gtAllStateSelectors [
 	| tester |
 	tester := self gtAllStates anyOne.
-	^ GtTreePagerLinkState selectors
+	^ (GtTreePagerLinkState selectors
 		select: [ :each | 
 			each numArgs isZero
-				and: [ (tester perform: each) isKindOf: GtTreePagerLinkState ] ]
+				and: [ (tester perform: each) isKindOf: GtTreePagerLinkState ] ])
+		sort: [ :a :b | a < b ]
 ]
 
 { #category : #'gt - extensions' }
 GtTreePagerLinkState class >> gtAllStates [
-	^ GtTreePagerLinkState class methods
+	^ (GtTreePagerLinkState class methods
 		select: [ :eachMethod | 
 			eachMethod numArgs isZero
 				and: [ eachMethod protocol = 'api - accessing'
 						and: [ (GtTreePagerLinkState perform: eachMethod selector)
 								isKindOf: GtTreePagerLinkState ] ] ]
-		thenCollect: [ :eachMethod | GtTreePagerLinkState perform: eachMethod selector ]
+		thenCollect: [ :eachMethod | GtTreePagerLinkState perform: eachMethod selector ]) 
+			sort: [ :a :b | a label < b label ]
 ]
 
 { #category : #'gt - extensions' }
@@ -191,6 +193,11 @@ GtTreePagerLinkState >> isHidden [
 ]
 
 { #category : #'api - state' }
+GtTreePagerLinkState >> isSelected [
+	^ false
+]
+
+{ #category : #'api - state' }
 GtTreePagerLinkState >> isSpawned [
 	"Return true if link pane model is spawned (expanded and displayed)"
 
@@ -212,5 +219,5 @@ GtTreePagerLinkState >> label [
 GtTreePagerLinkState >> select [
 	"Return a selected state"
 
-	^ GtTreePagerLinkState selected
+	^ self
 ]

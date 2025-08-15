@@ -27,3 +27,8 @@ GtTreePagerLinkActiveSelectedState >> inactivate [
 GtTreePagerLinkActiveSelectedState >> isActive [
 	^ true
 ]
+
+{ #category : #'api - state' }
+GtTreePagerLinkActiveSelectedState >> isSelected [
+	^ true
+]

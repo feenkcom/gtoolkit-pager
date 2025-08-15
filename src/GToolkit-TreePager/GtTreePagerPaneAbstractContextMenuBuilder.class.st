@@ -8,7 +8,9 @@ Class {
 GtTreePagerPaneAbstractContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedState: aState [
 	menu addItem: self newMaximizePaneActionItem.
 	self linkModel depthIndex = 1
-		ifFalse: [ menu addItem: self newCollapseOrSelectPaneActionItem ].
+		ifFalse: [ 
+			menu addItem: self newCollapseOrSelectPaneActionItem.
+			self mayAddHideLinkActionItem. ].
 	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRebuildPaneToolElementActionItem.
 	self linkModel depthIndex > 1
@@ -19,7 +21,9 @@ GtTreePagerPaneAbstractContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedSt
 GtTreePagerPaneAbstractContextMenuBuilder >> visitGtTreePagerLinkInactiveSpawnedState: aState [
 	menu addItem: self newMaximizePaneActionItem.
 	self linkModel depthIndex = 1
-		ifFalse: [ menu addItem: self newCollapseOrSelectPaneActionItem ].
+		ifFalse: [ 
+			menu addItem: self newCollapseOrSelectPaneActionItem.
+			self mayAddHideLinkActionItem. ].
 	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRebuildPaneToolElementActionItem.
 	self linkModel depthIndex > 1

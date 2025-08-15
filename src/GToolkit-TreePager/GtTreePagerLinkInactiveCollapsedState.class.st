@@ -27,3 +27,10 @@ GtTreePagerLinkInactiveCollapsedState >> expand [
 GtTreePagerLinkInactiveCollapsedState >> isCollapsed [
 	^ true
 ]
+
+{ #category : #'api - state' }
+GtTreePagerLinkInactiveCollapsedState >> select [
+	"Return a selected state"
+
+	^ GtTreePagerLinkState hidden
+]

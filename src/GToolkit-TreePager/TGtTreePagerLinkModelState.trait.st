@@ -42,6 +42,15 @@ TGtTreePagerLinkModelState >> isHidden [
 ]
 
 { #category : #'api - state' }
+TGtTreePagerLinkModelState >> isSelected [
+	"Return true if link model is selected.
+	Selected links are replaced with new spawned or selected links."
+
+	<return: #Boolean>
+	^ self state isSelected
+]
+
+{ #category : #'api - state' }
 TGtTreePagerLinkModelState >> isSpawned [
 	"Return true if link pane model is spawned (expanded and displayed)"
 

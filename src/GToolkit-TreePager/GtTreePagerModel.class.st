@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerModel,
 	#superclass : #Object,
-	#traits : 'TGtTreePagerModelEnumerable + TGtAnnouncer + TGtOptions',
-	#classTraits : 'TGtTreePagerModelEnumerable classTrait + TGtAnnouncer classTrait + TGtOptions classTrait',
+	#traits : 'TGtTreePagerModelEnumerable + TGtAnnouncer + TGtOptions + TGtTreePagerLinkModelState',
+	#classTraits : 'TGtTreePagerModelEnumerable classTrait + TGtAnnouncer classTrait + TGtOptions classTrait + TGtTreePagerLinkModelState classTrait',
 	#instVars : [
 		'announcer',
 		'linkModels',
@@ -167,4 +167,10 @@ GtTreePagerModel >> previousLink [
 { #category : #accessing }
 GtTreePagerModel >> settings [
 	^ settings
+]
+
+{ #category : #'api - state' }
+GtTreePagerModel >> state [
+	<return: #GtTreePagerLinkState>
+	^ GtTreePagerLinkState spawned
 ]

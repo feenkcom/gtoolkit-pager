@@ -11,6 +11,11 @@ TGtTreePagerLinkModel >> activeLink [
 	^ self explicitRequirement
 ]
 
+{ #category : #'api - previous links' }
+TGtTreePagerLinkModel >> allPreviousLinksDo: aBlock [
+	"Iterate previous links hierarchy"
+]
+
 { #category : #'api - pane model' }
 TGtTreePagerLinkModel >> children [
 	<return: #Collection of: #TGtTreePagerLinkModel>

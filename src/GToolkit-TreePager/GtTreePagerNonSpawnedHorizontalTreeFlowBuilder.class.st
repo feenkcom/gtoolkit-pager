@@ -31,12 +31,6 @@ GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> build [
 ]
 
 { #category : #private }
-GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> buildCollapsedCurrentNode [
-	(self nodesFromLinkModels: currentNode linkModel followingLinks reversed)
-		do: [ :eachNode | sameDepthQueue addFirst: eachNode ]
-]
-
-{ #category : #private }
 GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> buildNonSpawnedCurrentNode [
 	"row := row max: currentNode row."
 
@@ -105,6 +99,10 @@ GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> processQueue [
 
 { #category : #private }
 GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> visitCurrentNode [
+	currentNode linkModel isInHiddenLink ifTrue: [ 
+		self buildNonSpawnedCurrentNode. 
+		^ self ].
+
 	currentNode linkModel state acceptVisitor: self
 ]
 

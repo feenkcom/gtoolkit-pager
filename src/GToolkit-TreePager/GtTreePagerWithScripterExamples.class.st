@@ -7,7 +7,7 @@ Class {
 	#category : #'GToolkit-TreePager-Examples'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> closePageWithPendingFuture [
 	<gtExample>
 	<after: #signalSemaphor>
