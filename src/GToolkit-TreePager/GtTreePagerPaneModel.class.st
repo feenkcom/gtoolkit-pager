@@ -110,7 +110,7 @@ GtTreePagerPaneModel >> collapseOrSelect [
 	Changing state to a select state keeps #isActive value.
 	Changing state to a collapse state change #isActive value to false."
 
-	self spawnedFollowingLinks
+	self followingSpawnedLinkModels
 		ifEmpty: [ self select ]
 		ifNotEmpty: [ self collapse ]
 ]

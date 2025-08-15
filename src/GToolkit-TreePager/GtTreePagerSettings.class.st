@@ -13,11 +13,6 @@ GtTreePagerSettings class >> displayHideMenuItem [
 ]
 
 { #category : #settings }
-GtTreePagerSettings class >> displayHideMenuItem: aBollean [
-	DisplayHideMenuItem := aBollean
-]
-
-{ #category : #settings }
 GtTreePagerSettings class >> hideHideMenuItem [
 	DisplayHideMenuItem := false
 ]

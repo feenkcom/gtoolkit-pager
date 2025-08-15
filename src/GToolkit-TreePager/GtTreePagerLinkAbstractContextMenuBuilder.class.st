@@ -34,7 +34,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> linkModel: aLinkModel [
 GtTreePagerLinkAbstractContextMenuBuilder >> mayAddHideLinkActionItem [
 	GtTreePagerSettings isDisplayHideMenuItem ifFalse: [ ^ self ].
 	self linkModel depthIndex = 1 ifTrue: [ ^ self ].
-	self linkModel spawnedFollowingLinks ifEmpty: [ ^ self ].
+	self linkModel followingSpawnedLinkModels ifEmpty: [ ^ self ].
 	menu addItem: self newHideLinkActionItem
 ]
 
