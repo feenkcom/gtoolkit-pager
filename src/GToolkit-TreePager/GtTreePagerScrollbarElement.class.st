@@ -94,8 +94,8 @@ GtTreePagerScrollbarElement >> initialize [
 
 	previewContainer := BrVerticalPane new
 			fitContent;
-			addChild: previewsElement.	";
-			addChild: scrollbarElement"
+			addChild: previewsElement;
+			addChild: scrollbarElement.
 
 	configurationElement := self newConfigurationElement.
 
@@ -349,7 +349,8 @@ GtTreePagerScrollbarElement >> panesElement: aPanesElement [
 
 	aPanesElement
 		when: GtTreePagerFlowPaneElementsChanged
-		do: [ :anEvent | self onGtTreePagerFlowPaneElementsChanged: anEvent ]
+		do: [ :anEvent | self onGtTreePagerFlowPaneElementsChanged: anEvent ].
+	scrollbarElement attachTo: aPanesElement
 ]
 
 { #category : #'api - selection' }
