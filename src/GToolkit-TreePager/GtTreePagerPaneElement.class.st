@@ -477,6 +477,10 @@ GtTreePagerPaneElement >> updateDropdownElementToMaximizeIcon [
 GtTreePagerPaneElement >> updateDropdownElementToRemoveIcon [
 	dropdownElement ifNil: [ ^ self ].
 
+	self paneModel ifNil: [ ^ self ].
+	self paneModel depthIndex = 1
+		ifTrue: [ ^ self updateDropdownElementToDownwardsIcon ].
+	
 	dropdownElement userData
 		at: #gtTreePagerDropdownElementState
 		ifPresent: [ :aSymbol | aSymbol = #remove ifTrue: [ ^ self ] ]
