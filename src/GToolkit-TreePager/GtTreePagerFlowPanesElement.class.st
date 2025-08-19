@@ -4,7 +4,8 @@ Class {
 	#traits : 'TBlHorizontalTreeFlowLayoutSmooth',
 	#classTraits : 'TBlHorizontalTreeFlowLayoutSmooth classTrait',
 	#instVars : [
-		'paneElementsCache'
+		'paneElementsCache',
+		'toolSelectionStateHandler'
 	],
 	#category : #'GToolkit-TreePager-UI'
 }
@@ -72,7 +73,9 @@ GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex
 				depth: aDepthIndex;
 				span: aSpanIndex ].
 
-	anElement hasParent ifFalse: [ self addChild: anElement ].
+	anElement hasParent ifFalse: [ 
+		anElement userData at: #treePagerNewElement put: true.
+		self addChild: anElement ].
 
 	^ anElement
 ]
@@ -82,6 +85,8 @@ GtTreePagerFlowPanesElement >> initialize [
 	super initialize.
 	self matchParent.
 
+	toolSelectionStateHandler := GtPhlowToolSelectionStateHandler new.
+	
 	self
 		when: BlMouseWheelEvent
 		do: [ :anEvent | self layoutDo: [ :aLayout | aLayout mouseWheelEvent: anEvent ] ]
@@ -227,6 +232,11 @@ GtTreePagerFlowPanesElement >> subscribeToPagerModel [
 			to: self
 ]
 
+{ #category : #accessing }
+GtTreePagerFlowPanesElement >> toolSelectionStateHandlerDo: aBlock [
+	^ toolSelectionStateHandler ifNotNil: aBlock
+]
+
 { #category : #'api - pager model' }
 GtTreePagerFlowPanesElement >> unsubscribeFromPagerModel [
 	self pagerModel unsubscribe: self
@@ -251,7 +261,7 @@ GtTreePagerFlowPanesElement >> updateElementLayoutNumberOfVisibleColumns [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
-	| spawnedElements edgeElements nonSpawnedElements remainingChildren |
+	| spawnedElements edgeElements nonSpawnedElements toRemoveElements toRemovePaneElements |
 	spawnedElements := OrderedCollection new.
 	nonSpawnedElements := OrderedCollection new.
 
@@ -277,17 +287,38 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 			build.
 
 	spawnedElements addAll: edgeElements.
-	remainingChildren := (self children difference: spawnedElements).	
-	remainingChildren do: [ :eachChild | 
+	toRemoveElements := self children difference: spawnedElements.
+	toRemovePaneElements := toRemoveElements
+			select: [ :eachElement | eachElement graph isNode ].
+
+	"Let's store selection state of all removed pane elements."
+	toRemovePaneElements do: [ :eachElement | 
+		self toolSelectionStateHandlerDo: [ :aHandler | 
+			eachElement realToolElementDo: [ :aToolElement | 
+				aHandler storeSelectionStateFrom: aToolElement ] ] ].
+
+	toRemoveElements do: [ :eachChild | 
 		eachChild removeFromParent.
-		(nonSpawnedElements identityIncludes: eachChild) ifFalse: [ 
+		(nonSpawnedElements identityIncludes: eachChild) ifFalse: [  
 			"Let's notify not-used elements that they are permanently removed."
 			BrWidgetPermanentlyRemovedEvent notifyWithAllChildren: eachChild ] ].
-	
+			
+	"Let's apply selection state to new pane elements."
+	self childrenDo: [ :eachChild | 
+		(eachChild graph isNode and: [ 
+			eachChild userData at: #treePagerNewElement 
+				ifPresent: [ :aBoolean | 
+					eachChild userData removeKey: #treePagerNewElement ifAbsent: [ "ignore" ].
+					aBoolean ] 
+				ifAbsent: [ false ] ])
+				ifTrue: [ self toolSelectionStateHandlerDo: [ :aHandler | 
+					eachChild realToolElementDo: [ :aToolElement | 
+						aHandler applySelectionStateTo: aToolElement ] ] ] ].
+				
 	"For some reason I have to add edges later.
 	Covered by `GtTreePagerWithScripterExamples>>#pagerWithFourPanesInFourColumns_collapseD`."
 	self addChildren: edgeElements.
-	
+
 	paneElementsCache := nonSpawnedElements.
 
 	self dispatchEvent: GtTreePagerFlowPaneElementsChanged new
