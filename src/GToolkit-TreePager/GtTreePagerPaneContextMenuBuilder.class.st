@@ -7,15 +7,16 @@ Class {
 { #category : #'menu items' }
 GtTreePagerPaneContextMenuBuilder >> newCollapseOrSelectPaneActionItem [
 	^ super newCollapseOrSelectPaneActionItem
-		label: 'Collapse'
+		label: 'Collapse pane'
 		preview: [ self linkModel title ]
 		shortcut: [ OSPlatform current primaryModifier gtDisplayString, '+Click' ]
 ]
 
 { #category : #'menu items' }
-GtTreePagerPaneContextMenuBuilder >> newMaximizePaneActionItem [
-	^ super newMaximizePaneActionItem
-		label: 'Maximize'
-		preview: [ self linkModel title ]
-		shortcut: [ OSPlatform current primaryModifier gtDisplayString , '+Shift+Click' ]
+GtTreePagerPaneContextMenuBuilder >> newRemoveLinkActionItem [
+	^ super newRemoveLinkActionItem
+		label: 'Remove pane'
+		preview: [ self thisAndOtherPanesPreviewString ]
+		shortcut: [ OSPlatform current primaryModifier gtDisplayString
+				, '+Shift+Click' ]
 ]

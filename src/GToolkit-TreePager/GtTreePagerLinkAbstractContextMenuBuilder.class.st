@@ -57,7 +57,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newActivateLinkActionItem [
 GtTreePagerLinkAbstractContextMenuBuilder >> newCollapseLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'menu--collapse-pane';
-		label: 'Collapse' preview: [ self linkModel title ];
+		label: 'Collapse pane' preview: [ self linkModel title ];
 		action: [ :anElement :aButtonModel :anEvent | self linkModel collapse ];
 		yourself
 ]
@@ -66,7 +66,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newCollapseLinkActionItem [
 GtTreePagerLinkAbstractContextMenuBuilder >> newCollapseOrSelectPaneActionItem [
 	^ BrMenuActionItem new
 		id: #'tree-pager--menu-collapse';
-		label: 'Collapse' preview: [ self linkModel title ];
+		label: 'Collapse pane' preview: [ self linkModel title ];
 		action: [ :anElement :aButtonModel :anEvent | self paneModel collapseOrSelect ];
 		yourself
 ]
@@ -75,7 +75,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newCollapseOrSelectPaneActionItem [
 GtTreePagerLinkAbstractContextMenuBuilder >> newExpandLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'menu--expand-pane';
-		label: 'Expand' preview: [ self linkModel title ];
+		label: 'Expand pane' preview: [ self linkModel title ];
 		action: [ :anElement :aButtonModel :anEvent | self linkModel expand ];
 		yourself
 ]
@@ -84,7 +84,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newExpandLinkActionItem [
 GtTreePagerLinkAbstractContextMenuBuilder >> newHideLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'tree-pager--menu--hide';
-		label: 'Collapse all' preview: [ self thisAndOtherPanesPreviewString ];
+		label: 'Collapse all panes' preview: [ self thisAndOtherPanesPreviewString ];
 		action: [ :anElement :aButtonModel :anEvent | self linkModel hide ];
 		yourself
 ]
@@ -102,7 +102,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newInactivateLinkActionItem [
 GtTreePagerLinkAbstractContextMenuBuilder >> newMaximizePaneActionItem [
 	^ BrMenuActionItem new
 		id: #'menu--maximize-pane';
-		label: 'Maximize' preview: [ self linkModel title ];
+		label: 'Maximize pane' preview: [ self linkModel title ];
 		action: [ :anElement :aButtonModel :anEvent | self paneModel requestMaximizePane ];
 		yourself
 ]
@@ -111,7 +111,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newMaximizePaneActionItem [
 GtTreePagerLinkAbstractContextMenuBuilder >> newRebuildPaneToolElementActionItem [
 	^ BrMenuActionItem new
 		id: #'menu--rebuild-pane-tool-element';
-		label: 'Update tool' preview: [ self linkModel title ];
+		label: 'Update pane tool' preview: [ self linkModel title ];
 		action: [ :anElement :aButtonModel :anEvent | self paneModel requestRebuildPaneTool ];
 		yourself
 ]
@@ -120,7 +120,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newRebuildPaneToolElementActionItem
 GtTreePagerLinkAbstractContextMenuBuilder >> newRemoveLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'tree-pager--menu-remove';
-		label: 'Remove' preview: [ self thisAndOtherPanesPreviewString ];
+		label: 'Remove pane' preview: [ self thisAndOtherPanesPreviewString ];
 		action: [ :anElement :aButtonModel :anEvent | self linkModel removeFromPreviousPane ];
 		yourself
 ]
@@ -129,7 +129,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newRemoveLinkActionItem [
 GtTreePagerLinkAbstractContextMenuBuilder >> newWorldTabActionItem [
 	^ BrMenuActionItem new
 		id: #'menu--new-world-tab';
-		label: 'Open in new tab' preview: [ self thisAndOtherPanesPreviewString ];
+		label: 'Open pane in new tab' preview: [ self thisAndOtherPanesPreviewString ];
 		action: [ :anElement :aButtonModel :anEvent | 
 			BlSpace new
 				paneInTreePager: self linkModel similarPaneCopy;

@@ -206,7 +206,7 @@ GtTreePagerPaneElement >> newDropdownMenuElement [
 		exact: GtTreePagerConstants cornerButtonSize;
 		icon: self newDropdownDownwardsIcon;
 		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDropdownWithModifiersCollapseClick: anEvent ];
-		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDropdownWithModifiersMaximizeClick: anEvent ];
+		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDropdownWithModifiersRemoveClick: anEvent ];
 		addAptitude: (BrGlamorousWithExplicitDropdownAptitude new
 				handle: [ BrButton new
 							exact: GtTreePagerConstants cornerButtonSize;
@@ -233,6 +233,11 @@ GtTreePagerPaneElement >> newDropdownMenuModel [
 		linkModel: aLinkModel;
 		paneElement: self;
 		build
+]
+
+{ #category : #initialization }
+GtTreePagerPaneElement >> newDropdownRemoveIcon [
+	^ BrGlamorousVectorIcons remove
 ]
 
 { #category : #'as yet unclassified' }
@@ -270,6 +275,17 @@ GtTreePagerPaneElement >> onDropdownWithModifiersMaximizeClick: anEvent [
 
 	dropdownElement dispatchEvent: BrDropdownHideWish new.
 	self maximize
+]
+
+{ #category : #'private - event management' }
+GtTreePagerPaneElement >> onDropdownWithModifiersRemoveClick: anEvent [
+	anEvent consumed: true.
+	self hasPaneModel ifFalse: [ ^ self ].
+
+	anEvent modifiers isSoftShiftPrimaryModifierOnly ifFalse: [ ^ self ].
+
+	dropdownElement dispatchEvent: BrDropdownHideWish new.
+	self paneModel removeFromPreviousPane
 ]
 
 { #category : #'private - event handling' }
@@ -336,7 +352,7 @@ GtTreePagerPaneElement >> onModifiersEvent: anEvent [
 		ifTrue: [ ^ self updateDropdownElementToCollapseIcon ].
 
 	anEvent modifiers isSoftShiftPrimaryModifierOnly
-		ifTrue: [ ^ self updateDropdownElementToMaximizeIcon ].
+		ifTrue: [ ^ self updateDropdownElementToRemoveIcon ].
 
 	self updateDropdownElementToDownwardsIcon
 ]
@@ -455,6 +471,26 @@ GtTreePagerPaneElement >> updateDropdownElementToMaximizeIcon [
 	^ dropdownElement
 		icon: self newDropdownMaximizeIcon;
 		label: 'Maximize pane'
+]
+
+{ #category : #'private - updating' }
+GtTreePagerPaneElement >> updateDropdownElementToRemoveIcon [
+	dropdownElement ifNil: [ ^ self ].
+
+	self paneModel ifNil: [ ^ self ].
+	self paneModel depthIndex = 1
+		ifTrue: [ ^ self updateDropdownElementToDownwardsIcon ].
+	
+	dropdownElement userData
+		at: #gtTreePagerDropdownElementState
+		ifPresent: [ :aSymbol | aSymbol = #remove ifTrue: [ ^ self ] ]
+		ifAbsent: [  ].
+
+	dropdownElement userData at: #gtTreePagerDropdownElementState put: #remove.
+
+	^ dropdownElement
+		icon: self newDropdownRemoveIcon;
+		label: 'Remove pane'
 ]
 
 { #category : #'private - updating' }
