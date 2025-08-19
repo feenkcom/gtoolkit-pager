@@ -283,7 +283,9 @@ GtTreePagerPaneModel >> hide [
 
 { #category : #accessing }
 GtTreePagerPaneModel >> icon [
-	^ icon ifNil: [ self phlowTool icon ]
+	^ icon ifNil: [ 
+		self phlowTool ifNotNil: [ :aTool | 
+			[ aTool icon ] onErrorDo: [ :anException | anException return: nil ] ] ]
 ]
 
 { #category : #accessing }
@@ -547,7 +549,16 @@ GtTreePagerPaneModel >> stencil: aBlStencil [
 
 { #category : #accessing }
 GtTreePagerPaneModel >> title [
-	^ title ifNil: [ self phlowTool ifNotNil: #title ]
+	^ title
+		ifNil: [ self phlowTool
+				ifNotNil: [ :aTool | 
+					[ aTool title ]
+						onErrorDo: [ :anException | 
+							anException
+								return: ('{1}''s exception: {2}'
+										format: {aTool className.
+												anException}) ] ]
+				ifNil: [ 'empty' ] ]
 ]
 
 { #category : #accessing }
