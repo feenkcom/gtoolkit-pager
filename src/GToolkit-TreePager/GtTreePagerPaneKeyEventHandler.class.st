@@ -71,7 +71,7 @@ GtTreePagerPaneKeyEventHandler >> onModifiersEvent: anEvent [
 		ifTrue: [ ^ paneElement updateDropdownElementToCollapseIcon ].
 
 	anEvent modifiers isSoftShiftPrimaryModifierOnly
-		ifTrue: [ ^ paneElement updateDropdownElementToMaximizeIcon ].
+		ifTrue: [ ^ paneElement updateDropdownElementToRemoveIcon ].
 
 	paneElement updateDropdownElementToDownwardsIcon
 ]
