@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerFlowPanesElement,
 	#superclass : #GtTreePagerBasicElement,
-	#traits : 'TBlHorizontalTreeFlowLayoutSmooth',
-	#classTraits : 'TBlHorizontalTreeFlowLayoutSmooth classTrait',
+	#traits : 'TBlHorizontalTreeFlowLayoutScrollable',
+	#classTraits : 'TBlHorizontalTreeFlowLayoutScrollable classTrait',
 	#instVars : [
 		'paneElementsCache',
 		'toolSelectionStateHandler'
