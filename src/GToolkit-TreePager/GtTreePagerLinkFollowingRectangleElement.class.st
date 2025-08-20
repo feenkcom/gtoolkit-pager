@@ -20,9 +20,6 @@ GtTreePagerLinkFollowingRectangleElement >> initialize [
 		constraintsDo: [ :c | 
 			c linear horizontal alignRight.
 			c linear vertical alignCenter ];
-		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ];
-		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
-				handleSubmenu: [ self newContextMenu ]);
 		addAptitude: (BrLazyStyleCommonAptitude new
 				default: [ :aStyle | 
 					aStyle background: self theme default backdropEmphasisBackground.
@@ -34,6 +31,8 @@ GtTreePagerLinkFollowingRectangleElement >> initialize [
 
 { #category : #initialization }
 GtTreePagerLinkFollowingRectangleElement >> newContextMenu [
+	"Note: can be removed."
+
 	| aMenu anActionItem |
 	aMenu := BrMenuItems new.
 
@@ -69,6 +68,8 @@ GtTreePagerLinkFollowingRectangleElement >> newContextMenu [
 
 { #category : #initialization }
 GtTreePagerLinkFollowingRectangleElement >> onClickEvent: anEvent [
+	"Note: can be removed."
+
 	anEvent consumed: true.
 	self linkModel ifNil: [ ^ self ].
 

@@ -4,38 +4,6 @@ Class {
 	#category : #'GToolkit-TreePager-Examples'
 }
 
-{ #category : #'examples - pager' }
-GtTreePagerExamples >> assertPager: aPager columnCharacterPanes: aPanesCollection [
-	| aTitlesCollection |
-	aTitlesCollection := aPanesCollection collect: [ :each | each collect: #printString ].
-	self assertPager: aPager columnPaneTitles: aTitlesCollection
-]
-
-{ #category : #'examples - pager' }
-GtTreePagerExamples >> assertPager: aPager columnPaneTitles: aPanesCollection [
-	"aCollection is an array of arrays. 
-	Each array contains tool titles for a particular pane."
-
-	self assert: aPager columns size equals: aPanesCollection size.
-	aPanesCollection
-		withIndexDo: [ :eachPaneCollection :eachPaneIndex | 
-			| aPane |
-			aPane := aPager columns at: eachPaneIndex.
-			self
-				assert: aPane paneModels size = eachPaneCollection size
-				description: [ 'Pane {1} has {2} tools, but must have {3} tools: {4} vs. {5}'
-						format: {eachPaneIndex.
-								aPane toolModels size.
-								eachPaneCollection size.
-								aPane toolModels collect: #title.
-								eachPaneCollection asArray} ].
-			eachPaneCollection
-				withIndexDo: [ :eachToolTitle :eachToolIndex | 
-					| aTool |
-					aTool := aPane paneModels at: eachToolIndex.
-					self assert: aTool title equals: eachToolTitle ] ]
-]
-
 { #category : #'examples - tree flow builder' }
 GtTreePagerExamples >> assertTreeFlowBuilderNonSpawnedCallbacks: aBuilderCallbacks equalsPaneCharacters: aPanesCollection [
 	| aTitlesCollection |
@@ -112,69 +80,6 @@ GtTreePagerExamples >> basicPaneModel [
 	aModel := GtTreePagerPaneModel new.
 
 	^ aModel
-]
-
-{ #category : #'examples - followings' }
-GtTreePagerExamples >> followingsUpdaterWithCFromCollapsedFPane [
-	<gtExample>
-	| aPager anUpdater aPane somePanes |
-	aPager := self pagerWithCollapsedFCPanes.
-	aPane := aPager detectPaneModel: [ :each | each title = $B printString ].
-
-	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
-	somePanes := anUpdater linksToDisplay.
-	self assert: somePanes size equals: 3.
-	self assert: (somePanes collect: #title) equals: #('$C' '$F' '$D').
-	self assert: anUpdater linkElementsToDisplay size equals: 4.
-
-	^ anUpdater
-]
-
-{ #category : #'examples - followings' }
-GtTreePagerExamples >> followingsUpdaterWithCFromFivePanes [
-	<gtExample>
-	| aPager anUpdater aPane somePanes |
-	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPane := aPager detectPaneModel: [ :each | each title = $C printString ].
-
-	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
-	somePanes := anUpdater linksToDisplay.
-	self assert: somePanes size equals: 2.
-	self assert: (somePanes collect: #title) equals: #('$E' '$F' ).
-	self assert: anUpdater linkElementsToDisplay size equals: 2.
-
-	^ anUpdater
-]
-
-{ #category : #'examples - followings' }
-GtTreePagerExamples >> followingsUpdaterWithFFromFivePanes [
-	<gtExample>
-	| aPager anUpdater aPane somePanes |
-	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPane := aPager detectPaneModel: [ :each | each title = $F printString ].
-
-	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
-	somePanes := anUpdater linksToDisplay.
-	self assert: somePanes size equals: 1.
-	self assert: somePanes anyOne title equals: $G printString.
-	self assert: anUpdater linkElementsToDisplay size equals: 1.
-
-	^ anUpdater
-]
-
-{ #category : #'examples - followings' }
-GtTreePagerExamples >> followingsUpdaterWithGFromFivePanes [
-	<gtExample>
-	| aPager anUpdater aPane somePanes |
-	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPane := aPager detectPaneModel: [ :each | each title = $G printString ].
-
-	anUpdater := GtTreePagerPaneFollowingsElementUpdater new paneModel: aPane.
-	somePanes := anUpdater linksToDisplay.
-	self assert: somePanes isEmpty.
-	self assert: anUpdater linkElementsToDisplay isEmpty.
-
-	^ anUpdater
 ]
 
 { #category : #'examples - pager ui' }

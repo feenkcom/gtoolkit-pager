@@ -96,7 +96,7 @@ GtTreePagerLinkFollowingRotatedCollapsedElement >> newOutputElementForLinkModel:
 GtTreePagerLinkFollowingRotatedCollapsedElement >> onGtTreePagerPaneModelFollowingLinksChanged: anAnnouncement [
 ]
 
-{ #category : #'api - pane model' }
+{ #category : #'api - link model' }
 GtTreePagerLinkFollowingRotatedCollapsedElement >> onLinkModelChanged [
 	rectangleElement linkModel: self linkModel.
 	self updateElement

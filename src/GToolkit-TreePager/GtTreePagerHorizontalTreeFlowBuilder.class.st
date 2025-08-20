@@ -6,7 +6,6 @@ Class {
 	#instVars : [
 		'row',
 		'depth',
-		'currentPaneModel',
 		'sameDepthQueue',
 		'nextDepthQueue',
 		'currentNode',

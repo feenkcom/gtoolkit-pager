@@ -98,11 +98,10 @@ GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> onGtTreePagerPaneMode
 
 { #category : #'private - event handling' }
 GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> onLinkElementClick: anEvent [
-	| aPaneModel |
 	anEvent consumed: true.
-	aPaneModel := anEvent currentTarget paneModel ifNil: [ ^ self ].
+	self hasLinkModel ifFalse: [ ^ self ].
 
-	aPaneModel expand
+	self linkModel expand
 ]
 
 { #category : #'api - link model' }
