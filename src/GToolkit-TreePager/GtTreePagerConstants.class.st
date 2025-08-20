@@ -50,6 +50,20 @@ GtTreePagerConstants class >> previewCellSpacing [
 ]
 
 { #category : #constants }
+GtTreePagerConstants class >> previewHeight [
+	"Height of the pane previews container."
+
+	^ 16
+]
+
+{ #category : #constants }
+GtTreePagerConstants class >> previewScrollbarHeight [
+	"Height of the pane previews scrollbar."
+
+	^ 4
+]
+
+{ #category : #constants }
 GtTreePagerConstants class >> rectangleLength [
 	^ 16
 ]
