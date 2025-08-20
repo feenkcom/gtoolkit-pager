@@ -76,12 +76,12 @@ GtTreePagerScrollbarElement >> initialize [
 				cellSpacing: 2);
 		constraintsDo: [ :c | 
 			c horizontal fitContent.
-			c vertical exact: 20 ].
+			c vertical exact: GtTreePagerConstants previewHeight ].
 
 	scrollbarElement := BlHorizontalScrollbarElement new
 			disableClickToScroll;
 			beAlwaysVisible;
-			constraintsDo: [ :c | c vertical exact: 6 ];
+			constraintsDo: [ :c | c vertical exact: GtTreePagerConstants previewScrollbar ];
 			track: (BlElement new size: 0 @ 0);
 			thumb: (BlElement new
 					geometry: BlStadiumGeometry new beHorizontal;
