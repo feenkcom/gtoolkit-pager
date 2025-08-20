@@ -334,7 +334,7 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToLinkModel: aLinkModel oldState: anOldState newState: aNewState [
-	"From the user perspective:
+	"From the UI interaction perspective:
 	- `anOldState isSpawned` and `aNewState isSpawned not` => pane is not displayed,
 		the pane could also be hidden, selected, or collapsed. Currently, we display
 		'collapsed' rectangles in all those cases, so it is likely the best check to do
