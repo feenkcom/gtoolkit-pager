@@ -57,10 +57,10 @@ GtTreePagerConstants class >> previewHeight [
 ]
 
 { #category : #constants }
-GtTreePagerConstants class >> previewScrollbar [
+GtTreePagerConstants class >> previewScrollbarHeight [
 	"Height of the pane previews scrollbar."
 
-	^ 6
+	^ 4
 ]
 
 { #category : #constants }
