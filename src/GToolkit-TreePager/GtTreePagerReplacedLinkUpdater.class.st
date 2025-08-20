@@ -7,7 +7,6 @@ Class {
 	#traits : 'TGtTreePagerLinkStateVisitor',
 	#classTraits : 'TGtTreePagerLinkStateVisitor classTrait',
 	#instVars : [
-		'element',
 		'newLinkModel',
 		'replacedLinkModel'
 	],

@@ -167,7 +167,7 @@ GtTreePagerLinkFollowingOutputElement >> onGtTreePagerLinkModelStateChanged: anA
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
-{ #category : #'api - pane model' }
+{ #category : #'api - link model' }
 GtTreePagerLinkFollowingOutputElement >> onLinkModelChanged [
 	self updateElement
 ]
@@ -177,7 +177,7 @@ GtTreePagerLinkFollowingOutputElement >> outgoingLinkElements [
 	^ self hasLinkModel ifTrue: [ Array with: self ] ifFalse: [ Array empty ]
 ]
 
-{ #category : #'api - pane model' }
+{ #category : #'api - link model' }
 GtTreePagerLinkFollowingOutputElement >> subscribeToLinkModel [
 	super subscribeToLinkModel.
 	self linkModel weak
@@ -196,12 +196,12 @@ GtTreePagerLinkFollowingOutputElement >> triangleWidth [
 	^ GtTreePagerConstants triangleWidth
 ]
 
-{ #category : #'api - pane model' }
+{ #category : #'api - link model' }
 GtTreePagerLinkFollowingOutputElement >> unsubscribeFromLinkModel [
 	self linkModel unsubscribe: self
 ]
 
-{ #category : #'api - pane model' }
+{ #category : #'private - updating' }
 GtTreePagerLinkFollowingOutputElement >> updateElement [
 	self linkModel isActive
 		ifTrue: [ self states addState: BlElementState selected ]

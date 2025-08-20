@@ -357,15 +357,6 @@ GtTreePagerPaneModel >> object: anObject [
 ]
 
 { #category : #accessing }
-GtTreePagerPaneModel >> paneModel: aColumnModel [
-	self
-		deprecated: 'Please use columnModel: instead.'
-		transformWith: '`@receiver paneModel: `@statements1' -> '`@receiver columnModel: `@statements1'.
-
-	self columnModel: aColumnModel
-]
-
-{ #category : #accessing }
 GtTreePagerPaneModel >> phlowTool [
 	^ phlowTool
 ]

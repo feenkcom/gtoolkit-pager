@@ -240,14 +240,14 @@ GtTreePagerPaneElement >> newDropdownRemoveIcon [
 	^ BrGlamorousVectorIcons remove
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'private - event handling' }
 GtTreePagerPaneElement >> onBlMouseEnterEvent: aBlMouseEnterEvent [
 	"Can be removed"
 
 	
 ]
 
-{ #category : #initialization }
+{ #category : #'private - event handling' }
 GtTreePagerPaneElement >> onBlMouseLeaveEvent: anEvent [
 	"Can be removed"
 
@@ -357,7 +357,7 @@ GtTreePagerPaneElement >> onModifiersEvent: anEvent [
 	self updateDropdownElementToDownwardsIcon
 ]
 
-{ #category : #accessing }
+{ #category : #'api - pane model' }
 GtTreePagerPaneElement >> onPaneModelChanged [
 	super onPaneModelChanged.
 	contentElement paneModel: self paneModel.
