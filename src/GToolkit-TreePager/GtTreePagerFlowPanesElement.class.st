@@ -138,7 +138,10 @@ GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelStateChanged: anAnnouncemen
 
 	BlTaskAction
 		enqueueElement: self
-		action: [ self updatePaneAndEdgeElements ]
+		action: [ self
+				updatePaneAndEdgesDueToLinkModel: anAnnouncement linkModel
+				oldState: anAnnouncement oldState
+				newState: anAnnouncement newState ]
 ]
 
 { #category : #'private - event handling' }
@@ -159,7 +162,12 @@ GtTreePagerFlowPanesElement >> onGtTreePagerModelNumberOfVisibleColumnsChanged: 
 GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
 	anAnnouncement paneModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
-	BlTaskAction enqueueElement: self action: [ self updatePaneAndEdgeElements ]
+	BlTaskAction
+		enqueueElement: self
+		action: [ self
+				updatePaneAndEdgesDueToPaneModel: anAnnouncement paneModel
+				addedLinks: anAnnouncement addedFollowingLinks
+				removedLinks: anAnnouncement removedFollowingLinks ]
 ]
 
 { #category : #'api - pager model' }
@@ -322,6 +330,32 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 	paneElementsCache := nonSpawnedElements.
 
 	self dispatchEvent: GtTreePagerFlowPaneElementsChanged new
+]
+
+{ #category : #'private - updating' }
+GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToLinkModel: aLinkModel oldState: anOldState newState: aNewState [
+	"From the user perspective:
+	- `anOldState isSpawned` and `aNewState isSpawned not` => pane is not displayed,
+		the pane could also be hidden, selected, or collapsed. Currently, we display
+		'collapsed' rectangles in all those cases, so it is likely the best check to do
+	- `anOldState isSpawned` and `aNewState isCollapsed` => pane is collapsed
+	- `anOldState isCollapsed` and `aNewState isSpawned` => pane is expanded
+		
+	Note: We could optimize this part and not update the element if the state change
+	does not affect number of displayed elements and edges."
+
+	self updatePaneAndEdgeElements
+]
+
+{ #category : #'private - updating' }
+GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToPaneModel: aPaneModel addedLinks: addedLinks removedLinks: removedLinks [
+	"From the UI interaction perspective:
+	- `addedLinks size = 1` and `removedLinks size = 0` => select/spawn action
+	- `addedLinks size = 1` and `removedLinks size = 1` => select/spawn action 
+		with `addedLinks anyOne replacedLink == removedLinks anyOne`
+	- `addedLinks size = 0` and `removedLinks size = 1` => remove action"
+	
+	self updatePaneAndEdgeElements
 ]
 
 { #category : #'api - children enumeration' }
