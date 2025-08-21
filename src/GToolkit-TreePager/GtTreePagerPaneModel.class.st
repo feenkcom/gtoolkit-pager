@@ -378,6 +378,11 @@ GtTreePagerPaneModel >> postSimilarPaneCopy [
 	phlowTool := phlowTool ifNotNil: #similarToolCopy
 ]
 
+{ #category : #'api - phlow' }
+GtTreePagerPaneModel >> prepareForReusedNavigation [
+	self phlowTool prepareForReusedNavigation
+]
+
 { #category : #'api - previous panes' }
 GtTreePagerPaneModel >> previousExpandedPane [
 	<return: #GtTreePagerPaneModel or: nil>

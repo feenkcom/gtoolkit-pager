@@ -59,7 +59,11 @@ GtTreePagerPaneContentElement >> navigationContext: aNavigationContext [
 GtTreePagerPaneContentElement >> onGtTreePagerPaneModelRebuildToolRequest: anAnnouncement [
 	self paneModel = anAnnouncement paneModel ifFalse: [ ^ self ].
 
-	BlTaskAction enqueueElement: self action: [ self updateToolElement ]
+	BlTaskAction
+		enqueueElement: self
+		action: [ 
+			self paneModel prepareForReusedNavigation.
+			self updateToolElement ]
 ]
 
 { #category : #'private - event handling' }
