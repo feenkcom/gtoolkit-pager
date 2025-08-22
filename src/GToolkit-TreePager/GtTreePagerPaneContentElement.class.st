@@ -123,8 +123,14 @@ GtTreePagerPaneContentElement >> updateElement [
 
 { #category : #'private - updating' }
 GtTreePagerPaneContentElement >> updateToolElement [
-	| targetId aToolElement |
+	| targetId aToolElement aSelectionState |
 	targetId := #tool asBlocElementId.
+	
+	"Let's store the selection state to keep the same state in the new phlow tool element"
+	self realToolElementDo: [ :aRealToolElement | 
+		aSelectionState := GtPhlowToolSelectionStateHandler new.
+		aSelectionState storeSelectionStateFrom: aRealToolElement ].
+	
 	self
 		childrenDo: [ :eachChild | 
 			eachChild id = targetId ifTrue: [ 
@@ -137,5 +143,10 @@ GtTreePagerPaneContentElement >> updateToolElement [
 	aToolElement := self paneModel asElement.
 	BrAsyncElementFutureScheduledEventHandler ensureEventHandlerIn: aToolElement.
 
-	self addChild: aToolElement as: targetId
+	self addChild: aToolElement as: targetId.
+	
+	"Let's apply the selection state to keep the same state in the new phlow tool element"
+	aSelectionState ifNotNil: [ 
+		self realToolElementDo: [ :aRealToolElement | 
+			aSelectionState applySelectionStateTo: aRealToolElement ] ].
 ]
