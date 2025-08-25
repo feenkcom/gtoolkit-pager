@@ -185,7 +185,7 @@ GtTreePagerPaneElement >> navigationContext [
 GtTreePagerPaneElement >> newDropdownCollapseIcon [
 	^ BlElement new
 		size: 2 @ 10;
-		background: Color gray
+		background: Color black
 ]
 
 { #category : #initialization }
@@ -237,7 +237,7 @@ GtTreePagerPaneElement >> newDropdownMenuModel [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newDropdownRemoveIcon [
-	^ BrGlamorousVectorIcons remove
+	^ BrGlamorousVectorIcons cancel
 ]
 
 { #category : #'private - event handling' }
