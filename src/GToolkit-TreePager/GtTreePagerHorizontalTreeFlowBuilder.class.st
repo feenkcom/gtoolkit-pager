@@ -11,7 +11,8 @@ Class {
 		'currentNode',
 		'linkModels',
 		'nonSpawnedLinkModelBlock',
-		'spawnedLinkModelBlock'
+		'spawnedLinkModelBlock',
+		'replacedLinkModelBlock'
 	],
 	#category : #'GToolkit-TreePager-Support'
 }
@@ -90,6 +91,7 @@ GtTreePagerHorizontalTreeFlowBuilder >> paneModel: aPaneModel [
 GtTreePagerHorizontalTreeFlowBuilder >> processNode: aNode [
 	currentNode := aNode.
 	self visitCurrentNode.
+	self processReplacedLinks.
 	currentNode := nil.
 ]
 
@@ -109,6 +111,27 @@ GtTreePagerHorizontalTreeFlowBuilder >> processQueue [
 			nextDepthQueue removeAll.
 			depth := depth + 1.
 			row := 1 ]
+]
+
+{ #category : #private }
+GtTreePagerHorizontalTreeFlowBuilder >> processReplacedLinks [
+	| aReplacedLink |
+	replacedLinkModelBlock ifNil: [ ^ self ].
+	aReplacedLink := currentNode linkModel replacedLink ifNil: [ ^ self ].
+	
+	replacedLinkModelBlock value: aReplacedLink.
+	aReplacedLink allLinkModelsBreadthFirstDo: [ :eachLinkModel |
+		replacedLinkModelBlock value: eachLinkModel ]
+]
+
+{ #category : #accessing }
+GtTreePagerHorizontalTreeFlowBuilder >> replacedLinkModelBlock [
+	^ replacedLinkModelBlock
+]
+
+{ #category : #accessing }
+GtTreePagerHorizontalTreeFlowBuilder >> replacedLinkModelBlock: anObject [
+	replacedLinkModelBlock := anObject
 ]
 
 { #category : #accessing }

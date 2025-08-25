@@ -301,6 +301,7 @@ GtTreePagerLinkModel >> removeLink [
 
 { #category : #'api - replaced link' }
 GtTreePagerLinkModel >> replacedLink [
+	<return: #GtTreePagerLinkModel or: nil>
 	^ replacedLink
 ]
 

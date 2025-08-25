@@ -55,6 +55,14 @@ TGtTreePagerLinkModel >> previousPane [
 	^ self explicitRequirement
 ]
 
+{ #category : #'api - replaced link' }
+TGtTreePagerLinkModel >> replacedLink [
+	"Return a replaced link"
+
+	<return: #TGtTreePagerLinkModel or: nil>
+	^ self explicitRequirement
+]
+
 { #category : #copying }
 TGtTreePagerLinkModel >> similarLinkCopy [
 	<return: #TGtTreePagerPaneModel>

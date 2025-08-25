@@ -275,6 +275,11 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 
 	GtTreePagerHorizontalTreeFlowBuilder new
 		linkModels: self pagerModel linkModels;
+		replacedLinkModelBlock: [ :aLinkModel | 
+			self
+				childNodeForPaneModel: aLinkModel paneModel
+				ifFound: [ :aPaneElement | nonSpawnedElements add: aPaneElement ]
+				ifNone: [  ] ];
 		nonSpawnedLinkModelBlock: [ :aLinkModel | 
 			self
 				childNodeForPaneModel: aLinkModel paneModel
