@@ -345,7 +345,10 @@ GtTreePagerLinkModel >> restoreReplacedLink [
 	aParentPane := self previousPane ifNil: [ ^ self ].
 
 	replacedLink := nil.
-	aParentPane addFollowingLink: aReplacedLink before: self
+	aParentPane
+		addFollowingLink: aReplacedLink
+		before: self
+		reason: GtTreePagerRestoreReason default
 ]
 
 { #category : #'api - state' }

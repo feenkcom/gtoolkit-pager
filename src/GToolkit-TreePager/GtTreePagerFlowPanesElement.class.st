@@ -177,7 +177,8 @@ GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAn
 		action: [ self
 				updatePaneAndEdgesDueToPaneModel: anAnnouncement paneModel
 				addedLinks: anAnnouncement addedFollowingLinks
-				removedLinks: anAnnouncement removedFollowingLinks ]
+				removedLinks: anAnnouncement removedFollowingLinks
+				reason: anAnnouncement reason ]
 ]
 
 { #category : #'api - pager model' }
@@ -366,12 +367,13 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToLinkModel: aLinkModel oldS
 ]
 
 { #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToPaneModel: aPaneModel addedLinks: addedLinks removedLinks: removedLinks [
+GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToPaneModel: aPaneModel addedLinks: addedLinks removedLinks: removedLinks reason: aReason [
 	"From the UI interaction perspective:
 	- `addedLinks size = 1` and `removedLinks size = 0` => select/spawn action
 	- `addedLinks size = 1` and `removedLinks size = 1` => select/spawn action 
 		with `addedLinks anyOne replacedLink == removedLinks anyOne`
-	- `addedLinks size = 0` and `removedLinks size = 1` => remove action"
+	- `addedLinks size = 0` and `removedLinks size = 1` => remove action.
+	Reason is a `GtTreePagerReason` instance."
 	
 	self updatePaneAndEdgeElements
 ]
