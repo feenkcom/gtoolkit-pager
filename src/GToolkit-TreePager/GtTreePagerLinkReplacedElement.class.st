@@ -81,11 +81,13 @@ GtTreePagerLinkReplacedElement >> newReplacedLinkContextMenu [
 GtTreePagerLinkReplacedElement >> onAnimationFinished [
 	timeAnimation := nil.
 	self geometry: self newGeometry.
+	
+	"Let's ensure we do not remove the replaced link."
 	timeAnimationState = #paused ifTrue: [ ^ self ].
 	
 	self hide.
 	self hasLinkModel ifFalse: [ ^ self ].
-	self linkModel replacedLink: nil
+	self linkModel removeReplacedLink
 ]
 
 { #category : #'private - event handling' }
@@ -106,6 +108,7 @@ GtTreePagerLinkReplacedElement >> onHovered [
 	self hasLinkModel ifFalse: [ ^ self ].
 	self linkModel replacedLink ifNil: [ ^ self ].
 
+	"Let's ensure we do not remove the replaced link."
 	timeAnimationState := #paused.
 	self stopAnimation
 ]
@@ -114,13 +117,14 @@ GtTreePagerLinkReplacedElement >> onHovered [
 GtTreePagerLinkReplacedElement >> onLinkModelChanged [
 	super onLinkModelChanged.
 	self stopAnimation.
-	self updateElement
+	timeAnimationState := nil.
+	self updateElement.
 ]
 
 { #category : #'private - event handling' }
 GtTreePagerLinkReplacedElement >> onRemoveReplacedLinkClick: aButton [
 	self hasLinkModel ifFalse: [ ^ self ].
-	self linkModel replacedLink: nil.
+	self linkModel removeReplacedLink.
 
 	timeAnimationState := nil.
 	self stopAnimation.
@@ -136,11 +140,13 @@ GtTreePagerLinkReplacedElement >> onRemovedFromSceneGraph [
 { #category : #'private - event handling' }
 GtTreePagerLinkReplacedElement >> onRestoreReplacedLinkClick: aButton [
 	self hasLinkModel ifFalse: [ ^ self ].
-	self linkModel restoreReplacedLink.
-	self linkModel replacedLink: nil.
-
-	timeAnimationState := nil.
+	
+	"Let's ensure we do not remove the replaced link."
+	timeAnimationState := #paused.
 	self stopAnimation.
+
+	self linkModel restoreReplacedLink.
+	timeAnimationState := nil.
 	self hide
 ]
 

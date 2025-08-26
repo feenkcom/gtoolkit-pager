@@ -114,14 +114,20 @@ GtTreePagerHorizontalTreeFlowBuilder >> processQueue [
 ]
 
 { #category : #private }
+GtTreePagerHorizontalTreeFlowBuilder >> processReplacedLink: aReplacedLink [
+	aReplacedLink ifNil: [ ^ self ].
+	replacedLinkModelBlock value: aReplacedLink.
+	aReplacedLink allLinkModelsBreadthFirstDo: [ :eachLinkModel | 
+		replacedLinkModelBlock value: eachLinkModel.
+		self processReplacedLink: aReplacedLink replacedLink ]
+]
+
+{ #category : #private }
 GtTreePagerHorizontalTreeFlowBuilder >> processReplacedLinks [
 	| aReplacedLink |
 	replacedLinkModelBlock ifNil: [ ^ self ].
-	aReplacedLink := currentNode linkModel replacedLink ifNil: [ ^ self ].
-	
-	replacedLinkModelBlock value: aReplacedLink.
-	aReplacedLink allLinkModelsBreadthFirstDo: [ :eachLinkModel |
-		replacedLinkModelBlock value: eachLinkModel ]
+	aReplacedLink := currentNode linkModel replacedLink.
+	self processReplacedLink: aReplacedLink
 ]
 
 { #category : #accessing }

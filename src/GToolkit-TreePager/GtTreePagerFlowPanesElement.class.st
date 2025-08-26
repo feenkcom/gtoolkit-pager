@@ -133,6 +133,16 @@ GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
 ]
 
 { #category : #'private - event handling' }
+GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelReplacedLinkRemoved: anAnnouncement [
+	anAnnouncement linkModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
+
+	BlTaskAction
+		enqueueElement: self
+		action: [ self
+				updatePaneElementsCacheDueToRemovedReplacedLinkModel: anAnnouncement replacedLink ]
+]
+
+{ #category : #'private - event handling' }
 GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
 	anAnnouncement linkModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
@@ -237,6 +247,9 @@ GtTreePagerFlowPanesElement >> subscribeToPagerModel [
 			to: self;
 		when: GtTreePagerModelNumberOfVisibleColumnsChanged
 			send: #onGtTreePagerModelNumberOfVisibleColumnsChanged:
+			to: self;
+		when: GtTreePagerLinkModelReplacedLinkRemoved
+			send: #onGtTreePagerLinkModelReplacedLinkRemoved:
 			to: self
 ]
 
@@ -277,12 +290,12 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 		linkModels: self pagerModel linkModels;
 		replacedLinkModelBlock: [ :aLinkModel | 
 			self
-				childNodeForPaneModel: aLinkModel paneModel
+				usedOrCachedChildNodeForPaneModel: aLinkModel paneModel
 				ifFound: [ :aPaneElement | nonSpawnedElements add: aPaneElement ]
 				ifNone: [  ] ];
 		nonSpawnedLinkModelBlock: [ :aLinkModel | 
 			self
-				childNodeForPaneModel: aLinkModel paneModel
+				usedOrCachedChildNodeForPaneModel: aLinkModel paneModel
 				ifFound: [ :aPaneElement | nonSpawnedElements add: aPaneElement ]
 				ifNone: [  ] ];
 		spawnedLinkModelBlock: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
@@ -361,6 +374,20 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToPaneModel: aPaneModel adde
 	- `addedLinks size = 0` and `removedLinks size = 1` => remove action"
 	
 	self updatePaneAndEdgeElements
+]
+
+{ #category : #'private - updating' }
+GtTreePagerFlowPanesElement >> updatePaneElementsCacheDueToRemovedReplacedLinkModel: aLinkModel [
+	| somePaneModels |
+	paneElementsCache ifNil: [ ^ self ].
+
+	somePaneModels := Array streamContents: [ :aStream | 
+		aStream nextPut: aLinkModel paneModel.
+		aLinkModel allReplacedLinkModelsDo: [ :eachLinkModel | 
+			aStream nextPut: eachLinkModel paneModel ] ].
+
+	paneElementsCache := paneElementsCache reject: [ :eachElement | 
+		somePaneModels identityIncludes: eachElement paneModel ]
 ]
 
 { #category : #'api - children enumeration' }
