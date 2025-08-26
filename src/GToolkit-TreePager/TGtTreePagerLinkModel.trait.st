@@ -16,6 +16,20 @@ TGtTreePagerLinkModel >> allPreviousLinksDo: aBlock [
 	"Iterate previous links hierarchy"
 ]
 
+{ #category : #'api - replaced link' }
+TGtTreePagerLinkModel >> allReplacedLinkModelsDo: aBlock [
+	"Iterate all replaced link models of my replaced link, 
+	including replaced links models from those replaced links."
+
+	<return: #TGtTreePagerLinkModel or: nil>
+	self replacedLink ifNotNil: [ :aReplacedLinkModel |
+		aBlock value: aReplacedLinkModel.
+		aReplacedLinkModel allReplacedLinkModelsDo: aBlock.
+		aReplacedLinkModel allLinkModelsBreadthFirstDo: [ :aLinkModel |
+			aBlock value: aLinkModel.
+			aLinkModel allReplacedLinkModelsDo: aBlock ] ]
+]
+
 { #category : #'api - pane model' }
 TGtTreePagerLinkModel >> children [
 	<return: #Collection of: #TGtTreePagerLinkModel>
@@ -52,6 +66,14 @@ TGtTreePagerLinkModel >> previousPane [
 	"Return a previous pane model"
 
 	<return: #GtTreePagerPaneModel or: #TGtTreePagerLinkModel>
+	^ self explicitRequirement
+]
+
+{ #category : #'api - replaced link' }
+TGtTreePagerLinkModel >> replacedLink [
+	"Return a replaced link"
+
+	<return: #TGtTreePagerLinkModel or: nil>
 	^ self explicitRequirement
 ]
 

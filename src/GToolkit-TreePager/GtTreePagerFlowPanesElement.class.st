@@ -133,6 +133,16 @@ GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
 ]
 
 { #category : #'private - event handling' }
+GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelReplacedLinkRemoved: anAnnouncement [
+	anAnnouncement linkModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
+
+	BlTaskAction
+		enqueueElement: self
+		action: [ self
+				updatePaneElementsCacheDueToRemovedReplacedLinkModel: anAnnouncement replacedLink ]
+]
+
+{ #category : #'private - event handling' }
 GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
 	anAnnouncement linkModel topPreviousPane = self pagerModel ifFalse: [ ^ self ].
 
@@ -167,7 +177,8 @@ GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAn
 		action: [ self
 				updatePaneAndEdgesDueToPaneModel: anAnnouncement paneModel
 				addedLinks: anAnnouncement addedFollowingLinks
-				removedLinks: anAnnouncement removedFollowingLinks ]
+				removedLinks: anAnnouncement removedFollowingLinks
+				reason: anAnnouncement reason ]
 ]
 
 { #category : #'api - pager model' }
@@ -237,6 +248,9 @@ GtTreePagerFlowPanesElement >> subscribeToPagerModel [
 			to: self;
 		when: GtTreePagerModelNumberOfVisibleColumnsChanged
 			send: #onGtTreePagerModelNumberOfVisibleColumnsChanged:
+			to: self;
+		when: GtTreePagerLinkModelReplacedLinkRemoved
+			send: #onGtTreePagerLinkModelReplacedLinkRemoved:
 			to: self
 ]
 
@@ -275,9 +289,14 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 
 	GtTreePagerHorizontalTreeFlowBuilder new
 		linkModels: self pagerModel linkModels;
+		replacedLinkModelBlock: [ :aLinkModel | 
+			self
+				usedOrCachedChildNodeForPaneModel: aLinkModel paneModel
+				ifFound: [ :aPaneElement | nonSpawnedElements add: aPaneElement ]
+				ifNone: [  ] ];
 		nonSpawnedLinkModelBlock: [ :aLinkModel | 
 			self
-				childNodeForPaneModel: aLinkModel paneModel
+				usedOrCachedChildNodeForPaneModel: aLinkModel paneModel
 				ifFound: [ :aPaneElement | nonSpawnedElements add: aPaneElement ]
 				ifNone: [  ] ];
 		spawnedLinkModelBlock: [ :aLinkModel :aRowIndex :aDepthIndex :aSpanIndex | 
@@ -348,14 +367,29 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToLinkModel: aLinkModel oldS
 ]
 
 { #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToPaneModel: aPaneModel addedLinks: addedLinks removedLinks: removedLinks [
+GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToPaneModel: aPaneModel addedLinks: addedLinks removedLinks: removedLinks reason: aReason [
 	"From the UI interaction perspective:
 	- `addedLinks size = 1` and `removedLinks size = 0` => select/spawn action
 	- `addedLinks size = 1` and `removedLinks size = 1` => select/spawn action 
 		with `addedLinks anyOne replacedLink == removedLinks anyOne`
-	- `addedLinks size = 0` and `removedLinks size = 1` => remove action"
+	- `addedLinks size = 0` and `removedLinks size = 1` => remove action.
+	Reason is a `GtTreePagerReason` instance."
 	
 	self updatePaneAndEdgeElements
+]
+
+{ #category : #'private - updating' }
+GtTreePagerFlowPanesElement >> updatePaneElementsCacheDueToRemovedReplacedLinkModel: aLinkModel [
+	| somePaneModels |
+	paneElementsCache ifNil: [ ^ self ].
+
+	somePaneModels := Array streamContents: [ :aStream | 
+		aStream nextPut: aLinkModel paneModel.
+		aLinkModel allReplacedLinkModelsDo: [ :eachLinkModel | 
+			aStream nextPut: eachLinkModel paneModel ] ].
+
+	paneElementsCache := paneElementsCache reject: [ :eachElement | 
+		somePaneModels identityIncludes: eachElement paneModel ]
 ]
 
 { #category : #'api - children enumeration' }

@@ -3,7 +3,8 @@ Class {
 	#superclass : #GtTreePagerPaneModelAnnouncement,
 	#instVars : [
 		'newFollowingLinks',
-		'oldFollowingLinks'
+		'oldFollowingLinks',
+		'reason'
 	],
 	#category : #'GToolkit-TreePager-Announcements'
 }
@@ -46,6 +47,16 @@ GtTreePagerPaneModelFollowingLinksChanged >> oldFollowingLinks: aCollection [
 { #category : #accessing }
 GtTreePagerPaneModelFollowingLinksChanged >> oldFollowingPanes [
 	^ self oldFollowingLinks collect: #paneModel
+]
+
+{ #category : #accessing }
+GtTreePagerPaneModelFollowingLinksChanged >> reason [
+	^ reason ifNil: [ GtTreePagerUnknownReason default ]
+]
+
+{ #category : #accessing }
+GtTreePagerPaneModelFollowingLinksChanged >> reason: anObject [
+	reason := anObject
 ]
 
 { #category : #enumerating }

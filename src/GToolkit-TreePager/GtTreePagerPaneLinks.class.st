@@ -27,10 +27,10 @@ GtTreePagerPaneLinks >> activeLink: aNewLinkModel [
 ]
 
 { #category : #'api - links' }
-GtTreePagerPaneLinks >> addLink: aLinkModel [
+GtTreePagerPaneLinks >> addLink: aLinkModel reason: aReason [
 	aLinkModel isActive ifTrue: [ self inactivateLink ].
 
-	self links: (self links copyWith: aLinkModel).
+	self links: (self links copyWith: aLinkModel) reason: aReason.
 	
 	self notifyActiveLinkChangedFrom: nil to: aLinkModel
 ]
@@ -108,10 +108,10 @@ GtTreePagerPaneLinks >> links [
 ]
 
 { #category : #'api - links' }
-GtTreePagerPaneLinks >> links: aCollection [
+GtTreePagerPaneLinks >> links: aCollection reason: aReason [
 	| anOldFollowingLinks |
-	self assert: [ aCollection allSatisfy: [ :each | 
-		each isKindOf: GtTreePagerLinkModel ] ].
+	self
+		assert: [ aCollection allSatisfy: [ :each | each isKindOf: GtTreePagerLinkModel ] ].
 
 	links = aCollection ifTrue: [ ^ self ].
 
@@ -120,7 +120,7 @@ GtTreePagerPaneLinks >> links: aCollection [
 	links := aCollection.
 	self updateActiveLink.
 
-	self notifyFollowingLinksChanged: anOldFollowingLinks
+	self notifyFollowingLinksChanged: anOldFollowingLinks reason: aReason
 ]
 
 { #category : #'private - notifying' }
@@ -129,8 +129,8 @@ GtTreePagerPaneLinks >> notifyActiveLinkChangedFrom: anOldActiveLink to: aNewAct
 ]
 
 { #category : #'private - notifying' }
-GtTreePagerPaneLinks >> notifyFollowingLinksChanged: anOldFollowingLinks [
-	self paneModel notifyFollowingLinksChanged: anOldFollowingLinks
+GtTreePagerPaneLinks >> notifyFollowingLinksChanged: anOldFollowingLinks reason: aReason [
+	self paneModel notifyFollowingLinksChanged: anOldFollowingLinks reason: aReason
 ]
 
 { #category : #accessing }
@@ -144,8 +144,8 @@ GtTreePagerPaneLinks >> paneModel: anObject [
 ]
 
 { #category : #'api - links' }
-GtTreePagerPaneLinks >> removeLink: aLinkModel [
-	self links: (self links copyWithout: aLinkModel)
+GtTreePagerPaneLinks >> removeLink: aLinkModel reason: aReason [
+	self links: (self links copyWithout: aLinkModel) reason: aReason
 ]
 
 { #category : #'private - updating' }

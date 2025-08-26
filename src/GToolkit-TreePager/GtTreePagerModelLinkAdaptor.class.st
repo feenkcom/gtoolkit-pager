@@ -132,6 +132,11 @@ GtTreePagerModelLinkAdaptor >> printOn: aStream [
 	aStream nextPut: $)
 ]
 
+{ #category : #'api - replaced link' }
+GtTreePagerModelLinkAdaptor >> replacedLink [
+	^ nil
+]
+
 { #category : #copying }
 GtTreePagerModelLinkAdaptor >> similarPaneCopy [
 	<return: #TGtTreePagerPaneModel>

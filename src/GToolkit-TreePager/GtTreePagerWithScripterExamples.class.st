@@ -143,6 +143,8 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseC [
 
 	aScripter treePager
 		hoverPaneModel: aPaneC;
+		paneElementForPaneModel: aPaneC
+			do: [ :aPaneElement | aScripter userData at: #currentPaneElement put: aPaneElement ];
 		openDropdownPaneModel: aPaneC;
 		clickDropdownCollapseMenuItem;
 		assertNumberOfPaneElements: 3;
@@ -242,6 +244,93 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_dropdownIcon 
 		
 	aScripter treePager
 		assertDropdownButtonHasDefaultIconInPaneModel: aPaneB;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_expandC [
+	<gtExample>
+	| aPager aScripter aPaneA aPaneB aPaneC |
+	aScripter := self pagerWithFourPanesInFourColumns_collapseC.
+	aPager := aScripter model.
+	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = $C printString ].
+
+	aScripter treePager
+		hoverCollapsedLinkModel: aPaneC previousLink;
+		clickCollapsedLinkModel: aPaneC previousLink;
+		paneElementForPaneModel: aPaneC
+			do: [ :aPaneElement | self assert: (aScripter userData at: #currentPaneElement) == aPaneElement ];
+		assertNumberOfPaneElements: 4;
+		assertNumberOfVisiblePanes: 3;
+		assertPaneModel: aPaneB position: GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 3;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 3;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 3;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertSpawnedTriangleLinkModel: aPaneB previousLink;
+		assertSpawnedTriangleLinkModel: aPaneC previousLink;
+		assertEdgeElementsPositions;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_replaceC [
+	<gtExample>
+	| aPager aScripter aPaneA aPaneB aPaneC aPaneD aPaneE |
+	aScripter := self pagerWithFourPanesInFourColumns_BCDVisiblePanes.
+	aPager := aScripter model.
+	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = $C printString ].
+	aPaneD := aPager detectPaneModel: [ :each | each title = $D printString ].
+
+	aScripter treePager
+		paneElementForPaneModel: aPaneB
+			do: [ :aPaneElement | aScripter userData at: aPaneB put: aPaneElement ];
+		paneElementForPaneModel: aPaneC
+			do: [ :aPaneElement | aScripter userData at: aPaneC put: aPaneElement ];
+		paneElementForPaneModel: aPaneD
+			do: [ :aPaneElement | aScripter userData at: aPaneD put: aPaneElement ];
+		play.
+
+	GtTreePagerAnimationFeatures
+		disableDuring: [ aScripter treePager
+				label: 'Spawn from pane B';
+				paneElementForPaneModel: aPaneB
+					do: [ :aPaneElement | 
+						(aPaneElement query // GtPhlowCompositeViewElementId) anyOne phlow
+							spawnObject: $E ];
+				play ].
+
+
+	aPaneE := aPager detectPaneModel: [ :each | each title = $E printString ].
+
+	aScripter treePager
+		clickOnReplacedLinkModel: aPaneE previousLink;
+		paneElementForPaneModel: aPaneC
+			do: [ :aPaneElement | self assert: (aScripter userData at: aPaneC) == aPaneElement ];
+		paneElementForPaneModel: aPaneD
+			do: [ :aPaneElement | self assert: (aScripter userData at: aPaneD) == aPaneElement ];
+		assertNumberOfPaneElements: 5;
+		assertNumberOfVisiblePanes: 4;
+		assertPaneModel: aPaneB position: GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 4;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 4;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 4;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertSpawnedTriangleLinkModel: aPaneB previousLink;
+		assertSpawnedTriangleLinkModel: aPaneC previousLink;
+		assertEdgeElementsPositions;
 		play.
 
 	^ aScripter

@@ -25,14 +25,7 @@ GtTreePagerPaneModel >> activeLink: aLinkModel [
 ]
 
 { #category : #'api - following links' }
-GtTreePagerPaneModel >> addFollowingLink: aLinkModel [
-	self isSpawned ifFalse: [ self expand ].
-
-	followingLinks addLink: aLinkModel
-]
-
-{ #category : #'api - following links' }
-GtTreePagerPaneModel >> addFollowingLink: aNewLinkModel before: aLinkModel [
+GtTreePagerPaneModel >> addFollowingLink: aNewLinkModel before: aLinkModel reason: aReason [
 	| aNewCollection |
 	self followingLinks
 		detectIndex: [ :each | each == aLinkModel ]
@@ -46,7 +39,14 @@ GtTreePagerPaneModel >> addFollowingLink: aNewLinkModel before: aLinkModel [
 					do: [ :eachLink | 
 						eachLink == aLinkModel ifTrue: [ aStream nextPut: aNewLinkModel ].
 						aStream nextPut: eachLink ] ].
-	self followingLinks: aNewCollection
+	self followingLinks: aNewCollection reason: aReason
+]
+
+{ #category : #'api - following links' }
+GtTreePagerPaneModel >> addFollowingLink: aLinkModel reason: aReason [
+	self isSpawned ifFalse: [ self expand ].
+
+	followingLinks addLink: aLinkModel reason: aReason
 ]
 
 { #category : #'api - following links' }
@@ -179,8 +179,8 @@ GtTreePagerPaneModel >> followingLinks [
 ]
 
 { #category : #'api - following links' }
-GtTreePagerPaneModel >> followingLinks: aCollection [
-	followingLinks links: aCollection
+GtTreePagerPaneModel >> followingLinks: aCollection reason: aReason [
+	followingLinks links: aCollection reason: aReason
 ]
 
 { #category : #'api - following links' }
@@ -189,8 +189,10 @@ GtTreePagerPaneModel >> followingPanes [
 ]
 
 { #category : #'api - following links' }
-GtTreePagerPaneModel >> followingPanes: aCollection [
-	self followingLinks: (aCollection collect: [ :each | GtTreePagerLinkModel new paneModel: each ])
+GtTreePagerPaneModel >> followingPanes: aCollection reason: aReason [
+	self
+		followingLinks: (aCollection collect: [ :each | GtTreePagerLinkModel new paneModel: each ])
+		reason: aReason
 ]
 
 { #category : #'api - following links' }
@@ -328,12 +330,13 @@ GtTreePagerPaneModel >> notifyActiveLinkChangedFrom: anOldActiveLink to: aNewAct
 ]
 
 { #category : #'private - notifying' }
-GtTreePagerPaneModel >> notifyFollowingLinksChanged: anOldFollowingLinks [
+GtTreePagerPaneModel >> notifyFollowingLinksChanged: anOldFollowingLinks reason: aReason [
 	| anAnnouncement |
 	anAnnouncement := GtTreePagerPaneModelFollowingLinksChanged new
 			paneModel: self;
 			newFollowingLinks: self followingLinks;
-			oldFollowingLinks: anOldFollowingLinks.
+			oldFollowingLinks: anOldFollowingLinks;
+			reason: aReason.
 	self announcer announce: anAnnouncement.
 	self allPreviousPanesDo: [ :aPreviousModel | 
 		aPreviousModel announcer announce: anAnnouncement ]
@@ -374,7 +377,7 @@ GtTreePagerPaneModel >> postSimilarPaneCopy [
 	newLinks := self followingLinks
 			collect: [ :eachLink | eachLink similarLinkCopy ].
 	followingLinks := GtTreePagerPaneLinks new paneModel: self.
-	self followingLinks: newLinks.
+	self followingLinks: newLinks reason: GtTreePagerCopyReason default.
 	phlowTool := phlowTool ifNotNil: #similarToolCopy
 ]
 
@@ -419,7 +422,7 @@ GtTreePagerPaneModel >> printOn: aStream [
 
 { #category : #'api - following links' }
 GtTreePagerPaneModel >> removeFollowingLink: aLinkModel [
-	followingLinks removeLink: aLinkModel
+	followingLinks removeLink: aLinkModel reason: GtTreePagerRemoveReason default
 ]
 
 { #category : #'api - following links' }
@@ -442,21 +445,21 @@ GtTreePagerPaneModel >> removeLink [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerPaneModel >> replaceFollowingLink: anOldLinkModel by: aNewLinkModel [
+GtTreePagerPaneModel >> replaceFollowingLink: anOldLinkModel by: aNewLinkModel reason: aReason [
 	| anIndex aNewCollection |
 	anIndex := self followingLinks
 			detectIndex: [ :each | each == anOldLinkModel ]
 			ifNone: [ NotFound signalFor: anOldLinkModel in: self followingLinks ].
 
 	aNewLinkModel previousPane: self.
-	GtTreePagerReplacedLinkUpdater new 
+	GtTreePagerReplacedLinkUpdater new
 		newLinkModel: aNewLinkModel;
 		replacedLinkModel: anOldLinkModel;
 		update.
 	aNewCollection := self followingLinks copy
 			at: anIndex put: aNewLinkModel;
 			yourself.
-	self followingLinks: aNewCollection
+	self followingLinks: aNewCollection reason: aReason
 ]
 
 { #category : #'api - requests' }
@@ -489,10 +492,14 @@ GtTreePagerPaneModel >> selectPane: aNewPaneModel [
 
 	anOldLinkModel
 		ifNil: [ 
-			self addFollowingLink: aNewLinkModel ]
-		ifNotNil: [ 
-			aNewLinkModel state: anOldLinkModel state.
-			self replaceFollowingLink: anOldLinkModel by: aNewLinkModel ]
+			self 
+				addFollowingLink: aNewLinkModel 
+				reason: GtTreePagerSelectReason default ]
+		ifNotNil: [ aNewLinkModel state: anOldLinkModel state.
+			self
+				replaceFollowingLink: anOldLinkModel
+				by: aNewLinkModel
+				reason: GtTreePagerSelectReason default ]
 ]
 
 { #category : #copying }
@@ -509,8 +516,15 @@ GtTreePagerPaneModel >> spawnPane: aNewPaneModel [
 	aNewLinkModel expand.
 
 	anOldLinkModel
-		ifNil: [ self addFollowingLink: aNewLinkModel ]
-		ifNotNil: [ self replaceFollowingLink: anOldLinkModel by: aNewLinkModel ]
+		ifNil: [ 
+			self 
+				addFollowingLink: aNewLinkModel 
+				reason: GtTreePagerSpawnReason default ]
+		ifNotNil: [ 
+			self
+				replaceFollowingLink: anOldLinkModel
+				by: aNewLinkModel
+				reason: GtTreePagerSpawnReason default ]
 ]
 
 { #category : #'api - following links' }
@@ -519,7 +533,7 @@ GtTreePagerPaneModel >> spawnSiblingPane: aNewPaneModel [
 	aNewLinkModel := GtTreePagerLinkModel new paneModel: aNewPaneModel.
 	aNewLinkModel expand.
 
-	self addFollowingLink: aNewLinkModel
+	self addFollowingLink: aNewLinkModel reason: GtTreePagerSpawnReason default
 ]
 
 { #category : #'api - following links' }

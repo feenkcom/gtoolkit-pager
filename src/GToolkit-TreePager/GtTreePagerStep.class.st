@@ -366,6 +366,17 @@ GtTreePagerStep >> assertSpawnedTriangleLinkModel: aLinkModel [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> clickCollapsedLinkModel: aLinkModel [
+	^ self click
+		label: ('Click on collapsed link "{1}"' format: {aLinkModel title});
+		// GtTreePagerFlowPanesElement;
+		// GtTreePagerLinkFollowingRotatedCollapsedElement;
+		@ [ :each | each linkModel = aLinkModel ];
+		referenceSender;
+		onParentStepTarget: self
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> clickDropdownCollapseMenuItem [
 	^ self menuStep
 		clickMenuItemWithId: #'tree-pager--menu-collapse';
@@ -382,6 +393,17 @@ GtTreePagerStep >> clickDropdownRemoveMenuItem [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> clickOnReplacedLinkModel: aLinkModel [
+	^ self click
+		label: ('Click on replaced link "{1}"' format: {aLinkModel title});
+		// GtTreePagerFlowPanesElement;
+		// GtTreePagerLinkReplacedElement;
+		@ [ :each | each linkModel = aLinkModel ];
+		referenceSender;
+		onParentStepTarget: self
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> closeConfigurationDropdownMenu [
 	^ self menuStep
 		referenceSender;
@@ -390,6 +412,17 @@ GtTreePagerStep >> closeConfigurationDropdownMenu [
 		clickHandleWithId: #'tree-pager--configuration-menu-handle';
 		assertClosedMenuContainer;
 		onPopover
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> hoverCollapsedLinkModel: aLinkModel [
+	^ self mouseMoveOver
+		label: ('Move mouse to collapsed link "{1}"' format: {aLinkModel title});
+		// GtTreePagerFlowPanesElement;
+		// GtTreePagerLinkFollowingRotatedCollapsedElement;
+		@ [ :each | each linkModel = aLinkModel ];
+		referenceSender;
+		onParentStepTarget: self
 ]
 
 { #category : #'steps - interactions' }
@@ -447,6 +480,18 @@ GtTreePagerStep >> openDropdownPaneModel: aPaneModel [
 		/ GtTreePagerPaneElement;
 		@ [ :each | each paneModel = aPaneModel ];
 		// #'tree-pager--dropdown-menu-button';
+		referenceSender;
+		onParentStepTarget: self
+]
+
+{ #category : #'steps - other' }
+GtTreePagerStep >> paneElementForPaneModel: aPaneModel do: aBlock [
+	^ self do
+		label: ('Get pane element for pane "{1}"' format: {aPaneModel title});
+		block: aBlock;
+		// GtTreePagerFlowPanesElement;
+		/ GtTreePagerPaneElement;
+		@ [ :each | each paneModel = aPaneModel ];
 		referenceSender;
 		onParentStepTarget: self
 ]

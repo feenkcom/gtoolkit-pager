@@ -172,6 +172,19 @@ GtTreePagerLinkModel >> gtPreviousLinksFor: aView [
 		column: 'State' text: [ :eachLink | eachLink state label ]
 ]
 
+{ #category : #views }
+GtTreePagerLinkModel >> gtPreviousPanesFor: aView [
+	<gtView>
+	^ aView columnedList
+		title: 'Previous panes';
+		items: [ self withAllPreviousPanes ];
+		column: 'Index'
+			text: [ :_ :anIndex | anIndex ]
+			width: 40;
+		column: 'Link' text: #gtDisplayString;
+		column: 'State' text: [ :eachLink | eachLink state label ]
+]
+
 { #category : #'api - visibility' }
 GtTreePagerLinkModel >> hide [
 	self state: self state hide
@@ -300,7 +313,23 @@ GtTreePagerLinkModel >> removeLink [
 ]
 
 { #category : #'api - replaced link' }
+GtTreePagerLinkModel >> removeReplacedLink [
+	| aReplacedLink anAnnouncement |
+	replacedLink ifNil: [ ^ self ].
+	aReplacedLink := replacedLink.
+	replacedLink := nil.
+
+	anAnnouncement := GtTreePagerLinkModelReplacedLinkRemoved new
+			linkModel: self;
+			replacedLink: aReplacedLink.
+	self announcer announce: anAnnouncement.
+	self allPreviousPanesDo: [ :eachPane | 
+		eachPane announcer announce: anAnnouncement ]
+]
+
+{ #category : #'api - replaced link' }
 GtTreePagerLinkModel >> replacedLink [
+	<return: #GtTreePagerLinkModel or: nil>
 	^ replacedLink
 ]
 
@@ -315,8 +344,11 @@ GtTreePagerLinkModel >> restoreReplacedLink [
 	aReplacedLink := self replacedLink ifNil: [ ^ self ].
 	aParentPane := self previousPane ifNil: [ ^ self ].
 
-	self replacedLink: nil.
-	aParentPane addFollowingLink: aReplacedLink before: self
+	replacedLink := nil.
+	aParentPane
+		addFollowingLink: aReplacedLink
+		before: self
+		reason: GtTreePagerRestoreReason default
 ]
 
 { #category : #'api - state' }
@@ -374,4 +406,12 @@ GtTreePagerLinkModel >> withAllPreviousLinks [
 		streamContents: [ :aStream | 
 			aStream nextPut: self.
 			self allPreviousLinksDo: [ :eachLink | aStream nextPut: eachLink ] ]
+]
+
+{ #category : #'api - previous links' }
+GtTreePagerLinkModel >> withAllPreviousPanes [
+	^ Array
+		streamContents: [ :aStream | 
+			aStream nextPut: self.
+			self allPreviousPanesDo: [ :eachPane | aStream nextPut: eachPane ] ]
 ]
