@@ -267,9 +267,9 @@ GtTreePagerStep >> assertNumberOfSpawnedSmallTriangleLinkElements: anInteger [
 		label: aLabel;
 		value: [ :aPanesElement | 
 				| aQuery |
-				aQuery := (aPanesElement query // GtTreePagerLinkFollowingOutputElement)
-						@ [ :eachElement | eachElement states hasState: BrListOrientationState horizontal ]
-						@ [ :eachElement | eachElement states hasState: BrSizeAdjustmentState small ].
+				aQuery := (aPanesElement query
+						// GtTreePagerLinkCollapsedOutgoingLinkElement)
+						@ [ :eachElement | eachElement hasLinkModel and: [ eachElement linkModel isSpawned ] ].
 				aPanesElement userData at: aLabel put: aQuery.
 				aQuery result size ]
 			equals: anInteger;
@@ -291,8 +291,11 @@ GtTreePagerStep >> assertNumberOfSpawnedTriangleLinkElements: anInteger [
 		label: aLabel;
 		value: [ :aPanesElement | 
 				| aQuery |
-				aQuery := (aPanesElement query // GtTreePagerLinkFollowingOutputElement)
-						@ [ :eachElement | eachElement states hasState: BrListOrientationState horizontal ].
+				aQuery := aPanesElement query
+						// [ :eachElement | 
+							((eachElement isKindOf: GtTreePagerLinkFollowingOutputElement)
+								and: [ eachElement states hasState: BrListOrientationState horizontal ])
+								or: [ eachElement isKindOf: GtTreePagerLinkCollapsedOutgoingLinkElement ] ].
 				aPanesElement userData at: aLabel put: aQuery.
 				aQuery result size ]
 			equals: anInteger;

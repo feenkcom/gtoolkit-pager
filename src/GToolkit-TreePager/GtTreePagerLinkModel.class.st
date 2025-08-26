@@ -12,9 +12,14 @@ Class {
 	#category : #'GToolkit-TreePager-Model'
 }
 
+{ #category : #'api - previous panes' }
+GtTreePagerLinkModel >> aboutToRemoveFromPreviousPane [
+	self remove
+]
+
 { #category : #'api - state' }
 GtTreePagerLinkModel >> activate [
-	self state: self state activate
+	self state: self state activate reason: GtTreePagerActivateReason default
 ]
 
 { #category : #'api - pane model' }
@@ -57,11 +62,6 @@ GtTreePagerLinkModel >> announcer [
 	^ self paneModel announcer
 ]
 
-{ #category : #'api - state' }
-GtTreePagerLinkModel >> beActiveLink [
-	self activate
-]
-
 { #category : #'api - activation' }
 GtTreePagerLinkModel >> beInactiveLink [
 	self inactivate
@@ -75,7 +75,7 @@ GtTreePagerLinkModel >> children [
 
 { #category : #'api - expandable' }
 GtTreePagerLinkModel >> collapse [
-	self state: self state collapse
+	self state: self state collapse reason: GtTreePagerCollapseReason default
 ]
 
 { #category : #'api - expandable' }
@@ -104,7 +104,7 @@ GtTreePagerLinkModel >> enumerablePaneModels [
 
 { #category : #'api - expandable' }
 GtTreePagerLinkModel >> expand [
-	self state: self state expand
+	self state: self state expand reason: GtTreePagerSpawnReason default
 ]
 
 { #category : #'api - following links' }
@@ -187,12 +187,12 @@ GtTreePagerLinkModel >> gtPreviousPanesFor: aView [
 
 { #category : #'api - visibility' }
 GtTreePagerLinkModel >> hide [
-	self state: self state hide
+	self state: self state hide reason: GtTreePagerSelectReason default
 ]
 
 { #category : #'api - state' }
 GtTreePagerLinkModel >> inactivate [
-	self state: self state inactivate
+	self state: self state inactivate reason: GtTreePagerInactivateReason default
 ]
 
 { #category : #initialization }
@@ -202,28 +202,13 @@ GtTreePagerLinkModel >> initialize [
 ]
 
 { #category : #'api - activation' }
-GtTreePagerLinkModel >> isActive [
-	^ state isActive
-]
-
-{ #category : #'api - activation' }
 GtTreePagerLinkModel >> isActiveLink [
 	^ self isActive
 ]
 
 { #category : #'api - expandable' }
-GtTreePagerLinkModel >> isCollapsed [
-	^ state isCollapsed
-]
-
-{ #category : #'api - expandable' }
 GtTreePagerLinkModel >> isExpanded [
 	^ state isExpanded
-]
-
-{ #category : #'api - visibility' }
-GtTreePagerLinkModel >> isHidden [
-	^ state isHidden
 ]
 
 { #category : #'api - previous links' }
@@ -239,7 +224,7 @@ GtTreePagerLinkModel >> isInHiddenLink [
 ]
 
 { #category : #'private - notifying' }
-GtTreePagerLinkModel >> notifyStateChangedFrom: anOldState [
+GtTreePagerLinkModel >> notifyStateChangedFrom: anOldState reason: aReason [
 	| anAnnouncement |
 	self previousPane ifNotNil: [ :aPane | 
 		aPane linkModel: self stateChangedFrom: anOldState to: self state ].
@@ -247,7 +232,8 @@ GtTreePagerLinkModel >> notifyStateChangedFrom: anOldState [
 	anAnnouncement := GtTreePagerLinkModelStateChanged new
 			linkModel: self;
 			oldState: anOldState;
-			newState: self state.
+			newState: self state;
+			reason: aReason.
 
 	self announcer announce: anAnnouncement.
 	self allPreviousPanesDo: [ :aPreviousModel | 
@@ -301,10 +287,17 @@ GtTreePagerLinkModel >> printOn: aStream [
 	aStream nextPut: $)
 ]
 
+{ #category : #'api - state' }
+GtTreePagerLinkModel >> remove [
+	"Set removed state"
+
+	self state: self state remove reason: GtTreePagerRemoveReason default
+]
+
 { #category : #'api - previous panes' }
 GtTreePagerLinkModel >> removeFromPreviousPane [
-	self previousPane
-		ifNotNil: [ :aPreviousPane | aPreviousPane removeFollowingLink: self ]
+	self previousPane ifNotNil: [ :aPreviousPane | 
+		aPreviousPane removeFollowingLink: self ]
 ]
 
 { #category : #'api - following links' }
@@ -353,7 +346,7 @@ GtTreePagerLinkModel >> restoreReplacedLink [
 
 { #category : #'api - state' }
 GtTreePagerLinkModel >> select [
-	self state: self state select
+	self state: self state select reason: GtTreePagerSelectReason default
 ]
 
 { #category : #'api - following links' }
@@ -387,12 +380,17 @@ GtTreePagerLinkModel >> state [
 
 { #category : #'api - state' }
 GtTreePagerLinkModel >> state: aState [
+	self state: aState reason: GtTreePagerUnknownReason default
+]
+
+{ #category : #'api - state' }
+GtTreePagerLinkModel >> state: aState reason: aReason [
 	| anOldState |
 	state = aState ifTrue: [ ^ self ].
 
 	anOldState := state.
 	state := aState.
-	self notifyStateChangedFrom: anOldState
+	self notifyStateChangedFrom: anOldState reason: aReason
 ]
 
 { #category : #accessing }

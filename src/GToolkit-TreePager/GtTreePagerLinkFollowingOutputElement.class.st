@@ -3,6 +3,10 @@ Class {
 	#superclass : #GtTreePagerLinkBasicElement,
 	#traits : 'TBrSizeAdjustable',
 	#classTraits : 'TBrSizeAdjustable classTrait',
+	#instVars : [
+		'timeAnimation',
+		'timeAnimationState'
+	],
 	#category : #'GToolkit-TreePager-UI'
 }
 
@@ -38,69 +42,39 @@ GtTreePagerLinkFollowingOutputElement >> initialize [
 		outskirts: BlOutskirts centered;
 		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ];
 		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
-				handleSubmenu: [ self newContextMenu ]).
+				handleSubmenu: [ self newContextMenu ]);
+				when: BrContextMenuIsVisible do: [ :anEvent | self onBrContextMenuIsVisible: anEvent ];
+				when: BrContextMenuIsHidden do: [ :anEvent | self onBrContextMenuIsHidden: anEvent ].
 
 	self initializeElementStyling.
-	self initializeGeometryAndSizeStyling.
-	self initializeOutgoingLinkElements.
+	self initializeAboutToRemoveAnimationStyling.
+	self initializeOutgoingLinkElements
+]
+
+{ #category : #initialization }
+GtTreePagerLinkFollowingOutputElement >> initializeAboutToRemoveAnimationStyling [
+	self
+		addAptitude: (BrLazyStyleCommonAptitude new
+				hovered: [ :aStyle | aStyle do: [ :aWidget | self onHovered ] after: [ :aWidget | self onUnhovered ] ])
 ]
 
 { #category : #initialization }
 GtTreePagerLinkFollowingOutputElement >> initializeElementStyling [
 	| anAptitude |
 	anAptitude := BrLazyStyleCommonAptitude new
-			when: BrSizeAdjustmentState normal & BlElementState selected
-						& BlElementState hovered not
-				style: [ :aStyle | 
-					aStyle background: self theme default backdropEmphasisBackground.
-					aStyle border: self theme button focusedFadedBackgroundColor.
-					];
-			when: BrSizeAdjustmentState normal & BlElementState selected not
-						& BlElementState hovered not
+			when: BlElementState selected not & BlElementState hovered not
 				style: [ :aStyle | 
 					aStyle background: self theme default backdropEmphasisBackground.
 					aStyle
 						border: (BlBorder paint: self theme default backdropEmphasisBackground width: 1) ];
-			when: BrSizeAdjustmentState normal & BlElementState hovered
+			when: BlElementState selected & BlElementState hovered not
+				style: [ :aStyle | 
+					aStyle background: self theme default backdropEmphasisBackground.
+					aStyle border: self theme button focusedFadedBackgroundColor ];
+			when: BlElementState hovered
 				style: [ :aStyle | 
 					aStyle background: self theme button focusedFadedBackgroundColor.
-					aStyle border: self theme button focusedFadedBackgroundColor ];
-			when: BrSizeAdjustmentState small & BlElementState selected not
-						& BlElementState hovered not
-				style: [ :aStyle | aStyle background: self theme default backdropEmphasisBackground ];
-			when: BrSizeAdjustmentState small & BlElementState hovered
-				style: [ :aStyle | aStyle background: self theme button focusedFadedBackgroundColor ];
-			when: BrSizeAdjustmentState small & BlElementState selected
-						& BlElementState hovered not
-				style: [ :aStyle | aStyle background: self theme default backdropEmphasisBackground ].
-
-	self addAptitude: anAptitude
-]
-
-{ #category : #initialization }
-GtTreePagerLinkFollowingOutputElement >> initializeGeometryAndSizeStyling [
-	| anAptitude |
-	anAptitude := BrSizeAdjustmentAptitude new
-			when: BrListOrientationState vertical & BrSizeAdjustmentState small
-				style: [ :aStyle | 
-					aStyle geometry: BlRectangleGeometry new.
-					aStyle
-						do: [ :aWidget | aWidget exact: GtTreePagerConstants outputLenght @ 1 ] ];
-			when: BrListOrientationState horizontal & BrSizeAdjustmentState small
-				style: [ :aStyle | 
-					aStyle geometry: BlRectangleGeometry new.
-					aStyle
-						do: [ :aWidget | aWidget exact: 1 @ GtTreePagerConstants outputLenght ] ];
-			when: BrListOrientationState horizontal & BrSizeAdjustmentState normal
-				style: [ :aStyle | 
-					aStyle geometry: self normalSizeGeometry.
-					aStyle
-						do: [ :aWidget | aWidget exact: self triangleWidth @ self triangleHeight ] ];
-			when: BrListOrientationState vertical & BrSizeAdjustmentState normal
-				style: [ :aStyle | 
-					aStyle geometry: self normalSizeCollapsedGeometry.
-					aStyle
-						do: [ :aWidget | aWidget exact: GtTreePagerConstants rectangleLength @ (GtTreePagerConstants rectangleLength // 2) ] ].
+					aStyle border: self theme button focusedFadedBackgroundColor ].
 
 	self addAptitude: anAptitude
 ]
@@ -128,6 +102,29 @@ GtTreePagerLinkFollowingOutputElement >> initializeOutgoingLinkElements [
 ]
 
 { #category : #initialization }
+GtTreePagerLinkFollowingOutputElement >> newAboutToBeRemovedGeometry [
+	^ BlAnnulusSectorGeometry new
+		startAngle: -90;
+		endAngle: 270;
+		innerRadius: 0
+]
+
+{ #category : #initialization }
+GtTreePagerLinkFollowingOutputElement >> newAnimation [
+	^ BlNumberTransition new
+		onStepDo: [ :eachOffset | 
+			self
+				geometry: (self newAboutToBeRemovedGeometry
+						startAngle: eachOffset;
+						endAngle: 270) ];
+		from: -90;
+		to: 270;
+		by: 6;
+		duration: GtTreePagerConstants replacedLinkRestoration;
+		onFinishedDo: [ self onAnimationFinished ]
+]
+
+{ #category : #initialization }
 GtTreePagerLinkFollowingOutputElement >> newContextMenu [
 	^ GtTreePagerLinkContextMenuBuilder new
 		linkModel: self linkModel;
@@ -150,6 +147,41 @@ GtTreePagerLinkFollowingOutputElement >> normalSizeGeometry [
 				0 @ self triangleHeight}
 ]
 
+{ #category : #'private - event handling' }
+GtTreePagerLinkFollowingOutputElement >> onAnimationFinished [
+	timeAnimation := nil.
+	self geometry: self newAboutToBeRemovedGeometry.
+	
+	"Let's ensure we do not remove the about to remove link."
+	timeAnimationState ifNotNil: [ ^ self ].
+	
+	self hasLinkModel ifFalse: [ ^ self ].
+	self linkModel removeFromPreviousPane
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerLinkFollowingOutputElement >> onBrContextMenuIsHidden: anEvent [
+	anEvent consumed: true.
+	self hasLinkModel ifFalse: [ ^ self ].
+	self linkModel isRemoved ifFalse: [ ^ self ].
+	timeAnimationState = #contextMenu ifFalse: [ ^ self ].
+	
+	timeAnimationState := nil.
+	self startAnimation.
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerLinkFollowingOutputElement >> onBrContextMenuIsVisible: anEvent [
+	anEvent consumed: true.
+	self hasLinkModel ifFalse: [ ^ self ].
+	self linkModel isRemoved ifFalse: [ ^ self ].
+
+	"Let's ensure we do not remove the removed link."
+	timeAnimationState := #contextMenu.
+	self stopAnimation.
+	self geometry: self newAboutToBeRemovedGeometry.
+]
+
 { #category : #'private - event management' }
 GtTreePagerLinkFollowingOutputElement >> onClickEvent: anEvent [
 	self visibility isVisible ifFalse: [ ^ self ].
@@ -164,17 +196,63 @@ GtTreePagerLinkFollowingOutputElement >> onClickEvent: anEvent [
 
 { #category : #'private - event handling' }
 GtTreePagerLinkFollowingOutputElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
+	self hasLinkModel ifFalse: [ ^ self ].
+	anAnnouncement linkModel = self linkModel ifFalse: [ ^ self ].
+
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerLinkFollowingOutputElement >> onHovered [
+	self hasLinkModel ifFalse: [ ^ self ].
+	self linkModel isRemoved ifFalse: [ ^ self ].
+	
+	"Context menu reason, have priority."
+	timeAnimationState ifNotNil: [ ^ self ].
+
+	"Let's ensure we do not remove the removed link."
+	timeAnimationState := #hovered.
+	self stopAnimation.
+	self geometry: self newAboutToBeRemovedGeometry.
 ]
 
 { #category : #'api - link model' }
 GtTreePagerLinkFollowingOutputElement >> onLinkModelChanged [
+	self stopAnimation.
+	timeAnimationState := nil.
 	self updateElement
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerLinkFollowingOutputElement >> onUnhovered [
+	self hasLinkModel ifFalse: [ ^ self ].
+	self linkModel isRemoved ifFalse: [ ^ self ].
+	timeAnimationState = #hovered ifFalse: [ ^ self ].
+	
+	timeAnimationState := nil.
+	self startAnimation.
 ]
 
 { #category : #'accessing - ui' }
 GtTreePagerLinkFollowingOutputElement >> outgoingLinkElements [
 	^ self hasLinkModel ifTrue: [ Array with: self ] ifFalse: [ Array empty ]
+]
+
+{ #category : #animations }
+GtTreePagerLinkFollowingOutputElement >> startAnimation [
+	timeAnimation ifNotNil: [ ^ self ].
+
+	GtTreePagerAnimationFeatures
+		ifEnabled: [ 
+			timeAnimation := self newAnimation.
+			self addAnimation: timeAnimation ]
+		ifDisabled: [  ]
+]
+
+{ #category : #animations }
+GtTreePagerLinkFollowingOutputElement >> stopAnimation [
+	timeAnimation ifNotNil: [ :anAnimation | anAnimation stopIfRunning ].
+	timeAnimation := nil
 ]
 
 { #category : #'api - link model' }
@@ -203,12 +281,13 @@ GtTreePagerLinkFollowingOutputElement >> unsubscribeFromLinkModel [
 
 { #category : #'private - updating' }
 GtTreePagerLinkFollowingOutputElement >> updateElement [
+	self hasLinkModel ifFalse: [ ^ self ].
 	self linkModel isActive
 		ifTrue: [ self states addState: BlElementState selected ]
 		ifFalse: [ self states removeState: BlElementState selected ].
 
-	((self states hasState: BrSizeAdjustmentState normal)
-		and: [ self linkModel isSpawned ])
-		ifFalse: [ self states addState: BrListOrientationState vertical ]
-		ifTrue: [ self states addState: BrListOrientationState horizontal ]
+	GtTreePagerLinkFollowingOutputElementUpdater new
+		linkModel: self linkModel;
+		linkElement: self;
+		update
 ]

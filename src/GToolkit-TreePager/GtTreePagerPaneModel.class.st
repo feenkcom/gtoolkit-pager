@@ -15,6 +15,12 @@ Class {
 }
 
 { #category : #'api - previous panes' }
+GtTreePagerPaneModel >> aboutToRemoveFromPreviousPane [
+	self previousLink ifNotNil: [ :aPreviousLink | 
+		aPreviousLink aboutToRemoveFromPreviousPane ]
+]
+
+{ #category : #'api - previous panes' }
 GtTreePagerPaneModel >> activeLink [
 	^ followingLinks activeLink
 ]
@@ -435,13 +441,14 @@ GtTreePagerPaneModel >> removeFollowingPane: aPaneModel [
 
 { #category : #'api - previous panes' }
 GtTreePagerPaneModel >> removeFromPreviousPane [
-	self previousLink
-		ifNotNil: [ :aPreviousLink | aPreviousLink removeFromPreviousPane ]
+	self previousLink ifNotNil: [ :aPreviousLink | 
+		aPreviousLink removeFromPreviousPane ]
 ]
 
 { #category : #'api - following links' }
 GtTreePagerPaneModel >> removeLink [
-	self activeLink ifNotNil: [ :aLinkModel | self removeFollowingLink: aLinkModel ]
+	self activeLink ifNotNil: [ :aLinkModel | 
+		self removeFollowingLink: aLinkModel ]
 ]
 
 { #category : #'private - updating' }

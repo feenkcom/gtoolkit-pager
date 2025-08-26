@@ -60,6 +60,11 @@ GtTreePagerLinkFollowingOutputClickResolver >> visitGtTreePagerLinkInactiveHidde
 ]
 
 { #category : #visiting }
+GtTreePagerLinkFollowingOutputClickResolver >> visitGtTreePagerLinkInactiveRemovedState: aState [
+	self linkModel expand
+]
+
+{ #category : #visiting }
 GtTreePagerLinkFollowingOutputClickResolver >> visitGtTreePagerLinkInactiveSpawnedState: aState [
 	self linkModel activate
 ]

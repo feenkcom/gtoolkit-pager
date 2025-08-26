@@ -182,6 +182,13 @@ GtTreePagerHorizontalTreeFlowBuilder >> visitGtTreePagerLinkInactiveHiddenState:
 ]
 
 { #category : #visiting }
+GtTreePagerHorizontalTreeFlowBuilder >> visitGtTreePagerLinkInactiveRemovedState: aState [
+	self visitGtTreePagerLinkState: aState.
+	currentNode linkModel allLinkModelsBreadthFirstDo: [ :eachLinkModel | 
+		nonSpawnedLinkModelBlock value: eachLinkModel ]
+]
+
+{ #category : #visiting }
 GtTreePagerHorizontalTreeFlowBuilder >> visitGtTreePagerLinkInactiveSpawnedState: aState [
 	self buildSpawnedCurrentNode.
 	self visitGtTreePagerLinkState: aState

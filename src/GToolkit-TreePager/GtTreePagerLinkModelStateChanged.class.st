@@ -3,7 +3,8 @@ Class {
 	#superclass : #GtTreePagerLinkModelAnnouncement,
 	#instVars : [
 		'newState',
-		'oldState'
+		'oldState',
+		'reason'
 	],
 	#category : #'GToolkit-TreePager-Announcements'
 }
@@ -26,4 +27,14 @@ GtTreePagerLinkModelStateChanged >> oldState [
 { #category : #accessing }
 GtTreePagerLinkModelStateChanged >> oldState: anOldState [
 	oldState := anOldState
+]
+
+{ #category : #accessing }
+GtTreePagerLinkModelStateChanged >> reason [
+	^ reason ifNil: [ GtTreePagerUnknownReason default ]
+]
+
+{ #category : #accessing }
+GtTreePagerLinkModelStateChanged >> reason: aReason [
+	reason := aReason
 ]
