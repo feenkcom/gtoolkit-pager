@@ -93,6 +93,12 @@ GtTreePagerPaneModel >> asElement [
 	^ aToolElement
 ]
 
+{ #category : #'api - phlow' }
+GtTreePagerPaneModel >> canRecreateToolElement [
+	<return: #Boolean>
+	^ self phlowTool canRecreateToolElement
+]
+
 { #category : #accessing }
 GtTreePagerPaneModel >> children [
 	<return: #Collection of: #TGtTreePagerLinkModel>

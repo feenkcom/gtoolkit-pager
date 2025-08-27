@@ -122,6 +122,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newRebuildPaneToolElementActionItem
 		id: #'menu--rebuild-pane-tool-element';
 		label: 'Update pane tool' preview: [ self linkModel title ];
 		action: [ :anElement :aButtonModel :anEvent | self paneModel requestRebuildPaneTool ];
+		disableIf: [ :aMenuModel | self paneModel canRecreateToolElement not ];
 		yourself
 ]
 
