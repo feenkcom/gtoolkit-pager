@@ -192,10 +192,14 @@ GtTreePagerStep >> assertNumberOfCollapsedTriangleLinkElements: anInteger [
 
 	^ self assert
 		label: aLabel;
-		value: [ :aPanesElement | 
-				(aPanesElement query // GtTreePagerLinkFollowingOutputElement @ [ :eachElement |
-					eachElement states hasState: BrListOrientationState vertical ]) result
-					size ]
+		value: [ :aPanesElement :aUserData | 
+				| aQuery |
+				aQuery := (aPanesElement query // GtTreePagerLinkFollowingOutputElement)
+						@ [ :eachElement | eachElement hasLinkModel ]
+						@ [ :eachElement | eachElement linkModel isSpawned not ].
+
+				aUserData at: aLabel put: aQuery.
+				aQuery result size ]
 			equals: anInteger;
 		referenceSender;
 		onParentStepTarget: self;
@@ -245,8 +249,8 @@ GtTreePagerStep >> assertNumberOfSpawnedNormalTriangleLinkElements: anInteger [
 		value: [ :aPanesElement | 
 				| aQuery |
 				aQuery := (aPanesElement query // GtTreePagerLinkFollowingOutputElement)
-						@ [ :eachElement | eachElement states hasState: BrListOrientationState horizontal ]
-						@ [ :eachElement | eachElement states hasState: BrSizeAdjustmentState normal ].
+						@ [ :eachElement | eachElement hasLinkModel ]
+						@ [ :eachElement | eachElement linkModel isSpawned ].
 				aPanesElement userData at: aLabel put: aQuery.
 				aQuery result size ]
 			equals: anInteger;
@@ -294,7 +298,7 @@ GtTreePagerStep >> assertNumberOfSpawnedTriangleLinkElements: anInteger [
 				aQuery := aPanesElement query
 						// [ :eachElement | 
 							((eachElement isKindOf: GtTreePagerLinkFollowingOutputElement)
-								and: [ eachElement states hasState: BrListOrientationState horizontal ])
+								and: [ eachElement hasLinkModel and: [ eachElement linkModel isSpawned ] ])
 								or: [ eachElement isKindOf: GtTreePagerLinkCollapsedOutgoingLinkElement ] ].
 				aPanesElement userData at: aLabel put: aQuery.
 				aQuery result size ]
@@ -358,7 +362,8 @@ GtTreePagerStep >> assertSpawnedTriangleLinkModel: aLinkModel [
 		value: [ :aPanesElement | 
 				| aQuery |
 				aQuery := (aPanesElement query // GtTreePagerLinkFollowingOutputElement)
-						@ [ :eachElement | eachElement states hasState: BrListOrientationState horizontal ]
+						@ [ :eachElement | eachElement hasLinkModel ]
+						@ [ :eachElement | eachElement linkModel isSpawned ]
 						@ [ :eachElement | eachElement linkModel = aLinkModel ].
 				aPanesElement userData at: aLabel put: aQuery.
 				aQuery result size ]
