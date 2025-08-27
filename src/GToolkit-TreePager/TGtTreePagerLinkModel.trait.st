@@ -30,6 +30,12 @@ TGtTreePagerLinkModel >> allReplacedLinkModelsDo: aBlock [
 			aLinkModel allReplacedLinkModelsDo: aBlock ] ]
 ]
 
+{ #category : #'api - phlow' }
+TGtTreePagerLinkModel >> canRecreateToolElement [
+	<return: #Boolean>
+	^ self explicitRequirement
+]
+
 { #category : #'api - pane model' }
 TGtTreePagerLinkModel >> children [
 	<return: #Collection of: #TGtTreePagerLinkModel>
