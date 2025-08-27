@@ -164,6 +164,7 @@ GtTreePagerLinkFollowingOutputElement >> onBrContextMenuIsHidden: anEvent [
 	anEvent consumed: true.
 	self hasLinkModel ifFalse: [ ^ self ].
 	self linkModel isRemoved ifFalse: [ ^ self ].
+	
 	timeAnimationState = #contextMenu ifFalse: [ ^ self ].
 	
 	timeAnimationState := nil.
@@ -192,6 +193,8 @@ GtTreePagerLinkFollowingOutputElement >> onClickEvent: anEvent [
 		element: self;
 		linkModel: self linkModel;
 		resolve.
+		
+	timeAnimationState := nil
 ]
 
 { #category : #'private - event handling' }
@@ -208,7 +211,7 @@ GtTreePagerLinkFollowingOutputElement >> onHovered [
 	self linkModel isRemoved ifFalse: [ ^ self ].
 	
 	"Context menu reason, have priority."
-	timeAnimationState ifNotNil: [ ^ self ].
+	timeAnimationState = #contextMenu ifTrue: [ ^ self ].
 
 	"Let's ensure we do not remove the removed link."
 	timeAnimationState := #hovered.
@@ -218,8 +221,6 @@ GtTreePagerLinkFollowingOutputElement >> onHovered [
 
 { #category : #'api - link model' }
 GtTreePagerLinkFollowingOutputElement >> onLinkModelChanged [
-	self stopAnimation.
-	timeAnimationState := nil.
 	self updateElement
 ]
 
@@ -227,7 +228,9 @@ GtTreePagerLinkFollowingOutputElement >> onLinkModelChanged [
 GtTreePagerLinkFollowingOutputElement >> onUnhovered [
 	self hasLinkModel ifFalse: [ ^ self ].
 	self linkModel isRemoved ifFalse: [ ^ self ].
-	timeAnimationState = #hovered ifFalse: [ ^ self ].
+	
+	"Context menu reason, have priority."
+	timeAnimationState = #contextMenu ifTrue: [ ^ self ].
 	
 	timeAnimationState := nil.
 	self startAnimation.
@@ -282,10 +285,17 @@ GtTreePagerLinkFollowingOutputElement >> unsubscribeFromLinkModel [
 { #category : #'private - updating' }
 GtTreePagerLinkFollowingOutputElement >> updateElement [
 	self hasLinkModel ifFalse: [ ^ self ].
+	
+	"Reset animation"
+	self stopAnimation.
+	timeAnimationState := nil.
+	
+	"Selection state is used to define active links"
 	self linkModel isActive
 		ifTrue: [ self states addState: BlElementState selected ]
 		ifFalse: [ self states removeState: BlElementState selected ].
 
+	"Update element acording to its link state"
 	GtTreePagerLinkFollowingOutputElementUpdater new
 		linkModel: self linkModel;
 		linkElement: self;
