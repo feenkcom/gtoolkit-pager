@@ -28,9 +28,13 @@ GtTreePagerConstants class >> edgeFixedDistance [
 
 { #category : #constants }
 GtTreePagerConstants class >> horizontalCellSpacing [
-	"Space used between pane elements"
+	"Space used between pane elements.
+	Note: In order to make pane toolbar corner buttons accessible from all mouse directions,
+	we simulate empty space around panes using paddings in:
+	- GtTreePagerPaneElement>>#initialize, and
+	- GtTreePagerElement>>#initialize."
 
-	^ 10
+	^ 4
 ]
 
 { #category : #constants }
@@ -94,7 +98,11 @@ GtTreePagerConstants class >> triangleWidth [
 
 { #category : #constants }
 GtTreePagerConstants class >> verticalCellSpacing [
-	"Space used between pane elements"
+	"Space used between pane elements
+	Note: In order to make pane toolbar corner buttons accessible from all mouse directions,
+	we simulate empty space around panes using paddings in:
+	- GtTreePagerPaneElement>>#initialize, and
+	- GtTreePagerElement>>#initialize."
 
-	^ 20
+	^ 4
 ]

@@ -17,6 +17,14 @@ GtTreePagerElement >> defaultLayout [
 GtTreePagerElement >> initialize [
 	super initialize.
 	self matchParent.
+	
+	"We set some padding to make toolbar corner buttons accessible from all mouse directions."
+	self
+		padding: (BlInsets
+				top: 0
+				right: 0
+				bottom: GtTreePagerConstants cornerButtonSize y - GtTreePagerConstants verticalCellSpacing
+				left: 0).
 
 	panesElement := GtTreePagerFlowPanesElement new matchParent.
 	scrollbarElement := GtTreePagerScrollbarElement new
