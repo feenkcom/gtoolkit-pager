@@ -166,6 +166,7 @@ GtTreePagerModel >> previousLink [
 
 { #category : #accessing }
 GtTreePagerModel >> settings [
+	<return: #GtTreePagerModelSettings>
 	^ settings
 ]
 

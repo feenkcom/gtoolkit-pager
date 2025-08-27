@@ -140,8 +140,13 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newWorldTabActionItem [
 		id: #'menu--new-world-tab';
 		label: 'Open pane in new tab' preview: [ self thisAndOtherPanesPreviewString ];
 		action: [ :anElement :aButtonModel :anEvent | 
+			| aPager aSettings |
+			aSettings := nil.
+			aPager := self linkModel topPreviousPane.
+			(aPager isKindOf: GtTreePagerModel) ifTrue: [
+				aSettings := aPager settings ].
 			BlSpace new
-				paneInTreePager: self linkModel similarPaneCopy;
+				paneInTreePager: self linkModel similarPaneCopy settings: aSettings;
 				withSceneDriller;
 				showFrom: anElement ];
 		yourself

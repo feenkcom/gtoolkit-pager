@@ -82,3 +82,10 @@ TGtTreePagerLinkModel >> similarLinkCopy [
 	<return: #TGtTreePagerPaneModel>
 	^ self shallowCopy postSimilarLinkCopy
 ]
+
+{ #category : #'api - pane model' }
+TGtTreePagerLinkModel >> topPreviousPane [
+	"Note: it is usually a pager model"
+
+	^ self explicitRequirement
+]

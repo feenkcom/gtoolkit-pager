@@ -57,6 +57,12 @@ GtTreePagerModelSettings >> columnHeight: aLayoutCount [
 ]
 
 { #category : #'api - settings' }
+GtTreePagerModelSettings >> copySettingsFrom: aModelSettings [
+	aModelSettings optionsDo: [ :aKey :aValue | 
+		self optionAt: aKey put: aValue shallowCopy ]
+]
+
+{ #category : #'api - settings' }
 GtTreePagerModelSettings >> decreaseNumberOfVisibleColumns [
 	self numberOfVisibleColumns: self numberOfVisibleColumns - 1
 ]

@@ -155,3 +155,8 @@ GtTreePagerModelLinkAdaptor >> state [
 GtTreePagerModelLinkAdaptor >> title [
 	^ self paneModel title
 ]
+
+{ #category : #'api - pane model' }
+GtTreePagerModelLinkAdaptor >> topPreviousPane [
+	^ self pagerModel
+]
