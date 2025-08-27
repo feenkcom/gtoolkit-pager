@@ -31,13 +31,6 @@ GtTreePagerLinkAbstractContextMenuBuilder >> linkModel: aLinkModel [
 ]
 
 { #category : #'menu items' }
-GtTreePagerLinkAbstractContextMenuBuilder >> mayAddHardRemoveLinkActionItem [
-	GtTreePagerSettings isDisplayHideMenuItem ifFalse: [ ^ self ].
-	self linkModel depthIndex = 1 ifTrue: [ ^ self ].
-	menu addItem: self newHardRemoveLinkActionItem
-]
-
-{ #category : #'menu items' }
 GtTreePagerLinkAbstractContextMenuBuilder >> mayAddHideLinkActionItem [
 	GtTreePagerSettings isDisplayHideMenuItem ifFalse: [ ^ self ].
 	self linkModel depthIndex = 1 ifTrue: [ ^ self ].

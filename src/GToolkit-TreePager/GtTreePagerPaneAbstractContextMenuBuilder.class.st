@@ -11,8 +11,7 @@ GtTreePagerPaneAbstractContextMenuBuilder >> visitGtTreePagerLinkActiveSpawnedSt
 			menu addItem: self newCollapseOrSelectPaneActionItem.
 			self mayAddHideLinkActionItem. ].
 	self linkModel depthIndex > 1 ifTrue: [ 
-		menu addItem: self newRemoveLinkActionItem.
-		self mayAddHardRemoveLinkActionItem ].
+		menu addItem: self newRemoveLinkActionItem ].
 	menu addItem: self newMaximizePaneActionItem.
 	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRebuildPaneToolElementActionItem
@@ -24,8 +23,7 @@ GtTreePagerPaneAbstractContextMenuBuilder >> visitGtTreePagerLinkInactiveSpawned
 		menu addItem: self newCollapseOrSelectPaneActionItem.
 		self mayAddHideLinkActionItem. ].
 	self linkModel depthIndex > 1 ifTrue: [ 
-		menu addItem: self newRemoveLinkActionItem.
-		self mayAddHardRemoveLinkActionItem ].
+		menu addItem: self newRemoveLinkActionItem ].
 	menu addItem: self newMaximizePaneActionItem.
 	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRebuildPaneToolElementActionItem
@@ -36,6 +34,5 @@ GtTreePagerPaneAbstractContextMenuBuilder >> visitGtTreePagerLinkState: aState [
 	menu addItem: self newWorldTabActionItem.
 	menu addItem: self newRebuildPaneToolElementActionItem.
 	self linkModel depthIndex > 1 ifTrue: [
-		menu addItem: self newRemoveLinkActionItem.
-		self mayAddHardRemoveLinkActionItem ]
+		menu addItem: self newRemoveLinkActionItem ]
 ]
