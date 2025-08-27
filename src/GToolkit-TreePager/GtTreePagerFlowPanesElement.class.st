@@ -151,7 +151,8 @@ GtTreePagerFlowPanesElement >> onGtTreePagerLinkModelStateChanged: anAnnouncemen
 		action: [ self
 				updatePaneAndEdgesDueToLinkModel: anAnnouncement linkModel
 				oldState: anAnnouncement oldState
-				newState: anAnnouncement newState ]
+				newState: anAnnouncement newState
+				reason: anAnnouncement reason ]
 ]
 
 { #category : #'private - event handling' }
@@ -352,7 +353,7 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToLinkModel: aLinkModel oldState: anOldState newState: aNewState [
+GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToLinkModel: aLinkModel oldState: anOldState newState: aNewState reason: aReason [
 	"From the UI interaction perspective:
 	- `anOldState isSpawned` and `aNewState isSpawned not` => pane is not displayed,
 		the pane could also be hidden, selected, or collapsed. Currently, we display
@@ -361,7 +362,9 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgesDueToLinkModel: aLinkModel oldS
 	- `anOldState isCollapsed` and `aNewState isSpawned` => pane is expanded
 		
 	Note: We could optimize this part and not update the element if the state change
-	does not affect number of displayed elements and edges."
+	does not affect number of displayed elements and edges.
+	
+	aReason is `GtTreePagerReason` instance."
 
 	self updatePaneAndEdgeElements
 ]

@@ -5,6 +5,7 @@ Class {
 		'Collapsed',
 		'Hidden',
 		'Inactive',
+		'Removed',
 		'Selected',
 		'Spawned'
 	],
@@ -117,6 +118,11 @@ GtTreePagerLinkState class >> inactive [
 ]
 
 { #category : #'api - accessing' }
+GtTreePagerLinkState class >> removed [
+	^ Removed ifNil: [ Removed := GtTreePagerLinkInactiveRemovedState new ]
+]
+
+{ #category : #'api - accessing' }
 GtTreePagerLinkState class >> selected [
 	^ Selected ifNil: [ Selected := GtTreePagerLinkActiveSelectedState new ]
 ]
@@ -193,6 +199,11 @@ GtTreePagerLinkState >> isHidden [
 ]
 
 { #category : #'api - state' }
+GtTreePagerLinkState >> isRemoved [
+	^ false
+]
+
+{ #category : #'api - state' }
 GtTreePagerLinkState >> isSelected [
 	^ false
 ]
@@ -213,6 +224,13 @@ GtTreePagerLinkState >> label [
 				splitCamelCase
 				do: [ :each | aStream nextPutAll: each asLowercase ]
 				separatedBy: [ aStream space ] ]
+]
+
+{ #category : #'api - state' }
+GtTreePagerLinkState >> remove [
+	"Return a removed state"
+
+	^ GtTreePagerLinkState removed
 ]
 
 { #category : #'api - state' }

@@ -285,7 +285,7 @@ GtTreePagerPaneElement >> onDropdownWithModifiersRemoveClick: anEvent [
 	anEvent modifiers isSoftShiftPrimaryModifierOnly ifFalse: [ ^ self ].
 
 	dropdownElement dispatchEvent: BrDropdownHideWish new.
-	self paneModel removeFromPreviousPane
+	self paneModel aboutToRemoveFromPreviousPane
 ]
 
 { #category : #'private - event handling' }

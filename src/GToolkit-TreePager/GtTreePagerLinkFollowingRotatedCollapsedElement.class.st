@@ -78,18 +78,7 @@ GtTreePagerLinkFollowingRotatedCollapsedElement >> initializeRightOutputsElement
 
 { #category : #'private - updating' }
 GtTreePagerLinkFollowingRotatedCollapsedElement >> newOutputElementForLinkModel: aLinkModel [
-	| anElement |
-	anElement := GtTreePagerLinkFollowingOutputElement new
-			beSmallSize;
-			linkModel: aLinkModel.
-
-	aLinkModel isSpawned
-		ifTrue: [ anElement beHorizontal.
-			anElement margin: (BlInsets top: 1 bottom: 1) ]
-		ifFalse: [ anElement beVertical.
-			anElement margin: (BlInsets left: 1 right: 1) ].
-			
-	^ anElement
+	^ GtTreePagerLinkCollapsedOutgoingLinkElement new linkModel: aLinkModel
 ]
 
 { #category : #'private - event handling' }

@@ -140,7 +140,7 @@ GtTreePagerExamples >> pagerWithCWithFollowingHFPanes [
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
 	aLinkF := aPaneC followingLinks second.
 	self assert: aLinkF title equals: '$F'.
-	aLinkF beActiveLink.
+	aLinkF activate.
 	self assert: aPaneC activeLink equals: aLinkF.
 	aPaneC spawnPane: aPaneH.
 
@@ -164,7 +164,7 @@ GtTreePagerExamples >> pagerWithCWithFollowingHFPanes_selected [
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
 	aLinkF := aPaneC followingLinks second.
 	self assert: aLinkF title equals: '$F'.
-	aLinkF beActiveLink.
+	aLinkF activate.
 	aLinkF select.
 	self assert: aPaneC activeLink equals: aLinkF.
 	self assert: aLinkF state equals: GtTreePagerLinkState selected.

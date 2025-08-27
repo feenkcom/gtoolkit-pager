@@ -81,6 +81,15 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newExpandLinkActionItem [
 ]
 
 { #category : #'menu items' }
+GtTreePagerLinkAbstractContextMenuBuilder >> newHardRemoveLinkActionItem [
+	^ BrMenuActionItem new
+		id: #'tree-pager--menu-permanent-remove';
+		label: 'Permanently remove pane' preview: [ self thisAndOtherPanesPreviewString ];
+		action: [ :anElement :aButtonModel :anEvent | self linkModel removeFromPreviousPane ];
+		yourself
+]
+
+{ #category : #'menu items' }
 GtTreePagerLinkAbstractContextMenuBuilder >> newHideLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'tree-pager--menu--hide';
@@ -121,7 +130,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newRemoveLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'tree-pager--menu-remove';
 		label: 'Remove pane' preview: [ self thisAndOtherPanesPreviewString ];
-		action: [ :anElement :aButtonModel :anEvent | self linkModel removeFromPreviousPane ];
+		action: [ :anElement :aButtonModel :anEvent | self linkModel aboutToRemoveFromPreviousPane ];
 		yourself
 ]
 

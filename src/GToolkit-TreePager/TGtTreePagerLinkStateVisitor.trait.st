@@ -24,6 +24,11 @@ TGtTreePagerLinkStateVisitor >> visitGtTreePagerLinkInactiveHiddenState: aState 
 ]
 
 { #category : #visiting }
+TGtTreePagerLinkStateVisitor >> visitGtTreePagerLinkInactiveRemovedState: aState [
+	self visitGtTreePagerLinkState: aState
+]
+
+{ #category : #visiting }
 TGtTreePagerLinkStateVisitor >> visitGtTreePagerLinkInactiveSpawnedState: aState [
 	self visitGtTreePagerLinkState: aState
 ]

@@ -167,10 +167,10 @@ GtTreePagerLinkReplacedElement >> show [
 { #category : #animation }
 GtTreePagerLinkReplacedElement >> startAnimation [
 	timeAnimation ifNotNil: [ ^ self ].
-	timeAnimation ifNotNil: [ ^ self ].
 
 	GtTreePagerAnimationFeatures
-		ifEnabled: [ timeAnimation := self newAnimation.
+		ifEnabled: [ 
+			timeAnimation := self newAnimation.
 			self addAnimation: timeAnimation ]
 		ifDisabled: [  ]
 ]

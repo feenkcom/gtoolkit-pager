@@ -41,6 +41,8 @@ GtTreePagerConstants class >> leftShift [
 
 { #category : #constants }
 GtTreePagerConstants class >> outputLenght [
+	"I define lenght of ougoing links from collapsed link elements"
+
 	^ 1
 ]
 

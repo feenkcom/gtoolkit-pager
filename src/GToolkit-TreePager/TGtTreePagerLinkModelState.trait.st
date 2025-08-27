@@ -42,6 +42,16 @@ TGtTreePagerLinkModelState >> isHidden [
 ]
 
 { #category : #'api - state' }
+TGtTreePagerLinkModelState >> isRemoved [
+	"Return true if link model is remove.
+	Removed state indicates that the link should be removed soon,
+	e.g., after a restore timeout."
+
+	<return: #Boolean>
+	^ self state isRemoved
+]
+
+{ #category : #'api - state' }
 TGtTreePagerLinkModelState >> isSelected [
 	"Return true if link model is selected.
 	Selected links are replaced with new spawned or selected links."
