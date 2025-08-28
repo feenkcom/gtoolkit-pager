@@ -44,6 +44,17 @@ GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> buildNonSpawnedCurrentNode [
 	row := row + 1
 ]
 
+{ #category : #private }
+GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> buildNonSpawnedCurrentNodeOnly [
+	nonSpawnedLinkModelBlock
+		value: currentNode linkModel
+		value: row
+		value: depth
+		value: 1.
+
+	row := row + 1
+]
+
 { #category : #accessing }
 GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> linkModels [
 	^ linkModels
@@ -120,5 +131,11 @@ GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> visitGtTreePagerLinkInactiveCo
 { #category : #visiting }
 GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> visitGtTreePagerLinkInactiveHiddenState: aState [
 	self buildNonSpawnedCurrentNode.
+	self visitGtTreePagerLinkState: aState
+]
+
+{ #category : #visiting }
+GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> visitGtTreePagerLinkInactiveRemovedState: aState [
+	self buildNonSpawnedCurrentNodeOnly.
 	self visitGtTreePagerLinkState: aState
 ]

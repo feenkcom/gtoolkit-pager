@@ -137,6 +137,9 @@ GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> unsubscribeFromLinkMo
 { #category : #'private - updating' }
 GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> updateElement [
 	| maxDepth displayedElements |
+	self hasLinkModel ifFalse: [ self removeChildren. ^ self ].
+	self linkModel isRemoved ifTrue: [ self removeChildren. ^ self ].
+	
 	maxDepth := 1.
 	displayedElements := OrderedCollection new.
 
