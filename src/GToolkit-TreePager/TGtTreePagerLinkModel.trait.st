@@ -30,6 +30,12 @@ TGtTreePagerLinkModel >> allReplacedLinkModelsDo: aBlock [
 			aLinkModel allReplacedLinkModelsDo: aBlock ] ]
 ]
 
+{ #category : #'api - phlow' }
+TGtTreePagerLinkModel >> canRecreateToolElement [
+	<return: #Boolean>
+	^ self explicitRequirement
+]
+
 { #category : #'api - pane model' }
 TGtTreePagerLinkModel >> children [
 	<return: #Collection of: #TGtTreePagerLinkModel>
@@ -81,4 +87,11 @@ TGtTreePagerLinkModel >> replacedLink [
 TGtTreePagerLinkModel >> similarLinkCopy [
 	<return: #TGtTreePagerPaneModel>
 	^ self shallowCopy postSimilarLinkCopy
+]
+
+{ #category : #'api - pane model' }
+TGtTreePagerLinkModel >> topPreviousPane [
+	"Note: it is usually a pager model"
+
+	^ self explicitRequirement
 ]

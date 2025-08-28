@@ -67,6 +67,12 @@ GtTreePagerLinkModel >> beInactiveLink [
 	self inactivate
 ]
 
+{ #category : #'api - phlow' }
+GtTreePagerLinkModel >> canRecreateToolElement [
+	<return: #Boolean>
+	^ self paneModel canRecreateToolElement
+]
+
 { #category : #'api - following links' }
 GtTreePagerLinkModel >> children [
 	<return: #Collection of: #TGtTreePagerLinkModel>

@@ -35,6 +35,12 @@ GtTreePagerModelLinkAdaptor >> announcer [
 	^ self paneModel announcer
 ]
 
+{ #category : #'api - phlow' }
+GtTreePagerModelLinkAdaptor >> canRecreateToolElement [
+	<return: #Boolean>
+	^ self paneModel canRecreateToolElement
+]
+
 { #category : #'api - pane model' }
 GtTreePagerModelLinkAdaptor >> children [
 	<return: #Collection of: #TGtTreePagerLinkModel>
@@ -154,4 +160,9 @@ GtTreePagerModelLinkAdaptor >> state [
 { #category : #accessing }
 GtTreePagerModelLinkAdaptor >> title [
 	^ self paneModel title
+]
+
+{ #category : #'api - pane model' }
+GtTreePagerModelLinkAdaptor >> topPreviousPane [
+	^ self pagerModel
 ]

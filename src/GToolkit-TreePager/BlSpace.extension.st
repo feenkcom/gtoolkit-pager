@@ -4,12 +4,29 @@ Extension { #name : #BlSpace }
 BlSpace >> paneInTreePager: aPaneModel [
 	"Add a pager element with a given pane model."
 
-	| aTitleBuilder aPagerModel |
-	aTitleBuilder := GtPhlowTitleLabelBuilder longLabel: [ aPaneModel title ].
-	self title: aTitleBuilder build.
-	aPaneModel icon ifNotNil: [ :anIcon | self icon: anIcon ].
+	self panesInTreePager: { aPaneModel } settings: nil
+]
 
-	aPagerModel := GtTreePagerModel new paneModel: aPaneModel.
+{ #category : #'*GToolkit-TreePager' }
+BlSpace >> paneInTreePager: aPaneModel settings: aPagerSettings [
+	"Add a pager element with a given pane model."
+
+	self panesInTreePager: { aPaneModel } settings: aPagerSettings
+]
+
+{ #category : #'*GToolkit-TreePager' }
+BlSpace >> panesInTreePager: somePaneModels settings: aPagerSettings [
+	"Add a pager element with a given pane models."
+
+	| aTitleBuilder aPagerModel |
+	aTitleBuilder := GtPhlowTitleLabelBuilder longLabel: [ somePaneModels anyOne title ].
+	self title: aTitleBuilder build.
+	somePaneModels anyOne icon ifNotNil: [ :anIcon | self icon: anIcon ].
+
+	aPagerModel := GtTreePagerModel new.
+	aPagerSettings ifNotNil: [
+		aPagerModel settings copySettingsFrom: aPagerSettings ].
+	aPagerModel paneModels: somePaneModels.
 
 	self addChild: (GtTreePager new pagerModel: aPagerModel)
 ]

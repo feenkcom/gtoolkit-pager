@@ -122,6 +122,7 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newRebuildPaneToolElementActionItem
 		id: #'menu--rebuild-pane-tool-element';
 		label: 'Update pane tool' preview: [ self linkModel title ];
 		action: [ :anElement :aButtonModel :anEvent | self paneModel requestRebuildPaneTool ];
+		disableIf: [ :aMenuModel | self linkModel canRecreateToolElement not ];
 		yourself
 ]
 
@@ -140,10 +141,22 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newWorldTabActionItem [
 		id: #'menu--new-world-tab';
 		label: 'Open pane in new tab' preview: [ self thisAndOtherPanesPreviewString ];
 		action: [ :anElement :aButtonModel :anEvent | 
+			| aPager aSettings |
+			aSettings := nil.
+			aPager := self linkModel topPreviousPane.
+			(aPager isKindOf: GtTreePagerModel) ifTrue: [
+				aSettings := aPager settings ].
 			BlSpace new
-				paneInTreePager: self linkModel similarPaneCopy;
+				paneInTreePager: self linkModel similarPaneCopy settings: aSettings;
 				withSceneDriller;
 				showFrom: anElement ];
+		disableIf: [ :aMenuModel | 
+			| isOK |
+			isOK := self linkModel canRecreateToolElement.
+			isOK ifTrue: [
+				self paneModel allLinkModelsBreadthFirstDo: [ :eachLinkModel |
+					isOK := isOK & eachLinkModel canRecreateToolElement ] ].
+			isOK not ];
 		yourself
 ]
 

@@ -70,19 +70,25 @@ GtTreePagerPaneElement >> initialize [
 	super initialize.
 	self matchParent.
 	self clipChildren: false.
-	
+	self
+		padding: (BlInsets
+				top: GtTreePagerConstants cornerButtonSize y - GtTreePagerConstants verticalCellSpacing
+				right: 0
+				bottom: 0
+				left: GtTreePagerConstants cornerButtonSize x // 2 - GtTreePagerConstants horizontalCellSpacing).
+
 	self initializeContentElement.
 	self initializeContentContainerElement.
 	self initializeFollowingsElement.
 	self addChild: contentContainer.
 	self addChild: followingsElement.
-	
+
 	self initializeEventHandlers.
 	self
 		addAptitude: (BrLayoutResizerAptitude new
 				inherit: contentContainer;
 				vInherit: followingsElement).
-	
+
 	self states addState: GtPhlowToolDetailState normal
 ]
 
