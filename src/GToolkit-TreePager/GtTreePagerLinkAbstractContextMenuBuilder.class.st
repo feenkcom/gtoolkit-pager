@@ -117,6 +117,17 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newMaximizePaneActionItem [
 ]
 
 { #category : #'menu items' }
+GtTreePagerLinkAbstractContextMenuBuilder >> newMinimizePaneActionItem [
+	^ BrMenuActionItem new
+		id: #'menu--minimize-pane';
+		label: 'Minimize pane' preview: [ self linkModel title ];
+		action: [ :anElement :aButtonModel :anEvent | 
+			self paneElement ifNotNil: [ :aPaneElement | 
+				aPaneElement fireEvent: BrMaximizerHostMinimizeWish new ] ];
+		yourself
+]
+
+{ #category : #'menu items' }
 GtTreePagerLinkAbstractContextMenuBuilder >> newRebuildPaneToolElementActionItem [
 	^ BrMenuActionItem new
 		id: #'menu--rebuild-pane-tool-element';
