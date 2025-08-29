@@ -65,7 +65,6 @@ GtTreePagerLinkOutputAndCollapsedPanesElement >> initializeContainerElement [
 { #category : #initialization }
 GtTreePagerLinkOutputAndCollapsedPanesElement >> initializeOutputElement [
 	outputElement := GtTreePagerLinkFollowingOutputElement new
-			beNormalSize;
 			constraintsDo: [ :c | 
 				c linear vertical alignTop.
 				c linear horizontal alignLeft ]
