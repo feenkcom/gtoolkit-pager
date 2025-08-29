@@ -84,8 +84,15 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newExpandLinkActionItem [
 GtTreePagerLinkAbstractContextMenuBuilder >> newHardRemoveLinkActionItem [
 	^ BrMenuActionItem new
 		id: #'tree-pager--menu-permanent-remove';
-		label: 'Permanently remove pane' preview: [ self thisAndOtherPanesPreviewString ];
-		action: [ :anElement :aButtonModel :anEvent | self linkModel removeFromPreviousPane ];
+		label: 'Permanently remove pane'
+			preview: [ self thisAndOtherPanesPreviewString ];
+		action: [ :anElement :aButtonModel :anEvent | 
+			| aWish |
+			aWish := BrPopoverAnchorElementWish new.
+			anElement fireEvent: aWish.
+			aWish anchorElementDo: [ :anAnchor | 
+				anAnchor dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction ].
+			self linkModel removeFromPreviousPane ];
 		yourself
 ]
 
@@ -143,6 +150,21 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newRemoveLinkActionItem [
 		id: #'tree-pager--menu-remove';
 		label: 'Remove pane' preview: [ self thisAndOtherPanesPreviewString ];
 		action: [ :anElement :aButtonModel :anEvent | self linkModel aboutToRemoveFromPreviousPane ];
+		yourself
+]
+
+{ #category : #'menu items' }
+GtTreePagerLinkAbstractContextMenuBuilder >> newRestoreLinkActionItem [
+	^ BrMenuActionItem new
+		id: #'menu--restore-pane';
+		label: 'Restore pane' preview: [ self linkModel title ];
+		action: [ :anElement :aButtonModel :anEvent | 
+			| aWish |
+			aWish := BrPopoverAnchorElementWish new.
+			anElement fireEvent: aWish.
+			aWish anchorElementDo: [ :anAnchor |
+				anAnchor dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction ].
+			self linkModel expand ];
 		yourself
 ]
 

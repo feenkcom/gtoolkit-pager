@@ -39,7 +39,7 @@ GtTreePagerLinkFollowingOutputElementUpdater >> update [
 
 { #category : #private }
 GtTreePagerLinkFollowingOutputElementUpdater >> updateNonSpawnedLink [
-	self linkElement dispatchEvent: BrCountdownDisableAndStopWish new.
+	self linkElement dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction.
 	self linkElement
 		geometry: (BlPolygonGeometry
 				vertices: {0 @ 0.
@@ -53,7 +53,7 @@ GtTreePagerLinkFollowingOutputElementUpdater >> updateNonSpawnedLink [
 
 { #category : #private }
 GtTreePagerLinkFollowingOutputElementUpdater >> updateSpawnedLink [
-	self linkElement dispatchEvent: BrCountdownDisableAndStopWish new.
+	self linkElement dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction.
 	self linkElement
 		geometry: (BlPolygonGeometry
 				vertices: {0 @ 0.
@@ -73,7 +73,7 @@ GtTreePagerLinkFollowingOutputElementUpdater >> visitGtTreePagerLinkActiveSpawne
 GtTreePagerLinkFollowingOutputElementUpdater >> visitGtTreePagerLinkInactiveRemovedState: aState [
 	self linkElement
 		exact: GtTreePagerConstants triangleWidth @ GtTreePagerConstants triangleWidth.
-	self linkElement dispatchEvent: BrCountdownEnableAndStartWish new
+	self linkElement dispatchEvent: BrCountdownEnableAndStartWish withFinishedAction
 ]
 
 { #category : #visiting }

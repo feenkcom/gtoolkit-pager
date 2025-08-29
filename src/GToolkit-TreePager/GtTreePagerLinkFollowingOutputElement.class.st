@@ -100,7 +100,7 @@ GtTreePagerLinkFollowingOutputElement >> onClickEvent: anEvent [
 	self hasLinkModel ifFalse: [ ^ self ].
 	anEvent consumed: true.
 	
-	self dispatchEvent: BrCountdownDisableAndStopWish new.
+	self dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction.
 	
 	GtTreePagerLinkFollowingOutputClickResolver new 
 		element: self;
@@ -161,7 +161,7 @@ GtTreePagerLinkFollowingOutputElement >> updateElement [
 	self hasLinkModel ifFalse: [ ^ self ].
 	
 	"Disable animation"
-	self dispatchEvent: BrCountdownDisableAndStopWish new.
+	self dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction.
 	
 	"Selection state is used to define active links"
 	self linkModel isActive

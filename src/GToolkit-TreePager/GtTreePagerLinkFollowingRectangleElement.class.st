@@ -44,10 +44,18 @@ GtTreePagerLinkFollowingRectangleElement >> onClickEvent: anEvent [
 	"Note: can be removed."
 
 	anEvent consumed: true.
-	self dispatchEvent: BrCountdownDisableAndStopWish new.
+	self dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction.
 	self hasLinkModel ifFalse: [ ^ self ].
 
 	self linkModel expand
+]
+
+{ #category : #'api - link model' }
+GtTreePagerLinkFollowingRectangleElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
+	self hasLinkModel ifFalse: [ ^ self ].
+	anAnnouncement linkModel = self linkModel ifFalse: [ ^ self ].
+
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
 { #category : #'api - link model' }
@@ -62,10 +70,26 @@ GtTreePagerLinkFollowingRectangleElement >> onRemovalCountdownFinished [
 	self linkModel removeFromPreviousPane
 ]
 
+{ #category : #'api - link model' }
+GtTreePagerLinkFollowingRectangleElement >> subscribeToLinkModel [
+	super subscribeToLinkModel.
+
+	self linkModel weak
+		when: GtTreePagerLinkModelStateChanged
+		send: #onGtTreePagerLinkModelStateChanged:
+		to: self
+]
+
+{ #category : #'api - link model' }
+GtTreePagerLinkFollowingRectangleElement >> unsubscribeFromLinkModel [
+	super unsubscribeFromLinkModel.
+	self linkModel unsubscribe: self
+]
+
 { #category : #'private - updating' }
 GtTreePagerLinkFollowingRectangleElement >> updateElement [
 	self hasLinkModel ifFalse: [ ^ self ].
-	self dispatchEvent: BrCountdownDisableAndStopWish new.
+	self dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction.
 	self linkModel isRemoved
 		ifTrue: [ self updateRemovedElement ]
 		ifFalse: [ self updateRegularElement ]
@@ -73,11 +97,11 @@ GtTreePagerLinkFollowingRectangleElement >> updateElement [
 
 { #category : #'private - updating' }
 GtTreePagerLinkFollowingRectangleElement >> updateRegularElement [
-	self dispatchEvent: BrCountdownDisableAndStopWish new.
+	self dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction.
 	self geometry: (BlRoundedRectangleGeometry cornerRadius: 2)
 ]
 
 { #category : #'private - updating' }
 GtTreePagerLinkFollowingRectangleElement >> updateRemovedElement [
-	self dispatchEvent: BrCountdownEnableAndStartWish new
+	self dispatchEvent: BrCountdownEnableAndStartWish withFinishedAction
 ]
