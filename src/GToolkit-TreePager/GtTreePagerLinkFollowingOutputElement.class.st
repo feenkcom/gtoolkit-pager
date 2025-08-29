@@ -183,18 +183,19 @@ GtTreePagerLinkFollowingOutputElement >> onBrContextMenuIsVisible: anEvent [
 	self geometry: self newAboutToBeRemovedGeometry.
 ]
 
-{ #category : #'private - event management' }
+{ #category : #'private - event handling' }
 GtTreePagerLinkFollowingOutputElement >> onClickEvent: anEvent [
 	self visibility isVisible ifFalse: [ ^ self ].
 	self hasLinkModel ifFalse: [ ^ self ].
 	anEvent consumed: true.
-
+	
+	self stopAnimation.
+	timeAnimationState := nil.
+	
 	GtTreePagerLinkFollowingOutputClickResolver new 
 		element: self;
 		linkModel: self linkModel;
 		resolve.
-		
-	timeAnimationState := nil
 ]
 
 { #category : #'private - event handling' }

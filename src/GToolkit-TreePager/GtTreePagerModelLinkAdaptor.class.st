@@ -138,6 +138,13 @@ GtTreePagerModelLinkAdaptor >> printOn: aStream [
 	aStream nextPut: $)
 ]
 
+{ #category : #'api - previous panes' }
+GtTreePagerModelLinkAdaptor >> removeFromPreviousPane [
+	"do nothing"
+
+	
+]
+
 { #category : #'api - replaced link' }
 GtTreePagerModelLinkAdaptor >> replacedLink [
 	^ nil

@@ -61,29 +61,14 @@ GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> initializeContainer [
 ]
 
 { #category : #'private - updating' }
-GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> newContextMenuFor: aLinkModel [
-	aLinkModel ifNil: [ ^ nil ].
-
-	^ GtTreePagerLinkContextMenuBuilder new
-		linkModel: aLinkModel;
-		build
-]
-
-{ #category : #'private - updating' }
 GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> newNodeElementForPaneModel: aLinkModel [
 	^ GtTreePagerLinkFollowingRotatedCollapsedElement new
 		linkModel: aLinkModel;
-		hExact: GtTreePagerConstants rectangleLengthWithoutSpacing;
-		vMatchParent;
-		geometry: (BlRoundedRectangleGeometry cornerRadius: 2);
-		addAptitude: BrGlamorousFadedButtonExteriourAptitude;
-		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
-				handleSubmenu: [ self newContextMenuFor: aLinkModel ]);
 		in: [ :theElement | 
 			theElement graph
 				beNode;
 				model: aLinkModel ];
-		when: BlClickEvent do: [ :anEvent | self onLinkElementClick: anEvent ]
+		yourself
 ]
 
 { #category : #'api - link model' }
@@ -94,14 +79,6 @@ GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> onGtTreePagerLinkMode
 { #category : #'api - link model' }
 GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
-]
-
-{ #category : #'private - event handling' }
-GtTreePagerLinkFollowingCompressedCollapsedPanesElement >> onLinkElementClick: anEvent [
-	anEvent consumed: true.
-	self hasLinkModel ifFalse: [ ^ self ].
-
-	self linkModel expand
 ]
 
 { #category : #'api - link model' }

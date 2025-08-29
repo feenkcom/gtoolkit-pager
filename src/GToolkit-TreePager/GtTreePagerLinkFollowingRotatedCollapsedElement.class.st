@@ -23,12 +23,13 @@ GtTreePagerLinkFollowingRotatedCollapsedElement >> incomingLinkElements [
 GtTreePagerLinkFollowingRotatedCollapsedElement >> initialize [
 	super initialize.
 
-	self fitContent.
+	self hExact: GtTreePagerConstants rectangleLengthWithoutSpacing.
+	self vMatchParent.
 
 	self initializeRectangleElement.
 	self initializeRightOutputsElement.
 	self initializeBottomOutputsElement.
-
+	
 	self
 		addChildren: {rightOutputsElement.
 				bottomOutputsElement.
