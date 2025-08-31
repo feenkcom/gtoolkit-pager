@@ -1,5 +1,5 @@
 "
-{{gtClass:BlScripter}} waits for all animations to finish, which is undesirable in some cases, e.g., {{gtMethod:GtTreePagerLinkReplacedElement>>#startAnimation | label=#methodClass}}. In such cases, users can disable {{gtClass:GtTreePager}} animations for specific scripter steps.
+{{gtClass:BlScripter}} waits for all animations to finish, which is undesirable in some cases. In such cases, users can disable {{gtClass:GtTreePager}} animations for specific scripter steps.
 "
 Class {
 	#name : #GtTreePagerAnimationFeatures,

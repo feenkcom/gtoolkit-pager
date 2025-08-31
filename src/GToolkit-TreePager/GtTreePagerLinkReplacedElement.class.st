@@ -1,10 +1,6 @@
 Class {
 	#name : #GtTreePagerLinkReplacedElement,
 	#superclass : #GtTreePagerLinkBasicElement,
-	#instVars : [
-		'timeAnimation',
-		'timeAnimationState'
-	],
 	#category : #'GToolkit-TreePager-UI'
 }
 
@@ -18,36 +14,26 @@ GtTreePagerLinkReplacedElement >> initialize [
 	super initialize.
 
 	self
-		exact: GtTreePagerConstants rectangleLengthWithoutSpacing @ GtTreePagerConstants rectangleLengthWithoutSpacing;
+		exact: GtTreePagerConstants rectangleLengthWithoutSpacing
+				@ GtTreePagerConstants rectangleLengthWithoutSpacing;
 		geometry: self newGeometry;
 		when: BlClickEvent do: [ :anEvent | self onClickEvent: anEvent ].
 
 	self
 		addAptitude: (BrLazyStyleCommonAptitude new
-				default: [ :aStyle | aStyle background: self theme default backdropEmphasisBackground ];
+				default: [ :aStyle | 
+					aStyle background: self theme default backdropEmphasisBackground ];
 				hovered: [ :aStyle | 
-					aStyle
-						background: self theme button focusedFadedBackgroundColor;
-						do: [ :aWidget | self onHovered ] after: [ :aWidget | self onUnhovered ] ]).
+					aStyle background: self theme button focusedFadedBackgroundColor ]).
 
 	self
 		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude
-				menu: [ self newReplacedLinkContextMenu ])
-]
+				menu: [ self newReplacedLinkContextMenu ]).
 
-{ #category : #initialization }
-GtTreePagerLinkReplacedElement >> newAnimation [
-	^ BlNumberTransition new
-		onStepDo: [ :eachOffset | 
-			self
-				geometry: (self newGeometry
-						startAngle: eachOffset;
-						endAngle: 270) ];
-		from: -90;
-		to: 270;
-		by: 6;
-		duration: GtTreePagerConstants replacedLinkRestoration;
-		onFinishedDo: [ self onAnimationFinished ]
+	self
+		addAptitude: (GtTreePagerGeometryCountdownAptitude new
+				withContextMenuEventHandlers;
+				finishedAction: [ self onRemovalCountdownFinished ])
 ]
 
 { #category : #initialization }
@@ -78,63 +64,41 @@ GtTreePagerLinkReplacedElement >> newReplacedLinkContextMenu [
 ]
 
 { #category : #'private - event handling' }
-GtTreePagerLinkReplacedElement >> onAnimationFinished [
-	timeAnimation := nil.
-	self geometry: self newGeometry.
-	
-	"Let's ensure we do not remove the replaced link."
-	timeAnimationState = #paused ifTrue: [ ^ self ].
-	
-	self hide.
-	self hasLinkModel ifFalse: [ ^ self ].
-	self linkModel removeReplacedLink
-]
-
-{ #category : #'private - event handling' }
 GtTreePagerLinkReplacedElement >> onClickEvent: anEvent [
 	self visibility isVisible ifFalse: [ ^ self ].
 	self hasLinkModel ifFalse: [ ^ self ].
 	self linkModel replacedLink ifNil: [ ^ self ].
+
 	anEvent consumed: true.
 
+	self dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction.
+	
 	self linkModel restoreReplacedLink.
 
-	timeAnimationState := nil.
 	self hide
-]
-
-{ #category : #'private - event handling' }
-GtTreePagerLinkReplacedElement >> onHovered [
-	self hasLinkModel ifFalse: [ ^ self ].
-	self linkModel replacedLink ifNil: [ ^ self ].
-
-	"Let's ensure we do not remove the replaced link."
-	timeAnimationState := #paused.
-	self stopAnimation
 ]
 
 { #category : #'api - link model' }
 GtTreePagerLinkReplacedElement >> onLinkModelChanged [
 	super onLinkModelChanged.
-	self stopAnimation.
-	timeAnimationState := nil.
 	self updateElement.
+]
+
+{ #category : #initialization }
+GtTreePagerLinkReplacedElement >> onRemovalCountdownFinished [
+	self hide.
+
+	self hasLinkModel ifFalse: [ ^ self ].
+	self linkModel removeReplacedLink
 ]
 
 { #category : #'private - event handling' }
 GtTreePagerLinkReplacedElement >> onRemoveReplacedLinkClick: aButton [
 	self hasLinkModel ifFalse: [ ^ self ].
+	
+	self dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction.
 	self linkModel removeReplacedLink.
-
-	timeAnimationState := nil.
-	self stopAnimation.
 	self hide
-]
-
-{ #category : #'hooks - children' }
-GtTreePagerLinkReplacedElement >> onRemovedFromSceneGraph [
-	super onRemovedFromSceneGraph.
-	self stopAnimation
 ]
 
 { #category : #'private - event handling' }
@@ -142,21 +106,10 @@ GtTreePagerLinkReplacedElement >> onRestoreReplacedLinkClick: aButton [
 	self hasLinkModel ifFalse: [ ^ self ].
 	
 	"Let's ensure we do not remove the replaced link."
-	timeAnimationState := #paused.
-	self stopAnimation.
+	self dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction.
 
 	self linkModel restoreReplacedLink.
-	timeAnimationState := nil.
 	self hide
-]
-
-{ #category : #'private - event handling' }
-GtTreePagerLinkReplacedElement >> onUnhovered [
-	self hasLinkModel ifFalse: [ ^ self ].
-	self linkModel replacedLink ifNil: [ ^ self ].
-
-	timeAnimationState := nil.
-	self startAnimation.
 ]
 
 { #category : #'private - updating' }
@@ -164,31 +117,17 @@ GtTreePagerLinkReplacedElement >> show [
 	self visibility: BlVisibility visible
 ]
 
-{ #category : #animation }
-GtTreePagerLinkReplacedElement >> startAnimation [
-	timeAnimation ifNotNil: [ ^ self ].
-
-	GtTreePagerAnimationFeatures
-		ifEnabled: [ 
-			timeAnimation := self newAnimation.
-			self addAnimation: timeAnimation ]
-		ifDisabled: [  ]
-]
-
-{ #category : #animation }
-GtTreePagerLinkReplacedElement >> stopAnimation [
-	timeAnimation ifNotNil: [ :anAnimation | anAnimation stopIfRunning ].
-	timeAnimation := nil
-]
-
 { #category : #'private - updating' }
 GtTreePagerLinkReplacedElement >> updateElement [
 	self hasLinkModel ifFalse: [ ^ self ].
 
+	"Disable animation"
+	self dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction.
+	
 	self linkModel replacedLink
 		ifNil: [ 
 			self hide ]
 		ifNotNil: [ 
 			self show.
-			self startAnimation ]
+			self dispatchEvent: BrCountdownEnableAndStartWish withFinishedAction ]
 ]

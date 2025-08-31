@@ -36,10 +36,7 @@ GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveHiddenState: aS
 
 { #category : #visiting }
 GtTreePagerLinkContextMenuBuilder >> visitGtTreePagerLinkInactiveRemovedState: aState [
-	menu
-		addItem: (self newExpandLinkActionItem
-				label: 'Restore pane'
-				preview: [ self linkModel title ]).
+	menu addItem: self newRestoreLinkActionItem.
 	self linkModel depthIndex = 1
 		ifFalse: [ menu addItem: self newHardRemoveLinkActionItem ]
 ]

@@ -75,6 +75,11 @@ TGtTreePagerLinkModel >> previousPane [
 	^ self explicitRequirement
 ]
 
+{ #category : #'api - previous panes' }
+TGtTreePagerLinkModel >> removeFromPreviousPane [
+	self explicitRequirement
+]
+
 { #category : #'api - replaced link' }
 TGtTreePagerLinkModel >> replacedLink [
 	"Return a replaced link"
