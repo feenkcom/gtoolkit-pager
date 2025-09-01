@@ -285,20 +285,6 @@ GtTreePagerPaneModel >> gtLiveFor: aView [
 				addChild: (GtTreePagerPaneElement new paneModel: self) ]
 ]
 
-{ #category : #actions }
-GtTreePagerPaneModel >> gtOpenInNewWindowActionFor: anAction [
-	<gtAction>
-	^ anAction button
-		tooltip: 'Open pane in new window';
-		icon: BrGlamorousVectorIcons link;
-		target: GtTreePagerTopRightToolbarTarget default;
-		action: [ :aButton | 
-			BlSpace new
-				title: self title;
-				paneInTreePager: self similarPaneCopy settings: self topPreviousPane;
-				showInGtWorld ]
-]
-
 { #category : #testing }
 GtTreePagerPaneModel >> hasFollowingLinks [
 	^ self followingLinks isNotEmpty
