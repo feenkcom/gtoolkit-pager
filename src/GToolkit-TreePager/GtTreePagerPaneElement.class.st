@@ -108,9 +108,11 @@ GtTreePagerPaneElement >> initializeContentContainerElement [
 			addChild: contentElement;
 			addChild: (topRightToolbar := BrToolbar new
 						aptitude: (BrGlamorousToolbarAptitude new spacing: 0);
+						clipChildren: false;
 						constraintsDo: [ :c | 
 							c ignoreByLayout.
-							c margin: (BlInsets right: GtTreePagerConstants cornerButtonSize x negated // 2 - 0).
+							c
+								margin: (BlInsets right: GtTreePagerConstants cornerButtonSize x negated // 2 - 0).
 							c ignored horizontal alignRightAt: 1.0.
 							c ignored vertical alignCenterAt: 0.0 ];
 						addItem: (dropdownElement := self newDropdownMenuElement));
