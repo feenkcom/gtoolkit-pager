@@ -371,6 +371,14 @@ GtTreePagerPaneModel >> object: anObject [
 	self phlowTool: anObject gtDefaultInspectorTool
 ]
 
+{ #category : #'api - previous links' }
+GtTreePagerPaneModel >> pagerSettings [
+	"Note: it is usually a pager model"
+
+	<return: #GtTreePagerModelSettings or: nil>
+	^ self previousPane ifNotNil: #pagerSettings
+]
+
 { #category : #accessing }
 GtTreePagerPaneModel >> phlowTool [
 	^ phlowTool
@@ -453,6 +461,8 @@ GtTreePagerPaneModel >> removeFromPreviousPane [
 
 { #category : #'api - following links' }
 GtTreePagerPaneModel >> removeLink [
+	"Deselect an existing link model."
+	
 	self activeLink ifNotNil: [ :aLinkModel | 
 		self removeFollowingLink: aLinkModel ]
 ]

@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerModelLinkAdaptor,
 	#superclass : #Object,
-	#traits : 'TGtTreePagerLinkModel + TGtTreePagerLinkModelState + TGtAnnouncer + TGtTreePagerModelEnumerable',
-	#classTraits : 'TGtTreePagerLinkModel classTrait + TGtTreePagerLinkModelState classTrait + TGtAnnouncer classTrait + TGtTreePagerModelEnumerable classTrait',
+	#traits : 'TGtTreePagerLinkModel + TGtTreePagerLinkModelState + TGtAnnouncer + TGtTreePagerModelEnumerable + TGtTreePagerPaneModel',
+	#classTraits : 'TGtTreePagerLinkModel classTrait + TGtTreePagerLinkModelState classTrait + TGtAnnouncer classTrait + TGtTreePagerModelEnumerable classTrait + TGtTreePagerPaneModel classTrait',
 	#instVars : [
 		'pagerModel',
 		'paneModel'
@@ -96,6 +96,14 @@ GtTreePagerModelLinkAdaptor >> pagerModel: aPagerModel [
 	pagerModel := aPagerModel
 ]
 
+{ #category : #'api - previous links' }
+GtTreePagerModelLinkAdaptor >> pagerSettings [
+	"Note: it is usually a pager model"
+
+	<return: #GtTreePagerModelSettings or: nil>
+	^ self previousPane ifNotNil: #pagerSettings
+]
+
 { #category : #accessing }
 GtTreePagerModelLinkAdaptor >> paneModel [
 	^ paneModel
@@ -145,15 +153,36 @@ GtTreePagerModelLinkAdaptor >> removeFromPreviousPane [
 	
 ]
 
+{ #category : #'api - following links' }
+GtTreePagerModelLinkAdaptor >> removeLink [
+	"Deselect an existing link model"
+
+	self paneModel removeLink
+]
+
 { #category : #'api - replaced link' }
 GtTreePagerModelLinkAdaptor >> replacedLink [
 	^ nil
+]
+
+{ #category : #'api - following links' }
+GtTreePagerModelLinkAdaptor >> selectPane: aPaneModel [
+	"Select a new pane model"
+
+	self paneModel selectPane: aPaneModel
 ]
 
 { #category : #copying }
 GtTreePagerModelLinkAdaptor >> similarPaneCopy [
 	<return: #TGtTreePagerPaneModel>
 	^ self paneModel similarPaneCopy
+]
+
+{ #category : #'api - following links' }
+GtTreePagerModelLinkAdaptor >> spawnPane: aPaneModel [
+	"Spawn a new pane model"
+
+	self paneModel spawnPane: aPaneModel
 ]
 
 { #category : #'api - state' }

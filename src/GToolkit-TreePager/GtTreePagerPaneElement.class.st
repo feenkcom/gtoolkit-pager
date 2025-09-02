@@ -106,15 +106,7 @@ GtTreePagerPaneElement >> initializeContentContainerElement [
 			margin: (BlInsets left: 0);
 			matchParent;
 			addChild: contentElement;
-			addChild: (topRightToolbar := BrToolbar new
-						aptitude: (BrGlamorousToolbarAptitude new spacing: 0);
-						clipChildren: false;
-						constraintsDo: [ :c | 
-							c ignoreByLayout.
-							c
-								margin: (BlInsets right: GtTreePagerConstants cornerButtonSize x negated // 2 - 0).
-							c ignored horizontal alignRightAt: 1.0.
-							c ignored vertical alignCenterAt: 0.0 ];
+			addChild: (topRightToolbar := self newBasicToolbarElement
 						addItem: (dropdownElement := self newDropdownMenuElement));
 			addAptitude: (maximizerAptitude := BrGlamorousWithMaximizerAptitude new
 						actionButtonDo: [ :aButton | 
@@ -137,8 +129,10 @@ GtTreePagerPaneElement >> initializeContentElement [
 			when: BrMaximizerElementMinimized
 				do: [ :anEvent | 
 					anEvent currentTarget 
-						childWithId: #'tree-pager--maximized-dropdown-menu-button' 
-						ifFound: [ :aButton | aButton removeFromParent ]
+						childWithId: #'tree-pager--maximized-toolbar'
+						ifFound: [ :anElement | 
+							(anElement parent = anEvent currentTarget)
+								ifTrue: [ anElement removeFromParent ] ]
 						ifNone: [ "ignore" ].
 					
 					anEvent currentTarget
@@ -158,7 +152,7 @@ GtTreePagerPaneElement >> initializeContentElement [
 					anEvent currentTarget requestStyle ];
 			when: BrMaximizerElementMaximized
 				do: [ :anEvent | 
-					anEvent currentTarget addChild: self newMaximizedDropdownMenuElement.
+					anEvent currentTarget addChild: self newMaximizedToolbarElement.
 					anEvent currentTarget
 						realToolElementDo: [ :aToolElement | 
 							aToolElement states
@@ -217,6 +211,19 @@ GtTreePagerPaneElement >> newBasicDropdownMenuElement [
 ]
 
 { #category : #initialization }
+GtTreePagerPaneElement >> newBasicToolbarElement [
+	^ BrToolbar new
+		aptitude: (BrGlamorousToolbarAptitude new spacing: 0);
+		clipChildren: false;
+		constraintsDo: [ :c | 
+			c ignoreByLayout.
+			c
+				margin: (BlInsets right: GtTreePagerConstants cornerButtonSize x negated // 2 - 0).
+			c ignored horizontal alignRightAt: 1.0.
+			c ignored vertical alignCenterAt: 0.0 ]
+]
+
+{ #category : #initialization }
 GtTreePagerPaneElement >> newDropdownCollapseIcon [
 	^ BlElement new
 		size: 2 @ 10;
@@ -257,7 +264,7 @@ GtTreePagerPaneElement >> newDropdownMenuModel [
 	aLinkModel := self paneModel previousLink.
 	aLinkModel ifNil: [ ^ nil ].
 
-	^ GtTreePagerPaneContextMenuBuilder new
+	^ GtTreePagerPaneDefaultContextMenuBuilder new
 		linkModel: aLinkModel;
 		paneElement: self;
 		build
@@ -294,6 +301,21 @@ GtTreePagerPaneElement >> newMaximizedDropdownMenuModel [
 		linkModel: aLinkModel;
 		paneElement: self contentElement;
 		build
+]
+
+{ #category : #initialization }
+GtTreePagerPaneElement >> newMaximizedToolbarElement [
+	^ self newBasicToolbarElement
+		id: #'tree-pager--maximized-toolbar';
+		addItems: (GtTreePagerPaneMaximizedTopRightToolbarTarget
+				actionsForObject: self paneModel
+				collect: [ :eachAction | 
+					eachAction
+						asCircularElement: [ :anElement | 
+							anElement viewModel ifNil: [ anElement viewModel: BrWidgetModel new ].
+							anElement ]
+						withHostElement: contentElement ]);
+		addItem: self newMaximizedDropdownMenuElement
 ]
 
 { #category : #'private - event handling' }
@@ -564,19 +586,18 @@ GtTreePagerPaneElement >> updateElement [
 
 { #category : #'private - updating' }
 GtTreePagerPaneElement >> updateToolbarElement [
-	| someActions someElements oldElements |
+	| someElements oldElements |
 	self hasPaneModel ifFalse: [ ^ self ].
-	someActions := self paneModel gtActions
-			select: [ :eachAction | eachAction target isForTarget: GtTreePagerTopRightToolbarTarget default ].
-	someElements := someActions
-			collect: [ :each | 
-				each
+	someElements := GtTreePagerPaneNormalTopRightToolbarTarget
+			actionsForObject: self paneModel
+			collect: [ :eachAction | 
+				eachAction
 					asCircularElement: [ :anElement | 
 						anElement viewModel ifNil: [ anElement viewModel: BrWidgetModel new ].
 						anElement ]
-					withHostElement: self ].
+					withHostElement: contentElement ].
 
 	oldElements := topRightToolbar removeAllItems.
 	topRightToolbar addItems: someElements.
-	topRightToolbar addItem: dropdownElement.
+	topRightToolbar addItem: dropdownElement
 ]

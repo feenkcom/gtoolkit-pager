@@ -246,6 +246,14 @@ GtTreePagerLinkModel >> notifyStateChangedFrom: anOldState reason: aReason [
 		aPreviousModel announcer announce: anAnnouncement ]
 ]
 
+{ #category : #'api - previous links' }
+GtTreePagerLinkModel >> pagerSettings [
+	"Note: it is usually a pager model"
+
+	<return: #GtTreePagerModelSettings or: nil>
+	^ self previousPane ifNotNil: #pagerSettings
+]
+
 { #category : #accessing }
 GtTreePagerLinkModel >> paneModel [
 	<return: #GtTreePagerPaneModel>
@@ -308,6 +316,8 @@ GtTreePagerLinkModel >> removeFromPreviousPane [
 
 { #category : #'api - following links' }
 GtTreePagerLinkModel >> removeLink [
+	"Deselect an existing link model."
+
 	self paneModel removeLink
 ]
 

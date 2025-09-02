@@ -1,5 +1,5 @@
 Class {
-	#name : #GtTreePagerTopRightToolbarTarget,
+	#name : #GtTreePagerPaneNormalTopRightToolbarTarget,
 	#superclass : #GtPhlowActionUniqueTarget,
 	#category : #'GToolkit-TreePager-Support'
 }
