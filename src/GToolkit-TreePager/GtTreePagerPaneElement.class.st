@@ -7,7 +7,8 @@ Class {
 		'maximizerAptitude',
 		'contentContainer',
 		'dropdownElement',
-		'keysEventHandler'
+		'keysEventHandler',
+		'topRightToolbar'
 	],
 	#category : #'GToolkit-TreePager-UI'
 }
@@ -56,8 +57,13 @@ GtTreePagerPaneElement >> hideMaximizeButton [
 
 { #category : #deprecated }
 GtTreePagerPaneElement >> hideToolbarElements [
-	self hideDropdownElement.
 	self hideMaximizeButton.
+	self hideTopRightElement
+]
+
+{ #category : #'api - updating' }
+GtTreePagerPaneElement >> hideTopRightElement [
+	topRightToolbar ifNotNil: [ :anElement | anElement visibility: BlVisibility gone ].
 ]
 
 { #category : #'accessing - ui' }
@@ -100,7 +106,16 @@ GtTreePagerPaneElement >> initializeContentContainerElement [
 			margin: (BlInsets left: 0);
 			matchParent;
 			addChild: contentElement;
-			addChild: (dropdownElement := self newDropdownMenuElement);
+			addChild: (topRightToolbar := BrToolbar new
+						aptitude: (BrGlamorousToolbarAptitude new spacing: 0);
+						clipChildren: false;
+						constraintsDo: [ :c | 
+							c ignoreByLayout.
+							c
+								margin: (BlInsets right: GtTreePagerConstants cornerButtonSize x negated // 2 - 0).
+							c ignored horizontal alignRightAt: 1.0.
+							c ignored vertical alignCenterAt: 0.0 ];
+						addItem: (dropdownElement := self newDropdownMenuElement));
 			addAptitude: (maximizerAptitude := BrGlamorousWithMaximizerAptitude new
 						actionButtonDo: [ :aButton | 
 							aButton
@@ -198,11 +213,7 @@ GtTreePagerPaneElement >> newBasicDropdownMenuElement [
 	^ GtInspectorRoundButtonStencil new asElement
 		id: #'tree-pager--dropdown-menu-button';
 		exact: GtTreePagerConstants cornerButtonSize;
-		icon: self newDropdownDownwardsIcon;
-		constraintsDo: [ :c | 
-			c ignoreByLayout.
-			c ignored horizontal alignCenterAt: 1.0.
-			c ignored vertical alignCenterAt: 0.0 ]
+		icon: self newDropdownDownwardsIcon
 ]
 
 { #category : #initialization }
@@ -373,7 +384,9 @@ GtTreePagerPaneElement >> onGtPhlowObjectToSpawn: anEvent [
 
 { #category : #deprecated }
 GtTreePagerPaneElement >> onGtTreePagerLinkModelStateChanged: anAnnouncement [
+	anAnnouncement paneModel = self paneModel ifFalse: [ ^ self ].
 	
+	BlTaskAction enqueueElement: self action: [ self updateToolbarElement ]
 ]
 
 { #category : #deprecated }
@@ -435,8 +448,14 @@ GtTreePagerPaneElement >> showMaximizeButton [
 
 { #category : #'api - updating' }
 GtTreePagerPaneElement >> showToolbarElements [
-	self showDropdownElement.
-	self showMaximizeButton
+	self showMaximizeButton.
+	self showTopRightElement
+]
+
+{ #category : #'api - updating' }
+GtTreePagerPaneElement >> showTopRightElement [
+	topRightToolbar
+		ifNotNil: [ :anElement | anElement visibility: BlVisibility visible ]
 ]
 
 { #category : #'api - pane model' }
@@ -540,5 +559,24 @@ GtTreePagerPaneElement >> updateDropdownElementToRemoveIcon [
 
 { #category : #'private - updating' }
 GtTreePagerPaneElement >> updateElement [
-	
+	self updateToolbarElement
+]
+
+{ #category : #'private - updating' }
+GtTreePagerPaneElement >> updateToolbarElement [
+	| someActions someElements oldElements |
+	self hasPaneModel ifFalse: [ ^ self ].
+	someActions := self paneModel gtActions
+			select: [ :eachAction | eachAction target isForTarget: GtTreePagerTopRightToolbarTarget default ].
+	someElements := someActions
+			collect: [ :each | 
+				each
+					asCircularElement: [ :anElement | 
+						anElement viewModel ifNil: [ anElement viewModel: BrWidgetModel new ].
+						anElement ]
+					withHostElement: self ].
+
+	oldElements := topRightToolbar removeAllItems.
+	topRightToolbar addItems: someElements.
+	topRightToolbar addItem: dropdownElement.
 ]
