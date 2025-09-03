@@ -238,8 +238,8 @@ GtTreePagerScrollbarElement >> newPreviewElementForPaneModel: aPaneModel paneEle
 		vMatchParent;
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 2);
 		addAptitude: BrGlamorousFadedButtonExteriourAptitude;
-		addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
-				handleSubmenu: [ self newContextMenuFor: aPaneModel ]);
+		"addAptitude: (BrGlamorousWithExplicitContextMenuAptitude new
+				handleSubmenu: [ self newContextMenuFor: aPaneModel ]);"
 		in: [ :theElement | 
 			theElement graph
 				beNode;

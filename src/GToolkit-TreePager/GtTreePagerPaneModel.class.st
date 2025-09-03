@@ -31,6 +31,25 @@ GtTreePagerPaneModel >> activeLink: aLinkModel [
 ]
 
 { #category : #'api - following links' }
+GtTreePagerPaneModel >> addFollowingLink: aNewLinkModel after: aLinkModel reason: aReason [
+	| aNewCollection |
+	self followingLinks
+		detectIndex: [ :each | each == aLinkModel ]
+		ifNone: [ NotFound signalFor: aLinkModel in: self followingLinks ].
+
+	aNewLinkModel previousPane: self.
+	aNewCollection := Array
+			new: self followingLinks size + 1
+			streamContents: [ :aStream | 
+				self followingLinks
+					do: [ :eachLink | 
+						aStream nextPut: eachLink.
+						eachLink == aLinkModel ifTrue: [ 
+							aStream nextPut: aNewLinkModel ] ] ].
+	self followingLinks: aNewCollection reason: aReason
+]
+
+{ #category : #'api - following links' }
 GtTreePagerPaneModel >> addFollowingLink: aNewLinkModel before: aLinkModel reason: aReason [
 	| aNewCollection |
 	self followingLinks
@@ -53,6 +72,46 @@ GtTreePagerPaneModel >> addFollowingLink: aLinkModel reason: aReason [
 	self isSpawned ifFalse: [ self expand ].
 
 	followingLinks addLink: aLinkModel reason: aReason
+]
+
+{ #category : #'api - following links' }
+GtTreePagerPaneModel >> addFollowingLinks: aCollectionOfLinkModels after: aLinkModel reason: aReason [
+	| aNewCollection |
+	self followingLinks
+		detectIndex: [ :each | each == aLinkModel ]
+		ifNone: [ NotFound signalFor: aLinkModel in: self followingLinks ].
+
+	aCollectionOfLinkModels do: [ :eachLink |
+		eachLink previousPane: self ].
+	aNewCollection := Array
+			new: self followingLinks size + 1
+			streamContents: [ :aStream | 
+				self followingLinks
+					do: [ :eachLink | 
+						aStream nextPut: eachLink.
+						eachLink == aLinkModel ifTrue: [ 
+							aStream nextPutAll: aCollectionOfLinkModels ] ] ].
+	self followingLinks: aNewCollection reason: aReason
+]
+
+{ #category : #'api - following links' }
+GtTreePagerPaneModel >> addFollowingLinks: aCollectionOfLinkModels before: aLinkModel reason: aReason [
+	| aNewCollection |
+	self followingLinks
+		detectIndex: [ :each | each == aLinkModel ]
+		ifNone: [ NotFound signalFor: aLinkModel in: self followingLinks ].
+
+	aCollectionOfLinkModels do: [ :eachLink |
+		eachLink previousPane: self ].
+	aNewCollection := Array
+			new: self followingLinks size + 1
+			streamContents: [ :aStream | 
+				self followingLinks
+					do: [ :eachLink | 
+						eachLink == aLinkModel ifTrue: [ 
+							aStream nextPutAll: aCollectionOfLinkModels ].
+						aStream nextPut: eachLink ] ].
+	self followingLinks: aNewCollection reason: aReason
 ]
 
 { #category : #'api - following links' }
@@ -91,6 +150,34 @@ GtTreePagerPaneModel >> asElement [
 			onErrorDo: [ :anError | anError asDebuggableElement ].
 
 	^ aToolElement
+]
+
+{ #category : #'api - previous panes' }
+GtTreePagerPaneModel >> breakingFlowPaneRemoval [
+	"I remove myself as a link between previous pane and my following panes.
+	My following panes are linked directly to my parent pane,
+	and I am removed.
+	
+	Note: No recommended action as it breaks the exploration flow.
+	As a consequence, such broken flows cannot be re-played.
+	
+	Note: I currently do not work for the root panes."
+
+	| aParent someLinks |
+	aParent := self previousPane.
+	aParent ifNil: [ ^ self ].
+	
+	someLinks := self followingLinks.
+	self followingLinks: #() reason: GtTreePagerBreakingFlowDetachReason default.
+
+	aParent
+		addFollowingLinks: someLinks
+		after: self
+		reason: GtTreePagerBreakingFlowAttachReason default.
+
+	aParent
+		removeFollowingLink: self
+		reason: GtTreePagerBreakingFlowRemovalReason default
 ]
 
 { #category : #'api - phlow' }
@@ -223,6 +310,19 @@ GtTreePagerPaneModel >> followingSpawnedPaneModels [
 	^ self followingSpawnedLinkModels collect: #paneModel
 ]
 
+{ #category : #actions }
+GtTreePagerPaneModel >> gtCollapseOrSelectActionFor: anAction [
+	<gtAction>
+	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
+	^ anAction button
+		priority: 1;
+		id: #'tree-pager--menu-collapse';
+		label: 'Collapse pane';
+		menuShortcut: [ OSPlatform current primaryModifier gtDisplayString , '+Click' ];
+		target: GtTreePagerPaneNormalDropdownMenuTarget;
+		action: [ :aButton | self collapseOrSelect ]
+]
+
 { #category : #printing }
 GtTreePagerPaneModel >> gtDisplayOn: stream [
 	stream nextPutAll: 'Pane: '.
@@ -273,6 +373,21 @@ GtTreePagerPaneModel >> gtFollowingPanesFor: aView [
 			width: 70
 ]
 
+{ #category : #actions }
+GtTreePagerPaneModel >> gtHidePanesActionFor: anAction [
+	<gtAction>
+	GtTreePagerSettings isDisplayHideMenuItem ifFalse: [ ^ anAction noAction ].
+	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
+	self followingSpawnedLinkModels ifEmpty: [ ^ anAction noAction ].
+	
+	^ anAction button
+		priority: 2;
+		id: #'tree-pager--menu--hide';
+		label: 'Collapse all panes';
+		target: GtTreePagerPaneNormalDropdownMenuTarget;
+		action: [ :aButton | self hide ]
+]
+
 { #category : #views }
 GtTreePagerPaneModel >> gtLiveFor: aView [
 	<gtView>
@@ -283,6 +398,82 @@ GtTreePagerPaneModel >> gtLiveFor: aView [
 				matchParent;
 				padding: (BlInsets all: 10);
 				addChild: (GtTreePagerPaneElement new paneModel: self) ]
+]
+
+{ #category : #actions }
+GtTreePagerPaneModel >> gtMaximizeActionFor: anAction [
+	<gtAction>
+	^ anAction button
+		priority: 4;
+		id: #'menu--maximize-pane';
+		label: 'Maximize pane';
+		target: GtTreePagerPaneNormalDropdownMenuTarget;
+		action: [ :aButton | self requestMaximizePane ]
+]
+
+{ #category : #actions }
+GtTreePagerPaneModel >> gtMinimizeActionFor: anAction [
+	<gtAction>
+	^ anAction button
+		priority: 4;
+		id: #'menu--minimize-pane';
+		label: 'Minimize pane';
+		target: GtTreePagerPaneMaximizedDropdownMenuTarget;
+		action: [ :aButton | aButton fireEvent: BrMaximizerHostMinimizeWish new ]
+]
+
+{ #category : #actions }
+GtTreePagerPaneModel >> gtOpenInNewWorldTabActionFor: anAction [
+	<gtAction>
+	^ anAction button
+		priority: 6;
+		id: #'menu--new-world-tab';
+		label: (self followingLinks
+				ifNotEmpty: [ 'Open this and following panes in new tab' ]
+				ifEmpty: [ 'Open pane in new tab' ]);
+		target: GtTreePagerPaneNormalDropdownMenuTarget;
+		addTarget: GtTreePagerPaneMaximizedDropdownMenuTarget;
+		action: [ :aButton | 
+			BlSpace new
+				paneInTreePager: self similarPaneCopy settings: self pagerSettings;
+				withSceneDriller;
+				showFrom: aButton ];
+		menuDisable: [ :aMenuModel | 
+			| isOK |
+			isOK := self canRecreateToolElement.
+			isOK
+				ifTrue: [ self
+						allLinkModelsBreadthFirstDo: [ :eachLinkModel | isOK := isOK & eachLinkModel canRecreateToolElement ] ].
+			isOK not ]
+]
+
+{ #category : #actions }
+GtTreePagerPaneModel >> gtRemoveActionFor: anAction [
+	<gtAction>
+	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
+
+	^ anAction button
+		priority: 3;
+		id: #'tree-pager--menu-remove';
+		label: (self followingLinks
+				ifNotEmpty: [ 'Remove this and following panes' ]
+				ifEmpty: [ 'Remove pane' ]);
+		menuShortcut: [ OSPlatform current primaryModifier gtDisplayString , '+Shift+Click' ];
+		target: GtTreePagerPaneNormalDropdownMenuTarget;
+		action: [ :aButton | self aboutToRemoveFromPreviousPane ]
+]
+
+{ #category : #actions }
+GtTreePagerPaneModel >> gtUpdateToolActionFor: anAction [
+	<gtAction>
+	^ anAction button
+		priority: 10;
+		id: #'menu--rebuild-pane-tool-element';
+		label: 'Update pane tool';
+		target: GtTreePagerPaneNormalDropdownMenuTarget;
+		addTarget: GtTreePagerPaneMaximizedDropdownMenuTarget;
+		action: [ :aButton | self requestRebuildPaneTool ];
+		menuDisable: [ :aMenuModel | self canRecreateToolElement not ]
 ]
 
 { #category : #testing }
@@ -443,6 +634,11 @@ GtTreePagerPaneModel >> printOn: aStream [
 { #category : #'api - following links' }
 GtTreePagerPaneModel >> removeFollowingLink: aLinkModel [
 	followingLinks removeLink: aLinkModel reason: GtTreePagerRemoveReason default
+]
+
+{ #category : #'api - following links' }
+GtTreePagerPaneModel >> removeFollowingLink: aLinkModel reason: aReason [
+	followingLinks removeLink: aLinkModel reason: aReason
 ]
 
 { #category : #'api - following links' }

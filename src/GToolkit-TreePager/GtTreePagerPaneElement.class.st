@@ -259,15 +259,21 @@ GtTreePagerPaneElement >> newDropdownMenuElement [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newDropdownMenuModel [
-	| aLinkModel |
+	| aLinkModel aMenuItems |
 	self hasPaneModel ifFalse: [ ^ nil ].
 	aLinkModel := self paneModel previousLink.
 	aLinkModel ifNil: [ ^ nil ].
 
-	^ GtTreePagerPaneDefaultContextMenuBuilder new
-		linkModel: aLinkModel;
-		paneElement: self;
-		build
+	aMenuItems := BrMenuItems new.
+	GtTreePagerPaneNormalDropdownMenuTarget
+		actionsForObject: self paneModel
+		collect: [ :eachAction | 
+			eachAction
+				asMenuItem: [ :aMenuItem | 
+					aMenuItems addItem: aMenuItem ]
+				withHostElement: contentElement ].
+
+	^ aMenuItems
 ]
 
 { #category : #initialization }
@@ -292,15 +298,20 @@ GtTreePagerPaneElement >> newMaximizedDropdownMenuElement [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newMaximizedDropdownMenuModel [
-	| aLinkModel |
+	| aLinkModel aMenuItems |
 	self hasPaneModel ifFalse: [ ^ nil ].
 	aLinkModel := self paneModel previousLink.
 	aLinkModel ifNil: [ ^ nil ].
 
-	^ GtTreePagerPaneMaximizedContextMenuBuilder new
-		linkModel: aLinkModel;
-		paneElement: self contentElement;
-		build
+	aMenuItems := BrMenuItems new.
+	GtTreePagerPaneMaximizedDropdownMenuTarget
+		actionsForObject: self paneModel
+		collect: [ :eachAction | 
+			eachAction
+				asMenuItem: [ :aMenuItem | aMenuItems addItem: aMenuItem ]
+				withHostElement: contentElement ].
+
+	^ aMenuItems.
 ]
 
 { #category : #initialization }
