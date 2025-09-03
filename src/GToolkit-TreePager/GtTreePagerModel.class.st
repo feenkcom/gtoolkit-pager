@@ -1,8 +1,8 @@
 Class {
 	#name : #GtTreePagerModel,
 	#superclass : #Object,
-	#traits : 'TGtTreePagerModelEnumerable + TGtAnnouncer + TGtOptions + TGtTreePagerLinkModelState',
-	#classTraits : 'TGtTreePagerModelEnumerable classTrait + TGtAnnouncer classTrait + TGtOptions classTrait + TGtTreePagerLinkModelState classTrait',
+	#traits : 'TGtTreePagerModelEnumerable + TGtAnnouncer + TGtOptions + TGtTreePagerLinkModelState + TGtTreePagerPaneModel',
+	#classTraits : 'TGtTreePagerModelEnumerable classTrait + TGtAnnouncer classTrait + TGtOptions classTrait + TGtTreePagerLinkModelState classTrait + TGtTreePagerPaneModel classTrait',
 	#instVars : [
 		'announcer',
 		'linkModels',
@@ -142,6 +142,14 @@ GtTreePagerModel >> linkModels: aCollection [
 	linkModels := aCollection
 ]
 
+{ #category : #'api - previous links' }
+GtTreePagerModel >> pagerSettings [
+	"Note: it is usually a pager model"
+
+	<return: #GtTreePagerModelSettings or: nil>
+	^ self settings
+]
+
 { #category : #'api - panes' }
 GtTreePagerModel >> paneModel: aPaneModel [
 	self paneModels: {aPaneModel}
@@ -159,15 +167,53 @@ GtTreePagerModel >> paneModels: aCollection [
 				collect: [ :eachPane | GtTreePagerModelLinkAdaptor new paneModel: eachPane ])
 ]
 
+{ #category : #copying }
+GtTreePagerModel >> postSimilarPaneCopy [
+	| newLinks |
+	announcer := Announcer new.
+	newLinks := self linkModels
+			collect: [ :eachLink | eachLink similarLinkCopy ].
+	self linkModels: newLinks.
+	settings := settings shallowCopy announcer: announcer.
+]
+
 { #category : #'api - previous links' }
 GtTreePagerModel >> previousLink [
 	^ nil
+]
+
+{ #category : #'api - following links' }
+GtTreePagerModel >> removeLink [
+	"Deselect an existing link model.
+	Nothing to do in pager."
+
+	
+]
+
+{ #category : #'api - following links' }
+GtTreePagerModel >> selectPane: aPaneModel [
+	"Select a new pane model"
+
+	self paneModel: aPaneModel
 ]
 
 { #category : #accessing }
 GtTreePagerModel >> settings [
 	<return: #GtTreePagerModelSettings>
 	^ settings
+]
+
+{ #category : #copying }
+GtTreePagerModel >> similarPaneCopy [
+	<return: #TGtTreePagerPaneModel>
+	^ self shallowCopy postSimilarPaneCopy
+]
+
+{ #category : #'api - following links' }
+GtTreePagerModel >> spawnPane: aPaneModel [
+	"Spawn a new pane model"
+
+	self paneModel: aPaneModel
 ]
 
 { #category : #'api - state' }

@@ -16,6 +16,14 @@ TGtTreePagerPaneModel >> children [
 	^ self explicitRequirement
 ]
 
+{ #category : #'api - previous links' }
+TGtTreePagerPaneModel >> pagerSettings [
+	"Note: it is usually a pager model"
+
+	<return: #GtTreePagerModelSettings or: nil>
+	^ self explicitRequirement
+]
+
 { #category : #'api - following links' }
 TGtTreePagerPaneModel >> removeLink [
 	"Deselect an existing link model"

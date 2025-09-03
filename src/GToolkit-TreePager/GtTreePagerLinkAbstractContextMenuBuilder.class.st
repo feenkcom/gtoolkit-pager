@@ -5,8 +5,7 @@ Class {
 	#classTraits : 'TGtTreePagerLinkStateVisitor classTrait',
 	#instVars : [
 		'linkModel',
-		'menu',
-		'paneElement'
+		'menu'
 	],
 	#category : #'GToolkit-TreePager-Support'
 }
@@ -191,16 +190,6 @@ GtTreePagerLinkAbstractContextMenuBuilder >> newWorldTabActionItem [
 					isOK := isOK & eachLinkModel canRecreateToolElement ] ].
 			isOK not ];
 		yourself
-]
-
-{ #category : #accessing }
-GtTreePagerLinkAbstractContextMenuBuilder >> paneElement [
-	^ paneElement
-]
-
-{ #category : #accessing }
-GtTreePagerLinkAbstractContextMenuBuilder >> paneElement: anObject [
-	paneElement := anObject
 ]
 
 { #category : #accessing }
