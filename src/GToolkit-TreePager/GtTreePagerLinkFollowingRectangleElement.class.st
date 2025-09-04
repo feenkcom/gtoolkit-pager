@@ -32,11 +32,18 @@ GtTreePagerLinkFollowingRectangleElement >> initialize [
 
 { #category : #'private - updating' }
 GtTreePagerLinkFollowingRectangleElement >> newContextMenu [
+	| aMenuItems |
 	self hasLinkModel ifFalse: [ ^ nil ].
+	
+	aMenuItems := BrMenuItems new.
+	GtTreePagerLinkTarget
+		actionsForObject: self linkModel
+		collect: [ :eachAction | 
+			eachAction
+				asMenuItem: [ :aMenuItem | aMenuItems addItem: aMenuItem ]
+				withHostElement: self ].
 
-	^ GtTreePagerLinkContextMenuBuilder new
-		linkModel: self linkModel;
-		build
+	^ aMenuItems
 ]
 
 { #category : #initialization }

@@ -89,9 +89,18 @@ GtTreePagerLinkFollowingOutputElement >> initializeOutgoingLinkElements [
 
 { #category : #initialization }
 GtTreePagerLinkFollowingOutputElement >> newContextMenu [
-	^ GtTreePagerLinkContextMenuBuilder new
-		linkModel: self linkModel;
-		build
+	| aMenuItems |
+	self hasLinkModel ifFalse: [ ^ nil ].
+
+	aMenuItems := BrMenuItems new.
+	GtTreePagerLinkTarget
+		actionsForObject: self linkModel
+		collect: [ :eachAction | 
+			eachAction
+				asMenuItem: [ :aMenuItem | aMenuItems addItem: aMenuItem ]
+				withHostElement: self ].
+
+	^ aMenuItems
 ]
 
 { #category : #'private - event handling' }

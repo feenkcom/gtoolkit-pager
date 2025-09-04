@@ -14,6 +14,39 @@ Class {
 	#category : #'GToolkit-TreePager-Model'
 }
 
+{ #category : #'gt - extensions' }
+GtTreePagerPaneModel class >> gtPaneActionsFor: aView [
+	<gtClassView>
+	^ aView columnedList
+		title: 'Pane actions';
+		tooltip: 'Pane toolbar and dropdown menu actions';
+		items: [ | aPaneModel |
+			aPaneModel := self new object: $A.
+			aPaneModel gtActions ];
+		column: 'Title' text: [ :eachAction | eachAction description ] weight: 2.5;
+		column: 'Priority' text: [ :eachAction | eachAction priority ] width: 55;
+		column: 'Normal toolbar'
+			text: [ :eachAction | 
+				(eachAction target isForTarget: GtTreePagerPaneNormalTopRightToolbarTarget)
+					ifTrue: [ 'yes' ]
+					ifFalse: [ '' ] ];
+		column: 'Normal dropdown'
+			text: [ :eachAction | 
+				(eachAction target isForTarget: GtTreePagerPaneNormalDropdownMenuTarget)
+					ifTrue: [ 'yes' ]
+					ifFalse: [ '' ] ];
+		column: 'Maximized toolbar'
+			text: [ :eachAction | 
+				(eachAction target isForTarget: GtTreePagerPaneMaximizedTopRightToolbarTarget)
+					ifTrue: [ 'yes' ]
+					ifFalse: [ '' ] ];
+		column: 'Maximized dropdown'
+			text: [ :eachAction | 
+				(eachAction target isForTarget: GtTreePagerPaneMaximizedDropdownMenuTarget)
+					ifTrue: [ 'yes' ]
+					ifFalse: [ '' ] ]
+]
+
 { #category : #'api - previous panes' }
 GtTreePagerPaneModel >> aboutToRemoveFromPreviousPane [
 	self previousLink ifNotNil: [ :aPreviousLink | 
@@ -164,6 +197,8 @@ GtTreePagerPaneModel >> breakingFlowPaneRemoval [
 	Note: I currently do not work for the root panes."
 
 	| aParent someLinks |
+	self depthIndex > 1 ifFalse: [ ^ self ].
+	
 	aParent := self previousPane.
 	aParent ifNil: [ ^ self ].
 	
