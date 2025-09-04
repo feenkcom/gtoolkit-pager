@@ -12,6 +12,66 @@ Class {
 	#category : #'GToolkit-TreePager-Model'
 }
 
+{ #category : #'gt - extensions' }
+GtTreePagerLinkModel class >> gtLinkActionsFor: aView [
+	<gtClassView>
+	| aList |
+	aList := aView columnedList
+			title: 'Link actions';
+			items: [ | aPager allActions |
+				aPager := GtTreePagerExamples new pagerWithAllLinkStates.
+				allActions := Array
+						streamContents: [ :aStream | 
+							aPager
+								allLinkModelsBreadthFirstDo: [ :eachLink | 
+									aStream
+										nextPutAll: (eachLink gtActions collect: [ :eachAction | eachAction -> eachLink ]) ] ].
+				(allActions groupedBy: [ :each | each key definingSelector ]) associations
+					sort: [ :a :b | 
+						(a value
+							detect: [ :eachAssoc | (eachAssoc key isKindOf: GtPhlowNoAction) not ]
+							ifFound: [ :eachAssoc | eachAssoc key priority ]
+							ifNone: [ a value anyOne key priority ])
+							< (b value
+									detect: [ :eachAssoc | (eachAssoc key isKindOf: GtPhlowNoAction) not ]
+									ifFound: [ :eachAssoc | eachAssoc key priority ]
+									ifNone: [ b value anyOne key priority ]) ] ];
+			send: [ :anAssoc | 
+				anAssoc value
+					detect: [ :eachAssoc | (eachAssoc key isKindOf: GtPhlowNoAction) not ]
+					ifFound: [ :eachAssoc | eachAssoc key ]
+					ifNone: [ anAssoc value anyOne key ] ];
+			column: 'Title'
+				text: [ :anAssoc | 
+					anAssoc value
+						detect: [ :eachAssoc | (eachAssoc key isKindOf: GtPhlowNoAction) not ]
+						ifFound: [ :eachAssoc | eachAssoc key description ]
+						ifNone: [ anAssoc value anyOne key description ] ]
+				weight: 2.5;
+			column: 'Priority'
+				text: [ :anAssoc | 
+					anAssoc value
+						detect: [ :eachAssoc | (eachAssoc key isKindOf: GtPhlowNoAction) not ]
+						ifFound: [ :eachAssoc | eachAssoc key priority ]
+						ifNone: [ anAssoc value anyOne key priority ] ]
+				width: 60.
+
+	GtTreePagerLinkState gtAllStates
+		do: [ :eachState | 
+			aList
+				column: eachState label
+				text: [ :anAssoc | 
+					anAssoc value
+						detect: [ :eachAssoc | 
+							eachAssoc value state = eachState
+								and: [ (eachAssoc key isKindOf: GtPhlowNoAction) not
+										and: [ eachAssoc key target isForTarget: GtTreePagerLinkTarget ] ] ]
+						ifFound: [ :eachAssoc | 'yes' ]
+						ifNone: [ '' ] ] ].
+
+	^ aList
+]
+
 { #category : #'api - previous panes' }
 GtTreePagerLinkModel >> aboutToRemoveFromPreviousPane [
 	self remove
@@ -129,6 +189,35 @@ GtTreePagerLinkModel >> followingSpawnedLinkModels [
 	^ paneModel followingSpawnedLinkModels
 ]
 
+{ #category : #actions }
+GtTreePagerLinkModel >> gtActivateLinkActionFor: anAction [
+	<gtAction>
+	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
+	self isActive ifTrue: [ ^ anAction noAction ].
+	
+	^ anAction button
+		priority: 1;
+		id: #'menu--activate-link';
+		label: 'Activate link';
+		menuShortcut: [ 'Click' ];
+		target: GtTreePagerLinkTarget;
+		action: [ :aButton | self activate ]
+]
+
+{ #category : #actions }
+GtTreePagerLinkModel >> gtCollapseLinkActionFor: anAction [
+	<gtAction>
+	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
+	self isSpawned ifFalse: [ ^ anAction noAction ].
+	
+	^ anAction button
+		priority: 2;
+		id: #'menu--collapse-pane';
+		label: 'Collapse pane';
+		target: GtTreePagerLinkTarget;
+		action: [ :aButton | self collapse ]
+]
+
 { #category : #printing }
 GtTreePagerLinkModel >> gtDisplayOn: stream [
 	stream nextPutAll: 'Link: '.
@@ -138,6 +227,36 @@ GtTreePagerLinkModel >> gtDisplayOn: stream [
 	stream nextPutAll: ' ('.
 	self isCollapsed ifTrue: [ stream nextPutAll: 'collapsed' ].
 	stream nextPut: $)
+]
+
+{ #category : #actions }
+GtTreePagerLinkModel >> gtExpandLinkActionFor: anAction [
+	<gtAction>
+	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
+	self isSpawned ifTrue: [ ^ anAction noAction ].
+	self isRemoved ifTrue: [ ^ anAction noAction ].
+	
+	^ anAction button
+		priority: 2;
+		id: #'menu--expand-pane';
+		label: 'Expand pane';
+		target: GtTreePagerLinkTarget;
+		action: [ :aButton | self expand ]
+]
+
+{ #category : #actions }
+GtTreePagerLinkModel >> gtKeepLinkActionFor: anAction [
+	<gtAction>
+	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
+	self isActive ifFalse: [ ^ anAction noAction ].
+	
+	^ anAction button
+		priority: 1;
+		id: #'menu--keep-link';
+		label: 'Keep link';
+		menuShortcut: [ 'Click' ];
+		target: GtTreePagerLinkTarget;
+		action: [ :aButton | self inactivate ]
 ]
 
 { #category : #views }
@@ -165,6 +284,26 @@ GtTreePagerLinkModel >> gtPaneModelFor: aView [
 		view: #gtFollowingPanesFor:
 ]
 
+{ #category : #actions }
+GtTreePagerLinkModel >> gtPermanentlyRemoveLinkActionFor: anAction [
+	<gtAction>
+	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
+	self isRemoved ifFalse: [ ^ anAction noAction ].
+
+	^ anAction button
+		priority: 10;
+		id: #'tree-pager--menu-permanent-remove';
+		label: 'Permanently remove link';
+		target: GtTreePagerLinkTarget;
+		action: [ :aButton | 
+			| aWish |
+			aWish := BrPopoverAnchorElementWish new.
+			aButton fireEvent: aWish.
+			aWish anchorElementDo: [ :anAnchor | 
+				anAnchor dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction ].
+			self removeFromPreviousPane ]
+]
+
 { #category : #views }
 GtTreePagerLinkModel >> gtPreviousLinksFor: aView [
 	<gtView>
@@ -189,6 +328,41 @@ GtTreePagerLinkModel >> gtPreviousPanesFor: aView [
 			width: 40;
 		column: 'Link' text: #gtDisplayString;
 		column: 'State' text: [ :eachLink | eachLink state label ]
+]
+
+{ #category : #actions }
+GtTreePagerLinkModel >> gtRemoveLinkActionFor: anAction [
+	<gtAction>
+	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
+	self isRemoved ifTrue: [ ^ anAction noAction ].
+	
+	^ anAction button
+		priority: 10;
+		id: #'tree-pager--menu-remove';
+		label: 'Remove link';
+		target: GtTreePagerLinkTarget;
+		action: [ :aButton | self aboutToRemoveFromPreviousPane ]
+]
+
+{ #category : #actions }
+GtTreePagerLinkModel >> gtRestoreLinkActionFor: anAction [
+	<gtAction>
+	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
+	self isRemoved ifFalse: [ ^ anAction noAction ].
+	
+	^ anAction button
+		priority: 1;
+		id: #'menu--restore-pane';
+		label: 'Restore pane';
+		menuShortcut: [ 'Click' ];
+		target: GtTreePagerLinkTarget;
+		action: [ :aButton | 
+			| aWish |
+			aWish := BrPopoverAnchorElementWish new.
+			aButton fireEvent: aWish.
+			aWish anchorElementDo: [ :anAnchor |
+				anAnchor dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction ].
+			self expand ]
 ]
 
 { #category : #'api - visibility' }

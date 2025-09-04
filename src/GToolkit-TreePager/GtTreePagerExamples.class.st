@@ -112,6 +112,46 @@ GtTreePagerExamples >> pagerWithAWithFollowingHPane [
 ]
 
 { #category : #'examples - pager' }
+GtTreePagerExamples >> pagerWithAllLinkStates [
+	"I exemplify a case of panes with all posible link states"
+
+	<gtExample>
+	| aPager aPaneA aPaneB aPaneC aPaneD aPaneE aPaneF aPaneG |
+	aPager := self basicPagerModel.
+	aPaneA := self paneModelWithPhlowBuilderFor: $A.
+	aPager paneModel: aPaneA.
+
+	aPaneB := self paneModelWithPhlowBuilderFor: $B.
+	aPaneA spawnSiblingPane: aPaneB.
+	aPaneB previousLink inactivate.
+
+	aPaneC := self paneModelWithPhlowBuilderFor: $C.
+	aPaneA spawnSiblingPane: aPaneC.
+
+	aPaneD := self paneModelWithPhlowBuilderFor: $D.
+	aPaneA spawnSiblingPane: aPaneD.
+	aPaneD previousLink collapse.
+
+	aPaneE := self paneModelWithPhlowBuilderFor: $E.
+	aPaneA spawnSiblingPane: aPaneE.
+	aPaneE previousLink remove.
+
+	aPaneC previousLink activate.
+
+	aPaneF := self paneModelWithPhlowBuilderFor: $F.
+	aPaneC selectPane: aPaneF.
+	aPaneF previousLink inactivate.
+	aPaneF previousLink select.
+
+	aPaneG := self paneModelWithPhlowBuilderFor: $G.
+	aPaneC selectPane: aPaneG.
+	aPaneG previousLink activate.
+	aPaneG previousLink select.
+
+	^ aPager
+]
+
+{ #category : #'examples - pager' }
 GtTreePagerExamples >> pagerWithCWithFollowingEFHPanes [
 	<gtExample>
 	| aPager aPaneC aPaneH |
