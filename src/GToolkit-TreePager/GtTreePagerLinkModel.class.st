@@ -36,7 +36,11 @@ GtTreePagerLinkModel class >> gtLinkActionsFor: aView [
 									detect: [ :eachAssoc | (eachAssoc key isKindOf: GtPhlowNoAction) not ]
 									ifFound: [ :eachAssoc | eachAssoc key priority ]
 									ifNone: [ b value anyOne key priority ]) ] ];
-			send: [ :anAssoc | anAssoc value anyOne key ];
+			send: [ :anAssoc | 
+				anAssoc value
+					detect: [ :eachAssoc | (eachAssoc key isKindOf: GtPhlowNoAction) not ]
+					ifFound: [ :eachAssoc | eachAssoc key ]
+					ifNone: [ anAssoc value anyOne key ] ];
 			column: 'Title'
 				text: [ :anAssoc | 
 					anAssoc value
@@ -229,7 +233,8 @@ GtTreePagerLinkModel >> gtDisplayOn: stream [
 GtTreePagerLinkModel >> gtExpandLinkActionFor: anAction [
 	<gtAction>
 	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
-	self isCollapsed ifFalse: [ ^ anAction noAction ].
+	self isSpawned ifTrue: [ ^ anAction noAction ].
+	self isRemoved ifTrue: [ ^ anAction noAction ].
 	
 	^ anAction button
 		priority: 2;
