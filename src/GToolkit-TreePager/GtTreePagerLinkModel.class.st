@@ -48,6 +48,12 @@ GtTreePagerLinkModel class >> gtLinkActionsFor: aView [
 						ifFound: [ :eachAssoc | eachAssoc key description ]
 						ifNone: [ anAssoc value anyOne key description ] ]
 				weight: 2.5;
+			column: 'Shortcut'
+				text: [ :anAssoc | 
+					anAssoc value
+						detect: [ :eachAssoc | (eachAssoc key isKindOf: GtPhlowNoAction) not ]
+						ifFound: [ :eachAssoc | eachAssoc key menuShortcutIfPresent: [ :e | e value ] ifAbsent: [ '' ] ]
+						ifNone: [ '' ] ];
 			column: 'Priority'
 				text: [ :anAssoc | 
 					anAssoc value

@@ -35,6 +35,11 @@ GtTreePagerPaneModel class >> gtPaneActionsFor: aView [
 					ifTrue: [ 'Pane depth: {1}' format: {anObject depthIndex} ]
 					ifFalse: [ anObject description ] ]
 			weight: 2.5;
+		column: 'Shortcut'
+			text: [ :anObject | 
+				(anObject isKindOf: GtTreePagerPaneModel)
+					ifTrue: [ '' ]
+					ifFalse: [ anObject menuShortcutIfPresent: [ :e | e value ] ifAbsent: [ '' ] ] ];
 		column: 'Priority'
 			text: [ :anObject | 
 				(anObject isKindOf: GtTreePagerPaneModel)
