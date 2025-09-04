@@ -1,6 +1,6 @@
 Trait {
 	#name : #TGtTreePagerLinkModelState,
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Rest'
 }
 
 { #category : #'api - state' }

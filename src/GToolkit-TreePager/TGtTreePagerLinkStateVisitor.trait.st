@@ -1,6 +1,6 @@
 Trait {
 	#name : #TGtTreePagerLinkStateVisitor,
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Rest'
 }
 
 { #category : #visiting }

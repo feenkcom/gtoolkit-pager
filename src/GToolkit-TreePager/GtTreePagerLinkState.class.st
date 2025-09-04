@@ -9,7 +9,7 @@ Class {
 		'Selected',
 		'Spawned'
 	],
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Rest'
 }
 
 { #category : #'api - accessing' }

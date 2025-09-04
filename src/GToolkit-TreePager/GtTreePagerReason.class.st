@@ -6,5 +6,5 @@ Class {
 	#superclass : #Object,
 	#traits : 'TGtUniqueInstance',
 	#classTraits : 'TGtUniqueInstance classTrait',
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Rest'
 }

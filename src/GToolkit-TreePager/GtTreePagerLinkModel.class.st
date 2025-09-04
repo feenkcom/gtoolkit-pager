@@ -9,7 +9,7 @@ Class {
 		'state',
 		'replacedLink'
 	],
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Core'
 }
 
 { #category : #'gt - extensions' }

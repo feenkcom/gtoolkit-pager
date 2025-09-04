@@ -7,7 +7,7 @@ Class {
 		'pagerModel',
 		'paneModel'
 	],
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Rest'
 }
 
 { #category : #'api - pane model' }

@@ -1,7 +1,7 @@
 Class {
 	#name : #GtTreePagerLinkInactiveSpawnedState,
 	#superclass : #GtTreePagerLinkState,
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Rest'
 }
 
 { #category : #visiting }

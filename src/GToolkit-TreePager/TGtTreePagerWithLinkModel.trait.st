@@ -3,7 +3,7 @@ Trait {
 	#instVars : [
 		'linkModel'
 	],
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Rest'
 }
 
 { #category : #'api - link model' }
