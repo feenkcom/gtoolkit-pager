@@ -3,7 +3,7 @@ Trait {
 	#instVars : [
 		'pagerModel'
 	],
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Rest'
 }
 
 { #category : #'api - pager model' }

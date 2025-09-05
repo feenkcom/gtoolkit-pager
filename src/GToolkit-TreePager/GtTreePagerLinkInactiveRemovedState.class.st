@@ -6,7 +6,7 @@ The real link removal should be triggered in a UI.
 Class {
 	#name : #GtTreePagerLinkInactiveRemovedState,
 	#superclass : #GtTreePagerLinkState,
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Rest'
 }
 
 { #category : #visiting }

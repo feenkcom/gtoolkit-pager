@@ -11,40 +11,69 @@ Class {
 		'followingLinks',
 		'previousLink'
 	],
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Core'
 }
 
 { #category : #'gt - extensions' }
 GtTreePagerPaneModel class >> gtPaneActionsFor: aView [
 	<gtClassView>
-	^ aView columnedList
+	^ aView columnedTree
 		title: 'Pane actions';
 		tooltip: 'Pane toolbar and dropdown menu actions';
-		items: [ | aPaneModel |
-			aPaneModel := self new object: $A.
-			aPaneModel gtActions ];
-		column: 'Title' text: [ :eachAction | eachAction description ] weight: 2.5;
-		column: 'Priority' text: [ :eachAction | eachAction priority ] width: 55;
+		items: [ | aPager |
+			aPager := GtTreePagerExamples new pagerWithThreeSpawnedPanes.
+			Array
+				streamContents: [ :aStream | aPager allPaneModelsBreadthFirstDo: [ :eachPane | aStream nextPut: eachPane ] ] ];
+		children: [ :anObject | 
+			(anObject isKindOf: GtTreePagerPaneModel)
+				ifTrue: [ anObject gtActions ]
+				ifFalse: [ #() ] ];
+		expandUpTo: 1;
+		column: 'Title'
+			text: [ :anObject | 
+				(anObject isKindOf: GtTreePagerPaneModel)
+					ifTrue: [ 'Pane depth: {1}' format: {anObject depthIndex} ]
+					ifFalse: [ anObject description ] ]
+			weight: 2.5;
+		column: 'Shortcut'
+			text: [ :anObject | 
+				(anObject isKindOf: GtTreePagerPaneModel)
+					ifTrue: [ '' ]
+					ifFalse: [ anObject menuShortcutIfPresent: [ :e | e value ] ifAbsent: [ '' ] ] ];
+		column: 'Priority'
+			text: [ :anObject | 
+				(anObject isKindOf: GtTreePagerPaneModel)
+					ifTrue: [ '' ]
+					ifFalse: [ anObject priority ] ]
+			width: 55;
 		column: 'Normal toolbar'
-			text: [ :eachAction | 
-				(eachAction target isForTarget: GtTreePagerPaneNormalTopRightToolbarTarget)
-					ifTrue: [ 'yes' ]
-					ifFalse: [ '' ] ];
+			text: [ :anObject | 
+				(anObject isKindOf: GtTreePagerPaneModel)
+					ifTrue: [ '' ]
+					ifFalse: [ (anObject target isForTarget: GtTreePagerPaneNormalTopRightToolbarTarget)
+							ifTrue: [ 'yes' ]
+							ifFalse: [ '' ] ] ];
 		column: 'Normal dropdown'
-			text: [ :eachAction | 
-				(eachAction target isForTarget: GtTreePagerPaneNormalDropdownMenuTarget)
-					ifTrue: [ 'yes' ]
-					ifFalse: [ '' ] ];
+			text: [ :anObject | 
+				(anObject isKindOf: GtTreePagerPaneModel)
+					ifTrue: [ '' ]
+					ifFalse: [ (anObject target isForTarget: GtTreePagerPaneNormalDropdownMenuTarget)
+							ifTrue: [ 'yes' ]
+							ifFalse: [ '' ] ] ];
 		column: 'Maximized toolbar'
-			text: [ :eachAction | 
-				(eachAction target isForTarget: GtTreePagerPaneMaximizedTopRightToolbarTarget)
-					ifTrue: [ 'yes' ]
-					ifFalse: [ '' ] ];
+			text: [ :anObject | 
+				(anObject isKindOf: GtTreePagerPaneModel)
+					ifTrue: [ '' ]
+					ifFalse: [ (anObject target isForTarget: GtTreePagerPaneMaximizedTopRightToolbarTarget)
+							ifTrue: [ 'yes' ]
+							ifFalse: [ '' ] ] ];
 		column: 'Maximized dropdown'
-			text: [ :eachAction | 
-				(eachAction target isForTarget: GtTreePagerPaneMaximizedDropdownMenuTarget)
-					ifTrue: [ 'yes' ]
-					ifFalse: [ '' ] ]
+			text: [ :anObject | 
+				(anObject isKindOf: GtTreePagerPaneModel)
+					ifTrue: [ '' ]
+					ifFalse: [ (anObject target isForTarget: GtTreePagerPaneMaximizedDropdownMenuTarget)
+							ifTrue: [ 'yes' ]
+							ifFalse: [ '' ] ] ]
 ]
 
 { #category : #'api - previous panes' }

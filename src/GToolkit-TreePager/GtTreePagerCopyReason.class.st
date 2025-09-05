@@ -1,5 +1,5 @@
 Class {
 	#name : #GtTreePagerCopyReason,
 	#superclass : #GtTreePagerReason,
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Rest'
 }

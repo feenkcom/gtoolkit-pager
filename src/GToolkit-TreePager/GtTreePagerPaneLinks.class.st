@@ -5,7 +5,7 @@ Class {
 		'paneModel',
 		'links'
 	],
-	#category : #'GToolkit-TreePager-Model'
+	#category : #'GToolkit-TreePager-Model Rest'
 }
 
 { #category : #'api - active link' }

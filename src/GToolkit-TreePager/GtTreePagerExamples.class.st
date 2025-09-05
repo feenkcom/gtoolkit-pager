@@ -118,6 +118,8 @@ GtTreePagerExamples >> pagerWithAllLinkStates [
 	<gtExample>
 	| aPager aPaneA aPaneB aPaneC aPaneD aPaneE aPaneF aPaneG |
 	aPager := self basicPagerModel.
+	aPager settings numberOfVisibleColumns: 2.
+	
 	aPaneA := self paneModelWithPhlowBuilderFor: $A.
 	aPager paneModel: aPaneA.
 
@@ -147,6 +149,23 @@ GtTreePagerExamples >> pagerWithAllLinkStates [
 	aPaneC selectPane: aPaneG.
 	aPaneG previousLink activate.
 	aPaneG previousLink select.
+	
+	self assert: aPaneA isSpawned.
+	self assert: aPaneA isActive.
+	self assert: aPaneB isSpawned.
+	self assert: aPaneB isActive not.
+	self assert: aPaneC isSpawned.
+	self assert: aPaneC isActive.
+	self assert: aPaneD isCollapsed.
+	self assert: aPaneD isActive not.
+	self assert: aPaneD isCollapsed.
+	self assert: aPaneD isActive not.
+	self assert: aPaneE isRemoved.
+	self assert: aPaneE isActive not.
+	self assert: aPaneF isHidden.
+	self assert: aPaneF isActive not.
+	self assert: aPaneG isSelected.
+	self assert: aPaneG isActive.
 
 	^ aPager
 ]
@@ -436,6 +455,33 @@ GtTreePagerExamples >> pagerWithSevenPanesInFiveColumns [
 	aPane := self paneModelWithThreeFollowingLevels.
 	aPager paneModel: aPane.
 	
+	^ aPager
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerExamples >> pagerWithThreeSpawnedPanes [
+	"I exemplify a case of panes with different depth index"
+
+	<gtExample>
+	| aPager aPaneA aPaneB aPaneC |
+	aPager := self basicPagerModel.
+	aPager settings numberOfVisibleColumns: 3.
+	aPaneA := self paneModelWithPhlowBuilderFor: $A.
+	aPager paneModel: aPaneA.
+
+	aPaneB := self paneModelWithPhlowBuilderFor: $B.
+	aPaneA spawnPane: aPaneB.
+
+	aPaneC := self paneModelWithPhlowBuilderFor: $C.
+	aPaneB spawnPane: aPaneC.
+	
+	self assert: aPaneA isSpawned.
+	self assert: aPaneA isActive.
+	self assert: aPaneB isSpawned.
+	self assert: aPaneB isActive.
+	self assert: aPaneC isSpawned.
+	self assert: aPaneC isActive.
+
 	^ aPager
 ]
 
