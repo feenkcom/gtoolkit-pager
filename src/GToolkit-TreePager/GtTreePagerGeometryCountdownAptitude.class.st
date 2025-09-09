@@ -7,7 +7,7 @@ Class {
 { #category : #'as yet unclassified' }
 GtTreePagerGeometryCountdownAptitude >> newDefaultAnimation [
 	^ super newDefaultAnimation
-		duration: GtTreePagerConstants replacedLinkRestoration
+		duration: GtTreePagerSettings replacedLinkRestoration
 ]
 
 { #category : #'private - updating' }

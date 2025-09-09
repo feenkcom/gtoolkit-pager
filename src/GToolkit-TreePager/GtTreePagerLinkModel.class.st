@@ -200,6 +200,7 @@ GtTreePagerLinkModel >> gtActivateLinkActionFor: anAction [
 	<gtAction>
 	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
 	self isActive ifTrue: [ ^ anAction noAction ].
+	self isRemoved ifTrue: [ ^ anAction noAction ].
 	
 	^ anAction button
 		priority: 1;
