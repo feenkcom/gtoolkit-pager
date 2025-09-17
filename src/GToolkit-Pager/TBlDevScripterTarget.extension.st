@@ -4,3 +4,10 @@ Extension { #name : #TBlDevScripterTarget }
 TBlDevScripterTarget >> onPagerPaneWithIndex: anInteger [
 	self // (GtPagerPageElementId indexed: anInteger)
 ]
+
+{ #category : #'*GToolkit-Pager' }
+TBlDevScripterTarget >> onPagerToolElement [
+	self 
+		// GtPagerToolWrapperElementId;
+		id: #tool
+]
