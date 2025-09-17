@@ -14,3 +14,8 @@ GtPhlowContext >> navigationContext [
 GtPhlowContext >> navigationContext: aGtPagerPageNavigationContext [
 	self optionAt: GtPagerPageNavigationContext put: aGtPagerPageNavigationContext
 ]
+
+{ #category : #'*GToolkit-Pager' }
+GtPhlowContext >> removeNavigationContext [
+	self clearOption: GtPagerPageNavigationContext ifAbsent: [  ]
+]

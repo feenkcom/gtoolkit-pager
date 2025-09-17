@@ -447,7 +447,7 @@ GtTreePagerPaneModel >> gtHidePanesActionFor: anAction [
 	^ anAction button
 		priority: 2;
 		id: #'tree-pager--menu--hide';
-		label: 'Collapse all panes';
+		label: 'Collapse this and following panes';
 		target: GtTreePagerPaneNormalDropdownMenuTarget;
 		action: [ :aButton | self hide ]
 ]

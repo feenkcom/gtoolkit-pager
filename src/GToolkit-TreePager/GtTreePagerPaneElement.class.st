@@ -316,17 +316,25 @@ GtTreePagerPaneElement >> newMaximizedDropdownMenuModel [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newMaximizedToolbarElement [
+	| allElements lt100Elements gt100Elements |
+	lt100Elements := OrderedCollection new.
+	gt100Elements := OrderedCollection new.
+	allElements := GtTreePagerPaneMaximizedTopRightToolbarTarget
+			actionsForObject: self paneModel
+			collect: [ :eachAction | 
+				eachAction
+					asCircularElement: [ :anElement | 
+						anElement viewModel ifNil: [ anElement viewModel: BrWidgetModel new ].
+						eachAction priority > 100
+							ifTrue: [ gt100Elements add: anElement ]
+							ifFalse: [ lt100Elements add: anElement ].
+						anElement ]
+					withHostElement: contentElement ].
 	^ self newBasicToolbarElement
-		id: #'tree-pager--maximized-toolbar';
-		addItems: (GtTreePagerPaneMaximizedTopRightToolbarTarget
-				actionsForObject: self paneModel
-				collect: [ :eachAction | 
-					eachAction
-						asCircularElement: [ :anElement | 
-							anElement viewModel ifNil: [ anElement viewModel: BrWidgetModel new ].
-							anElement ]
-						withHostElement: contentElement ]);
-		addItem: self newMaximizedDropdownMenuElement
+			id: #'tree-pager--maximized-toolbar';
+			addItems: lt100Elements;
+			addItem: self newMaximizedDropdownMenuElement;
+			addItems: gt100Elements
 ]
 
 { #category : #'private - event handling' }
@@ -597,18 +605,24 @@ GtTreePagerPaneElement >> updateElement [
 
 { #category : #'private - updating' }
 GtTreePagerPaneElement >> updateToolbarElement [
-	| someElements oldElements |
+	| allElements oldElements lt100Elements gt100Elements |
 	self hasPaneModel ifFalse: [ ^ self ].
-	someElements := GtTreePagerPaneNormalTopRightToolbarTarget
+	lt100Elements := OrderedCollection new.
+	gt100Elements := OrderedCollection new.
+	allElements := GtTreePagerPaneNormalTopRightToolbarTarget
 			actionsForObject: self paneModel
 			collect: [ :eachAction | 
 				eachAction
 					asCircularElement: [ :anElement | 
 						anElement viewModel ifNil: [ anElement viewModel: BrWidgetModel new ].
+						eachAction priority > 100
+							ifTrue: [ gt100Elements add: anElement ]
+							ifFalse: [ lt100Elements add: anElement ].
 						anElement ]
 					withHostElement: contentElement ].
 
 	oldElements := topRightToolbar removeAllItems.
-	topRightToolbar addItems: someElements.
-	topRightToolbar addItem: dropdownElement
+	topRightToolbar addItems: lt100Elements.
+	topRightToolbar addItem: dropdownElement.
+	topRightToolbar addItems: gt100Elements
 ]
