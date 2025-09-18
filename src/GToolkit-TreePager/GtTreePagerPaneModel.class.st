@@ -176,6 +176,27 @@ GtTreePagerPaneModel >> addFollowingLinks: aCollectionOfLinkModels before: aLink
 	self followingLinks: aNewCollection reason: aReason
 ]
 
+{ #category : #'as yet unclassified' }
+GtTreePagerPaneModel >> addFollowingLinks: aCollectionOfLinkModels instead: aLinkModel reason: aReason [
+	| aNewCollection |
+	self followingLinks
+		detectIndex: [ :each | each == aLinkModel ]
+		ifNone: [ NotFound signalFor: aLinkModel in: self followingLinks ].
+
+	aCollectionOfLinkModels do: [ :eachLink |
+		eachLink previousPane: self ].
+	
+	aNewCollection := Array
+			new: self followingLinks size + 1
+			streamContents: [ :aStream | 
+				self followingLinks
+					do: [ :eachLink | 
+						eachLink == aLinkModel 
+							ifTrue: [ aStream nextPutAll: aCollectionOfLinkModels ]
+							ifFalse: [ aStream nextPut: eachLink ] ] ].
+	self followingLinks: aNewCollection reason: aReason
+]
+
 { #category : #'api - following links' }
 GtTreePagerPaneModel >> allFollowingPanes [
 	^ Array
@@ -225,23 +246,21 @@ GtTreePagerPaneModel >> breakingFlowPaneRemoval [
 	
 	Note: I currently do not work for the root panes."
 
-	| aParent someLinks |
+	| aParent someLinks myLink |
 	self depthIndex > 1 ifFalse: [ ^ self ].
-	
+
 	aParent := self previousPane.
 	aParent ifNil: [ ^ self ].
 	
+	myLink := self previousLink.
+	myLink ifNil: [ ^ self ].
+	
 	someLinks := self followingLinks.
 	self followingLinks: #() reason: GtTreePagerBreakingFlowDetachReason default.
-
 	aParent
 		addFollowingLinks: someLinks
-		after: self
+		instead: myLink
 		reason: GtTreePagerBreakingFlowAttachReason default.
-
-	aParent
-		removeFollowingLink: self
-		reason: GtTreePagerBreakingFlowRemovalReason default
 ]
 
 { #category : #'api - phlow' }
@@ -509,6 +528,44 @@ GtTreePagerPaneModel >> gtOpenInNewWorldTabActionFor: anAction [
 				ifTrue: [ self
 						allLinkModelsBreadthFirstDo: [ :eachLinkModel | isOK := isOK & eachLinkModel canRecreateToolElement ] ].
 			isOK not ]
+]
+
+{ #category : #'gt - extensions' }
+GtTreePagerPaneModel >> gtPaneActionsFor: aView [
+	<gtView>
+	^ aView columnedList
+		priority: 60;
+		title: 'Pane actions';
+		tooltip: 'Pane toolbar and dropdown menu actions';
+		items: [ self gtActions ];
+		column: 'Title'
+			text: [ :anAction | anAction description ]
+			weight: 2.5;
+		column: 'Shortcut'
+			text: [ :anAction | anAction menuShortcutIfPresent: [ :e | e value ] ifAbsent: [ '' ] ];
+		column: 'Priority'
+			text: [ :anAction | anAction priority ]
+			width: 55;
+		column: 'Normal toolbar'
+			text: [ :anAction | 
+				(anAction target isForTarget: GtTreePagerPaneNormalTopRightToolbarTarget)
+					ifTrue: [ 'yes' ]
+					ifFalse: [ '' ] ];
+		column: 'Normal dropdown'
+			text: [ :anAction | 
+				(anAction target isForTarget: GtTreePagerPaneNormalDropdownMenuTarget)
+					ifTrue: [ 'yes' ]
+					ifFalse: [ '' ] ];
+		column: 'Maximized toolbar'
+			text: [ :anAction | 
+				(anAction target isForTarget: GtTreePagerPaneMaximizedTopRightToolbarTarget)
+					ifTrue: [ 'yes' ]
+					ifFalse: [ '' ] ];
+		column: 'Maximized dropdown'
+			text: [ :anAction | 
+				(anAction target isForTarget: GtTreePagerPaneMaximizedDropdownMenuTarget)
+					ifTrue: [ 'yes' ]
+					ifFalse: [ '' ] ]
 ]
 
 { #category : #actions }
