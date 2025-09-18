@@ -63,7 +63,22 @@ GtTreePagerElement >> initialize [
 
 	self
 		when: GtTreePagerScrollToColumnWish
-		do: [ :aWish | self onGtTreePagerScrollToColumnWish: aWish ]
+		do: [ :aWish | self onGtTreePagerScrollToColumnWish: aWish ].
+		
+	self 
+		when: BrTabGroupCanBeClosedQuestionEvent
+		do: [ :anEvent | self onBrTabGroupCanBeClosedQuestionEvent: anEvent ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerElement >> onBrTabGroupCanBeClosedQuestionEvent: anEvent [
+	"Prevent closing me if I have more than one column."
+
+	self hasPagerModel ifFalse: [ ^ self ].
+	self pagerModel allLinkModelsDepthFirstDo: [ :eachLink |
+		eachLink depthIndex > 1 ifTrue: [ 
+			anEvent bePrevented. 
+			^ self ] ]
 ]
 
 { #category : #initialization }
