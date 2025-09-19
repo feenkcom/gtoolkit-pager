@@ -198,15 +198,18 @@ GtTreePagerModel >> removeYoungestLink [
 	| aLeafYougestLink |
 	aLeafYougestLink := nil.
 	self
-		allLinkModelsDepthFirstDo: [ :eachLink | 
-			(eachLink depthIndex > 1 and: [ eachLink followingLinks size isZero ])
-				ifTrue: [ aLeafYougestLink
-						ifNil: [ aLeafYougestLink := eachLink ]
-						ifNotNil: [ eachLink timestamp > aLeafYougestLink timestamp 
-							ifTrue: [ aLeafYougestLink := eachLink ] ] ] ].
+		allPaneModelsBreadthFirstDo: [ :eachLink | 
+			(eachLink depthIndex > 1 and: [ eachLink followingSpawnedLinkModels size isZero ])
+				ifTrue: [ 
+					eachLink isRemoved ifFalse: [
+						aLeafYougestLink
+							ifNil: [ aLeafYougestLink := eachLink ]
+							ifNotNil: [ eachLink timestamp > aLeafYougestLink timestamp 
+								ifTrue: [ aLeafYougestLink := eachLink ] ] ] ].
+					eachLink isRemoved not ].
 						
 	aLeafYougestLink ifNil: [ ^ self ].
-	aLeafYougestLink removeFromPreviousPane
+	aLeafYougestLink aboutToRemoveFromPreviousPane
 ]
 
 { #category : #'api - following links' }
