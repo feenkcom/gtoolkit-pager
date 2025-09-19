@@ -160,6 +160,10 @@ GtPager >> initialize [
 							self removePageAt: self pages size.
 							aShortcutEvent consumed: true ]
 						ifFalse: [ aShortcutEvent beNotConsumed ] ] ).
+						
+	self 
+		when: BrTabGroupCanBeClosedQuestionEvent
+		do: [ :anEvent | self onBrTabGroupCanBeClosedQuestionEvent: anEvent ]
 ]
 
 { #category : #'api - requests' }
@@ -206,6 +210,15 @@ GtPager >> navigationContext [
 { #category : #'instance creation' }
 GtPager >> newPagerModel [
 	^ GtPagerModel new
+]
+
+{ #category : #initialization }
+GtPager >> onBrTabGroupCanBeClosedQuestionEvent: anEvent [
+	"Prevent closing me if I have more than one page."
+
+	self pages size > 1 ifTrue: [
+		anEvent bePrevented.
+		^ self ]
 ]
 
 { #category : #'api - scrolling' }
