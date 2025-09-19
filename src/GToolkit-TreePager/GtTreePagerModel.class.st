@@ -202,7 +202,8 @@ GtTreePagerModel >> removeYoungestLink [
 			(eachLink depthIndex > 1 and: [ eachLink followingLinks size isZero ])
 				ifTrue: [ aLeafYougestLink
 						ifNil: [ aLeafYougestLink := eachLink ]
-						ifNotNil: [ aLeafYougestLink := aLeafYougestLink timestamp max: aLeafYougestLink timestamp ] ] ].
+						ifNotNil: [ eachLink timestamp > aLeafYougestLink timestamp 
+							ifTrue: [ aLeafYougestLink := eachLink ] ] ] ].
 						
 	aLeafYougestLink ifNil: [ ^ self ].
 	aLeafYougestLink removeFromPreviousPane
