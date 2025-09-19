@@ -67,7 +67,10 @@ GtTreePagerElement >> initialize [
 		
 	self 
 		when: BrTabGroupCanBeClosedQuestionEvent
-		do: [ :anEvent | self onBrTabGroupCanBeClosedQuestionEvent: anEvent ]
+		do: [ :anEvent | self onBrTabGroupCanBeClosedQuestionEvent: anEvent ].
+	self 
+		when: BrTagGroupPreventedCloseAttemptEvent
+		do: [ :anEvent | self onBrTagGroupPreventedCloseAttemptEvent: anEvent ]
 ]
 
 { #category : #'private - event handling' }
@@ -75,10 +78,21 @@ GtTreePagerElement >> onBrTabGroupCanBeClosedQuestionEvent: anEvent [
 	"Prevent closing me if I have more than one column."
 
 	self hasPagerModel ifFalse: [ ^ self ].
-	self pagerModel allLinkModelsDepthFirstDo: [ :eachLink |
-		eachLink depthIndex > 1 ifTrue: [ 
+	self pagerModel allPaneModelsBreadthFirstDo: [ :eachLink |
+		(eachLink isRemoved not and: [ eachLink depthIndex > 1 ]) ifTrue: [ 
 			anEvent bePrevented. 
-			^ self ] ]
+			^ self ].
+		eachLink isRemoved not ]
+]
+
+{ #category : #initialization }
+GtTreePagerElement >> onBrTagGroupPreventedCloseAttemptEvent: anEvent [
+	"I was not closed, assumming that a user wants to close my last added pane."
+
+	anEvent consumed: true.
+
+	self hasPagerModel ifFalse: [ ^ self ].
+	self pagerModel removeYoungestLink
 ]
 
 { #category : #initialization }

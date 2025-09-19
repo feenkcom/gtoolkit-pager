@@ -193,6 +193,14 @@ GtTreePagerModelLinkAdaptor >> state [
 	^ GtTreePagerLinkState spawned
 ]
 
+{ #category : #'api - accessing' }
+GtTreePagerModelLinkAdaptor >> timestamp [
+	"Return a timestamp that indicates time of a pane creation, ideally time it was added to a pager."
+
+	<return: #DateAndTime>
+	^ self paneModel timestamp
+]
+
 { #category : #accessing }
 GtTreePagerModelLinkAdaptor >> title [
 	^ self paneModel title

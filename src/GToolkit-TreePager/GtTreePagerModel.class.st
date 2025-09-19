@@ -191,6 +191,28 @@ GtTreePagerModel >> removeLink [
 ]
 
 { #category : #'api - following links' }
+GtTreePagerModel >> removeYoungestLink [
+	"I remove a youngest link that is not my top link.
+	Such link must not have following panes."
+
+	| aLeafYougestLink |
+	aLeafYougestLink := nil.
+	self
+		allPaneModelsBreadthFirstDo: [ :eachLink | 
+			(eachLink depthIndex > 1 and: [ eachLink followingSpawnedLinkModels size isZero ])
+				ifTrue: [ 
+					eachLink isRemoved ifFalse: [
+						aLeafYougestLink
+							ifNil: [ aLeafYougestLink := eachLink ]
+							ifNotNil: [ eachLink timestamp > aLeafYougestLink timestamp 
+								ifTrue: [ aLeafYougestLink := eachLink ] ] ] ].
+					eachLink isRemoved not ].
+						
+	aLeafYougestLink ifNil: [ ^ self ].
+	aLeafYougestLink aboutToRemoveFromPreviousPane
+]
+
+{ #category : #'api - following links' }
 GtTreePagerModel >> selectPane: aPaneModel [
 	"Select a new pane model"
 
@@ -220,4 +242,12 @@ GtTreePagerModel >> spawnPane: aPaneModel [
 GtTreePagerModel >> state [
 	<return: #GtTreePagerLinkState>
 	^ GtTreePagerLinkState spawned
+]
+
+{ #category : #'api - accessing' }
+GtTreePagerModel >> timestamp [
+	"Return a timestamp that indicates time of a pane creation, ideally time it was added to a pager."
+
+	<return: #DateAndTime>
+	^ DateAndTime now
 ]
