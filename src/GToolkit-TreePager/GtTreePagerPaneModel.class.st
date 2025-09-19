@@ -9,7 +9,8 @@ Class {
 		'announcer',
 		'phlowTool',
 		'followingLinks',
-		'previousLink'
+		'previousLink',
+		'timestamp'
 	],
 	#category : #'GToolkit-TreePager-Model Core'
 }
@@ -176,7 +177,7 @@ GtTreePagerPaneModel >> addFollowingLinks: aCollectionOfLinkModels before: aLink
 	self followingLinks: aNewCollection reason: aReason
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'api - following links' }
 GtTreePagerPaneModel >> addFollowingLinks: aCollectionOfLinkModels instead: aLinkModel reason: aReason [
 	| aNewCollection |
 	self followingLinks
@@ -634,6 +635,9 @@ GtTreePagerPaneModel >> initialize [
 	super initialize.
 	announcer := Announcer new.
 	followingLinks := GtTreePagerPaneLinks new paneModel: self.
+	
+	"It is used to indicate when a pane was created (added to a pager)."
+	timestamp := DateAndTime now.
 ]
 
 { #category : #'api - notifying' }
@@ -895,6 +899,14 @@ GtTreePagerPaneModel >> state [
 { #category : #'api - phlow' }
 GtTreePagerPaneModel >> stencil: aBlStencil [
 	self phlowTool: (GtPhlowExplicitTool new stencil: aBlStencil)
+]
+
+{ #category : #'api - accessing' }
+GtTreePagerPaneModel >> timestamp [
+	"Return a timestamp that indicates time of a pane creation, ideally time it was added to a pager."
+
+	<return: #DateAndTime>
+	^ timestamp ifNil: [ timestamp := DateAndTime now ]
 ]
 
 { #category : #accessing }

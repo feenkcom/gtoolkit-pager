@@ -67,7 +67,10 @@ GtTreePagerElement >> initialize [
 		
 	self 
 		when: BrTabGroupCanBeClosedQuestionEvent
-		do: [ :anEvent | self onBrTabGroupCanBeClosedQuestionEvent: anEvent ]
+		do: [ :anEvent | self onBrTabGroupCanBeClosedQuestionEvent: anEvent ].
+	self 
+		when: BrTagGroupPreventedCloseAttemptEvent
+		do: [ :anEvent | self onBrTagGroupPreventedCloseAttemptEvent: anEvent ]
 ]
 
 { #category : #'private - event handling' }
@@ -79,6 +82,16 @@ GtTreePagerElement >> onBrTabGroupCanBeClosedQuestionEvent: anEvent [
 		eachLink depthIndex > 1 ifTrue: [ 
 			anEvent bePrevented. 
 			^ self ] ]
+]
+
+{ #category : #initialization }
+GtTreePagerElement >> onBrTagGroupPreventedCloseAttemptEvent: anEvent [
+	"I was not closed, assumming that a user wants to close my last added pane."
+
+	anEvent consumed: true.
+
+	self hasPagerModel ifFalse: [ ^ self ].
+	self pagerModel removeYoungestLink
 ]
 
 { #category : #initialization }

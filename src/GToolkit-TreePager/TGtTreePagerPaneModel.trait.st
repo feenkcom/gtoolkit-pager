@@ -51,6 +51,14 @@ TGtTreePagerPaneModel >> spawnPane: aPaneModel [
 	self explicitRequirement
 ]
 
+{ #category : #'api - accessing' }
+TGtTreePagerPaneModel >> timestamp [
+	"Return a timestamp that indicates time of a pane creation, ideally time it was added to a pager."
+
+	<return: #DateAndTime>
+	^ self explicitRequirement
+]
+
 { #category : #'api - previous links' }
 TGtTreePagerPaneModel >> topPreviousPane [
 	"Note: it is usually a pager model"

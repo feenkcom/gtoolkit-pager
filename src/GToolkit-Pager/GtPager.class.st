@@ -163,7 +163,10 @@ GtPager >> initialize [
 						
 	self 
 		when: BrTabGroupCanBeClosedQuestionEvent
-		do: [ :anEvent | self onBrTabGroupCanBeClosedQuestionEvent: anEvent ]
+		do: [ :anEvent | self onBrTabGroupCanBeClosedQuestionEvent: anEvent ].
+	self 
+		when: BrTagGroupPreventedCloseAttemptEvent
+		do: [ :anEvent | self onBrTagGroupPreventedCloseAttemptEvent: anEvent ]
 ]
 
 { #category : #'api - requests' }
@@ -212,13 +215,20 @@ GtPager >> newPagerModel [
 	^ GtPagerModel new
 ]
 
-{ #category : #initialization }
+{ #category : #'private - event handling' }
 GtPager >> onBrTabGroupCanBeClosedQuestionEvent: anEvent [
 	"Prevent closing me if I have more than one page."
 
 	self pages size > 1 ifTrue: [
 		anEvent bePrevented.
 		^ self ]
+]
+
+{ #category : #'private - event handling' }
+GtPager >> onBrTagGroupPreventedCloseAttemptEvent: anEvent [
+	anEvent consumed: true.
+	self pages size > 1 ifTrue: [ 
+		self removePageAt: self pages size ]
 ]
 
 { #category : #'api - scrolling' }
