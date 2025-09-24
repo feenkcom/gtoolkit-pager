@@ -55,7 +55,7 @@ GtTreePagerElement >> initialize [
 							do: [ :anEvent | self onMaximizerGtPhlowObjectToSpawn: anEvent ] ];
 				closeButton: [ GtInspectorRoundButtonStencil new asElement
 						exact: GtTreePagerConstants cornerButtonSize;
-						icon: BrGlamorousVectorIcons remove;
+						icon: BrGlamorousVectorIcons minimize;
 						label: 'Minimize pane';
 						constraintsDo: [ :c | 
 							c frame horizontal alignCenterAt: 0.0.

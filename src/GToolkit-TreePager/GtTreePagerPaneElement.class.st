@@ -112,7 +112,7 @@ GtTreePagerPaneElement >> initializeContentContainerElement [
 						actionButtonDo: [ :aButton | 
 							aButton
 								id: #'tree-pager--maximize-pane-button';
-								icon: BrGlamorousVectorIcons add;
+								icon: BrGlamorousVectorIcons maximize;
 								exact: GtTreePagerConstants cornerButtonSize ];
 						hideMaximizeButton;
 						/ GtTreePagerPaneContentElement;
