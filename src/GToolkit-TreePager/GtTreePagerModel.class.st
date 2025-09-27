@@ -65,7 +65,7 @@ GtTreePagerModel >> gtDefaultInspectorTool [
 	^ GtPhlowCompositeTool new
 		addTool: (GtPhlowExplicitTool new
 				name: 'pager';
-				icon: BrGlamorousIcons tree;
+				icon: BrGlamorousVectorIcons tree;
 				stencil: [ GtTreePager new pagerModel: self ]);
 		addTool: super gtDefaultInspectorTool
 ]
