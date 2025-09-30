@@ -252,6 +252,20 @@ GtTreePagerLinkModel >> gtExpandLinkActionFor: anAction [
 ]
 
 { #category : #actions }
+GtTreePagerLinkModel >> gtHidePanesActionFor: anAction [
+	<gtAction>
+	GtTreePagerSettings isDisplayHideMenuItem ifFalse: [ ^ anAction noAction ].
+	self followingSpawnedLinkModels ifEmpty: [ ^ anAction noAction ].
+	
+	^ anAction button
+		priority: 3;
+		id: #'tree-pager--menu--hide';
+		label: 'Collapse this and following panes';
+		target: GtTreePagerLinkTarget;
+		action: [ :aButton | self hide ]
+]
+
+{ #category : #actions }
 GtTreePagerLinkModel >> gtKeepLinkActionFor: anAction [
 	<gtAction>
 	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
