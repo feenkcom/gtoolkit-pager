@@ -2,6 +2,7 @@ Class {
 	#name : #GtTreePagerLinkState,
 	#superclass : #Object,
 	#classVars : [
+		'ActiveCollapsed',
 		'Collapsed',
 		'Hidden',
 		'Inactive',
@@ -11,6 +12,11 @@ Class {
 	],
 	#category : #'GToolkit-TreePager-Model Rest'
 }
+
+{ #category : #'api - accessing' }
+GtTreePagerLinkState class >> activeCollapsed [
+	^ ActiveCollapsed ifNil: [ ActiveCollapsed := GtTreePagerLinkActiveCollapsedState new ]
+]
 
 { #category : #'api - accessing' }
 GtTreePagerLinkState class >> collapsed [
@@ -65,7 +71,7 @@ GtTreePagerLinkState class >> gtAllStatesFor: aView [
 					aState := eachObject key perform: eachObject value.
 					self gtAllStatesWithSelectors
 						select: [ :eachAssoc | eachAssoc key = aState ] ] ];
-		expandUpTo: 1;
+		actionCollapseAndExpandButtons;
 		column: 'Name'
 			text: [ :eachObject | 
 				(eachObject isKindOf: GtTreePagerLinkState)
@@ -168,7 +174,7 @@ GtTreePagerLinkState >> gtAllStatesFor: aView [
 GtTreePagerLinkState >> hide [
 	"Return a hidden state"
 
-	^ GtTreePagerLinkState hidden
+	^ self select
 ]
 
 { #category : #'api - state' }

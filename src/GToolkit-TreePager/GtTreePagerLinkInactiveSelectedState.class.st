@@ -13,7 +13,7 @@ GtTreePagerLinkInactiveSelectedState >> acceptVisitor: aVisitor [
 GtTreePagerLinkInactiveSelectedState >> activate [
 	"Return an active state"
 
-	^ GtTreePagerLinkState spawned
+	^ GtTreePagerLinkState selected
 ]
 
 { #category : #'api - state' }
@@ -21,11 +21,6 @@ GtTreePagerLinkInactiveSelectedState >> expand [
 	"Return an expanded state"
 
 	^ GtTreePagerLinkState inactive
-]
-
-{ #category : #'api - state' }
-GtTreePagerLinkInactiveSelectedState >> hide [
-	^ self
 ]
 
 { #category : #'api - state' }

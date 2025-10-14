@@ -13,7 +13,7 @@ GtTreePagerLinkActiveSpawnedState >> acceptVisitor: aVisitor [
 GtTreePagerLinkActiveSpawnedState >> collapse [
 	"Return a collapsed state"
 
-	^ GtTreePagerLinkState collapsed
+	^ GtTreePagerLinkState activeCollapsed
 ]
 
 { #category : #'api - state' }

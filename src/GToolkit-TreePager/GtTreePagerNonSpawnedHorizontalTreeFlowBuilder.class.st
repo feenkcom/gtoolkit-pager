@@ -117,6 +117,12 @@ GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> visitCurrentNode [
 ]
 
 { #category : #visiting }
+GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> visitGtTreePagerLinkActiveCollapsedState: aState [
+	self buildNonSpawnedCurrentNode.
+	self visitGtTreePagerLinkState: aState
+]
+
+{ #category : #visiting }
 GtTreePagerNonSpawnedHorizontalTreeFlowBuilder >> visitGtTreePagerLinkActiveSelectedState: aState [
 	self buildNonSpawnedCurrentNode.
 	self visitGtTreePagerLinkState: aState

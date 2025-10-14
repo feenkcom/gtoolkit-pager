@@ -4,6 +4,11 @@ Trait {
 }
 
 { #category : #visiting }
+TGtTreePagerLinkStateVisitor >> visitGtTreePagerLinkActiveCollapsedState: aState [
+	self visitGtTreePagerLinkState: aState
+]
+
+{ #category : #visiting }
 TGtTreePagerLinkStateVisitor >> visitGtTreePagerLinkActiveSelectedState: aState [
 	self visitGtTreePagerLinkState: aState
 ]
