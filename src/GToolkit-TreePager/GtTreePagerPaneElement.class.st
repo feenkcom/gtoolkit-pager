@@ -213,12 +213,12 @@ GtTreePagerPaneElement >> newBasicDropdownMenuElement [
 { #category : #initialization }
 GtTreePagerPaneElement >> newBasicToolbarElement [
 	^ BrToolbar new
-		aptitude: (BrGlamorousToolbarAptitude new spacing: 0);
+		aptitude: (BrGlamorousToolbarAptitude new spacing: GtTreePagerConstants toolbarSpacing);
 		clipChildren: false;
 		constraintsDo: [ :c | 
 			c ignoreByLayout.
 			c
-				margin: (BlInsets right: GtTreePagerConstants cornerButtonSize x negated // 2 - 0).
+				margin: (BlInsets right: (GtTreePagerConstants cornerButtonSize x negated // 2) - GtTreePagerConstants toolbarSpacing).
 			c ignored horizontal alignRightAt: 1.0.
 			c ignored vertical alignCenterAt: 0.0 ]
 ]
@@ -323,7 +323,7 @@ GtTreePagerPaneElement >> newMaximizedToolbarElement [
 			actionsForObject: self paneModel
 			collect: [ :eachAction | 
 				eachAction
-					asCircularElement: [ :anElement | 
+					asTreePagerToolbarElement: [ :anElement | 
 						anElement viewModel ifNil: [ anElement viewModel: BrWidgetModel new ].
 						eachAction priority > 100
 							ifTrue: [ gt100Elements add: anElement ]
@@ -613,7 +613,7 @@ GtTreePagerPaneElement >> updateToolbarElement [
 			actionsForObject: self paneModel
 			collect: [ :eachAction | 
 				eachAction
-					asCircularElement: [ :anElement | 
+					asTreePagerToolbarElement: [ :anElement | 
 						anElement viewModel ifNil: [ anElement viewModel: BrWidgetModel new ].
 						eachAction priority > 100
 							ifTrue: [ gt100Elements add: anElement ]
