@@ -274,7 +274,7 @@ GtTreePagerLinkModel >> gtKeepLinkActionFor: anAction [
 	^ anAction button
 		priority: 1;
 		id: #'menu--keep-link';
-		label: 'Keep link';
+		label: 'Inactivate link';
 		menuShortcut: [ 'Click' ];
 		target: GtTreePagerLinkTarget;
 		action: [ :aButton | self inactivate ]

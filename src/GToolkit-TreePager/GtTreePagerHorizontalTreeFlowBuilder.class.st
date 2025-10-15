@@ -156,6 +156,12 @@ GtTreePagerHorizontalTreeFlowBuilder >> visitCurrentNode [
 ]
 
 { #category : #visiting }
+GtTreePagerHorizontalTreeFlowBuilder >> visitGtTreePagerLinkActiveCollapsedState: aState [
+	self buildCollapsedCurrentNode.
+	self visitGtTreePagerLinkState: aState
+]
+
+{ #category : #visiting }
 GtTreePagerHorizontalTreeFlowBuilder >> visitGtTreePagerLinkActiveSelectedState: aState [
 	self visitGtTreePagerLinkState: aState.
 	currentNode linkModel allLinkModelsBreadthFirstDo: [ :eachLinkModel | 

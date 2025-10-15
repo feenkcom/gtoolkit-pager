@@ -40,31 +40,13 @@ GtTreePagerLinkFollowingOutputClickResolver >> resolve [
 ]
 
 { #category : #visiting }
-GtTreePagerLinkFollowingOutputClickResolver >> visitGtTreePagerLinkActiveSelectedState: aState [
-	self linkModel expand
-]
-
-{ #category : #visiting }
-GtTreePagerLinkFollowingOutputClickResolver >> visitGtTreePagerLinkActiveSpawnedState: aState [
-	self linkModel inactivate
-]
-
-{ #category : #visiting }
-GtTreePagerLinkFollowingOutputClickResolver >> visitGtTreePagerLinkInactiveCollapsedState: aState [
-	self linkModel expand
-]
-
-{ #category : #visiting }
-GtTreePagerLinkFollowingOutputClickResolver >> visitGtTreePagerLinkInactiveHiddenState: aState [
-	self linkModel expand
-]
-
-{ #category : #visiting }
 GtTreePagerLinkFollowingOutputClickResolver >> visitGtTreePagerLinkInactiveRemovedState: aState [
 	self linkModel expand
 ]
 
 { #category : #visiting }
-GtTreePagerLinkFollowingOutputClickResolver >> visitGtTreePagerLinkInactiveSpawnedState: aState [
-	self linkModel activate
+GtTreePagerLinkFollowingOutputClickResolver >> visitGtTreePagerLinkState: aState [
+	self linkModel isActive
+		ifTrue: [ self linkModel inactivate ]
+		ifFalse: [ self linkModel activate ]
 ]

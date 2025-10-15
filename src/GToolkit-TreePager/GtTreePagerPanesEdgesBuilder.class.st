@@ -147,6 +147,11 @@ GtTreePagerPanesEdgesBuilder >> styleLineElement: aLineElement [
 ]
 
 { #category : #visiting }
+GtTreePagerPanesEdgesBuilder >> visitGtTreePagerLinkActiveCollapsedState: aState [
+	self collectEdgeToIncomingLink
+]
+
+{ #category : #visiting }
 GtTreePagerPanesEdgesBuilder >> visitGtTreePagerLinkActiveSpawnedState: aState [
 	self collectEdgeToSpawnedPane
 ]

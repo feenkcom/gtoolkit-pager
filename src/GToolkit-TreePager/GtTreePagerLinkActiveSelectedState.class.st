@@ -18,9 +18,7 @@ GtTreePagerLinkActiveSelectedState >> expand [
 
 { #category : #'api - state' }
 GtTreePagerLinkActiveSelectedState >> inactivate [
-	"Return an inactive state"
-
-	^ GtTreePagerLinkState inactive
+	^ GtTreePagerLinkState hidden
 ]
 
 { #category : #'api - state' }
