@@ -87,6 +87,11 @@ GtTreePagerConstants class >> replacedLinkRestoration [
 ]
 
 { #category : #constants }
+GtTreePagerConstants class >> toolbarSpacing [
+	^ 4
+]
+
+{ #category : #constants }
 GtTreePagerConstants class >> triangleHeight [
 	^ 32
 ]
