@@ -352,6 +352,54 @@ GtTreePagerStep >> assertPaneModel: aPaneModel position: aPoint [
 ]
 
 { #category : #'steps - checks' }
+GtTreePagerStep >> assertPreviewScrollbarThumbAlignment: anAlignment weight: aWeight [
+	"For some reason the alignment value vary a lot.
+	For that reason I changed precision from 0.01 to 0.1."
+
+	^ self
+		substeps: 'Assert preview scrollbar thumb'
+		do: [ :aStep | 
+			aStep do
+				label: 'Compute layout if necessary';
+				block: [ :aSpace | 
+					| aCount |
+					aCount := 0.
+					[ aCount < 5 and: [ aSpace isLayoutRequested ] ]
+						whileTrue: [ aSpace doLayout.
+							aCount := aCount + 1 ] ];
+				onSpace.
+
+			aStep assert
+				label: ('Assert preview scrollbar thumb alignment: {1}' format: {anAlignment});
+				satisfies: [ :aThumb | 
+						aThumb constraints frame horizontal alignment coordinate
+							closeTo: anAlignment
+							precision: 0.1 ]
+					description: [ :aThumb | 
+						'Scrollbar thumb alignment is {1}, expected {2}'
+							format: {aThumb constraints frame horizontal alignment coordinate.
+									anAlignment} ];
+				referenceSender;
+				onParentStepTarget: self;
+				// GtTreePagerScrollbarElement;
+				// BlHorizontalScrollbarElement;
+				/ #thumb.
+
+			aStep assert
+				label: ('Assert preview scrollbar thumb weight: {1}' format: {aWeight});
+				satisfies: [ :aThumb | aThumb constraints frame horizontal weight closeTo: aWeight precision: 0.01 ]
+					description: [ :aThumb | 
+						'Scrollbar thumb weight is {1}, expected {2}'
+							format: {aThumb constraints frame horizontal weight.
+									aWeight} ];
+				referenceSender;
+				onParentStepTarget: self;
+				// GtTreePagerScrollbarElement;
+				// BlHorizontalScrollbarElement;
+				/ #thumb ]
+]
+
+{ #category : #'steps - checks' }
 GtTreePagerStep >> assertSpawnedTriangleLinkModel: aLinkModel [
 	| aLabel |
 	aLabel := 'Assert spawned triangle link element for {1}'

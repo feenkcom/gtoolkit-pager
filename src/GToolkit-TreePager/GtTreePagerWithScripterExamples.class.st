@@ -92,6 +92,7 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns [
 		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
 		assertSpawnedTriangleLinkModel: aPaneB previousLink;
 		assertEdgeElementsPositions;
+		assertPreviewScrollbarThumbAlignment: 0.00 weight: 0.50;
 		play.
 
 	^ aScripter
@@ -126,6 +127,7 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_BCDVisiblePan
 		assertSpawnedTriangleLinkModel: aPaneB previousLink;
 		assertSpawnedTriangleLinkModel: aPaneC previousLink;
 		assertEdgeElementsPositions;
+		assertPreviewScrollbarThumbAlignment: 0.23 weight: 0.75;
 		play.
 
 	^ aScripter
