@@ -56,19 +56,19 @@ GtPagerWrapperElement >> hasTool [
 { #category : #initialization }
 GtPagerWrapperElement >> initialize [
 	super initialize.
-	
-	self 
-		id: GtPagerToolWrapperElementId;
+
+	self
+		id: self defaultWrapperElementId;
 		clipChildren: false;
 		layout: BlLinearLayout vertical;
-		constraintsDo: [ :c |
+		constraintsDo: [ :c | 
 			c horizontal matchParent.
 			c vertical matchParent ];
-		viewModel: GtPagerPageModel new;
-		when: BrPopoverWhoToPinToEvent do: [ :anEvent | 
-			self onMenuWhoToPinToEvent: anEvent ].
+		viewModel: self defaultViewModel;
+		when: BrPopoverWhoToPinToEvent
+			do: [ :anEvent | self onMenuWhoToPinToEvent: anEvent ].
 
-	self addChild: self createToolAreaElement.
+	self addChild: self createToolAreaElement
 ]
 
 { #category : #accessing }

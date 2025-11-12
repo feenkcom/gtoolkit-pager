@@ -29,7 +29,7 @@ GtPagerSettings class >> isAllowedForDebugTools [
 
 { #category : #settings }
 GtPagerSettings class >> usedPager [
-	^ usedPager ifNil: [ GtPager ]
+	^ usedPager ifNil: [ self defaultPager ]
 ]
 
 { #category : #settings }
