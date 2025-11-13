@@ -471,6 +471,17 @@ GtTreePagerStep >> closeConfigurationDropdownMenu [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> dragInspectorPlaygroundAtPaneColumn: aColumn row: aRow verticallyBy: aNumber [
+	^ self inspectorStep
+		label: ('Inspector playground at pane column {1} row {2}'
+				format: {aColumn.
+						aRow});
+		referenceSender;
+		dragPlaygroundVerticallyBy: aNumber;
+		onTreePagerPaneColumn: aColumn row: aRow
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> hoverCollapsedLinkModel: aLinkModel [
 	^ self mouseMoveOver
 		label: ('Move mouse to collapsed link "{1}"' format: {aLinkModel title});
