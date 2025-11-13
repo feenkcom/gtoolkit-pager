@@ -20,6 +20,7 @@ GtPagerStep >> setPageAt: aPageIndex widthInSpaceRatio: aRatioNumber [
 	aRatioNumber is a number between 0.0 and 1.0"
 
 	^ self do
+		referenceSender;
 		label: ('Set aspect ratio of page number {1} to {2}' 
 			format: { aPageIndex. aRatioNumber });
 		block: [ :aPage :aUserData :aScripter | 
