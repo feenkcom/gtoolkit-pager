@@ -6,6 +6,11 @@ GtPagerSettings class >> defaultPager [
 ]
 
 { #category : #'*GToolkit-TreePager' }
+GtPagerSettings class >> isTreePager [
+	^ self usedPager = GtTreePager
+]
+
+{ #category : #'*GToolkit-TreePager' }
 GtPagerSettings class >> useTreePager [
 	self usedPager: GtTreePager
 ]
