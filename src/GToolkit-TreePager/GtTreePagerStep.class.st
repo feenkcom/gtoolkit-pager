@@ -449,6 +449,24 @@ GtTreePagerStep >> clickDropdownRemoveMenuItem [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> clickMaximizeColumn: aColumn [
+	^ self clickMaximizeColumn: aColumn row: 1
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> clickMaximizeColumn: aColumn row: aRow [
+	^ self click
+		label: ('Maximize pane column {1} row {2}'
+				format: {aColumn.
+						aRow});
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement;
+		onTreePagerPaneColumn: aColumn row: aRow;
+		// #'tree-pager--maximize-pane-button';
+		referenceSender
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> clickOnReplacedLinkModel: aLinkModel [
 	^ self click
 		label: ('Click on replaced link "{1}"' format: {aLinkModel title});
@@ -490,6 +508,21 @@ GtTreePagerStep >> hoverCollapsedLinkModel: aLinkModel [
 		@ [ :each | each linkModel = aLinkModel ];
 		referenceSender;
 		onParentStepTarget: self
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> hoverPaneColumn: aColumn [
+	^ self hoverPaneColumn: aColumn row: 1
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> hoverPaneColumn: aColumn row: aRow [
+	^ self mouseMoveOver
+		referenceSender;
+		label: ('Move mouse to pane column {1} row {2}' format: {aColumn . aRow});
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement;
+		onTreePagerPaneColumn: aColumn row: aRow
 ]
 
 { #category : #'steps - interactions' }
