@@ -467,6 +467,19 @@ GtTreePagerStep >> clickMaximizeColumn: aColumn row: aRow [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> clickOnInspectorInspectButtonAtColumn: aColumn [
+	^ self clickOnInspectorInspectButtonAtColumn: aColumn row: 1
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> clickOnInspectorInspectButtonAtColumn: aColumn row: aRow [
+	^ self inspectorStep
+		label: ('Inspector at pane at column {1} row {2}' format: { aColumn. aRow });
+		clickOnInspectButton;
+		onTreePagerPaneColumn: aColumn row: aRow
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> clickOnReplacedLinkModel: aLinkModel [
 	^ self click
 		label: ('Click on replaced link "{1}"' format: {aLinkModel title});
