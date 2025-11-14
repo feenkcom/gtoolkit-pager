@@ -78,6 +78,12 @@ GtTreePagerPaneContentElement >> onPaneModelChanged [
 ]
 
 { #category : #accessing }
+GtTreePagerPaneContentElement >> realToolElement [
+	self realToolElementDo: [ :aRealToolElement | ^ aRealToolElement ].
+	^ self toolElement
+]
+
+{ #category : #accessing }
 GtTreePagerPaneContentElement >> realToolElementDo: aBlock [
 	"Temporary solution, as some tool elements are wrapped. Such cases must be eliminated."
 

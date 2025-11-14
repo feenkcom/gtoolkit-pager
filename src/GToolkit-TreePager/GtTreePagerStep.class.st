@@ -618,6 +618,25 @@ GtTreePagerStep >> openDropdownPaneModel: aPaneModel [
 ]
 
 { #category : #'steps - other' }
+GtTreePagerStep >> paneElementAtColumn: aColumn do: aBlock [
+	^ self
+		paneElementAtColumn: aColumn
+		row: 1
+		do: aBlock
+]
+
+{ #category : #'steps - other' }
+GtTreePagerStep >> paneElementAtColumn: aColumn row: aRow do: aBlock [
+	^ self do
+		label: ('Get pane element at column {1} row {2}'
+				format: {aColumn.
+						aRow});
+		block: aBlock;
+		onTreePagerPaneColumn: aColumn row: aRow;
+		onParentStepTarget: self
+]
+
+{ #category : #'steps - other' }
 GtTreePagerStep >> paneElementForPaneModel: aPaneModel do: aBlock [
 	^ self do
 		label: ('Get pane element for pane "{1}"' format: {aPaneModel title});
