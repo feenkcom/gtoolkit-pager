@@ -605,6 +605,21 @@ GtTreePagerStep >> increaseNumberOfVisibleColumns [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> openDropdownColumn: aColumn [
+	^ self openDropdownColumn: aColumn row: 1
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> openDropdownColumn: aColumn row: aRow [
+	^ self menuStep
+		openDropdown;
+		label: ('Open dropdown for pane column {1} row {2}' format: {aColumn . aRow});
+		onParentStepTarget: self;
+		onTreePagerPaneColumn: aColumn row: aRow;
+		// #'tree-pager--dropdown-menu-button'
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> openDropdownPaneModel: aPaneModel [
 	^ self menuStep
 		openDropdown;
