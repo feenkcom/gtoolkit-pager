@@ -489,6 +489,39 @@ GtTreePagerStep >> closeConfigurationDropdownMenu [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> decreaseNumberOfVisibleColumns [
+	| aRootStep |
+	aRootStep := self
+			substeps2: 'Decrease number of visible columns'
+			do: [ :aStep | 
+				| previousNumberOfVisibleColumns |
+				aStep menuStep openDropdownWithId: #'tree-pager--configuration-menu-button'.
+
+				aStep do
+					label: 'Get displayed number of columns';
+					block: [ :aLabel | 
+						previousNumberOfVisibleColumns := aLabel text asString asInteger.
+						self assert: previousNumberOfVisibleColumns isInteger.
+						self assert: previousNumberOfVisibleColumns > 1 ];
+					onPopover;
+					// #'tree-pager--visible-columns-value'.
+
+				aStep click
+					label: 'Decrease number of visible columns';
+					onPopover;
+					// #'tree-pager--visible-columns-decrease'.
+
+				aStep assert
+					label: 'Assert displayed number of columns';
+					value: [ :aLabel | aLabel text asString asInteger ]
+						equals: [ previousNumberOfVisibleColumns - 1 ];
+					onPopover;
+					// #'tree-pager--visible-columns-value' ].
+
+	^ aRootStep
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> dragInspectorPlaygroundAtPaneColumn: aColumn row: aRow verticallyBy: aNumber [
 	^ self inspectorStep
 		label: ('Inspector playground at pane column {1} row {2}'
