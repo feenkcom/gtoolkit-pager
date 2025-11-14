@@ -56,7 +56,7 @@ GtTreePager >> maximized [
 
 { #category : #'backward compatibility' }
 GtTreePager >> pages [
-	^ self pagerModel
-		ifNotNil: [ :aPagerModel | aPagerModel allFollowingPanes ]
-		ifNil: [ #() ]
+	^ Array streamContents: [ :aStream | 
+			panesElement childrenNodesDo: [ :eachElement | 
+				aStream nextPut: eachElement ] ]
 ]
