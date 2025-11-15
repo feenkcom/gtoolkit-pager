@@ -109,6 +109,13 @@ GtTreePagerPaneContentElement >> subscribeToPaneModel [
 ]
 
 { #category : #accessing }
+GtTreePagerPaneContentElement >> tool [
+	"Compatibility with GtPagerWrapperElement>>#tool"
+
+	^ self toolElement
+]
+
+{ #category : #accessing }
 GtTreePagerPaneContentElement >> toolElement [
 	| targetId |
 	targetId := #tool asBlocElementId.
