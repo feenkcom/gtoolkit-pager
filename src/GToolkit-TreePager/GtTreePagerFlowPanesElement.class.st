@@ -73,10 +73,6 @@ GtTreePagerFlowPanesElement >> ensureNodeForPaneModel: aPaneModel row: aRowIndex
 				depth: aDepthIndex;
 				span: aSpanIndex ].
 
-	anElement hasParent ifFalse: [ 
-		anElement userData at: #treePagerNewElement put: true.
-		self addChild: anElement ].
-
 	^ anElement
 ]
 
@@ -94,42 +90,48 @@ GtTreePagerFlowPanesElement >> initialize [
 
 { #category : #'private - updating' }
 GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
-	^ GtTreePagerPaneElement new
-		in: [ :aPaneElement | 
-			aPaneElement
-				contentElementDo: [ :aContentElement | 
-					aContentElement
-						navigationContext: (GtTreePagerPaneNavigationContext new
-								pagerElement: self;
-								paneElement: aPaneElement);
-						addAptitude: (BrGlamorousWithHorizontalResizerAptitude new
-								beRight;
-								resizerDo: [ :aResizer | 
-									aPaneElement
-										addAptitude: (BrLazyStyleCommonAptitude new
-												default: [ :aStyle | 
-													aStyle
-														do: [ :aWidget | 
-															aPaneElement hideToolbarElements.
-															aResizer visibility: BlVisibility hidden ]
-														after: [ :aWidget |  ] ];
-												hovered: [ :aStyle | 
-													aStyle
-														do: [ :aWidget | 
-															aPaneElement showToolbarElements.
-															aResizer visibility: BlVisibility visible ]
-														after: [ :aWidget | 
-															aPaneElement hideToolbarElements.
-															aResizer visibility: BlVisibility hidden ] ]).
+	| aPaneElement |
+	aPaneElement := GtTreePagerPaneElement new.
+	aPaneElement
+		contentElementDo: [ :aContentElement | 
+			aContentElement
+				navigationContext: (GtTreePagerPaneNavigationContext new
+						pagerElement: self;
+						paneElement: aPaneElement);
+				addAptitude: (BrGlamorousWithHorizontalResizerAptitude new
+						beRight;
+						resizerDo: [ :aResizer | 
+							aPaneElement
+								addAptitude: (BrLazyStyleCommonAptitude new
+										default: [ :aStyle | 
+											aStyle
+												do: [ :aWidget | 
+													aPaneElement hideToolbarElements.
+													aResizer visibility: BlVisibility hidden ]
+												after: [ :aWidget |  ] ];
+										hovered: [ :aStyle | 
+											aStyle
+												do: [ :aWidget | 
+													aPaneElement showToolbarElements.
+													aResizer visibility: BlVisibility visible ]
+												after: [ :aWidget | 
+													aPaneElement hideToolbarElements.
+													aResizer visibility: BlVisibility hidden ] ]).
 
-									aResizer
-										when: BlDoubleClickEvent
-										do: [ :anEvent | self onPaneElement: aPaneElement resizerDoubleClickEvent: anEvent ] ];
-								whenResizedDo: [ :anEvent | self onPaneElement: aPaneElement resizedEvent: anEvent ]) ].
-			aPaneElement graph
-				beNode;
-				model: aPaneModel ];
-		paneModel: aPaneModel
+							aResizer
+								when: BlDoubleClickEvent
+								do: [ :anEvent | 
+									self 
+										onPaneElement: aPaneElement 
+										resizerDoubleClickEvent: anEvent ] ];
+						whenResizedDo: [ :anEvent | 
+							self onPaneElement: aPaneElement resizedEvent: anEvent ]) ].
+	aPaneElement graph
+		beNode;
+		model: aPaneModel.
+	aPaneElement paneModel: aPaneModel.
+
+	^ aPaneElement
 ]
 
 { #category : #'private - event handling' }
@@ -314,8 +316,7 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 			displayedPaneElements: spawnedElements;
 			build.
 
-	spawnedElements addAll: edgeElements.
-	toRemoveElements := self children difference: spawnedElements.
+	toRemoveElements := self children difference: spawnedElements, edgeElements.
 	toRemovePaneElements := toRemoveElements
 			select: [ :eachElement | eachElement graph isNode ].
 
@@ -330,18 +331,16 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 		(nonSpawnedElements identityIncludes: eachChild) ifFalse: [  
 			"Let's notify not-used elements that they are permanently removed."
 			BrWidgetPermanentlyRemovedEvent notifyWithAllChildren: eachChild ] ].
-			
-	"Let's apply selection state to new pane elements."
-	self childrenDo: [ :eachChild | 
-		(eachChild graph isNode and: [ 
-			eachChild userData at: #treePagerNewElement 
-				ifPresent: [ :aBoolean | 
-					eachChild userData removeKey: #treePagerNewElement ifAbsent: [ "ignore" ].
-					aBoolean ] 
-				ifAbsent: [ false ] ])
-				ifTrue: [ self toolSelectionStateHandlerDo: [ :aHandler | 
-					eachChild realToolElementDo: [ :aToolElement | 
-						aHandler applySelectionStateTo: aToolElement ] ] ] ].
+				
+	spawnedElements do: [ :eachElement |
+		eachElement hasParent ifFalse: [ 
+			"Let's apply selection state to new pane elements."
+			self
+				toolSelectionStateHandlerDo: [ :aHandler | 
+					eachElement realToolElementDo: [ :aToolElement | 
+						aHandler applySelectionStateTo: aToolElement ] ].
+		
+			self addChild: eachElement ] ].
 				
 	"For some reason I have to add edges later.
 	Covered by `GtTreePagerWithScripterExamples>>#pagerWithFourPanesInFourColumns_collapseD`."

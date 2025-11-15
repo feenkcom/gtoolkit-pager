@@ -449,6 +449,37 @@ GtTreePagerStep >> clickDropdownRemoveMenuItem [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> clickMaximizeColumn: aColumn [
+	^ self clickMaximizeColumn: aColumn row: 1
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> clickMaximizeColumn: aColumn row: aRow [
+	^ self click
+		label: ('Maximize pane column {1} row {2}'
+				format: {aColumn.
+						aRow});
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement;
+		onTreePagerPaneColumn: aColumn row: aRow;
+		// #'tree-pager--maximize-pane-button';
+		referenceSender
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> clickOnInspectorInspectButtonAtColumn: aColumn [
+	^ self clickOnInspectorInspectButtonAtColumn: aColumn row: 1
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> clickOnInspectorInspectButtonAtColumn: aColumn row: aRow [
+	^ self inspectorStep
+		label: ('Inspector at pane at column {1} row {2}' format: { aColumn. aRow });
+		clickOnInspectButton;
+		onTreePagerPaneColumn: aColumn row: aRow
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> clickOnReplacedLinkModel: aLinkModel [
 	^ self click
 		label: ('Click on replaced link "{1}"' format: {aLinkModel title});
@@ -471,6 +502,50 @@ GtTreePagerStep >> closeConfigurationDropdownMenu [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> decreaseNumberOfVisibleColumns [
+	| aRootStep |
+	aRootStep := self
+			substeps2: 'Decrease number of visible columns'
+			do: [ :aStep | 
+				| previousNumberOfVisibleColumns |
+				aStep menuStep openDropdownWithId: #'tree-pager--configuration-menu-button'.
+
+				aStep do
+					label: 'Get displayed number of columns';
+					block: [ :aLabel | 
+						previousNumberOfVisibleColumns := aLabel text asString asInteger.
+						self assert: previousNumberOfVisibleColumns isInteger.
+						self assert: previousNumberOfVisibleColumns > 1 ];
+					onPopover;
+					// #'tree-pager--visible-columns-value'.
+
+				aStep click
+					label: 'Decrease number of visible columns';
+					onPopover;
+					// #'tree-pager--visible-columns-decrease'.
+
+				aStep assert
+					label: 'Assert displayed number of columns';
+					value: [ :aLabel | aLabel text asString asInteger ]
+						equals: [ previousNumberOfVisibleColumns - 1 ];
+					onPopover;
+					// #'tree-pager--visible-columns-value' ].
+
+	^ aRootStep
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> dragInspectorPlaygroundAtPaneColumn: aColumn row: aRow verticallyBy: aNumber [
+	^ self inspectorStep
+		label: ('Inspector playground at pane column {1} row {2}'
+				format: {aColumn.
+						aRow});
+		referenceSender;
+		dragPlaygroundVerticallyBy: aNumber;
+		onTreePagerPaneColumn: aColumn row: aRow
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> hoverCollapsedLinkModel: aLinkModel [
 	^ self mouseMoveOver
 		label: ('Move mouse to collapsed link "{1}"' format: {aLinkModel title});
@@ -479,6 +554,21 @@ GtTreePagerStep >> hoverCollapsedLinkModel: aLinkModel [
 		@ [ :each | each linkModel = aLinkModel ];
 		referenceSender;
 		onParentStepTarget: self
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> hoverPaneColumn: aColumn [
+	^ self hoverPaneColumn: aColumn row: 1
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> hoverPaneColumn: aColumn row: aRow [
+	^ self mouseMoveOver
+		referenceSender;
+		label: ('Move mouse to pane column {1} row {2}' format: {aColumn . aRow});
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement;
+		onTreePagerPaneColumn: aColumn row: aRow
 ]
 
 { #category : #'steps - interactions' }
@@ -528,6 +618,21 @@ GtTreePagerStep >> increaseNumberOfVisibleColumns [
 ]
 
 { #category : #'steps - interactions' }
+GtTreePagerStep >> openDropdownColumn: aColumn [
+	^ self openDropdownColumn: aColumn row: 1
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> openDropdownColumn: aColumn row: aRow [
+	^ self menuStep
+		openDropdown;
+		label: ('Open dropdown for pane column {1} row {2}' format: {aColumn . aRow});
+		onParentStepTarget: self;
+		onTreePagerPaneColumn: aColumn row: aRow;
+		// #'tree-pager--dropdown-menu-button'
+]
+
+{ #category : #'steps - interactions' }
 GtTreePagerStep >> openDropdownPaneModel: aPaneModel [
 	^ self menuStep
 		openDropdown;
@@ -537,6 +642,25 @@ GtTreePagerStep >> openDropdownPaneModel: aPaneModel [
 		@ [ :each | each paneModel = aPaneModel ];
 		// #'tree-pager--dropdown-menu-button';
 		referenceSender;
+		onParentStepTarget: self
+]
+
+{ #category : #'steps - other' }
+GtTreePagerStep >> paneElementAtColumn: aColumn do: aBlock [
+	^ self
+		paneElementAtColumn: aColumn
+		row: 1
+		do: aBlock
+]
+
+{ #category : #'steps - other' }
+GtTreePagerStep >> paneElementAtColumn: aColumn row: aRow do: aBlock [
+	^ self do
+		label: ('Get pane element at column {1} row {2}'
+				format: {aColumn.
+						aRow});
+		block: aBlock;
+		onTreePagerPaneColumn: aColumn row: aRow;
 		onParentStepTarget: self
 ]
 

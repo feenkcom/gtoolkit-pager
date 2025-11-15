@@ -78,14 +78,26 @@ GtTreePagerPaneContentElement >> onPaneModelChanged [
 ]
 
 { #category : #accessing }
+GtTreePagerPaneContentElement >> realToolElement [
+	self realToolElementDo: [ :aRealToolElement | ^ aRealToolElement ].
+	^ self toolElement
+]
+
+{ #category : #accessing }
 GtTreePagerPaneContentElement >> realToolElementDo: aBlock [
 	"Temporary solution, as some tool elements are wrapped. Such cases must be eliminated."
 
-	self
-		toolElementDo: [ :anElement | 
-			(anElement isKindOf: GtPagerWrapperElement)
-				ifTrue: [ anElement tool ifNotNil: aBlock ]
-				ifFalse: [ anElement ifNotNil: aBlock ] ]
+	self toolElementDo: [ :anElement | 
+		self realToolElementDo: aBlock in: anElement ]
+]
+
+{ #category : #'private - updating' }
+GtTreePagerPaneContentElement >> realToolElementDo: aBlock in: anElement [
+	"Temporary solution, as some tool elements are wrapped. Such cases must be eliminated."
+
+	(anElement isKindOf: GtPagerWrapperElement)
+		ifTrue: [ anElement tool ifNotNil: aBlock ]
+		ifFalse: [ anElement ifNotNil: aBlock ]
 ]
 
 { #category : #'api - pane model' }
@@ -94,6 +106,13 @@ GtTreePagerPaneContentElement >> subscribeToPaneModel [
 		when: GtTreePagerPaneModelRebuildToolRequest
 		send: #onGtTreePagerPaneModelRebuildToolRequest:
 		to: self
+]
+
+{ #category : #accessing }
+GtTreePagerPaneContentElement >> tool [
+	"Compatibility with GtPagerWrapperElement>>#tool"
+
+	^ self toolElement
 ]
 
 { #category : #accessing }
@@ -143,10 +162,13 @@ GtTreePagerPaneContentElement >> updateToolElement [
 	aToolElement := self paneModel asElement.
 	BrAsyncElementFutureScheduledEventHandler ensureEventHandlerIn: aToolElement.
 
-	self addChild: aToolElement as: targetId.
-	
 	"Let's apply the selection state to keep the same state in the new phlow tool element"
 	aSelectionState ifNotNil: [ 
-		self realToolElementDo: [ :aRealToolElement | 
-			aSelectionState applySelectionStateTo: aRealToolElement ] ].
+		self 
+			realToolElementDo: [ :aRealToolElement | 
+				aSelectionState 
+					applySelectionStateTo: aRealToolElement ] 
+			in: aToolElement  ].
+			
+	self addChild: aToolElement as: targetId.
 ]

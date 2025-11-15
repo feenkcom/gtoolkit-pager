@@ -16,20 +16,23 @@ GtTreePager class >> createOn: anElementStencil [
 GtTreePager class >> createWrappedOn: anElementStencilOrPhlowTool [
 	| aPaneModel aPagerModel aPagerElement |
 	(anElementStencilOrPhlowTool isKindOf: GtPagerWrapperElement)
-		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: [ anElementStencilOrPhlowTool tool removeFromParent ] ].
-		
+		ifTrue: [ | aTool |
+			aTool := anElementStencilOrPhlowTool tool.
+			aPaneModel := GtTreePagerPaneModel new stencil: [ aTool removeFromParent ] ].
+
 	(aPaneModel isNil and: [ anElementStencilOrPhlowTool isKindOf: BlElement ])
-		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: [ anElementStencilOrPhlowTool removeFromParent ] ].
-		
+		ifTrue: [ aPaneModel := GtTreePagerPaneModel new
+					stencil: [ anElementStencilOrPhlowTool removeFromParent ] ].
+
 	(anElementStencilOrPhlowTool isKindOf: BlStencil)
 		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: anElementStencilOrPhlowTool ].
-		
+
 	(anElementStencilOrPhlowTool isKindOf: GtPhlowAbstractTool)
 		ifTrue: [ aPaneModel := GtTreePagerPaneModel new phlowTool: anElementStencilOrPhlowTool ].
-		
+
 	anElementStencilOrPhlowTool isClosure
 		ifTrue: [ aPaneModel := GtTreePagerPaneModel new stencil: anElementStencilOrPhlowTool ].
-		
+
 	aPaneModel
 		ifNil: [ aPaneModel := GtTreePagerPaneModel new object: anElementStencilOrPhlowTool ].
 
@@ -53,7 +56,7 @@ GtTreePager >> maximized [
 
 { #category : #'backward compatibility' }
 GtTreePager >> pages [
-	^ self pagerModel
-		ifNotNil: [ :aPagerModel | aPagerModel paneModels ]
-		ifNil: [ #() ]
+	^ Array streamContents: [ :aStream | 
+			panesElement childrenNodesDo: [ :eachElement | 
+				aStream nextPut: eachElement ] ]
 ]

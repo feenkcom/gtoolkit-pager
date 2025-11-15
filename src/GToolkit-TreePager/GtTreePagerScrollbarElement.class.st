@@ -176,13 +176,13 @@ GtTreePagerScrollbarElement >> newConfigurationMenu [
 				addChild: (BlElement new size: 20 @ 3);
 				addChild: (BrLabel new
 						hFitContentLimited;
-						id: #'tree-pager--visible-columns-decrease';
 						text: 'Number of visible columns';
 						aptitude: BrGlamorousLabelAptitude new;
 						constraintsDo: [ :c | 
 							c linear horizontal alignLeft.
 							c linear vertical alignCenter ]);
 				addChild: (BrButton new
+						id: #'tree-pager--visible-columns-decrease';
 						aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
 						icon: BrGlamorousVectorIcons remove;
 						label: 'Decrease number of columns';

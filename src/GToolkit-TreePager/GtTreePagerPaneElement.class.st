@@ -224,13 +224,6 @@ GtTreePagerPaneElement >> newBasicToolbarElement [
 ]
 
 { #category : #initialization }
-GtTreePagerPaneElement >> newDropdownCollapseIcon [
-	^ BlElement new
-		size: 2 @ 10;
-		background: Color black
-]
-
-{ #category : #initialization }
 GtTreePagerPaneElement >> newDropdownDownwardsIcon [
 	^ BrGlamorousVectorIcons downwards asElement asScalableElement
 		size: GtTreePagerConstants cornerButtonSize
@@ -542,7 +535,7 @@ GtTreePagerPaneElement >> updateDropdownElementToCollapseIcon [
 	dropdownElement userData at: #gtTreePagerDropdownElementState put: #collapse.
 
 	^ dropdownElement
-		icon: self newDropdownCollapseIcon;
+		icon: BrGlamorousVectorIcons collapsebar;
 		label: 'Collapse pane'
 ]
 
