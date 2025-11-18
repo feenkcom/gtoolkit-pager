@@ -31,6 +31,13 @@ GtPager class >> defaultExtent [
 	^ 1200@600
 ]
 
+{ #category : #testing }
+GtPager class >> isDeprecated [
+	"Use tree pager instead."
+
+	^ true
+]
+
 { #category : #'private - instance creation' }
 GtPager class >> newSpaceWith: anElement title: aTitle [
 	| aSpace |

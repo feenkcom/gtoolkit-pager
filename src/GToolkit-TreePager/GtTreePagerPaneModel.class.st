@@ -464,10 +464,11 @@ GtTreePagerPaneModel >> gtHidePanesActionFor: anAction [
 	GtTreePagerSettings isDisplayHideMenuItem ifFalse: [ ^ anAction noAction ].
 	self depthIndex = 1 ifTrue: [ ^ anAction noAction ].
 	self followingSpawnedLinkModels ifEmpty: [ ^ anAction noAction ].
-	
+
 	^ anAction button
 		priority: 2;
 		id: #'tree-pager--menu--hide';
+		icon: BrGlamorousVectorIcons collapsebar;
 		label: 'Collapse this and following panes';
 		target: GtTreePagerPaneNormalDropdownMenuTarget;
 		action: [ :aButton | self hide ]
@@ -581,8 +582,8 @@ GtTreePagerPaneModel >> gtRemoveActionFor: anAction [
 		priority: 3;
 		id: #'tree-pager--menu-remove';
 		label: (self followingLinks
-				ifNotEmpty: [ 'Remove this and following panes' ]
-				ifEmpty: [ 'Remove pane' ]);
+				ifNotEmpty: [ 'Close this and following panes' ]
+				ifEmpty: [ 'Close pane' ]);
 		icon: BrGlamorousVectorIcons close;
 		menuShortcut: [ OSPlatform current primaryModifier gtDisplayString , '+Shift+Click' ];
 		target: GtTreePagerPaneNormalDropdownMenuTarget;
