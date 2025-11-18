@@ -162,6 +162,7 @@ GtTreePagerLinkFollowingOutputElement >> triangleWidth [
 
 { #category : #'api - link model' }
 GtTreePagerLinkFollowingOutputElement >> unsubscribeFromLinkModel [
+	super unsubscribeFromLinkModel.
 	self linkModel unsubscribe: self
 ]
 

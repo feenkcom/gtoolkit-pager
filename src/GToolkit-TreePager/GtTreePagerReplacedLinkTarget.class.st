@@ -1,5 +1,5 @@
 Class {
-	#name : #GtTreePagerPaneMaximizedDropdownMenuTarget,
+	#name : #GtTreePagerReplacedLinkTarget,
 	#superclass : #GtPhlowActionUniqueTarget,
 	#category : #'GToolkit-TreePager-Targets'
 }

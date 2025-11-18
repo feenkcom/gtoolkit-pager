@@ -402,6 +402,7 @@ GtTreePagerPaneModel >> gtCollapseOrSelectActionFor: anAction [
 		priority: 1;
 		id: #'tree-pager--menu-collapse';
 		label: 'Collapse pane';
+		icon: BrGlamorousVectorIcons collapsebar;
 		menuShortcut: [ OSPlatform current primaryModifier gtDisplayString , '+Click' ];
 		target: GtTreePagerPaneNormalDropdownMenuTarget;
 		action: [ :aButton | self collapseOrSelect ]
@@ -491,6 +492,7 @@ GtTreePagerPaneModel >> gtMaximizeActionFor: anAction [
 		priority: 4;
 		id: #'menu--maximize-pane';
 		label: 'Maximize pane';
+		icon: BrGlamorousVectorIcons maximize;
 		target: GtTreePagerPaneNormalDropdownMenuTarget;
 		action: [ :aButton | self requestMaximizePane ]
 ]
@@ -515,6 +517,7 @@ GtTreePagerPaneModel >> gtOpenInNewWorldTabActionFor: anAction [
 		label: (self followingLinks
 				ifNotEmpty: [ 'Open this and following panes in new tab' ]
 				ifEmpty: [ 'Open pane in new tab' ]);
+		icon: BrGlamorousVectorIcons spawn;
 		target: GtTreePagerPaneNormalDropdownMenuTarget;
 		addTarget: GtTreePagerPaneMaximizedDropdownMenuTarget;
 		action: [ :aButton | 
@@ -580,6 +583,7 @@ GtTreePagerPaneModel >> gtRemoveActionFor: anAction [
 		label: (self followingLinks
 				ifNotEmpty: [ 'Remove this and following panes' ]
 				ifEmpty: [ 'Remove pane' ]);
+		icon: BrGlamorousVectorIcons close;
 		menuShortcut: [ OSPlatform current primaryModifier gtDisplayString , '+Shift+Click' ];
 		target: GtTreePagerPaneNormalDropdownMenuTarget;
 		action: [ :aButton | self aboutToRemoveFromPreviousPane ]
@@ -594,6 +598,7 @@ GtTreePagerPaneModel >> gtUpdateToolActionFor: anAction [
 		label: 'Update pane tool';
 		target: GtTreePagerPaneNormalDropdownMenuTarget;
 		addTarget: GtTreePagerPaneMaximizedDropdownMenuTarget;
+		icon: BrGlamorousVectorIcons refresh;
 		action: [ :aButton | self requestRebuildPaneTool ];
 		menuDisable: [ :aMenuModel | self canRecreateToolElement not ]
 ]

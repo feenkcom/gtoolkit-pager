@@ -4,6 +4,11 @@ Class {
 	#category : #'GToolkit-TreePager-UI'
 }
 
+{ #category : #'private - event handling' }
+GtTreePagerLinkReplacedElement >> disableAndStopAnimation [
+	self dispatchEvent: BrCountdownDisableAndStopWish withoutFinishedAction
+]
+
 { #category : #'private - updating' }
 GtTreePagerLinkReplacedElement >> hide [
 	^ self visibility: BlVisibility hidden
@@ -46,21 +51,14 @@ GtTreePagerLinkReplacedElement >> newGeometry [
 
 { #category : #initialization }
 GtTreePagerLinkReplacedElement >> newReplacedLinkContextMenu [
+	<return: #BrMenuItems or: nil>
 	| aReplacedLink |
 	self hasLinkModel ifFalse: [ ^ nil ].
 	aReplacedLink := self linkModel replacedLink ifNil: [ ^ nil ].
 
-	^ BrMenuItems new
-		addItemId: #'tree-pager--restore-link'
-			icon: BrGlamorousVectorIcons add
-			label: 'Restore'
-			preview: [ aReplacedLink title ]
-			action: [ :aButton | self onRestoreReplacedLinkClick: aButton ];
-		addItemId: #'tree-pager--remove-link'
-			icon: BrGlamorousVectorIcons remove
-			label: 'Remove'
-			preview: [ aReplacedLink title ]
-			action: [ :aButton | self onRemoveReplacedLinkClick: aButton ]
+	^ GtTreePagerReplacedLinkTarget
+		menuItemsForObject: self linkModel
+		hostElement: self
 ]
 
 { #category : #'private - event handling' }
@@ -76,6 +74,28 @@ GtTreePagerLinkReplacedElement >> onClickEvent: anEvent [
 	self linkModel restoreReplacedLink.
 
 	self hide
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerLinkReplacedElement >> onGtTreePagerLinkModelAboutToRestoreReplacedLinkAnnouncement: anAnnouncement [
+	anAnnouncement linkModel == self linkModel ifFalse: [ ^ self ].
+
+	BlTaskAction
+		enqueueElement: self
+		action: [ 
+			self disableAndStopAnimation.
+			self hide ]
+]
+
+{ #category : #'private - event handling' }
+GtTreePagerLinkReplacedElement >> onGtTreePagerLinkModelReplacedLinkRemoved: anAnnouncement [
+	anAnnouncement linkModel == self linkModel ifFalse: [ ^ self ].
+
+	BlTaskAction
+		enqueueElement: self
+		action: [ 
+			self disableAndStopAnimation.
+			self hide ]
 ]
 
 { #category : #'api - link model' }
@@ -115,6 +135,25 @@ GtTreePagerLinkReplacedElement >> onRestoreReplacedLinkClick: aButton [
 { #category : #'private - updating' }
 GtTreePagerLinkReplacedElement >> show [
 	self visibility: BlVisibility visible
+]
+
+{ #category : #'api - link model' }
+GtTreePagerLinkReplacedElement >> subscribeToLinkModel [
+	super subscribeToLinkModel.
+
+	self linkModel weak
+		when: GtTreePagerLinkModelAboutToRestoreReplacedLinkAnnouncement
+			send: #onGtTreePagerLinkModelAboutToRestoreReplacedLinkAnnouncement:
+			to: self;
+		when: GtTreePagerLinkModelReplacedLinkRemoved
+			send: #onGtTreePagerLinkModelReplacedLinkRemoved:
+			to: self
+]
+
+{ #category : #'api - link model' }
+GtTreePagerLinkReplacedElement >> unsubscribeFromLinkModel [
+	super unsubscribeFromLinkModel.
+	self linkModel unsubscribe: self
 ]
 
 { #category : #'private - updating' }
