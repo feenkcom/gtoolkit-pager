@@ -206,6 +206,7 @@ GtTreePagerLinkModel >> gtActivateLinkActionFor: anAction [
 		priority: 1;
 		id: #'menu--activate-link';
 		label: 'Activate link';
+		icon: BrGlamorousVectorIcons accept;
 		menuShortcut: [ 'Click' ];
 		target: GtTreePagerLinkTarget;
 		action: [ :aButton | self activate ]
@@ -221,6 +222,7 @@ GtTreePagerLinkModel >> gtCollapseLinkActionFor: anAction [
 		priority: 2;
 		id: #'menu--collapse-pane';
 		label: 'Collapse pane';
+		icon: BrGlamorousVectorIcons collapsebar;
 		target: GtTreePagerLinkTarget;
 		action: [ :aButton | self collapse ]
 ]
@@ -247,6 +249,7 @@ GtTreePagerLinkModel >> gtExpandLinkActionFor: anAction [
 		priority: 2;
 		id: #'menu--expand-pane';
 		label: 'Expand pane';
+		icon: BrGlamorousVectorIcons maximize;
 		target: GtTreePagerLinkTarget;
 		action: [ :aButton | self expand ]
 ]
@@ -275,6 +278,7 @@ GtTreePagerLinkModel >> gtKeepLinkActionFor: anAction [
 		priority: 1;
 		id: #'menu--keep-link';
 		label: 'Inactivate link';
+		icon: BrGlamorousVectorIcons interdiction;
 		menuShortcut: [ 'Click' ];
 		target: GtTreePagerLinkTarget;
 		action: [ :aButton | self inactivate ]
@@ -315,6 +319,7 @@ GtTreePagerLinkModel >> gtPermanentlyRemoveLinkActionFor: anAction [
 		priority: 10;
 		id: #'tree-pager--menu-permanent-remove';
 		label: 'Permanently remove link';
+		icon: BrGlamorousVectorIcons bin;
 		target: GtTreePagerLinkTarget;
 		action: [ :aButton | 
 			| aWish |
@@ -361,6 +366,7 @@ GtTreePagerLinkModel >> gtRemoveLinkActionFor: anAction [
 		priority: 10;
 		id: #'tree-pager--menu-remove';
 		label: 'Remove link';
+		icon: BrGlamorousVectorIcons bin;
 		target: GtTreePagerLinkTarget;
 		action: [ :aButton | self aboutToRemoveFromPreviousPane ]
 ]
@@ -375,6 +381,7 @@ GtTreePagerLinkModel >> gtRestoreLinkActionFor: anAction [
 		priority: 1;
 		id: #'menu--restore-pane';
 		label: 'Restore pane';
+		icon: BrGlamorousVectorIcons add;
 		menuShortcut: [ 'Click' ];
 		target: GtTreePagerLinkTarget;
 		action: [ :aButton | 
