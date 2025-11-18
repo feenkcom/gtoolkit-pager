@@ -57,7 +57,7 @@ GtTreePagerLinkReplacedElement >> newReplacedLinkContextMenu [
 			preview: [ aReplacedLink title ]
 			action: [ :aButton | self onRestoreReplacedLinkClick: aButton ];
 		addItemId: #'tree-pager--remove-link'
-			icon: BrGlamorousVectorIcons remove
+			icon: BrGlamorousVectorIcons bin
 			label: 'Remove'
 			preview: [ aReplacedLink title ]
 			action: [ :aButton | self onRemoveReplacedLinkClick: aButton ]
