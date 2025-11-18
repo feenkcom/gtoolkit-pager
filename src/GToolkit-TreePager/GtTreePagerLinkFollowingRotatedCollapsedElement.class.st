@@ -111,7 +111,6 @@ GtTreePagerLinkFollowingRotatedCollapsedElement >> subscribeToLinkModel [
 { #category : #'api - link model' }
 GtTreePagerLinkFollowingRotatedCollapsedElement >> unsubscribeFromLinkModel [
 	super unsubscribeFromLinkModel.
-
 	self linkModel announcer unsubscribe: self
 ]
 
