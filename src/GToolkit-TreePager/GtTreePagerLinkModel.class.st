@@ -264,6 +264,7 @@ GtTreePagerLinkModel >> gtHidePanesActionFor: anAction [
 		priority: 3;
 		id: #'tree-pager--menu--hide';
 		label: 'Collapse this and following panes';
+		icon: BrGlamorousVectorIcons collapsebar;
 		target: GtTreePagerLinkTarget;
 		action: [ :aButton | self hide ]
 ]
