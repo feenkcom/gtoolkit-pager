@@ -68,11 +68,33 @@ BlSpace class >> spawnObject: anObject from: anElement [
 	- opened in a new window."
 
 	<return: #BlSpace or: nil>
+	^ self new spawnObject: anObject from: anElement
+]
+
+{ #category : #'*GToolkit-Pager' }
+BlSpace >> spawnObject: anObject from: anElement [
+	"An object is either:
+	- spawned to the next pager pane, or
+	- displayed as a new GtWorld tab, or
+	- opened in a new window."
+
+	<return: #BlSpace or: nil>
 	^ self spawnTool: [ anObject gtDefaultInspectorTool ] from: anElement
 ]
 
 { #category : #'*GToolkit-Pager' }
 BlSpace class >> spawnTool: aPhlowToolBlock from: anElement [
+	"A Phlow tool is either:
+	- spawned to the next GtPager pane, or
+	- displayed as a new GtWorld tab, or
+	- opened in a new window."
+
+	<return: #BlSpace or: nil>
+	^ self new spawnTool: aPhlowToolBlock from: anElement
+]
+
+{ #category : #'*GToolkit-Pager' }
+BlSpace >> spawnTool: aPhlowToolBlock from: anElement [
 	"A Phlow tool is either:
 	- spawned to the next GtPager pane, or
 	- displayed as a new GtWorld tab, or
@@ -86,18 +108,18 @@ BlSpace class >> spawnTool: aPhlowToolBlock from: anElement [
 	aPhlowTool := aPhlowToolBlock value.
 	self
 		assert: [ aPhlowTool isNotNil ]
-		description: [ 'Phlow tool must be non-nil: { 1 }' format: { aPhlowToolBlock } ].
+		description: [ 'Phlow tool must be non-nil: {1}' format: { aPhlowToolBlock } ].
 	
 	anElement ifNil: [ 
-		^ self new
+		^ self
 			inPager: aPhlowTool;
-			withSceneDriller;
+			withCommonSettings;
 			show ].
 
 	anEvent := anElement phlow spawnTool: aPhlowTool.
 	anEvent isConsumed ifTrue: [ ^ nil ].
-	^ self new
-		inPager: aPhlowTool;
-		withSceneDriller;
+	
+	^ self inPager: aPhlowTool;
+		withCommonSettings;
 		showFrom: anElement
 ]
