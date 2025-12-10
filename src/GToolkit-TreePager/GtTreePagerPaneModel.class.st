@@ -524,8 +524,13 @@ GtTreePagerPaneModel >> gtOpenInNewWorldTabActionFor: anAction [
 		action: [ :aButton | 
 			BlSpace new
 				paneInTreePager: self similarPaneCopy settings: self pagerSettings;
-				withSceneDriller;
+				withCommonSettings;
 				showFrom: aButton ];
+		primaryModifierAction: [ :aButton |
+			BlSpace new
+				paneInTreePager: self similarPaneCopy settings: self pagerSettings;
+				withCommonSettings;
+				showInGtWorld ];
 		menuDisable: [ :aMenuModel | 
 			| isOK |
 			isOK := self canRecreateToolElement.
