@@ -95,13 +95,16 @@ GtTreePagerScrollbarElement >> initialize [
 	previewContainer := BrVerticalPane new
 			fitContent;
 			addChild: previewsElement;
-			addChild: scrollbarElement.
+			addChild: scrollbarElement;
+			constraintsDo: [ :c | 
+				c margin: (BlInsets right: 10).
+				c frame vertical alignCenter.
+				c frame horizontal alignCenter ].
 
 	configurationElement := self newConfigurationElement.
 
-	rootContainer := BrHorizontalPane new
+	rootContainer := BrFrame new
 			margin: (BlInsets top: 5);
-			alignCenter;
 			hMatchParent;
 			vFitContent;
 			addChild: previewContainer;
@@ -121,9 +124,8 @@ GtTreePagerScrollbarElement >> newConfigurationElement [
 		label: 'Pager configuration';
 		constraintsDo: [ :c | 
 			c margin: (BlInsets right: 10).
-			c ignoreByLayout.
-			c ignored vertical alignCenter.
-			c ignored horizontal alignRight ];
+			c frame vertical alignCenter.
+			c frame horizontal alignRight ];
 		addAptitude: (BrGlamorousWithExplicitDropdownAptitude new
 				withGainFocusOnShow;
 				handle: [ BrButton new
