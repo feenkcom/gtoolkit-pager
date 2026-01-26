@@ -247,7 +247,11 @@ GtTreePagerPaneElement >> newDropdownMenuElement [
 							geometry: BlEllipseGeometry new;
 							layout: BlLinearLayout horizontal alignCenter;
 							icon: self newDropdownDownwardsIcon ]
-					menu: [ self newDropdownMenuModel ])
+					menu: [ self newDropdownMenuModel ]);
+			addAptitude: (GtPhlowBrowseDefinitionAptitude new
+				definition: [ GtMethodCoderTool 
+					compiledMethod: (GtTreePagerPaneElement>>#newDropdownMenuElement) 
+					selfObjectHolder: (GtPhlowObject forValue: self) ])
 ]
 
 { #category : #initialization }
