@@ -33,7 +33,7 @@ GtPager class >> defaultExtent [
 
 { #category : #testing }
 GtPager class >> isDeprecated [
-	"Use tree pager instead."
+	"Use GtTreePager instead."
 
 	^ true
 ]
