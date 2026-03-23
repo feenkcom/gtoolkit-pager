@@ -101,7 +101,7 @@ TGtPagerNavigationContext >> previousProcessContextSuchThat: aConditionBlock do:
 	aProcessContextBlock := [ :anObject | 
 		| aProcessContext |
 		aProcessContext := nil.
-		(anObject isKindOf: DebugSession) ifTrue: [ aProcessContext := anObject context ].
+		(anObject isKindOf: GtDebugSession) ifTrue: [ aProcessContext := anObject context ].
 		((anObject isKindOf: Exception) and: [ anObject signalContext isNotNil ]) 
 			ifTrue: [ aProcessContext := anObject signalContext ].
 		(anObject isKindOf: Context) ifTrue: [ aProcessContext := anObject ].
