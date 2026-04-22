@@ -13,7 +13,7 @@ GtPhlowSpaceBuilder >> inPager: anElementStencil configured: aPagerConfiguration
 
 	self stencil: [ 
 		| aPager |
-		aPager := GtPager createWrappedOn: anElementStencil.
+		aPager := GtTreePager createWrappedOn: anElementStencil.
 		aPager maximized.
 		aPagerConfiguration ifNotNil: [
 			aPagerConfiguration applyOn: aPager ].
