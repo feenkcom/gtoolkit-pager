@@ -81,7 +81,7 @@ GtTreePagerFlowPanesElement >> initialize [
 	super initialize.
 	self matchParent.
 
-	toolSelectionStateHandler := GtPhlowToolSelectionStateHandler new.
+	toolSelectionStateHandler := GtPhlowToolCircularSelectionStateHandler new.
 	
 	self
 		when: BlMouseWheelEvent
