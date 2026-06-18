@@ -394,7 +394,9 @@ GtTreePagerPaneElement >> onGtPhlowObjectToSelect: anEvent [
 	| aSelectedPane |
 	self paneModel ifNil: [ ^ self ].
 	anEvent consumed: true.
-	aSelectedPane := GtTreePagerPaneModel new phlowTool: anEvent tool.
+	aSelectedPane := GtTreePagerPaneModel new
+			phlowTool: anEvent tool;
+			selectionState: anEvent selectionState.
 	self paneModel selectPane: aSelectedPane.
 
 	aSelectedPane isSpawned ifFalse: [ ^ self ].
@@ -411,6 +413,7 @@ GtTreePagerPaneElement >> onGtPhlowObjectToSpawn: anEvent [
 	anEvent consumed: true.
 	aSpawnedPane := GtTreePagerPaneModel new
 			phlowTool: anEvent tool;
+			selectionState: anEvent selectionState;
 			expand.
 	self paneModel spawnPane: aSpawnedPane.
 

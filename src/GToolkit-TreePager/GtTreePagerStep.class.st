@@ -352,6 +352,24 @@ GtTreePagerStep >> assertPaneModel: aPaneModel position: aPoint [
 ]
 
 { #category : #'steps - checks' }
+GtTreePagerStep >> assertPhlowCompositeSelectedTabName: aTabName atColumn: aColumn row: aRow [
+	| aLabel |
+	aLabel := 'Assert selected tab name at column {1} row: {2} is "{3}"'
+			format: {aColumn.
+					aRow.
+					aTabName}.
+
+	^ self assert
+		label: aLabel;
+		value: [ :aTabGroup | aTabGroup viewModel selectedTab tabLabel text asString ]
+			equals: aTabName;
+		referenceSender;
+		onParentStepTarget: self;
+		onTreePagerPaneColumn: aColumn row: aRow;
+		// GtPhlowCompositeViewElementId
+]
+
+{ #category : #'steps - checks' }
 GtTreePagerStep >> assertPreviewScrollbarThumbAlignment: anAlignment weight: aWeight [
 	"For some reason the alignment value vary a lot.
 	For that reason I changed precision from 0.01 to 0.1."
@@ -543,6 +561,18 @@ GtTreePagerStep >> dragInspectorPlaygroundAtPaneColumn: aColumn row: aRow vertic
 		referenceSender;
 		dragPlaygroundVerticallyBy: aNumber;
 		onTreePagerPaneColumn: aColumn row: aRow
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> fireEvent: anEvent atPaneColumn: aColumn row: aRow [
+	^ self do
+		label: ('Fire event {1} in pane element at column {2} row {3}'
+				format: {anEvent.
+						aColumn.
+						aRow});
+		block: [ :anElement | anElement fireEvent: anEvent ];
+		onTreePagerPaneColumn: aColumn row: aRow;
+		onParentStepTarget: self
 ]
 
 { #category : #'steps - interactions' }

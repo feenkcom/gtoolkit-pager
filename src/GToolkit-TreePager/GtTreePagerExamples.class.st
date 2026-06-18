@@ -448,6 +448,17 @@ GtTreePagerExamples >> pagerWithNewlyExpandedFPane [
 ]
 
 { #category : #'examples - pager' }
+GtTreePagerExamples >> pagerWithOnePane [
+	<gtExample>
+	| aPager aPane |
+	aPager := self basicPagerModel.
+	aPane := self paneModelWithIntegerInspector.
+	aPager paneModel: aPane.
+	
+	^ aPager
+]
+
+{ #category : #'examples - pager' }
 GtTreePagerExamples >> pagerWithSevenPanesInFiveColumns [
 	<gtExample>
 	| aPager aPane |

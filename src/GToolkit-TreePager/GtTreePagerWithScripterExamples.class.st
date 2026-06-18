@@ -370,6 +370,115 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_spawnFromB [
 ]
 
 { #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithOnePane [
+	<gtExample>
+	| aPager aScripter aPaneA |
+	aPager := GtTreePagerExamples new pagerWithOnePane.
+	aPaneA := aPager paneModels first.
+
+	aScripter := BlScripter new
+			model: aPager;
+			element: aPager asElement.
+
+	aScripter treePager
+		assertNumberOfPaneElements: 1;
+		assertNumberOfVisiblePanes: 1;
+		assertPaneModel: aPaneA position: GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 0;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 0;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 0;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertPreviewScrollbarThumbAlignment: 0.00 weight: 2.0;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithOnePane_fireObjectToSelectEvent [
+	<gtExample>
+	| aPager aScripter aPaneA |
+	aScripter := self pagerWithOnePane.
+	aPager := aScripter model.
+	aPaneA := aPager paneModels first.
+
+	aScripter treePager
+		fireEvent: (GtPhlowObjectToSelect new
+					object: (BrFrame new
+							matchParent;
+							background: Color lightBlue);
+					tabName: 'Overview')
+			atPaneColumn: 1
+			row: 1;
+		assertNumberOfPaneElements: 1;
+		assertNumberOfVisiblePanes: 1;
+		assertPaneModel: aPaneA position: GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 0;
+		assertNumberOfCollapsedRectangleLinkElements: 1;
+		assertNumberOfCollapsedTriangleLinkElements: 1;
+		assertNumberOfSpawnedTriangleLinkElements: 0;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 0;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertPreviewScrollbarThumbAlignment: 0.00 weight: 2.0;
+		play.
+
+	aScripter treePager
+		clickCollapsedLinkModel: aPaneA followingLinks first;
+		assertNumberOfPaneElements: 2;
+		assertNumberOfVisiblePanes: 2;
+		assertPaneModel: aPaneA position: GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 1;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 1;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 1;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertPreviewScrollbarThumbAlignment: 0.00 weight: 2.0;
+		assertPhlowCompositeSelectedTabName: 'Overview'
+			atColumn: 2
+			row: 1;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithOnePane_fireObjectToSpawnEvent [
+	<gtExample>
+	| aPager aScripter aPaneA |
+	aScripter := self pagerWithOnePane.
+	aPager := aScripter model.
+	aPaneA := aPager paneModels first.
+
+	aScripter treePager
+		fireEvent: (GtPhlowObjectToSpawn new
+					object: (BrFrame new
+							matchParent;
+							background: Color lightBlue);
+					tabName: 'Overview')
+			atPaneColumn: 1
+			row: 1;
+		assertNumberOfPaneElements: 2;
+		assertNumberOfVisiblePanes: 2;
+		assertPaneModel: aPaneA position: GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 1;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 1;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 1;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertPreviewScrollbarThumbAlignment: 0.00 weight: 1.0;
+		assertPhlowCompositeSelectedTabName: 'Overview'
+			atColumn: 2
+			row: 1;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithSevenPanesInFiveColumns [
 	<gtExample>
 	| aPager aScripter aPaneA aPaneB |

@@ -6,7 +6,8 @@ Class {
 	#instVars : [
 		'announcer',
 		'linkModels',
-		'settings'
+		'settings',
+		'selectionState'
 	],
 	#category : #'GToolkit-TreePager-Model Core'
 }
@@ -217,6 +218,26 @@ GtTreePagerModel >> selectPane: aPaneModel [
 	"Select a new pane model"
 
 	self paneModel: aPaneModel
+]
+
+{ #category : #accessing }
+GtTreePagerModel >> selectionState [
+	<return: #GtPhlowToolSelectionState>
+	^ selectionState
+]
+
+{ #category : #accessing }
+GtTreePagerModel >> selectionState: aSelectionState [
+	selectionState := aSelectionState
+]
+
+{ #category : #'api - accessing' }
+GtTreePagerModel >> selectionStateDo: aSelectionStateBlock ifAbsent: anAbsentBlock [
+	"If there is an explicitly defined selection state, 
+	evaluate aSelectionStateBlock with one parameter [ :aSelectionState | ], 
+	otherwise evaluate anAbsentBlock without any parameter."
+
+	^ self selectionState ifNotNil: aSelectionStateBlock ifNil: anAbsentBlock
 ]
 
 { #category : #accessing }
