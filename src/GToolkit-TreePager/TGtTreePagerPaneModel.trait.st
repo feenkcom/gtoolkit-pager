@@ -38,6 +38,16 @@ TGtTreePagerPaneModel >> selectPane: aPaneModel [
 	self explicitRequirement
 ]
 
+{ #category : #'api - accessing' }
+TGtTreePagerPaneModel >> selectionStateDo: aSelectionStateBlock ifAbsent: anAbsentBlock [
+	"If there is an explicitly defined selection state, 
+	- evaluate aSelectionStateBlock with one parameter [ :aSelectionState | ], 
+	  - aSelectionState is kind of GtPhlowToolSelectionState object, 
+	- on undefined selection state evaluate anAbsentBlock without any parameter."
+
+	^ anAbsentBlock value
+]
+
 { #category : #copying }
 TGtTreePagerPaneModel >> similarPaneCopy [
 	<return: #TGtTreePagerPaneModel>

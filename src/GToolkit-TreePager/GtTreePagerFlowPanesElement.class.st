@@ -334,11 +334,16 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 				
 	spawnedElements do: [ :eachElement |
 		eachElement hasParent ifFalse: [ 
-			"Let's apply selection state to new pane elements."
+			"Let's apply selection state to new pane elements.
+			If the model has its own selection state, apply this, otherwise apply a cached one."
 			self
 				toolSelectionStateHandlerDo: [ :aHandler | 
 					eachElement realToolElementDo: [ :aToolElement | 
-						aHandler applySelectionStateTo: aToolElement ] ].
+						eachElement paneModel 
+							selectionStateDo: [ :aSelectionState | 
+								aHandler applySelectionState: aSelectionState to: aToolElement ] 
+							ifAbsent: [
+								aHandler applySelectionStateTo: aToolElement ] ] ].
 		
 			self addChild: eachElement ] ].
 				

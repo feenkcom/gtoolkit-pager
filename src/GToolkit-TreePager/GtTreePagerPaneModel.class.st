@@ -10,7 +10,8 @@ Class {
 		'phlowTool',
 		'followingLinks',
 		'previousLink',
-		'timestamp'
+		'timestamp',
+		'selectionState'
 	],
 	#category : #'GToolkit-TreePager-Model Core'
 }
@@ -855,6 +856,27 @@ GtTreePagerPaneModel >> selectPane: aNewPaneModel [
 				replaceFollowingLink: anOldLinkModel
 				by: aNewLinkModel
 				reason: GtTreePagerSelectReason default ]
+]
+
+{ #category : #accessing }
+GtTreePagerPaneModel >> selectionState [
+	<return: #GtPhlowToolSelectionState>
+	^ selectionState
+]
+
+{ #category : #accessing }
+GtTreePagerPaneModel >> selectionState: aSelectionState [
+	selectionState := aSelectionState
+]
+
+{ #category : #'api - accessing' }
+GtTreePagerPaneModel >> selectionStateDo: aSelectionStateBlock ifAbsent: anAbsentBlock [
+	"If there is an explicitly defined selection state, 
+	- evaluate aSelectionStateBlock with one parameter [ :aSelectionState | ], 
+	  - aSelectionState is kind of GtPhlowToolSelectionState object, 
+	- on undefined selection state evaluate anAbsentBlock without any parameter."
+
+	^ self selectionState ifNotNil: aSelectionStateBlock ifNil: anAbsentBlock
 ]
 
 { #category : #copying }
