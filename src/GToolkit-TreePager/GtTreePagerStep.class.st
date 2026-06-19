@@ -717,3 +717,29 @@ GtTreePagerStep >> previewScrollToPane: aPaneModel [
 		referenceSender;
 		onParentStepTarget: self
 ]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> selectObject: anObject viewName: aViewName atPaneColumn: aColumn row: aRow [
+	^ self do
+		label: ('Select object {1} in pane element at column {2} row {3} and select view named {4}'
+				format: {anObject.
+						aColumn.
+						aRow.
+						aViewName});
+		block: [ :anElement | anElement phlow selectObject: anObject viewName: aViewName ];
+		onTreePagerPaneColumn: aColumn row: aRow;
+		onParentStepTarget: self
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> spawnObject: anObject viewName: aViewName atPaneColumn: aColumn row: aRow [
+	^ self do
+		label: ('Spawn object {1} in pane element at column {2} row {3} and select view named {4}'
+				format: {anObject.
+						aColumn.
+						aRow.
+						aViewName});
+		block: [ :anElement | anElement phlow spawnObject: anObject viewName: aViewName ];
+		onTreePagerPaneColumn: aColumn row: aRow;
+		onParentStepTarget: self
+]

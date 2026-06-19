@@ -405,11 +405,10 @@ GtTreePagerWithScripterExamples >> pagerWithOnePane_fireObjectToSelectEvent [
 	aPaneA := aPager paneModels first.
 
 	aScripter treePager
-		fireEvent: (GtPhlowObjectToSelect new
-					object: (BrFrame new
-							matchParent;
-							background: Color lightBlue);
-					tabName: 'Overview')
+		selectObject: (BrFrame new
+					matchParent;
+					background: Color lightBlue)
+			viewName: 'Overview'
 			atPaneColumn: 1
 			row: 1;
 		assertNumberOfPaneElements: 1;
@@ -453,11 +452,10 @@ GtTreePagerWithScripterExamples >> pagerWithOnePane_fireObjectToSpawnEvent [
 	aPaneA := aPager paneModels first.
 
 	aScripter treePager
-		fireEvent: (GtPhlowObjectToSpawn new
-					object: (BrFrame new
-							matchParent;
-							background: Color lightBlue);
-					tabName: 'Overview')
+		spawnObject: (BrFrame new
+					matchParent;
+					background: Color lightBlue)
+			viewName: 'Overview'
 			atPaneColumn: 1
 			row: 1;
 		assertNumberOfPaneElements: 2;
