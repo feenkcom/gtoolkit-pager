@@ -31,3 +31,10 @@ TBlDevScripterTarget >> onPagerToolElement [
 					aPaneElement realToolElementDo: [ :aTool | aResult := aTool ].
 					aResult ] ]
 ]
+
+{ #category : #'*GToolkit-CommonPager' }
+TBlDevScripterTarget >> onPagerToolInPaneWithIndex: anInteger [ 
+
+	self onPagerPaneWithIndex: anInteger.
+	self onPagerToolElement.
+]
