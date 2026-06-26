@@ -35,6 +35,6 @@ TBlDevScripterTarget >> onPagerToolElement [
 { #category : #'*GToolkit-CommonPager' }
 TBlDevScripterTarget >> onPagerToolInPaneWithIndex: anInteger [ 
 
-	self onPagerPaneWithIndex: anInteger.
+	self onPagerPaneWithIndex: anInteger. 
 	self onPagerToolElement.
 ]
