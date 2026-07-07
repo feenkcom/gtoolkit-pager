@@ -175,7 +175,7 @@ GtTreePagerModel >> postSimilarPaneCopy [
 	newLinks := self linkModels
 			collect: [ :eachLink | eachLink similarLinkCopy ].
 	self linkModels: newLinks.
-	settings := settings shallowCopy announcer: announcer.
+	settings := settings similarSettingsWithAnnouncer: announcer.
 ]
 
 { #category : #'api - previous links' }

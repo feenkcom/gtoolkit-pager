@@ -4,8 +4,7 @@ Class {
 	#traits : 'TBlHorizontalTreeFlowLayoutScrollable',
 	#classTraits : 'TBlHorizontalTreeFlowLayoutScrollable classTrait',
 	#instVars : [
-		'paneElementsCache',
-		'toolSelectionStateHandler'
+		'paneElementsCache'
 	],
 	#category : #'GToolkit-TreePager-UI'
 }
@@ -81,11 +80,11 @@ GtTreePagerFlowPanesElement >> initialize [
 	super initialize.
 	self matchParent.
 
-	toolSelectionStateHandler := GtPhlowToolCircularSelectionStateHandler new.
+	self addEventHandler: GtPhlowExplicitlySelectedTabStorageEventHandler new.
 	
 	self
 		when: BlMouseWheelEvent
-		do: [ :anEvent | self layoutDo: [ :aLayout | aLayout mouseWheelEvent: anEvent ] ]
+		do: [ :anEvent | self layoutDo: [ :aLayout | aLayout mouseWheelEvent: anEvent ] ].
 ]
 
 { #category : #'private - updating' }
@@ -187,6 +186,8 @@ GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAn
 { #category : #'api - pager model' }
 GtTreePagerFlowPanesElement >> onPagerModelChanged [
 	super onPagerModelChanged.
+
+	self dispatchEvent: (GtTreePagerModelChanged new pagerModel: self pagerModel).
 	self updateElement
 ]
 
@@ -259,7 +260,8 @@ GtTreePagerFlowPanesElement >> subscribeToPagerModel [
 
 { #category : #accessing }
 GtTreePagerFlowPanesElement >> toolSelectionStateHandlerDo: aBlock [
-	^ toolSelectionStateHandler ifNotNil: aBlock
+	self pagerModel ifNotNil: [ :aPagerModel | 
+			aPagerModel pagerSettings selectionStateHandler ifNotNil: aBlock ]
 ]
 
 { #category : #'api - pager model' }
@@ -321,10 +323,10 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 			select: [ :eachElement | eachElement graph isNode ].
 
 	"Let's store selection state of all removed pane elements."
-	toRemovePaneElements do: [ :eachElement | 
+	"toRemovePaneElements do: [ :eachElement | 
 		self toolSelectionStateHandlerDo: [ :aHandler | 
 			eachElement realToolElementDo: [ :aToolElement | 
-				aHandler storeSelectionStateFrom: aToolElement ] ] ].
+				aHandler storeSelectionStateFrom: aToolElement ] ] ]."
 
 	toRemoveElements do: [ :eachChild | 
 		eachChild removeFromParent.

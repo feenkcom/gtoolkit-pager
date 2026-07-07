@@ -112,3 +112,44 @@ GtTreePagerModelSettings >> numberOfVisibleColumns: aLayoutColumnCount [
 				settings: self;
 				amount: aNewValue)
 ]
+
+{ #category : #copying }
+GtTreePagerModelSettings >> postSimilarSettingsWithAnnouncer: anAnnouncer [
+	self announcer: anAnnouncer.
+
+	self
+		optionsDo: [ :eachKey :eachValue | 
+			(eachValue respondsTo: #similarSettingsOption)
+				ifTrue: [ self optionAt: eachKey put: eachValue similarSettingsOption ] ]
+]
+
+{ #category : #'api - settings' }
+GtTreePagerModelSettings >> selectionStateHandler [
+	<return: #TGtPhlowToolSelectionStateHandler>
+	^ self viewCachingStrategy selectionStateHandler
+]
+
+{ #category : #copying }
+GtTreePagerModelSettings >> similarSettingsWithAnnouncer: anAnnouncer [
+	^ self copy postSimilarSettingsWithAnnouncer: anAnnouncer
+]
+
+{ #category : #'api - settings' }
+GtTreePagerModelSettings >> viewCachingStrategy [
+	^ self
+		optionAt: #viewCachingStrategy
+		ifAbsentPut: [ GtTreePagerViewCachingStrategy new ]
+]
+
+{ #category : #'api - settings' }
+GtTreePagerModelSettings >> viewCachingStrategy: aCachingStrategy [
+	^ self optionAt: #viewCachingStrategy put: aCachingStrategy
+]
+
+{ #category : #'api - settings' }
+GtTreePagerModelSettings >> viewCachingStrategy: aPresentBlock ifAbsent: anAbsentBlock [
+	^ self
+		optionAt: #viewCachingStrategy
+		ifPresent: aPresentBlock
+		ifAbsent: anAbsentBlock
+]
