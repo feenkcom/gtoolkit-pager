@@ -508,6 +508,23 @@ GtTreePagerStep >> clickOnReplacedLinkModel: aLinkModel [
 		onParentStepTarget: self
 ]
 
+{ #category : #'steps - checks' }
+GtTreePagerStep >> clickPhlowCompositeTabName: aTabName atColumn: aColumn row: aRow [
+	| aLabel |
+	aLabel := 'Click tab name "{3}" at column {1} row: {2}'
+			format: {aColumn.
+					aRow.
+					aTabName}.
+
+	^ self click
+		label: aLabel;
+		onTreePagerPaneColumn: aColumn row: aRow;
+		// GtPhlowCompositeViewElementId;
+		/ #header;
+		// BrTab;
+		@ [ :eachTab | eachTab label asString = aTabName ]
+]
+
 { #category : #'steps - interactions' }
 GtTreePagerStep >> closeConfigurationDropdownMenu [
 	^ self menuStep
@@ -727,6 +744,18 @@ GtTreePagerStep >> selectObject: anObject viewName: aViewName atPaneColumn: aCol
 						aRow.
 						aViewName});
 		block: [ :anElement | anElement phlow selectObject: anObject viewName: aViewName ];
+		onTreePagerPaneColumn: aColumn row: aRow;
+		onParentStepTarget: self
+]
+
+{ #category : #'steps - interactions' }
+GtTreePagerStep >> spawnObject: anObject atPaneColumn: aColumn row: aRow [
+	^ self do
+		label: ('Spawn object {1} in pane element at column {2} row {3}'
+				format: {anObject.
+						aColumn.
+						aRow});
+		block: [ :anElement | anElement phlow spawnObject: anObject ];
 		onTreePagerPaneColumn: aColumn row: aRow;
 		onParentStepTarget: self
 ]

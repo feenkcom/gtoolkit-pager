@@ -477,6 +477,156 @@ GtTreePagerWithScripterExamples >> pagerWithOnePane_fireObjectToSpawnEvent [
 ]
 
 { #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithOnePane_spawnFilterObject [
+	"See https://github.com/feenkcom/gtoolkit/issues/5135"
+
+	<gtExample>
+	| aPager aScripter aPaneA |
+	aScripter := self pagerWithOnePane.
+	aPager := aScripter model.
+	aPaneA := aPager paneModels first.
+
+	aScripter treePager
+		spawnObject: #asElementDo: gtImplementors
+			atPaneColumn: 1
+			row: 1;
+		assertNumberOfPaneElements: 2;
+		assertNumberOfVisiblePanes: 2;
+		assertPaneModel: aPaneA position: GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 1;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 1;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 1;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertPreviewScrollbarThumbAlignment: 0.00 weight: 1.0;
+		assertPhlowCompositeSelectedTabName: 'Results'
+			atColumn: 2
+			row: 1;
+		clickPhlowCompositeTabName: 'By Class'
+			atColumn: 2
+			row: 1;
+		assertPhlowCompositeSelectedTabName: 'By Class'
+			atColumn: 2
+			row: 1;
+		spawnObject: #asElementDo: gtImplementors
+			atPaneColumn: 1
+			row: 1;
+		assertPhlowCompositeSelectedTabName: 'By Class'
+			atColumn: 2
+			row: 1;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithOnePane_spawnFilterObjectWithByPackageView [
+	"See https://github.com/feenkcom/gtoolkit/issues/5135"
+
+	<gtExample>
+	| aPager aScripter aPaneA |
+	aScripter := self pagerWithOnePane.
+	aPager := aScripter model.
+	aPaneA := aPager paneModels first.
+
+	aScripter treePager
+		spawnObject: #asElementDo: gtImplementors
+			viewName: 'By Package'
+			atPaneColumn: 1
+			row: 1;
+		assertNumberOfPaneElements: 2;
+		assertNumberOfVisiblePanes: 2;
+		assertPaneModel: aPaneA position: GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 1;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 1;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 1;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertPreviewScrollbarThumbAlignment: 0.00 weight: 1.0;
+		assertPhlowCompositeSelectedTabName: 'By Package'
+			atColumn: 2
+			row: 1;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithOnePane_spawnMethodDefinitionObject [
+	<gtExample>
+	| aPager aScripter aPaneA |
+	aScripter := self pagerWithOnePane.
+	aPager := aScripter model.
+	aPaneA := aPager paneModels first.
+
+	aScripter treePager
+		spawnObject: (GtPhlowColumnedListView >> #asElementDo:) asRingDefinition
+			atPaneColumn: 1
+			row: 1;
+		assertNumberOfPaneElements: 2;
+		assertNumberOfVisiblePanes: 2;
+		assertPaneModel: aPaneA position: GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 1;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 1;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 1;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertPreviewScrollbarThumbAlignment: 0.00 weight: 1.0;
+		assertPhlowCompositeSelectedTabName: 'Source'
+			atColumn: 2
+			row: 1;
+		clickPhlowCompositeTabName: 'Local versions'
+			atColumn: 2
+			row: 1;
+		assertPhlowCompositeSelectedTabName: 'Local versions'
+			atColumn: 2
+			row: 1;
+		spawnObject: (GtPhlowColumnedListView >> #asElementDo:) asRingDefinition
+			atPaneColumn: 1
+			row: 1;
+		assertPhlowCompositeSelectedTabName: 'Local versions'
+			atColumn: 2
+			row: 1;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithOnePane_spawnMethodDefinitionObjectWithImplementors [
+	<gtExample>
+	| aPager aScripter aPaneA |
+	aScripter := self pagerWithOnePane.
+	aPager := aScripter model.
+	aPaneA := aPager paneModels first.
+
+	aScripter treePager
+		spawnObject: (GtPhlowColumnedListView >> #asElementDo:) asRingDefinition
+			viewName: 'Implementors'
+			atPaneColumn: 1
+			row: 1;
+		assertNumberOfPaneElements: 2;
+		assertNumberOfVisiblePanes: 2;
+		assertPaneModel: aPaneA position: GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 1;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 1;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 1;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertPreviewScrollbarThumbAlignment: 0.00 weight: 1.0;
+		assertPhlowCompositeSelectedTabName: 'Implementors'
+			atColumn: 2
+			row: 1;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithSevenPanesInFiveColumns [
 	<gtExample>
 	| aPager aScripter aPaneA aPaneB |
