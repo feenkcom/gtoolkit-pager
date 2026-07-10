@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#classVars : [
 		'DisplayHideMenuItem',
-		'ReplacedLinkRestoration'
+		'ReplacedLinkRestoration',
+		'SelectionStateHandler'
 	],
 	#category : #'GToolkit-TreePager-Settings'
 }
@@ -36,4 +37,22 @@ GtTreePagerSettings class >> replacedLinkRestoration: aDuration [
 	"Set the time for which a replaced link remains accessible to a user for its restoration"
 
 	ReplacedLinkRestoration := aDuration
+]
+
+{ #category : #settings }
+GtTreePagerSettings class >> selectionStateHandler [
+	"Return a default selection state handler that is used to create similar copies for individual tree pagers."
+
+	<return: #TGtPhlowToolSelectionStateHandler>
+	SelectionStateHandler
+		ifNil: [ SelectionStateHandler := GtTreePagerPerPaneSelectionStateHandler new ].
+
+	^ SelectionStateHandler similarSelectionStateHandler
+]
+
+{ #category : #settings }
+GtTreePagerSettings class >> selectionStateHandler: aSelectionStateHandler [
+	"Set a default selection state handler that is used to create similar copies for individual tree pagers."
+
+	SelectionStateHandler := aSelectionStateHandler
 ]

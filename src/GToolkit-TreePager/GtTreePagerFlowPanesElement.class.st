@@ -80,7 +80,7 @@ GtTreePagerFlowPanesElement >> initialize [
 	super initialize.
 	self matchParent.
 
-	self addEventHandler: GtPhlowExplicitlySelectedTabStorageEventHandler new.
+	self addEventHandler: GtTreePagerExplicitlySelectedTabStorageEventHandler new.
 	
 	self
 		when: BlMouseWheelEvent
@@ -131,6 +131,11 @@ GtTreePagerFlowPanesElement >> newNodeElementForPaneModel: aPaneModel [
 	aPaneElement paneModel: aPaneModel.
 
 	^ aPaneElement
+]
+
+{ #category : #'private - updating' }
+GtTreePagerFlowPanesElement >> notifyPagerModelChanged [
+	self dispatchEvent: (GtTreePagerModelChanged new pagerModel: self pagerModel)
 ]
 
 { #category : #'private - event handling' }
@@ -186,8 +191,7 @@ GtTreePagerFlowPanesElement >> onGtTreePagerPaneModelFollowingPanesChanged: anAn
 { #category : #'api - pager model' }
 GtTreePagerFlowPanesElement >> onPagerModelChanged [
 	super onPagerModelChanged.
-
-	self dispatchEvent: (GtTreePagerModelChanged new pagerModel: self pagerModel).
+	self notifyPagerModelChanged.
 	self updateElement
 ]
 
@@ -322,12 +326,6 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 	toRemovePaneElements := toRemoveElements
 			select: [ :eachElement | eachElement graph isNode ].
 
-	"Let's store selection state of all removed pane elements."
-	"toRemovePaneElements do: [ :eachElement | 
-		self toolSelectionStateHandlerDo: [ :aHandler | 
-			eachElement realToolElementDo: [ :aToolElement | 
-				aHandler storeSelectionStateFrom: aToolElement ] ] ]."
-
 	toRemoveElements do: [ :eachChild | 
 		eachChild removeFromParent.
 		(nonSpawnedElements identityIncludes: eachChild) ifFalse: [  
@@ -341,11 +339,22 @@ GtTreePagerFlowPanesElement >> updatePaneAndEdgeElements [
 			self
 				toolSelectionStateHandlerDo: [ :aHandler | 
 					eachElement realToolElementDo: [ :aToolElement | 
+						| aSelectionStateContext |
+						aSelectionStateContext := GtTreePagerPaneSelectionStateContext new
+							toolElement: aToolElement;
+							columnIndex: eachElement constraints horizontalTreeFlow depth;
+							rowIndex: eachElement constraints horizontalTreeFlow row.
 						eachElement paneModel 
 							selectionStateDo: [ :aSelectionState | 
-								aHandler applySelectionState: aSelectionState to: aToolElement ] 
+								aSelectionStateContext selectionState: aSelectionState.
+								aHandler 
+									applySelectionState: aSelectionState 
+									to: aToolElement 
+									treePaneContext: aSelectionStateContext ] 
 							ifAbsent: [
-								aHandler applySelectionStateTo: aToolElement ] ] ].
+								aHandler 
+									applySelectionStateTo: aToolElement
+									treePaneContext: aSelectionStateContext ] ] ].
 		
 			self addChild: eachElement ] ].
 				

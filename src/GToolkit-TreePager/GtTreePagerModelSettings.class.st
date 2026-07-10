@@ -125,31 +125,38 @@ GtTreePagerModelSettings >> postSimilarSettingsWithAnnouncer: anAnnouncer [
 
 { #category : #'api - settings' }
 GtTreePagerModelSettings >> selectionStateHandler [
+	"Return a phlow tool selection state handler that may store and apply 
+	selection states for newly created pager panes."
+
 	<return: #TGtPhlowToolSelectionStateHandler>
-	^ self viewCachingStrategy selectionStateHandler
+	^ self
+		optionAt: #selectionStateHandler
+		ifAbsentPut: [ GtTreePagerSettings selectionStateHandler ]
+]
+
+{ #category : #'api - settings' }
+GtTreePagerModelSettings >> selectionStateHandler: aNewSelectionStateHandler [
+	"Set a phlow tool selection state handler that may store and apply 
+	selection states for newly created pager panes."
+
+	<parameterType: #TGtPhlowToolSelectionStateHandler>
+	self assert: [ aNewSelectionStateHandler isNotNil ].
+
+	self
+		optionAt: #selectionStateHandler
+		ifPresent: [ :anExistingHandler | 
+			anExistingHandler = aNewSelectionStateHandler
+				ifFalse: [ self optionAt: #selectionStateHandler put: aNewSelectionStateHandler ]
+				ifTrue: [ ^ self ] ]
+		ifAbsentPut: [ aNewSelectionStateHandler ].
+
+	self announcer
+		announce: (GtTreePagerModelSelectionStateHandlerChanged new
+				settings: self;
+				selectionStateHandler: aNewSelectionStateHandler)
 ]
 
 { #category : #copying }
 GtTreePagerModelSettings >> similarSettingsWithAnnouncer: anAnnouncer [
 	^ self copy postSimilarSettingsWithAnnouncer: anAnnouncer
-]
-
-{ #category : #'api - settings' }
-GtTreePagerModelSettings >> viewCachingStrategy [
-	^ self
-		optionAt: #viewCachingStrategy
-		ifAbsentPut: [ GtTreePagerViewCachingStrategy new ]
-]
-
-{ #category : #'api - settings' }
-GtTreePagerModelSettings >> viewCachingStrategy: aCachingStrategy [
-	^ self optionAt: #viewCachingStrategy put: aCachingStrategy
-]
-
-{ #category : #'api - settings' }
-GtTreePagerModelSettings >> viewCachingStrategy: aPresentBlock ifAbsent: anAbsentBlock [
-	^ self
-		optionAt: #viewCachingStrategy
-		ifPresent: aPresentBlock
-		ifAbsent: anAbsentBlock
 ]
