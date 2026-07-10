@@ -60,9 +60,10 @@ GtTreePagerPerPaneSelectionStateHandler >> applySelectionStateTo: aToolElement t
 { #category : #initialization }
 GtTreePagerPerPaneSelectionStateHandler >> initialize [
 	super initialize.
-	
-	selectionStateHandler := GtPhlowToolCircularSelectionStateHandler new.
-	selectionStateHandlers := Dictionary new.
+
+	selectionStateHandler := GtPhlowToolCircularSelectionStateHandler new
+			maxSelectionStates: 1.
+	selectionStateHandlers := Dictionary new
 ]
 
 { #category : #private }
