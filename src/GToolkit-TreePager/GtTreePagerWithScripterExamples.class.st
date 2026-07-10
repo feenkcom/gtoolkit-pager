@@ -554,6 +554,50 @@ GtTreePagerWithScripterExamples >> pagerWithOnePane_spawnFilterObjectWithByPacka
 ]
 
 { #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithOnePane_spawnFilterObject_spawnThirdPane [
+	"See https://github.com/feenkcom/gtoolkit/issues/5136"
+
+	<gtExample>
+	| aPager aScripter aPaneB |
+	aScripter := self pagerWithOnePane_spawnFilterObject.
+	aPager := aScripter model.
+	aPaneB := aPager allFollowingPanes second.
+
+	aScripter treePager
+		spawnObject: #asElementDo: gtImplementors
+			atPaneColumn: 2
+			row: 1;
+		assertNumberOfPaneElements: 3;
+		assertNumberOfVisiblePanes: 2;
+		assertPaneModel: aPaneB position: GtTreePagerConstants cellSpacing;
+		assertNumberOfEdgeElements: 2;
+		assertNumberOfCollapsedRectangleLinkElements: 0;
+		assertNumberOfCollapsedTriangleLinkElements: 0;
+		assertNumberOfSpawnedTriangleLinkElements: 2;
+		assertNumberOfSpawnedNormalTriangleLinkElements: 2;
+		assertNumberOfSpawnedSmallTriangleLinkElements: 0;
+		assertPreviewScrollbarThumbAlignment: 0.284 weight: 0.66;
+		assertPhlowCompositeSelectedTabName: 'Results'
+			atColumn: 3
+			row: 1;
+		clickPhlowCompositeTabName: 'By Package'
+			atColumn: 3
+			row: 1;
+		assertPhlowCompositeSelectedTabName: 'By Package'
+			atColumn: 3
+			row: 1;
+		spawnObject: #asElementDo: gtImplementors
+			atPaneColumn: 2
+			row: 1;
+		assertPhlowCompositeSelectedTabName: 'By Package'
+			atColumn: 3
+			row: 1;
+		play.
+
+	^ aScripter
+]
+
+{ #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithOnePane_spawnMethodDefinitionObject [
 	<gtExample>
 	| aPager aScripter aPaneA |

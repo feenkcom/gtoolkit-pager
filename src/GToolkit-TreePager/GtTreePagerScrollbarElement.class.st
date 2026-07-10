@@ -137,16 +137,27 @@ GtTreePagerScrollbarElement >> newConfigurationElement [
 									background: self theme button fadedBackgroundColor);
 							label: 'Pager configuration';
 							yourself ]
-					submenu: [ self newConfigurationMenu ])
+					submenu: [ self newConfigurationMenu ]);
+		addAptitude: (GtPhlowBrowseDefinitionAptitude new
+				definition: [ (GtTreePagerScrollbarElement >> #newConfigurationElement) asRingDefinition ])
 ]
 
 { #category : #initialization }
 GtTreePagerScrollbarElement >> newConfigurationMenu [
 	| aMenuItems aMenuItem |
 	self hasPagerModel ifFalse: [ ^ nil ].
-
 	aMenuItems := BrMenuItems new.
+	aMenuItem := self newConfigurationMenuItemLayoutStrategy.
+	aMenuItems addItem: aMenuItem.
+	aMenuItem := self newConfigurationMenuItemNumberOfVisibleColumns.
+	aMenuItems addItem: aMenuItem.
+	^ aMenuItems
+]
 
+{ #category : #initialization }
+GtTreePagerScrollbarElement >> newConfigurationMenuItemLayoutStrategy [
+	| aMenuItem |
+	self flag: #TODO.
 	aMenuItem := BrMenuActionItem new.
 	aMenuItem id: #'tree-pager--column-height'.
 	aMenuItem
@@ -164,8 +175,12 @@ GtTreePagerScrollbarElement >> newConfigurationMenu [
 	aMenuItem
 		updateWhen: GtTreePagerModelColumnHeightChanged
 		from: self pagerModel announcer.
-	aMenuItems addItem: aMenuItem.
+	^ aMenuItem
+]
 
+{ #category : #initialization }
+GtTreePagerScrollbarElement >> newConfigurationMenuItemNumberOfVisibleColumns [
+	| aMenuItem |
 	aMenuItem := BrMenuExplicitItem new.
 	aMenuItem id: #'tree-pager--visible-columns'.
 	aMenuItem
@@ -216,9 +231,8 @@ GtTreePagerScrollbarElement >> newConfigurationMenu [
 	aMenuItem
 		updateWhen: GtTreePagerModelNumberOfVisibleColumnsChanged
 		from: self pagerModel announcer.
-	aMenuItems addItem: aMenuItem.
 
-	^ aMenuItems
+	^ aMenuItem
 ]
 
 { #category : #'private - updating' }
