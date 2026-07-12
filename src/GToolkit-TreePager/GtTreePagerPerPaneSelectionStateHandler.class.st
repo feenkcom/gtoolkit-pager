@@ -40,7 +40,7 @@ GtTreePagerPerPaneSelectionStateHandler >> applySelectionStateTo: aToolElement [
 	selectionStateHandler applySelectionStateTo: aToolElement
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #selection }
 GtTreePagerPerPaneSelectionStateHandler >> applySelectionStateTo: aToolElement treePaneContext: aTreePagerPaneSelectionStateContext [
 	"Apply a stored selected state to an element"
 
@@ -57,12 +57,32 @@ GtTreePagerPerPaneSelectionStateHandler >> applySelectionStateTo: aToolElement t
 		treePaneContext: aTreePagerPaneSelectionStateContext
 ]
 
+{ #category : #'gt - extensions' }
+GtTreePagerPerPaneSelectionStateHandler >> gtSelectionStateHandlersFor: aView [
+	<gtView>
+	selectionStateHandlers ifNil: [ ^ aView empty ].
+	^ aView columnedList
+		title: 'Selection state handlers';
+		items: [ selectionStateHandlers associations
+				sort: [ :a :b | 
+					a key first < b key first
+						or: [ a key first = b key first and: [ a key second < b key second ] ] ] ];
+		column: '[column, row]'
+			text: [ :each | 
+				'[{1},{2}]'
+					format: {each key first.
+							each key second} ]
+			width: 95;
+		column: 'Handler' text: [ :each | each value ];
+		send: [ :each | each value ]
+]
+
 { #category : #initialization }
 GtTreePagerPerPaneSelectionStateHandler >> initialize [
 	super initialize.
 
 	selectionStateHandler := GtPhlowToolCircularSelectionStateHandler new
-			maxSelectionStates: 1.
+			maxSelectionStates: 7.
 	selectionStateHandlers := Dictionary new
 ]
 
@@ -123,7 +143,7 @@ GtTreePagerPerPaneSelectionStateHandler >> storeSelectionStateFrom: aToolElement
 	selectionStateHandler storeSelectionStateFrom: aToolElement
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #selection }
 GtTreePagerPerPaneSelectionStateHandler >> storeSelectionStateFrom: aToolElement treePaneContext: aTreePagerPaneSelectionStateContext [
 	"Store tool element's selected state"
 
