@@ -82,7 +82,7 @@ GtTreePagerPerPaneSelectionStateHandler >> initialize [
 	super initialize.
 
 	selectionStateHandler := GtPhlowToolCircularSelectionStateHandler new
-			maxSelectionStates: 7.
+			maxSelectionStates: 1.
 	selectionStateHandlers := Dictionary new
 ]
 
