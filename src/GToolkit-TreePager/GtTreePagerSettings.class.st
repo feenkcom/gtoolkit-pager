@@ -45,7 +45,7 @@ GtTreePagerSettings class >> selectionStateHandler [
 
 	<return: #TGtPhlowToolSelectionStateHandler>
 	SelectionStateHandler
-		ifNil: [ SelectionStateHandler := GtTreePagerPerPaneSelectionStateHandler new ].
+		ifNil: [ ^ GtTreePagerPerPaneSelectionStateHandler new ].
 
 	^ SelectionStateHandler similarSelectionStateHandler
 ]

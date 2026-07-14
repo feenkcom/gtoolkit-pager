@@ -20,7 +20,7 @@ GtTreePagerPerPaneSelectionStateHandlerElementExamples >> element [
 	aLabel := anElement childWithId: #'tree-pager--per-pane-selection-state-handler-label'.
 	self assert: aLabel text asString equals: 'Per pane selections'.
 
-	aChildElement := anElement children second.
+	aChildElement := anElement children third.
 	self
 		assert: aChildElement class
 		equals: GtTreePagerToolCircularSelectionStateHandlerElement.

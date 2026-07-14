@@ -194,9 +194,10 @@ GtTreePagerScrollbarElement >> newConfigurationMenuItemNumberOfVisibleColumns [
 					c vertical fitContent ];
 				addChild: (BlElement new size: 20 @ 3);
 				addChild: (BrLabel new
-						hFitContentLimited;
 						text: 'Number of visible columns';
 						aptitude: BrGlamorousLabelAptitude new;
+						hMatchParent;
+						vFitContent;
 						constraintsDo: [ :c | 
 							c linear horizontal alignLeft.
 							c linear vertical alignCenter ]);
