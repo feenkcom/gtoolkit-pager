@@ -57,6 +57,21 @@ GtTreePagerPerPaneSelectionStateHandler >> applySelectionStateTo: aToolElement t
 		treePaneContext: aTreePagerPaneSelectionStateContext
 ]
 
+{ #category : #converting }
+GtTreePagerPerPaneSelectionStateHandler >> asTreePagerPerPaneSelectionStateLabel [
+	"Having per pane selection state inside of another per pane selection state is not meanigful."
+
+	^ self selectionStateHandler
+		ifNotNil: #asTreePagerPerPaneSelectionStateLabel
+		ifNil: [ 'Per pane selection' ]
+]
+
+{ #category : #converting }
+GtTreePagerPerPaneSelectionStateHandler >> asTreePagerSettingsItemElement [
+	^ GtTreePagerPerPaneSelectionStateHandlerElement new
+		selectionStateHandler: self
+]
+
 { #category : #'gt - extensions' }
 GtTreePagerPerPaneSelectionStateHandler >> gtSelectionStateHandlersFor: aView [
 	<gtView>

@@ -56,3 +56,11 @@ GtTreePagerSettings class >> selectionStateHandler: aSelectionStateHandler [
 
 	SelectionStateHandler := aSelectionStateHandler
 ]
+
+{ #category : #settings }
+GtTreePagerSettings class >> selectionStateHandlerRegistryItem [
+	"Return a default selection state handler that is used to create similar copies for individual tree pagers."
+
+	<return: #GtTreePagerSelectionStateRegistryItem>
+	^ self selectionStateHandler asTreePagerSelectionStateHandlerRegistryItem
+]

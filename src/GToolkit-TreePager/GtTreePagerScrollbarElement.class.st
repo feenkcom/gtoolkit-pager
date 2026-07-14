@@ -151,6 +151,8 @@ GtTreePagerScrollbarElement >> newConfigurationMenu [
 	aMenuItems addItem: aMenuItem.
 	aMenuItem := self newConfigurationMenuItemNumberOfVisibleColumns.
 	aMenuItems addItem: aMenuItem.
+	aMenuItem := self newConfigurationMenuItemToolTabSelectionHandler.
+	aMenuItems addItem: aMenuItem.
 	^ aMenuItems
 ]
 
@@ -232,6 +234,23 @@ GtTreePagerScrollbarElement >> newConfigurationMenuItemNumberOfVisibleColumns [
 		updateWhen: GtTreePagerModelNumberOfVisibleColumnsChanged
 		from: self pagerModel announcer.
 
+	^ aMenuItem
+]
+
+{ #category : #initialization }
+GtTreePagerScrollbarElement >> newConfigurationMenuItemToolTabSelectionHandler [
+	| aMenuItem |
+	aMenuItem := BrMenuExplicitItem new.
+	aMenuItem id: #'tree-pager--tool-tab-selection-handler'.
+	aMenuItem
+		stencil: [ BlElement new
+				layout: BlLinearLayout horizontal;
+				viewModel: BrWidgetModel new;
+				constraintsDo: [ :c | 
+					c horizontal matchParent.
+					c vertical fitContent ];
+				addChild: (BlElement new size: 20 @ 3);
+				addChild: self pagerModel settings selectionStateHandler asTreePagerSettingsItemElement ].
 	^ aMenuItem
 ]
 

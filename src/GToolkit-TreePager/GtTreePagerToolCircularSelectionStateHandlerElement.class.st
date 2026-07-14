@@ -76,7 +76,7 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> onIncreaseMaxSelectionSta
 
 { #category : #subscriptions }
 GtTreePagerToolCircularSelectionStateHandlerElement >> onMaxSelectionStatesChanged: anAnnouncement [
-	self updateElement
+	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
 { #category : #accessing }
@@ -87,7 +87,7 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> selectionStateHandler [
 { #category : #accessing }
 GtTreePagerToolCircularSelectionStateHandlerElement >> selectionStateHandler: aSelectionStateHandler [
 	selectionStateHandler == aSelectionStateHandler ifTrue: [ ^ self ].
-	selectionStateHandler ifNotNil: [ selectionStateHandler announcer unsubscribe: self ].
+	selectionStateHandler ifNotNil: [ self unsubscribeFromSelectionStateHandler ].
 	selectionStateHandler := aSelectionStateHandler.
 	selectionStateHandler ifNotNil: [ self subscribeToSelectionStateHandler ].
 	self updateElement
@@ -101,9 +101,14 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> selectionStateHandlerDo: 
 { #category : #subscriptions }
 GtTreePagerToolCircularSelectionStateHandlerElement >> subscribeToSelectionStateHandler [
 	self selectionStateHandler announcer weak
-		when: GtPhlowToolCircularSelectionStateHandlerMaxSelectionStatesChanged
+		when: GtPhlowToolCircularSelectionStateHandlerAnnouncement
 		send: #onMaxSelectionStatesChanged:
 		to: self
+]
+
+{ #category : #accessing }
+GtTreePagerToolCircularSelectionStateHandlerElement >> unsubscribeFromSelectionStateHandler [
+	^ selectionStateHandler announcer unsubscribe: self
 ]
 
 { #category : #updating }

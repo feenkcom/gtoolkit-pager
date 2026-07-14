@@ -13,7 +13,8 @@ GtTreePagerSelectionStateRegistry >> emptySelection [
 		priority: 100;
 		name: 'No selection';
 		description: 'I do not store nor apply selections';
-		selectionState: [ GtPhlowToolEmptySelectionStateHandler new ]
+		selectionState: [ GtPhlowToolEmptySelectionStateHandler new ];
+		stencil: [ :aSelectionStateHandler | BlElement new size: 0 @ 0 ]
 ]
 
 { #category : #accessing }
@@ -46,7 +47,10 @@ GtTreePagerSelectionStateRegistry >> perPaneCircular [
 		priority: 30;
 		name: 'Pane circular selection';
 		description: 'I store and apply selection states for individual panels';
-		selectionState: [ GtPhlowToolCircularSelectionStateHandler new maxSelectionStates: 1 ]
+		selectionState: [ GtPhlowToolCircularSelectionStateHandler new maxSelectionStates: 1 ];
+		stencil: [ :aSelectionStateHandler | 
+			GtTreePagerToolCircularSelectionStateHandlerElement new
+				selectionStateHandler: aSelectionStateHandler ]
 ]
 
 { #category : #selection }
@@ -56,5 +60,6 @@ GtTreePagerSelectionStateRegistry >> simpleSelection [
 		priority: 70;
 		name: 'Pager simple selection';
 		description: 'I store and apply one selection per pager (for all panes)';
-		selectionState: [ GtPhlowToolSelectionStateHandler new ]
+		selectionState: [ GtPhlowToolSelectionStateHandler new ];
+		stencil: [ :aSelectionStateHandler | BlElement new size: 0 @ 0 ]
 ]

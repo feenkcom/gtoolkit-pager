@@ -6,10 +6,15 @@ Class {
 		'name',
 		'description',
 		'selectionStateStencil',
-		'elementStencil'
+		'elementStencilBuilder'
 	],
 	#category : #'GToolkit-TreePager-Settings'
 }
+
+{ #category : #converting }
+GtTreePagerSelectionStateRegistryItem >> asElement [
+	^ GtTreePagerSelectionStateRegistryItemElement new registryItem: self
+]
 
 { #category : #accessing }
 GtTreePagerSelectionStateRegistryItem >> description [
@@ -19,6 +24,13 @@ GtTreePagerSelectionStateRegistryItem >> description [
 { #category : #accessing }
 GtTreePagerSelectionStateRegistryItem >> description: anObject [
 	description := anObject
+]
+
+{ #category : #accessing }
+GtTreePagerSelectionStateRegistryItem >> element [
+	^ self stencil
+		selectionStateHandler: (selectionStateStencil ifNotNil: #create);
+		asElement
 ]
 
 { #category : #initialization }
@@ -60,10 +72,12 @@ GtTreePagerSelectionStateRegistryItem >> selectionState: aStencil [
 
 { #category : #accessing }
 GtTreePagerSelectionStateRegistryItem >> stencil [
-	^ elementStencil
+	^ elementStencilBuilder
+		ifNil: [ elementStencilBuilder := GtTreePagerSelectionStateRegistryItemStencilBuilder
+					new ]
 ]
 
 { #category : #accessing }
 GtTreePagerSelectionStateRegistryItem >> stencil: aStencil [
-	elementStencil := aStencil asStencil
+	elementStencilBuilder := aStencil asStencilBuilder: GtTreePagerSelectionStateRegistryItemStencilBuilder
 ]

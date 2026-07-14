@@ -21,6 +21,23 @@ TGtPhlowToolSelectionStateHandler >> applySelectionStateTo: aToolElement treePan
 ]
 
 { #category : #'*GToolkit-TreePager' }
+TGtPhlowToolSelectionStateHandler >> asTreePagerPerPaneSelectionStateLabel [
+	<return: #String>
+	^ 'Per pane selection'
+]
+
+{ #category : #'*GToolkit-TreePager' }
+TGtPhlowToolSelectionStateHandler >> asTreePagerSelectionStateHandlerRegistryItem [
+	^ self explicitRequirement
+]
+
+{ #category : #'*GToolkit-TreePager' }
+TGtPhlowToolSelectionStateHandler >> asTreePagerSettingsItemElement [
+	<return: #BlElement>
+	^ self explicitRequirement
+]
+
+{ #category : #'*GToolkit-TreePager' }
 TGtPhlowToolSelectionStateHandler >> similarSettingsOption [
 	^ self similarSelectionStateHandler
 ]
