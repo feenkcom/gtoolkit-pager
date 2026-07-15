@@ -6,6 +6,11 @@ GtPhlowToolCircularSelectionStateHandler >> asTreePagerPerPaneSelectionStateLabe
 ]
 
 { #category : #'*GToolkit-TreePager' }
+GtPhlowToolCircularSelectionStateHandler >> asTreePagerPerPaneSelectionStateTooltipLabel [
+	^ 'I store and apply tool and tab selections per pager pane'
+]
+
+{ #category : #'*GToolkit-TreePager' }
 GtPhlowToolCircularSelectionStateHandler >> asTreePagerSettingsItemElement [
 	^ GtTreePagerToolCircularSelectionStateHandlerElement new
 		selectionStateHandler: self

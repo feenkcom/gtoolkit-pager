@@ -59,11 +59,16 @@ GtTreePagerPerPaneSelectionStateHandler >> applySelectionStateTo: aToolElement t
 
 { #category : #converting }
 GtTreePagerPerPaneSelectionStateHandler >> asTreePagerPerPaneSelectionStateLabel [
-	"Having per pane selection state inside of another per pane selection state is not meanigful."
-
 	^ self selectionStateHandler
 		ifNotNil: #asTreePagerPerPaneSelectionStateLabel
 		ifNil: [ 'Per pane selection' ]
+]
+
+{ #category : #converting }
+GtTreePagerPerPaneSelectionStateHandler >> asTreePagerPerPaneSelectionStateTooltipLabel [
+	^ self selectionStateHandler
+		ifNotNil: #asTreePagerPerPaneSelectionStateTooltipLabel
+		ifNil: [ 'I store and apply tool and tab selections per pager pane' ]
 ]
 
 { #category : #converting }

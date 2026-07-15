@@ -1,16 +1,8 @@
 Class {
 	#name : #GtTreePagerSelectionStateRegistryItemElement,
-	#superclass : #GtTreePagerSelectionStateHandlerElement,
-	#instVars : [
-		'registryItem'
-	],
+	#superclass : #GtTreePagerSelectionStateRegistryItemBasicElement,
 	#category : #'GToolkit-TreePager-UI'
 }
-
-{ #category : #testing }
-GtTreePagerSelectionStateRegistryItemElement >> hasRegistryItem [
-	^ registryItem isNotNil
-]
 
 { #category : #initialization }
 GtTreePagerSelectionStateRegistryItemElement >> initialize [
@@ -43,23 +35,6 @@ GtTreePagerSelectionStateRegistryItemElement >> newStencilElementFor: aRegistryI
 		constraintsDo: [ :c |
 			c linear horizontal alignLeft.
 			c linear vertical alignCenter ]
-]
-
-{ #category : #accessing }
-GtTreePagerSelectionStateRegistryItemElement >> registryItem [
-	^ registryItem
-]
-
-{ #category : #accessing }
-GtTreePagerSelectionStateRegistryItemElement >> registryItem: aRegistryItem [
-	registryItem == aRegistryItem ifTrue: [ ^ self ].
-	registryItem := aRegistryItem.
-	self updateElement
-]
-
-{ #category : #accessing }
-GtTreePagerSelectionStateRegistryItemElement >> registryItemDo: aBlock [
-	^ registryItem ifNotNil: aBlock
 ]
 
 { #category : #updating }

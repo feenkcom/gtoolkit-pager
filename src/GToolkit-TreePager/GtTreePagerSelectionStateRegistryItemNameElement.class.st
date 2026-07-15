@@ -1,16 +1,8 @@
 Class {
 	#name : #GtTreePagerSelectionStateRegistryItemNameElement,
-	#superclass : #GtTreePagerSelectionStateHandlerElement,
-	#instVars : [
-		'registryItem'
-	],
+	#superclass : #GtTreePagerSelectionStateRegistryItemBasicElement,
 	#category : #'GToolkit-TreePager-UI'
 }
-
-{ #category : #testing }
-GtTreePagerSelectionStateRegistryItemNameElement >> hasRegistryItem [
-	^ registryItem isNotNil
-]
 
 { #category : #initialization }
 GtTreePagerSelectionStateRegistryItemNameElement >> initialize [
@@ -34,23 +26,6 @@ GtTreePagerSelectionStateRegistryItemNameElement >> newNameLabelFor: aRegistryIt
 		constraintsDo: [ :c |
 			c linear horizontal alignLeft.
 			c linear vertical alignCenter ]
-]
-
-{ #category : #accessing }
-GtTreePagerSelectionStateRegistryItemNameElement >> registryItem [
-	^ registryItem
-]
-
-{ #category : #accessing }
-GtTreePagerSelectionStateRegistryItemNameElement >> registryItem: aRegistryItem [
-	registryItem == aRegistryItem ifTrue: [ ^ self ].
-	registryItem := aRegistryItem.
-	self updateElement
-]
-
-{ #category : #private }
-GtTreePagerSelectionStateRegistryItemNameElement >> registryItemDo: aBlock [
-	^ registryItem ifNotNil: aBlock
 ]
 
 { #category : #updating }

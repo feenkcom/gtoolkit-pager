@@ -2,15 +2,10 @@ Class {
 	#name : #GtTreePagerToolCircularSelectionStateHandlerElement,
 	#superclass : #GtTreePagerSelectionStateHandlerElement,
 	#instVars : [
-		'selectionStateHandler'
+		'labelTooltip'
 	],
 	#category : #'GToolkit-TreePager-UI'
 }
-
-{ #category : #accessing }
-GtTreePagerToolCircularSelectionStateHandlerElement >> hasSelectionStateHandler [
-	^ selectionStateHandler isNotNil
-]
 
 { #category : #initialization }
 GtTreePagerToolCircularSelectionStateHandlerElement >> initialize [
@@ -31,7 +26,7 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> newDecreaseButton [
 		id: #'tree-pager--tool-circular-selection-state-handler-decrease';
 		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
 		icon: BrGlamorousVectorIcons remove;
-		label: 'Decrease maximum selection states';
+		label: 'Decrease maximum tool and tab saved selections';
 		action: [ :aButton | self onDecreaseMaxSelectionStatesFrom: aButton ];
 		constraintsDo: [ :c | 
 			c linear horizontal alignLeft.
@@ -44,7 +39,7 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> newIncreaseButton [
 		id: #'tree-pager--tool-circular-selection-state-handler-increase';
 		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
 		icon: BrGlamorousVectorIcons add;
-		label: 'Increase maximum selection states';
+		label: 'Increase maximum tool and tab save selection';
 		action: [ :aButton | self onIncreaseMaxSelectionStatesFrom: aButton ];
 		constraintsDo: [ :c | 
 			c linear horizontal alignLeft.
@@ -57,6 +52,8 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> newValueLabel [
 		id: #'tree-pager--tool-circular-selection-state-handler-value';
 		text: self valueText;
 		aptitude: BrGlamorousLabelAptitude new;
+		addAptitude: (labelTooltip := BrGlamorousWithExplicitTooltipAptitude new
+					text: self valueTooltip);
 		constraintsDo: [ :c | 
 			c linear horizontal alignLeft.
 			c linear vertical alignCenter ]
@@ -77,11 +74,6 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> onIncreaseMaxSelectionSta
 { #category : #subscriptions }
 GtTreePagerToolCircularSelectionStateHandlerElement >> onMaxSelectionStatesChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
-]
-
-{ #category : #accessing }
-GtTreePagerToolCircularSelectionStateHandlerElement >> selectionStateHandler [
-	^ selectionStateHandler
 ]
 
 { #category : #accessing }
@@ -113,8 +105,11 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> unsubscribeFromSelectionS
 
 { #category : #updating }
 GtTreePagerToolCircularSelectionStateHandlerElement >> updateElement [
-	self childWithId: #'tree-pager--tool-circular-selection-state-handler-value'
-		ifFound: [ :aLabel | aLabel text: self valueText ]
+	self
+		childWithId: #'tree-pager--tool-circular-selection-state-handler-value'
+		ifFound: [ :aLabel | aLabel text: self valueText ].
+
+	labelTooltip ifNotNil: [ :anAptitude | anAptitude text: self valueTooltip ]
 ]
 
 { #category : #accessing }
@@ -122,4 +117,14 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> valueText [
 	self hasSelectionStateHandler ifFalse: [ ^ '0/0' ].
 	^ self selectionStateHandler numberOfSelectionStates asString , '/'
 		, self selectionStateHandler maxSelectionStates asString
+]
+
+{ #category : #accessing }
+GtTreePagerToolCircularSelectionStateHandlerElement >> valueTooltip [
+	self hasSelectionStateHandler
+		ifFalse: [ ^ 'Uninitialized tool and tab selection state handler' ].
+
+	^ '{1} saved tool and tab selections out of a total of {2} possible saves'
+		format: {self selectionStateHandler numberOfSelectionStates.
+				self selectionStateHandler maxSelectionStates}
 ]

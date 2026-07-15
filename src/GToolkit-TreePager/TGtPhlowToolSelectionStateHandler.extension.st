@@ -27,6 +27,12 @@ TGtPhlowToolSelectionStateHandler >> asTreePagerPerPaneSelectionStateLabel [
 ]
 
 { #category : #'*GToolkit-TreePager' }
+TGtPhlowToolSelectionStateHandler >> asTreePagerPerPaneSelectionStateTooltipLabel [
+	<return: #String>
+	^ 'I store and apply tool and tab selections per pager pane'
+]
+
+{ #category : #'*GToolkit-TreePager' }
 TGtPhlowToolSelectionStateHandler >> asTreePagerSelectionStateHandlerRegistryItem [
 	^ self explicitRequirement
 ]

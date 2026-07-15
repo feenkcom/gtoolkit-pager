@@ -21,6 +21,11 @@ GtTreePagerExplicitlySelectedTabStorageEventHandler >> newSelectionStateContextF
 		ifNone: [ nil ]
 ]
 
+{ #category : #accessing }
+GtTreePagerExplicitlySelectedTabStorageEventHandler >> onGtTreePagerModelSelectionStateHandlerChanged: anAnnouncement [
+	self selectionStateHandler: anAnnouncement selectionStateHandler
+]
+
 { #category : #'event handling' }
 GtTreePagerExplicitlySelectedTabStorageEventHandler >> phlowExplicitlySelectedTabEvent: anEvent [
 	| aToolElement aSelectionStateContext |
@@ -35,6 +40,21 @@ GtTreePagerExplicitlySelectedTabStorageEventHandler >> phlowExplicitlySelectedTa
 	selectionStateHandler
 		storeSelectionStateFrom: aToolElement
 		treePaneContext: aSelectionStateContext
+]
+
+{ #category : #accessing }
+GtTreePagerExplicitlySelectedTabStorageEventHandler >> selectionStateHandler: aHandler [
+	self assert: [ aHandler isNotNil ].
+
+	aHandler = selectionStateHandler ifTrue: [ ^ self ].
+
+	selectionStateHandler
+		ifNotNil: [ :anOldHandler | anOldHandler unsubscribe: self ].
+	super selectionStateHandler: aHandler.
+	selectionStateHandler announcer weak
+		when: GtTreePagerModelSelectionStateHandlerChanged
+		send: #onGtTreePagerModelSelectionStateHandlerChanged:
+		to: self
 ]
 
 { #category : #'event handling' }

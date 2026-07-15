@@ -159,7 +159,6 @@ GtTreePagerScrollbarElement >> newConfigurationMenu [
 { #category : #initialization }
 GtTreePagerScrollbarElement >> newConfigurationMenuItemLayoutStrategy [
 	| aMenuItem |
-	self flag: #TODO.
 	aMenuItem := BrMenuActionItem new.
 	aMenuItem id: #'tree-pager--column-height'.
 	aMenuItem
@@ -177,6 +176,9 @@ GtTreePagerScrollbarElement >> newConfigurationMenuItemLayoutStrategy [
 	aMenuItem
 		updateWhen: GtTreePagerModelColumnHeightChanged
 		from: self pagerModel announcer.
+	aMenuItem
+		definition: (GtTreePagerScrollbarElement >> #newConfigurationMenuItemLayoutStrategy)
+				asRingDefinition.
 	^ aMenuItem
 ]
 
@@ -235,23 +237,32 @@ GtTreePagerScrollbarElement >> newConfigurationMenuItemNumberOfVisibleColumns [
 		updateWhen: GtTreePagerModelNumberOfVisibleColumnsChanged
 		from: self pagerModel announcer.
 
+	aMenuItem
+		definition: (GtTreePagerScrollbarElement >> #newConfigurationMenuItemNumberOfVisibleColumns)
+				asRingDefinition.
+
 	^ aMenuItem
 ]
 
 { #category : #initialization }
 GtTreePagerScrollbarElement >> newConfigurationMenuItemToolTabSelectionHandler [
 	| aMenuItem |
-	aMenuItem := BrMenuExplicitItem new.
-	aMenuItem id: #'tree-pager--tool-tab-selection-handler'.
-	aMenuItem
-		stencil: [ BlElement new
-				layout: BlLinearLayout horizontal;
-				viewModel: BrWidgetModel new;
-				constraintsDo: [ :c | 
-					c horizontal matchParent.
-					c vertical fitContent ];
-				addChild: (BlElement new size: 20 @ 3);
-				addChild: self pagerModel settings selectionStateHandler asTreePagerSettingsItemElement ].
+	aMenuItem := BrMenuExplicitItem new
+			id: #'tree-pager--tool-tab-selection-handler';
+			stencil: [ BlElement new
+					layout: BlLinearLayout horizontal;
+					viewModel: BrWidgetModel new;
+					constraintsDo: [ :c | 
+						c horizontal matchParent.
+						c vertical fitContent ];
+					addChild: (BlElement new size: 20 @ 3);
+					addChild: self pagerModel settings selectionStateHandler asTreePagerSettingsItemElement ];
+			updateWhen: GtTreePagerModelSelectionStateHandlerChanged
+				from: self pagerModel announcer;
+			definition: (GtTreePagerScrollbarElement >> #newConfigurationMenuItemToolTabSelectionHandler)
+					asRingDefinition;
+			yourself.
+
 	^ aMenuItem
 ]
 
