@@ -23,7 +23,7 @@ GtTreePagerPerPaneSelectionStateHandlerElementExamples >> element [
 	aChildElement := anElement children third.
 	self
 		assert: aChildElement class
-		equals: GtTreePagerToolCircularSelectionStateHandlerElement.
+		equals: GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement.
 
 	anInspectButton := anElement childWithId: #'tree-pager--per-pane-selection-state-handler-inspect-button'.
 	self assert: anInspectButton notNil.
