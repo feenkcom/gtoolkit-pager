@@ -20,11 +20,12 @@ GtTreePagerPerPaneSelectionStateHandlerElement >> newInspectButtonFor: aSelectio
 	^ BrButton new
 		id: #'tree-pager--per-pane-selection-state-handler-inspect-button';
 		fitContent;
-		aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
-		icon: (BrGlamorousVectorIcons inspect asElement);
+		beMiniSize;
+		aptitude: BrGlamorousButtonWithIconAptitude;
+		icon: BrGlamorousVectorIcons inspect asElement;
 		label: 'Inspect selection state handler';
-		constraintsDo: [ :c |
-			c margin: (BlInsets left: 10).
+		constraintsDo: [ :c | 
+			c margin: (BlInsets left: 3 right: 3).
 			c linear horizontal alignLeft.
 			c linear vertical alignCenter ];
 		action: [ :aButton | aButton phlow spawnObject: aSelectionStateHandler ]
@@ -47,9 +48,11 @@ GtTreePagerPerPaneSelectionStateHandlerElement >> newLabelFor: aSelectionStateHa
 { #category : #updating }
 GtTreePagerPerPaneSelectionStateHandlerElement >> updateElement [
 	self removeChildren.
-	self selectionStateHandlerDo: [ :aSelectionStateHandler |
-		self
-			addChild: (self newLabelFor: aSelectionStateHandler);
-			addChild: (self newInspectButtonFor: aSelectionStateHandler);
-			addChild: aSelectionStateHandler selectionStateHandler asTreePagerSettingsItemElement ]
+	self
+		selectionStateHandlerDo: [ :aSelectionStateHandler | 
+			self
+				addChild: (self newLabelFor: aSelectionStateHandler);
+				addChild: (self newInspectButtonFor: aSelectionStateHandler);
+				addChild: (aSelectionStateHandler selectionStateHandler
+						asTreePagerSettingsItemElementForPerPaneHandler: aSelectionStateHandler) ]
 ]

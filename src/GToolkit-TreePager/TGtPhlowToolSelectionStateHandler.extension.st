@@ -44,6 +44,12 @@ TGtPhlowToolSelectionStateHandler >> asTreePagerSettingsItemElement [
 ]
 
 { #category : #'*GToolkit-TreePager' }
+TGtPhlowToolSelectionStateHandler >> asTreePagerSettingsItemElementForPerPaneHandler: aPerPaneSelectionStateHandler [
+	<return: #BlElement>
+	^ self asTreePagerSettingsItemElement
+]
+
+{ #category : #'*GToolkit-TreePager' }
 TGtPhlowToolSelectionStateHandler >> similarSettingsOption [
 	^ self similarSelectionStateHandler
 ]

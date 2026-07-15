@@ -205,7 +205,8 @@ GtTreePagerScrollbarElement >> newConfigurationMenuItemNumberOfVisibleColumns [
 							c linear vertical alignCenter ]);
 				addChild: (BrButton new
 						id: #'tree-pager--visible-columns-decrease';
-						aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
+						beMiniSize;
+						aptitude: BrGlamorousButtonWithIconAptitude;
 						icon: BrGlamorousVectorIcons remove;
 						label: 'Decrease number of columns';
 						action: [ :aButton | self onDecreaseNumberOfVisibleColumnsSettingsFrom: aButton ];
@@ -217,11 +218,13 @@ GtTreePagerScrollbarElement >> newConfigurationMenuItemNumberOfVisibleColumns [
 						text: self pagerModel settings numberOfVisibleColumns asString;
 						aptitude: BrGlamorousLabelAptitude new;
 						constraintsDo: [ :c | 
+							c margin: (BlInsets left: 3 right: 3).
 							c linear horizontal alignLeft.
 							c linear vertical alignCenter ]);
 				addChild: (BrButton new
 						id: #'tree-pager--visible-columns-increase';
-						aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
+						beMiniSize;
+						aptitude: BrGlamorousButtonWithIconAptitude;
 						icon: BrGlamorousVectorIcons add;
 						label: 'Increase number of columns';
 						action: [ :aButton | self onIncreaseNumberOfVisibleColumnsSettingsFrom: aButton ];

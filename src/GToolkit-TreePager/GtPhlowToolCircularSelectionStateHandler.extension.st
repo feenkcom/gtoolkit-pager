@@ -15,3 +15,9 @@ GtPhlowToolCircularSelectionStateHandler >> asTreePagerSettingsItemElement [
 	^ GtTreePagerToolCircularSelectionStateHandlerElement new
 		selectionStateHandler: self
 ]
+
+{ #category : #'*GToolkit-TreePager' }
+GtPhlowToolCircularSelectionStateHandler >> asTreePagerSettingsItemElementForPerPaneHandler: aPerPaneSelectionStateHandler [
+	^ GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement new
+		selectionStateHandler: aPerPaneSelectionStateHandler
+]

@@ -1,5 +1,5 @@
 Class {
-	#name : #GtTreePagerToolCircularSelectionStateHandlerElement,
+	#name : #GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement,
 	#superclass : #GtTreePagerSelectionStateHandlerElement,
 	#instVars : [
 		'labelTooltip'
@@ -7,8 +7,17 @@ Class {
 	#category : #'GToolkit-TreePager-UI'
 }
 
+{ #category : #private }
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> circularSelectionStateHandlerDo: aDoBlock ifAbsent: anAbsentBlock [
+	self hasSelectionStateHandler ifFalse: [ ^ anAbsentBlock value ].
+
+	^ self selectionStateHandler selectionStateHandler
+		ifNotNil: aDoBlock
+		ifNil: anAbsentBlock
+]
+
 { #category : #initialization }
-GtTreePagerToolCircularSelectionStateHandlerElement >> initialize [
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> initialize [
 	super initialize.
 	
 	self
@@ -21,7 +30,7 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> initialize [
 ]
 
 { #category : #ui }
-GtTreePagerToolCircularSelectionStateHandlerElement >> newDecreaseButton [
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> newDecreaseButton [
 	^ BrButton new
 		id: #'tree-pager--tool-circular-selection-state-handler-decrease';
 		beMiniSize;
@@ -35,7 +44,7 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> newDecreaseButton [
 ]
 
 { #category : #ui }
-GtTreePagerToolCircularSelectionStateHandlerElement >> newIncreaseButton [
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> newIncreaseButton [
 	^ BrButton new
 		id: #'tree-pager--tool-circular-selection-state-handler-increase';
 		beMiniSize;
@@ -49,7 +58,7 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> newIncreaseButton [
 ]
 
 { #category : #ui }
-GtTreePagerToolCircularSelectionStateHandlerElement >> newValueLabel [
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> newValueLabel [
 	^ BrLabel new
 		id: #'tree-pager--tool-circular-selection-state-handler-value';
 		text: self valueText;
@@ -63,24 +72,24 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> newValueLabel [
 ]
 
 { #category : #actions }
-GtTreePagerToolCircularSelectionStateHandlerElement >> onDecreaseMaxSelectionStatesFrom: aButton [
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> onDecreaseMaxSelectionStatesFrom: aButton [
 	self selectionStateHandlerDo: [ :aSelectionStateHandler | 
 		aSelectionStateHandler decreaseMaxSelectionStates ]
 ]
 
 { #category : #actions }
-GtTreePagerToolCircularSelectionStateHandlerElement >> onIncreaseMaxSelectionStatesFrom: aButton [
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> onIncreaseMaxSelectionStatesFrom: aButton [
 	self selectionStateHandlerDo: [ :aSelectionStateHandler | 
 		aSelectionStateHandler increaseMaxSelectionStates ]
 ]
 
 { #category : #subscriptions }
-GtTreePagerToolCircularSelectionStateHandlerElement >> onMaxSelectionStatesChanged: anAnnouncement [
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> onMaxSelectionStatesChanged: anAnnouncement [
 	BlTaskAction enqueueElement: self action: [ self updateElement ]
 ]
 
 { #category : #accessing }
-GtTreePagerToolCircularSelectionStateHandlerElement >> selectionStateHandler: aSelectionStateHandler [
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> selectionStateHandler: aSelectionStateHandler [
 	selectionStateHandler == aSelectionStateHandler ifTrue: [ ^ self ].
 	selectionStateHandler ifNotNil: [ self unsubscribeFromSelectionStateHandler ].
 	selectionStateHandler := aSelectionStateHandler.
@@ -89,25 +98,31 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> selectionStateHandler: aS
 ]
 
 { #category : #accessing }
-GtTreePagerToolCircularSelectionStateHandlerElement >> selectionStateHandlerDo: aBlock [
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> selectionStateHandlerDo: aBlock [
 	self hasSelectionStateHandler ifTrue: [ aBlock value: self selectionStateHandler ]
 ]
 
 { #category : #subscriptions }
-GtTreePagerToolCircularSelectionStateHandlerElement >> subscribeToSelectionStateHandler [
-	self selectionStateHandler announcer weak
-		when: GtPhlowToolCircularSelectionStateHandlerAnnouncement
-		send: #onMaxSelectionStatesChanged:
-		to: self
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> subscribeToSelectionStateHandler [
+	self
+		circularSelectionStateHandlerDo: [ :aHandler | 
+			aHandler announcer weak
+				when: GtPhlowToolCircularSelectionStateHandlerAnnouncement
+				send: #onMaxSelectionStatesChanged:
+				to: self ]
+		ifAbsent: [  ]
 ]
 
 { #category : #accessing }
-GtTreePagerToolCircularSelectionStateHandlerElement >> unsubscribeFromSelectionStateHandler [
-	^ selectionStateHandler announcer unsubscribe: self
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> unsubscribeFromSelectionStateHandler [
+	self
+		circularSelectionStateHandlerDo: [ :aHandler |
+			aHandler announcer unsubscribe: self ]
+		ifAbsent: [  ]
 ]
 
 { #category : #updating }
-GtTreePagerToolCircularSelectionStateHandlerElement >> updateElement [
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> updateElement [
 	self
 		childWithId: #'tree-pager--tool-circular-selection-state-handler-value'
 		ifFound: [ :aLabel | aLabel text: self valueText ].
@@ -116,18 +131,13 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> updateElement [
 ]
 
 { #category : #accessing }
-GtTreePagerToolCircularSelectionStateHandlerElement >> valueText [
-	self hasSelectionStateHandler ifFalse: [ ^ '0/0' ].
-	^ self selectionStateHandler numberOfSelectionStates asString , '/'
-		, self selectionStateHandler maxSelectionStates asString
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> valueText [
+	^ self
+		circularSelectionStateHandlerDo: [ :aHandler | aHandler maxSelectionStates asString ]
+		ifAbsent: [ '0' ]
 ]
 
 { #category : #accessing }
-GtTreePagerToolCircularSelectionStateHandlerElement >> valueTooltip [
-	self hasSelectionStateHandler
-		ifFalse: [ ^ 'Uninitialized tool and tab selection state handler' ].
-
-	^ '{1} saved tool and tab selections out of a total of {2} possible saves'
-		format: {self selectionStateHandler numberOfSelectionStates.
-				self selectionStateHandler maxSelectionStates}
+GtTreePagerToolPerPaneWithCircularSelectionStateHandlerElement >> valueTooltip [
+	^ 'Maximum number of saved tool and tab selections for each pane'
 ]

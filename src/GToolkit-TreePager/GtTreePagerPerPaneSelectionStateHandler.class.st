@@ -77,6 +77,13 @@ GtTreePagerPerPaneSelectionStateHandler >> asTreePagerSettingsItemElement [
 		selectionStateHandler: self
 ]
 
+{ #category : #'as yet unclassified' }
+GtTreePagerPerPaneSelectionStateHandler >> decreaseMaxSelectionStates [
+	self selectionStateHandler decreaseMaxSelectionStates.
+	selectionStateHandlers
+		do: [ :eachHandler | eachHandler decreaseMaxSelectionStates ]
+]
+
 { #category : #'gt - extensions' }
 GtTreePagerPerPaneSelectionStateHandler >> gtSelectionStateHandlersFor: aView [
 	<gtView>
@@ -95,6 +102,13 @@ GtTreePagerPerPaneSelectionStateHandler >> gtSelectionStateHandlersFor: aView [
 			width: 95;
 		column: 'Handler' text: [ :each | each value ];
 		send: [ :each | each value ]
+]
+
+{ #category : #actions }
+GtTreePagerPerPaneSelectionStateHandler >> increaseMaxSelectionStates [
+	self selectionStateHandler increaseMaxSelectionStates.
+	selectionStateHandlers
+		do: [ :eachHandler | eachHandler increaseMaxSelectionStates ]
 ]
 
 { #category : #initialization }
