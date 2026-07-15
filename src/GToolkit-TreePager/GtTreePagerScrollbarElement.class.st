@@ -215,7 +215,9 @@ GtTreePagerScrollbarElement >> newConfigurationMenuItemNumberOfVisibleColumns [
 							c linear vertical alignCenter ]);
 				addChild: (BrLabel new
 						id: #'tree-pager--visible-columns-value';
-						text: self pagerModel settings numberOfVisibleColumns asString;
+						text: (self pagerModel settings numberOfVisibleColumns asString asRopedText
+								glamorousCodeFont;
+								glamorousCodeMiniSize);
 						aptitude: BrGlamorousLabelAptitude new;
 						constraintsDo: [ :c | 
 							c margin: (BlInsets left: 3 right: 3).

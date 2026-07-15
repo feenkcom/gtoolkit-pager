@@ -10,11 +10,14 @@ Class {
 { #category : #initialization }
 GtTreePagerToolCircularSelectionStateHandlerElement >> initialize [
 	super initialize.
-	
+
 	self
 		id: #'tree-pager--tool-circular-selection-state-handler';
 		layout: BlLinearLayout horizontal;
 		fitContent;
+		constraintsDo: [ :c | 
+			c linear horizontal alignLeft.
+			c linear vertical alignCenter ];
 		addChild: self newDecreaseButton;
 		addChild: self newValueLabel;
 		addChild: self newIncreaseButton
@@ -117,9 +120,16 @@ GtTreePagerToolCircularSelectionStateHandlerElement >> updateElement [
 
 { #category : #accessing }
 GtTreePagerToolCircularSelectionStateHandlerElement >> valueText [
-	self hasSelectionStateHandler ifFalse: [ ^ '0/0' ].
-	^ self selectionStateHandler numberOfSelectionStates asString , '/'
-		, self selectionStateHandler maxSelectionStates asString
+	| aText |
+	aText := self hasSelectionStateHandler
+			ifFalse: [ '0/0' ]
+			ifTrue: [ self selectionStateHandler numberOfSelectionStates asString , '/'
+					, self selectionStateHandler maxSelectionStates asString ].
+
+	^ aText asRopedText
+		glamorousCodeFont;
+		foreground: Color gray;
+		glamorousCodeMiniSize
 ]
 
 { #category : #accessing }
