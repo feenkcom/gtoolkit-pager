@@ -151,13 +151,14 @@ GtTreePagerScrollbarElement >> newConfigurationMenu [
 	aMenuItems addItem: aMenuItem.
 	aMenuItem := self newConfigurationMenuItemNumberOfVisibleColumns.
 	aMenuItems addItem: aMenuItem.
+	aMenuItem := self newConfigurationMenuItemToolTabSelectionHandler.
+	aMenuItems addItem: aMenuItem.
 	^ aMenuItems
 ]
 
 { #category : #initialization }
 GtTreePagerScrollbarElement >> newConfigurationMenuItemLayoutStrategy [
 	| aMenuItem |
-	self flag: #TODO.
 	aMenuItem := BrMenuActionItem new.
 	aMenuItem id: #'tree-pager--column-height'.
 	aMenuItem
@@ -175,6 +176,9 @@ GtTreePagerScrollbarElement >> newConfigurationMenuItemLayoutStrategy [
 	aMenuItem
 		updateWhen: GtTreePagerModelColumnHeightChanged
 		from: self pagerModel announcer.
+	aMenuItem
+		definition: (GtTreePagerScrollbarElement >> #newConfigurationMenuItemLayoutStrategy)
+				asRingDefinition.
 	^ aMenuItem
 ]
 
@@ -192,15 +196,17 @@ GtTreePagerScrollbarElement >> newConfigurationMenuItemNumberOfVisibleColumns [
 					c vertical fitContent ];
 				addChild: (BlElement new size: 20 @ 3);
 				addChild: (BrLabel new
-						hFitContentLimited;
 						text: 'Number of visible columns';
 						aptitude: BrGlamorousLabelAptitude new;
+						hMatchParent;
+						vFitContent;
 						constraintsDo: [ :c | 
 							c linear horizontal alignLeft.
 							c linear vertical alignCenter ]);
 				addChild: (BrButton new
 						id: #'tree-pager--visible-columns-decrease';
-						aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
+						beMiniSize;
+						aptitude: BrGlamorousButtonWithIconAptitude;
 						icon: BrGlamorousVectorIcons remove;
 						label: 'Decrease number of columns';
 						action: [ :aButton | self onDecreaseNumberOfVisibleColumnsSettingsFrom: aButton ];
@@ -209,14 +215,18 @@ GtTreePagerScrollbarElement >> newConfigurationMenuItemNumberOfVisibleColumns [
 							c linear vertical alignCenter ]);
 				addChild: (BrLabel new
 						id: #'tree-pager--visible-columns-value';
-						text: self pagerModel settings numberOfVisibleColumns asString;
+						text: (self pagerModel settings numberOfVisibleColumns asString asRopedText
+								glamorousCodeFont;
+								glamorousCodeMiniSize);
 						aptitude: BrGlamorousLabelAptitude new;
 						constraintsDo: [ :c | 
+							c margin: (BlInsets left: 3 right: 3).
 							c linear horizontal alignLeft.
 							c linear vertical alignCenter ]);
 				addChild: (BrButton new
 						id: #'tree-pager--visible-columns-increase';
-						aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude;
+						beMiniSize;
+						aptitude: BrGlamorousButtonWithIconAptitude;
 						icon: BrGlamorousVectorIcons add;
 						label: 'Increase number of columns';
 						action: [ :aButton | self onIncreaseNumberOfVisibleColumnsSettingsFrom: aButton ];
@@ -231,6 +241,32 @@ GtTreePagerScrollbarElement >> newConfigurationMenuItemNumberOfVisibleColumns [
 	aMenuItem
 		updateWhen: GtTreePagerModelNumberOfVisibleColumnsChanged
 		from: self pagerModel announcer.
+
+	aMenuItem
+		definition: (GtTreePagerScrollbarElement >> #newConfigurationMenuItemNumberOfVisibleColumns)
+				asRingDefinition.
+
+	^ aMenuItem
+]
+
+{ #category : #initialization }
+GtTreePagerScrollbarElement >> newConfigurationMenuItemToolTabSelectionHandler [
+	| aMenuItem |
+	aMenuItem := BrMenuExplicitItem new
+			id: #'tree-pager--tool-tab-selection-handler';
+			stencil: [ BlElement new
+					layout: BlLinearLayout horizontal;
+					viewModel: BrWidgetModel new;
+					constraintsDo: [ :c | 
+						c horizontal matchParent.
+						c vertical fitContent ];
+					addChild: (BlElement new size: 20 @ 3);
+					addChild: self pagerModel settings selectionStateHandler asTreePagerSettingsItemElement ];
+			updateWhen: GtTreePagerModelSelectionStateHandlerChanged
+				from: self pagerModel announcer;
+			definition: (GtTreePagerScrollbarElement >> #newConfigurationMenuItemToolTabSelectionHandler)
+					asRingDefinition;
+			yourself.
 
 	^ aMenuItem
 ]

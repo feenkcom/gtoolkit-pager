@@ -45,7 +45,7 @@ GtTreePagerSettings class >> selectionStateHandler [
 
 	<return: #TGtPhlowToolSelectionStateHandler>
 	SelectionStateHandler
-		ifNil: [ SelectionStateHandler := GtTreePagerPerPaneSelectionStateHandler new ].
+		ifNil: [ ^ GtTreePagerPerPaneSelectionStateHandler new ].
 
 	^ SelectionStateHandler similarSelectionStateHandler
 ]
@@ -55,4 +55,12 @@ GtTreePagerSettings class >> selectionStateHandler: aSelectionStateHandler [
 	"Set a default selection state handler that is used to create similar copies for individual tree pagers."
 
 	SelectionStateHandler := aSelectionStateHandler
+]
+
+{ #category : #settings }
+GtTreePagerSettings class >> selectionStateHandlerRegistryItem [
+	"Return a default selection state handler that is used to create similar copies for individual tree pagers."
+
+	<return: #GtTreePagerSelectionStateRegistryItem>
+	^ self selectionStateHandler asTreePagerSelectionStateHandlerRegistryItem
 ]

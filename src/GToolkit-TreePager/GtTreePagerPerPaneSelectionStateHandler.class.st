@@ -57,6 +57,33 @@ GtTreePagerPerPaneSelectionStateHandler >> applySelectionStateTo: aToolElement t
 		treePaneContext: aTreePagerPaneSelectionStateContext
 ]
 
+{ #category : #converting }
+GtTreePagerPerPaneSelectionStateHandler >> asTreePagerPerPaneSelectionStateLabel [
+	^ self selectionStateHandler
+		ifNotNil: #asTreePagerPerPaneSelectionStateLabel
+		ifNil: [ 'Per pane selection' ]
+]
+
+{ #category : #converting }
+GtTreePagerPerPaneSelectionStateHandler >> asTreePagerPerPaneSelectionStateTooltipLabel [
+	^ self selectionStateHandler
+		ifNotNil: #asTreePagerPerPaneSelectionStateTooltipLabel
+		ifNil: [ 'I store and apply tool and tab selections per pager pane' ]
+]
+
+{ #category : #converting }
+GtTreePagerPerPaneSelectionStateHandler >> asTreePagerSettingsItemElement [
+	^ GtTreePagerPerPaneSelectionStateHandlerElement new
+		selectionStateHandler: self
+]
+
+{ #category : #'as yet unclassified' }
+GtTreePagerPerPaneSelectionStateHandler >> decreaseMaxSelectionStates [
+	self selectionStateHandler decreaseMaxSelectionStates.
+	selectionStateHandlers
+		do: [ :eachHandler | eachHandler decreaseMaxSelectionStates ]
+]
+
 { #category : #'gt - extensions' }
 GtTreePagerPerPaneSelectionStateHandler >> gtSelectionStateHandlersFor: aView [
 	<gtView>
@@ -75,6 +102,13 @@ GtTreePagerPerPaneSelectionStateHandler >> gtSelectionStateHandlersFor: aView [
 			width: 95;
 		column: 'Handler' text: [ :each | each value ];
 		send: [ :each | each value ]
+]
+
+{ #category : #actions }
+GtTreePagerPerPaneSelectionStateHandler >> increaseMaxSelectionStates [
+	self selectionStateHandler increaseMaxSelectionStates.
+	selectionStateHandlers
+		do: [ :eachHandler | eachHandler increaseMaxSelectionStates ]
 ]
 
 { #category : #initialization }

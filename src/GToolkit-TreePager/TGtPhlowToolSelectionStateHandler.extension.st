@@ -21,6 +21,35 @@ TGtPhlowToolSelectionStateHandler >> applySelectionStateTo: aToolElement treePan
 ]
 
 { #category : #'*GToolkit-TreePager' }
+TGtPhlowToolSelectionStateHandler >> asTreePagerPerPaneSelectionStateLabel [
+	<return: #String>
+	^ 'Per pane selection'
+]
+
+{ #category : #'*GToolkit-TreePager' }
+TGtPhlowToolSelectionStateHandler >> asTreePagerPerPaneSelectionStateTooltipLabel [
+	<return: #String>
+	^ 'I store and apply tool and tab selections per pager pane'
+]
+
+{ #category : #'*GToolkit-TreePager' }
+TGtPhlowToolSelectionStateHandler >> asTreePagerSelectionStateHandlerRegistryItem [
+	^ self explicitRequirement
+]
+
+{ #category : #'*GToolkit-TreePager' }
+TGtPhlowToolSelectionStateHandler >> asTreePagerSettingsItemElement [
+	<return: #BlElement>
+	^ self explicitRequirement
+]
+
+{ #category : #'*GToolkit-TreePager' }
+TGtPhlowToolSelectionStateHandler >> asTreePagerSettingsItemElementForPerPaneHandler: aPerPaneSelectionStateHandler [
+	<return: #BlElement>
+	^ self asTreePagerSettingsItemElement
+]
+
+{ #category : #'*GToolkit-TreePager' }
 TGtPhlowToolSelectionStateHandler >> similarSettingsOption [
 	^ self similarSelectionStateHandler
 ]
