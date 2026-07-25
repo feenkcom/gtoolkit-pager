@@ -9,7 +9,6 @@ GtPagerStep >> assertPageCountIs: aNumber [
 	^ self assert
 		label: ('Assert pager page count is {1}' format: {aNumber});
 		value: [ :aPager | aPager pages size ] equals: aNumber;
-		referenceSender;
 		onParentStepTarget: self;
 		onThisOrBreadthFirstChildOfKind: GtPager
 ]
