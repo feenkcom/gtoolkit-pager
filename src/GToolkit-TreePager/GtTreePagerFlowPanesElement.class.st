@@ -85,6 +85,29 @@ GtTreePagerFlowPanesElement >> initialize [
 	self
 		when: BlMouseWheelEvent
 		do: [ :anEvent | self layoutDo: [ :aLayout | aLayout mouseWheelEvent: anEvent ] ].
+
+	self when: BlMouseDownEvent
+		do: [ :anEvent |
+			anEvent button = BlMouseButton back
+				ifTrue: [ anEvent consumed: true.
+					self navigatePhlowFrom: anEvent target by: -1 ].
+			anEvent button = BlMouseButton forward
+				ifTrue: [ anEvent consumed: true.
+					self navigatePhlowFrom: anEvent target by: 1 ] ]
+]
+
+{ #category : #initialization }
+GtTreePagerFlowPanesElement >> navigatePhlowFrom: anElement by: aStep [
+	anElement
+		withAllParentsDetect: [ :each | each isKindOf: self class ]
+		ifFound: [ :aPanesElement |
+			| aTargetColumn |
+			aTargetColumn := (aPanesElement layout firstVisibleColumn + aStep max: 1)
+						min: aPanesElement childrenNodesLastColumn.
+			aTargetColumn >= 1
+				ifTrue: [ aPanesElement
+						fireEvent: (GtTreePagerScrollToColumnWish new column: aTargetColumn) ] ]
+		ifNone: []
 ]
 
 { #category : #'private - updating' }
