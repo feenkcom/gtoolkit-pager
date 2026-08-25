@@ -369,6 +369,57 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_spawnFromB [
 	^ aScripter
 ]
 
+{ #category : #'examples - navigation' }
+GtTreePagerWithScripterExamples >> pagerWithFourPanes_mouseBackForwardNavigates [
+	<gtExample>
+	| aScripter aPager panesElement |
+	aPager := GtTreePagerExamples new pagerWithFourPanesInFourColumns.
+	aScripter := (BlScripter new)
+				model: aPager;
+				element: aPager asElement.
+	aScripter pulse.
+	panesElement := aScripter element
+				allChildrenBreadthFirstDetect: [:each | each isKindOf: GtTreePagerFlowPanesElement]
+				ifFound: [:each | each].
+	BlHorizontalTreeFlowLayout disableAnimation.
+	
+	[self assert: panesElement layout firstVisibleColumn equals: 1.
+	BlEvent fireEvent: (BlMouseDownEvent button: BlMouseButton forward)
+		target: panesElement.
+	aScripter pulse.
+	self assert: panesElement layout firstVisibleColumn equals: 2.
+	BlEvent fireEvent: (BlMouseDownEvent button: BlMouseButton forward)
+		target: panesElement.
+	aScripter pulse.
+	self assert: panesElement layout firstVisibleColumn equals: 3.
+	BlEvent fireEvent: (BlMouseDownEvent button: BlMouseButton forward)
+		target: panesElement.
+	aScripter pulse.
+	self assert: panesElement layout firstVisibleColumn equals: 4.
+	BlEvent fireEvent: (BlMouseDownEvent button: BlMouseButton forward)
+		target: panesElement.
+	aScripter pulse.
+	self assert: panesElement layout firstVisibleColumn equals: 4.
+	BlEvent fireEvent: (BlMouseDownEvent button: BlMouseButton back)
+		target: panesElement.
+	aScripter pulse.
+	self assert: panesElement layout firstVisibleColumn equals: 3.
+	BlEvent fireEvent: (BlMouseDownEvent button: BlMouseButton back)
+		target: panesElement.
+	aScripter pulse.
+	self assert: panesElement layout firstVisibleColumn equals: 2.
+	BlEvent fireEvent: (BlMouseDownEvent button: BlMouseButton back)
+		target: panesElement.
+	aScripter pulse.
+	self assert: panesElement layout firstVisibleColumn equals: 1.
+	BlEvent fireEvent: (BlMouseDownEvent button: BlMouseButton back)
+		target: panesElement.
+	aScripter pulse.
+	self assert: panesElement layout firstVisibleColumn equals: 1]
+			ensure: [BlHorizontalTreeFlowLayout enableAnimation].
+	^aScripter
+]
+
 { #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithOnePane [
 	<gtExample>
