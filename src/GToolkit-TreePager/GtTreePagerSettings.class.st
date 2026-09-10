@@ -2,6 +2,7 @@ Class {
 	#name : #GtTreePagerSettings,
 	#superclass : #Object,
 	#classVars : [
+		'DisableHidingOfToolbarElements',
 		'DisplayHideMenuItem',
 		'ReplacedLinkRestoration',
 		'SelectionStateHandler'
@@ -10,8 +11,18 @@ Class {
 }
 
 { #category : #settings }
+GtTreePagerSettings class >> disableHidingOfToolbarElements [
+	DisableHidingOfToolbarElements := true
+]
+
+{ #category : #settings }
 GtTreePagerSettings class >> displayHideMenuItem [
 	DisplayHideMenuItem := true
+]
+
+{ #category : #settings }
+GtTreePagerSettings class >> enableHidingOfToolbarElements [
+	DisableHidingOfToolbarElements := false
 ]
 
 { #category : #settings }
@@ -19,9 +30,28 @@ GtTreePagerSettings class >> hideHideMenuItem [
 	DisplayHideMenuItem := false
 ]
 
+{ #category : #helper }
+GtTreePagerSettings class >> hidingOfToolbarElementsDisabled: aBoolean during: aBlock [
+	| wasDisabled |
+	wasDisabled := self isHidingOfToolbarElementsDisabled.
+	aBoolean
+		ifTrue: [self disableHidingOfToolbarElements]
+		ifFalse: [self enableHidingOfToolbarElements].
+	^aBlock ensure: 
+			[wasDisabled
+				ifTrue: [self disableHidingOfToolbarElements]
+				ifFalse: [self enableHidingOfToolbarElements]]
+]
+
 { #category : #settings }
 GtTreePagerSettings class >> isDisplayHideMenuItem [
 	^ DisplayHideMenuItem ifNil: [ DisplayHideMenuItem := false ]
+]
+
+{ #category : #settings }
+GtTreePagerSettings class >> isHidingOfToolbarElementsDisabled [
+	^DisableHidingOfToolbarElements
+		ifNil: [DisableHidingOfToolbarElements := false]
 ]
 
 { #category : #settings }

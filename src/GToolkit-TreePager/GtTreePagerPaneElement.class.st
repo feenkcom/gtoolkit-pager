@@ -57,6 +57,7 @@ GtTreePagerPaneElement >> hideMaximizeButton [
 
 { #category : #deprecated }
 GtTreePagerPaneElement >> hideToolbarElements [
+	GtTreePagerSettings isHidingOfToolbarElementsDisabled ifTrue: [^self].
 	self hideMaximizeButton.
 	self hideTopRightElement
 ]
@@ -107,6 +108,7 @@ GtTreePagerPaneElement >> initializeContentContainerElement [
 			matchParent;
 			addChild: contentElement;
 			addChild: (topRightToolbar := self newBasicToolbarElement
+						id: #'tree-pager--top-right-toolbar';
 						addItem: (dropdownElement := self newDropdownMenuElement));
 			addAptitude: (maximizerAptitude := BrGlamorousWithMaximizerAptitude new
 						actionButtonDo: [ :aButton | 

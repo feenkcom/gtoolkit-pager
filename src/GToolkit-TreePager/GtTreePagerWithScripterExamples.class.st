@@ -284,6 +284,50 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_expandC [
 ]
 
 { #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_hidingOfToolbarElementsDisabled [
+	<gtExample>
+	^GtTreePagerSettings hidingOfToolbarElementsDisabled: true
+		during: 
+			[| aPager aScripter aPaneA aPaneD |
+			aPager := GtTreePagerExamples new pagerWithFourPanesInFourColumns.
+			aPaneA := aPager detectPaneModel: [:each | each title = $A printString].
+			aPaneD := aPager detectPaneModel: [:each | each title = $D printString].
+			aScripter := (BlScripter new)
+						model: aPager;
+						element: aPager asElement.
+			(aScripter treePager)
+				assertNumberOfPaneElements: 4;
+				assertTopRightToolbarIsVisibleInPaneModel: aPaneA;
+				assertTopRightToolbarIsVisibleInPaneModel: aPaneD;
+				play.
+			aScripter]
+]
+
+{ #category : #'examples - pager' }
+GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_hidingOfToolbarElementsEnabled [
+	<gtExample>
+	^GtTreePagerSettings hidingOfToolbarElementsDisabled: false
+		during: 
+			[| aPager aScripter aPaneA aPaneD aPaneB |
+			aPager := GtTreePagerExamples new pagerWithFourPanesInFourColumns.
+			aPaneA := aPager detectPaneModel: [:each | each title = $A printString].
+			aPaneD := aPager detectPaneModel: [:each | each title = $D printString].
+			aPaneB := aPager detectPaneModel: [:each | each title = $B printString].
+			aScripter := (BlScripter new)
+						model: aPager;
+						element: aPager asElement.
+			(aScripter treePager)
+				assertNumberOfPaneElements: 4;
+				assertTopRightToolbarIsHiddenInPaneModel: aPaneA;
+				assertTopRightToolbarIsHiddenInPaneModel: aPaneD;
+				assertTopRightToolbarIsHiddenInPaneModel: aPaneB;
+				hoverPaneModel: aPaneB;
+				assertTopRightToolbarIsVisibleInPaneModel: aPaneB;
+				play.
+			aScripter]
+]
+
+{ #category : #'examples - pager' }
 GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_replaceC [
 	<gtExample>
 	| aPager aScripter aPaneA aPaneB aPaneC aPaneD aPaneE |

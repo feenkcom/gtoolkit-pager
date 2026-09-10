@@ -439,6 +439,38 @@ GtTreePagerStep >> assertSpawnedTriangleLinkModel: aLinkModel [
 		// GtTreePagerFlowPanesElement
 ]
 
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertTopRightToolbarIsHiddenInPaneModel: aPaneModel [
+	| aLabel |
+	aLabel := 'Assert top right toolbar is hidden for {1}'
+				format: {aPaneModel title}.
+	^(self assert)
+		label: aLabel;
+		value: [:aToolbar | aToolbar visibility] equals: BlVisibility gone;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement;
+		/ GtTreePagerPaneElement;
+		@ [:each | each paneModel = aPaneModel];
+		// #'tree-pager--top-right-toolbar'
+]
+
+{ #category : #'steps - checks' }
+GtTreePagerStep >> assertTopRightToolbarIsVisibleInPaneModel: aPaneModel [
+	| aLabel |
+	aLabel := 'Assert top right toolbar is visible for {1}'
+				format: {aPaneModel title}.
+	^(self assert)
+		label: aLabel;
+		value: [:aToolbar | aToolbar visibility] equals: BlVisibility visible;
+		referenceSender;
+		onParentStepTarget: self;
+		// GtTreePagerFlowPanesElement;
+		/ GtTreePagerPaneElement;
+		@ [:each | each paneModel = aPaneModel];
+		// #'tree-pager--top-right-toolbar'
+]
+
 { #category : #'steps - interactions' }
 GtTreePagerStep >> clickCollapsedLinkModel: aLinkModel [
 	^ self click
