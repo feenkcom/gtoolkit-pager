@@ -114,6 +114,8 @@ GtTreePagerElement >> onMaximizerGtPhlowObjectToSelect: anEvent [
 { #category : #'private - event handling' }
 GtTreePagerElement >> onMaximizerGtPhlowObjectToSpawn: anEvent [
 	| aWish aMaximizerContainer |
+
+	anEvent consumed: true.
 	aWish := BrMaximizerHostMaximizedElementWish new.
 	anEvent currentTarget fireEvent: aWish.
 	
