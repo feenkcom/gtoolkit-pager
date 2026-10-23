@@ -23,7 +23,7 @@ GtTreePagerWithScripterExamples >> closePageWithPendingFuture [
 	future := [ futureStarted := true.
 		semaphore wait.
 		true ] asAsyncFuture.
-	paneModel := scripter model detectPaneModel: [ :eachPane | eachPane title = $B printString].
+	paneModel := scripter model detectPaneModel: [ :eachPane | eachPane title = (self paneTitleFor: $B)].
 	paneElement := (scripter element query // GtTreePagerPaneElement @ [ :eachElement | eachElement paneModel = paneModel ]) anyOne.
 	childElement := (paneElement query // GtPhlowCompositeViewElementId) anyOne.
 
@@ -73,8 +73,8 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns [
 	<gtExample>
 	| aPager aScripter aPaneA aPaneB |
 	aPager := GtTreePagerExamples new pagerWithFourPanesInFourColumns.
-	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
-	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
+	aPaneA := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $A) ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $B) ].
 
 	aScripter := BlScripter new
 			model: aPager;
@@ -104,9 +104,9 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_BCDVisiblePan
 	| aPager aScripter aPaneA aPaneB aPaneC |
 	aScripter := self pagerWithFourPanesInFourColumns.
 	aPager := aScripter model.
-	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
-	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
-	aPaneC := aPager detectPaneModel: [ :each | each title = $C printString ].
+	aPaneA := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $A) ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $B) ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
 
 	aScripter treePager
 		assertNumberOfPaneElements: 4;
@@ -139,9 +139,9 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseC [
 	| aPager aScripter aPaneA aPaneB aPaneC |
 	aScripter := self pagerWithFourPanesInFourColumns_BCDVisiblePanes.
 	aPager := aScripter model.
-	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
-	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
-	aPaneC := aPager detectPaneModel: [ :each | each title = $C printString ].
+	aPaneA := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $A) ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $B) ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
 
 	aScripter treePager
 		hoverPaneModel: aPaneC;
@@ -174,9 +174,9 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_collapseD [
 	| aPager aScripter aPaneA aPaneB aPaneD |
 	aScripter := self pagerWithFourPanesInFourColumns_BCDVisiblePanes.
 	aPager := aScripter model.
-	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
-	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
-	aPaneD := aPager detectPaneModel: [ :each | each title = $D printString ].
+	aPaneA := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $A) ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $B) ].
+	aPaneD := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $D) ].
 
 	aScripter treePager
 		hoverPaneModel: aPaneD;
@@ -205,9 +205,9 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_dropdownIcon 
 	| aPager aScripter aPaneA aPaneB aPaneC |
 	aScripter := self pagerWithFourPanesInFourColumns.
 	aPager := aScripter model.
-	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
-	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
-	aPaneC := aPager detectPaneModel: [ :each | each title = $C printString ].
+	aPaneA := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $A) ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $B) ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
 
 	aScripter treePager
 		hoverPaneModel: aPaneB;
@@ -257,9 +257,9 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_expandC [
 	| aPager aScripter aPaneA aPaneB aPaneC |
 	aScripter := self pagerWithFourPanesInFourColumns_collapseC.
 	aPager := aScripter model.
-	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
-	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
-	aPaneC := aPager detectPaneModel: [ :each | each title = $C printString ].
+	aPaneA := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $A) ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $B) ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
 
 	aScripter treePager
 		hoverCollapsedLinkModel: aPaneC previousLink;
@@ -290,8 +290,8 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_hidingOfToolb
 		during: 
 			[| aPager aScripter aPaneA aPaneD |
 			aPager := GtTreePagerExamples new pagerWithFourPanesInFourColumns.
-			aPaneA := aPager detectPaneModel: [:each | each title = $A printString].
-			aPaneD := aPager detectPaneModel: [:each | each title = $D printString].
+			aPaneA := aPager detectPaneModel: [:each | each title = (self paneTitleFor: $A)].
+			aPaneD := aPager detectPaneModel: [:each | each title = (self paneTitleFor: $D)].
 			aScripter := (BlScripter new)
 						model: aPager;
 						element: aPager asElement.
@@ -310,9 +310,9 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_hidingOfToolb
 		during: 
 			[| aPager aScripter aPaneA aPaneD aPaneB |
 			aPager := GtTreePagerExamples new pagerWithFourPanesInFourColumns.
-			aPaneA := aPager detectPaneModel: [:each | each title = $A printString].
-			aPaneD := aPager detectPaneModel: [:each | each title = $D printString].
-			aPaneB := aPager detectPaneModel: [:each | each title = $B printString].
+			aPaneA := aPager detectPaneModel: [:each | each title = (self paneTitleFor: $A)].
+			aPaneD := aPager detectPaneModel: [:each | each title = (self paneTitleFor: $D)].
+			aPaneB := aPager detectPaneModel: [:each | each title = (self paneTitleFor: $B)].
 			aScripter := (BlScripter new)
 						model: aPager;
 						element: aPager asElement.
@@ -333,10 +333,10 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_replaceC [
 	| aPager aScripter aPaneA aPaneB aPaneC aPaneD aPaneE |
 	aScripter := self pagerWithFourPanesInFourColumns_BCDVisiblePanes.
 	aPager := aScripter model.
-	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
-	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
-	aPaneC := aPager detectPaneModel: [ :each | each title = $C printString ].
-	aPaneD := aPager detectPaneModel: [ :each | each title = $D printString ].
+	aPaneA := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $A) ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $B) ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
+	aPaneD := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $D) ].
 
 	aScripter treePager
 		paneElementForPaneModel: aPaneB
@@ -357,7 +357,7 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_replaceC [
 				play ].
 
 
-	aPaneE := aPager detectPaneModel: [ :each | each title = $E printString ].
+	aPaneE := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $E) ].
 
 	aScripter treePager
 		clickOnReplacedLinkModel: aPaneE previousLink;
@@ -388,8 +388,8 @@ GtTreePagerWithScripterExamples >> pagerWithFourPanesInFourColumns_spawnFromB [
 	| aPager aScripter aPaneA aPaneB |
 	aScripter := self pagerWithFourPanesInFourColumns_BCDVisiblePanes.
 	aPager := aScripter model.
-	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
-	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
+	aPaneA := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $A) ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $B) ].
 
 	GtTreePagerAnimationFeatures
 		disableDuring: [ aScripter inspectorStep
@@ -770,8 +770,8 @@ GtTreePagerWithScripterExamples >> pagerWithSevenPanesInFiveColumns [
 	<gtExample>
 	| aPager aScripter aPaneA aPaneB |
 	aPager := GtTreePagerExamples new pagerWithSevenPanesInFiveColumns.
-	aPaneA := aPager detectPaneModel: [ :each | each title = $A printString ].
-	aPaneB := aPager detectPaneModel: [ :each | each title = $B printString ].
+	aPaneA := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $A) ].
+	aPaneB := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $B) ].
 
 	aScripter := BlScripter new
 			model: aPager;
@@ -792,6 +792,14 @@ GtTreePagerWithScripterExamples >> pagerWithSevenPanesInFiveColumns [
 		play.
 
 	^ aScripter
+]
+
+{ #category : #private }
+GtTreePagerWithScripterExamples >> paneTitleFor: aCharacter [
+	"Answer the title of a pane that inspects the given object.
+	The title is defined by the inspector tool, therefore it should not be hard-coded."
+
+	^ aCharacter gtDefaultInspectorTool title
 ]
 
 { #category : #support }
