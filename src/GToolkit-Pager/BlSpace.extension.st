@@ -24,12 +24,12 @@ BlSpace >> inPager: anElementStencilOrPhlowTool configured: aPagerConfiguration 
 BlSpace >> objectInPager: anObject [
 	"Add a pager element with a default object tool."
 
-	| aTitleBuilder |
-	aTitleBuilder := GtPhlowTitleLabelBuilder
-			longLabel: [ anObject gtInspectorTitleString ].
-	self title: aTitleBuilder build.
+	| aTool |
 
-	self inPager: [ anObject gtDefaultInspectorTool asElementDo: [ :e | e ] ] asStencil
+	aTool := anObject gtDefaultInspectorTool.
+	self withTitleAndIconOfTool: aTool.
+
+	self inPager: [ aTool asElementDo: [ :e | e ] ] asStencil
 ]
 
 { #category : #'*GToolkit-Pager' }
@@ -39,7 +39,8 @@ BlSpace class >> showTool: aPhlowToolBlock from: anElement [
 	- opened in a new window."
 
 	<return: #BlSpace or: nil>
-	| aPhlowTool |
+	| aPhlowTool aSpace |
+
 	self
 		assert: [ aPhlowToolBlock isNotNil ]
 		description: [ 'Phlow tool block must be non-nil' ].
@@ -47,17 +48,16 @@ BlSpace class >> showTool: aPhlowToolBlock from: anElement [
 	self
 		assert: [ aPhlowTool isNotNil ]
 		description: [ 'Phlow tool must be non-nil: { 1 }' format: { aPhlowToolBlock } ].
-	
-	anElement ifNil: [ 
-		^ self new
-			inPager: aPhlowTool;
-			withSceneDriller;
-			show ].
 
-	^ self new
+	aSpace := self new
 		inPager: aPhlowTool;
+		withTitleAndIconOfTool: aPhlowTool;
 		withSceneDriller;
-		showFrom: anElement
+		yourself.
+
+	anElement ifNil: [ ^ aSpace show ].
+
+	^ aSpace showFrom: anElement
 ]
 
 { #category : #'*GToolkit-Pager' }
@@ -122,4 +122,10 @@ BlSpace >> spawnTool: aPhlowToolBlock from: anElement [
 	^ self inPager: aPhlowTool;
 		withCommonSettings;
 		showFrom: anElement
+]
+
+{ #category : #'*GToolkit-Pager' }
+BlSpace >> withTitleAndIconOfTool: aPhlowTool [
+	self title: (GtPhlowTitleLabelBuilder longLabel: [ aPhlowTool title ]) build.
+	self icon: aPhlowTool icon
 ]
