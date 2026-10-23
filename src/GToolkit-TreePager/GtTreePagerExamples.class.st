@@ -8,8 +8,7 @@ Class {
 GtTreePagerExamples >> assertTreeFlowBuilderNonSpawnedCallbacks: aBuilderCallbacks equalsPaneCharacters: aPanesCollection [
 	| aTitlesCollection |
 	aTitlesCollection := aPanesCollection
-			collect: [ :anObject | anObject ifNotNil: [
-				'a Character ($', anObject asString,')'] ].
+			collect: [ :anObject | anObject ifNotNil: [ self paneTitleFor: anObject ] ].
 	self
 		assertTreeFlowBuilderNonSpawnedCallbacks: aBuilderCallbacks
 		equalsPaneTitles: aTitlesCollection
@@ -26,8 +25,9 @@ GtTreePagerExamples >> assertTreeFlowBuilderNonSpawnedCallbacks: aBuilderCallbac
 GtTreePagerExamples >> assertTreeFlowBuilderSpawnedCallbacks: aBuilderCallbacks equalsPaneCharacters: aPanesCollection [
 	| aTitlesCollection |
 	aTitlesCollection := aPanesCollection
-			collect: [ :anArray | anArray collect: [ :anObject | anObject ifNotNil: [
-				'a Character ($', anObject asString,')'] ] ].
+			collect: [ :anArray | 
+				anArray
+					collect: [ :anObject | anObject ifNotNil: [ self paneTitleFor: anObject ] ] ].
 	self
 		assertTreeFlowBuilderSpawnedCallbacks: aBuilderCallbacks
 		equalsPaneTitles: aTitlesCollection
@@ -102,8 +102,7 @@ GtTreePagerExamples >> pagerWithAWithFollowingHPane [
 	<gtExample>
 	| aPager aPaneA aPaneH |
 	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPaneA := aPager detectPaneModel: [ :each | 
-		each title endsWith: '($A)' ].
+	aPaneA := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $A) ].
 	self assert: aPaneA isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
@@ -178,8 +177,8 @@ GtTreePagerExamples >> pagerWithCWithFollowingEFHPanes [
 	<gtExample>
 	| aPager aPaneC aPaneH |
 	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPaneC := aPager detectPaneModel: [ :each | each title endsWith: '($C)' ].
-	self assert: aPaneC title equals: 'a Character ($C)'.
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
+	self assert: aPaneC title equals: (self paneTitleFor: $C).
 	self assert: aPaneC isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
@@ -196,12 +195,12 @@ GtTreePagerExamples >> pagerWithCWithFollowingHFPanes [
 	<gtExample>
 	| aPager aPaneC aPaneH aLinkH aLinkF |
 	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPaneC := aPager detectPaneModel: [ :each | each title endsWith: '($C)' ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
 	self assert: aPaneC isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
 	aLinkF := aPaneC followingLinks second.
-	self assert: aLinkF title equals: 'a Character ($F)'.
+	self assert: aLinkF title equals: (self paneTitleFor: $F).
 	aLinkF activate.
 	self assert: aPaneC activeLink equals: aLinkF.
 	aPaneC spawnPane: aPaneH.
@@ -220,12 +219,12 @@ GtTreePagerExamples >> pagerWithCWithFollowingHFPanes_selected [
 	<gtExample>
 	| aPager aPaneC aPaneH aLinkH aLinkF |
 	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPaneC := aPager detectPaneModel: [ :each | each title endsWith: '($C)' ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
 	self assert: aPaneC isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
 	aLinkF := aPaneC followingLinks second.
-	self assert: aLinkF title equals: 'a Character ($F)'.
+	self assert: aLinkF title equals: (self paneTitleFor: $F).
 	aLinkF activate.
 	aLinkF select.
 	self assert: aPaneC activeLink equals: aLinkF.
@@ -247,7 +246,7 @@ GtTreePagerExamples >> pagerWithCWithFollowingHPane [
 	<gtExample>
 	| aPager aPaneC aPaneH |
 	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPaneC := aPager detectPaneModel: [ :each | each title endsWith: '($C)' ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
 	self assert: aPaneC isExpanded.
 
 	aPaneH := self paneModelWithPhlowBuilderFor: $H.
@@ -263,7 +262,7 @@ GtTreePagerExamples >> pagerWithCollapsedCNewlyExpandedFPanes [
 	<gtExample>
 	| aPager aPaneF |
 	aPager := self pagerWithCollapsedFCPanes.
-	aPaneF := aPager detectPaneModel: [ :each | each title endsWith: '($F)' ].
+	aPaneF := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $F) ].
 	self assert: aPaneF isCollapsed.
 	aPaneF expand.
 	self assert: aPaneF isExpanded.
@@ -276,7 +275,7 @@ GtTreePagerExamples >> pagerWithCollapsedFCPanes [
 	<gtExample>
 	| aPager aPaneC |
 	aPager := self pagerWithCollapsedFPane.
-	aPaneC := aPager detectPaneModel: [ :each | each title endsWith: '($C)' ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
 	self assert: aPaneC isSpawned.
 	self assert: aPaneC isExpanded.
 	aPaneC collapse.
@@ -292,13 +291,13 @@ GtTreePagerExamples >> pagerWithCollapsedFCPanes_similarPaneCopy [
 	<gtExample>
 	| aPager aLinkC aLinkF copyOfPaneC anotherPager copyOfLinkF |
 	aPager := self pagerWithCollapsedFCPanes.
-	aLinkC := aPager detectLinkModel: [ :each | each title endsWith: '($C)' ].
-	aLinkF := aPager detectLinkModel: [ :each | each title endsWith: '($F)' ].
+	aLinkC := aPager detectLinkModel: [ :each | each title = (self paneTitleFor: $C) ].
+	aLinkF := aPager detectLinkModel: [ :each | each title = (self paneTitleFor: $F) ].
 	self assert: aLinkC isCollapsed.
 	self assert: aLinkF isCollapsed.
 
 	copyOfPaneC := aLinkC similarPaneCopy.
-	copyOfLinkF := copyOfPaneC detectLinkModel: [ :each | each title endsWith: '($F)' ].
+	copyOfLinkF := copyOfPaneC detectLinkModel: [ :each | each title = (self paneTitleFor: $F) ].
 
 	self assert: (aLinkC paneModel == copyOfPaneC) not.
 	self assert: (copyOfPaneC isKindOf: GtTreePagerPaneModel).
@@ -324,7 +323,7 @@ GtTreePagerExamples >> pagerWithCollapsedFPane [
 	<gtExample>
 	| aPager aPaneF |
 	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPaneF := aPager detectPaneModel: [ :each | each title endsWith: '($F)' ].
+	aPaneF := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $F) ].
 	self assert: aPaneF isSpawned.
 	self assert: aPaneF isExpanded.
 	aPaneF collapse.
@@ -341,7 +340,7 @@ GtTreePagerExamples >> pagerWithDWithFollowingHPane [
 	aPagerAnnouncements := OrderedCollection new.
 	aPaneDAnnouncements := OrderedCollection new.
 	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPaneD := aPager detectPaneModel: [ :each | each title endsWith: '($D)' ].
+	aPaneD := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $D) ].
 	self assert: aPaneD isExpanded.
 	
 	aPager announcer weak when: Announcement send: #add: to: aPagerAnnouncements.
@@ -366,10 +365,10 @@ GtTreePagerExamples >> pagerWithEActiveLink [
 	aLinkFAnnouncements := OrderedCollection new.
 
 	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPaneC := aPager detectPaneModel: [ :each | each title endsWith: '($C)' ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
 	self assert: aPaneC isSpawned.
-	aLinkE := aPaneC followingLinks detect: [ :each | each title endsWith: '($E)' ].
-	aLinkF := aPaneC followingLinks detect: [ :each | each title endsWith: '($F)' ].
+	aLinkE := aPaneC followingLinks detect: [ :each | each title = (self paneTitleFor: $E) ].
+	aLinkF := aPaneC followingLinks detect: [ :each | each title = (self paneTitleFor: $F) ].
 	self assert: aLinkE isActive not.
 	self assert: aLinkF isActive.
 
@@ -425,7 +424,7 @@ GtTreePagerExamples >> pagerWithHiddenCPaneCollapsedFPane [
 	<gtExample>
 	| aPager aPaneC |
 	aPager := self pagerWithCollapsedFPane.
-	aPaneC := aPager detectPaneModel: [ :each | each title endsWith: '($C)' ].
+	aPaneC := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $C) ].
 	self assert: aPaneC isSpawned.
 	self assert: aPaneC isExpanded.
 	self assert: aPaneC isHidden not.
@@ -442,7 +441,7 @@ GtTreePagerExamples >> pagerWithNewlyExpandedFPane [
 	<gtExample>
 	| aPager aPaneF |
 	aPager := self pagerWithCollapsedFPane.
-	aPaneF := aPager detectPaneModel: [ :each | each title endsWith: '($F)' ].
+	aPaneF := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $F) ].
 	self assert: aPaneF isCollapsed.
 	aPaneF expand.
 	self assert: aPaneF isExpanded.
@@ -632,14 +631,22 @@ GtTreePagerExamples >> paneModelWithTwoFollowingTools [
 	^ aToolOne
 ]
 
+{ #category : #private }
+GtTreePagerExamples >> paneTitleFor: aCharacter [
+	"Answer the title of a pane that inspects the given object.
+	The title is defined by the inspector tool, therefore it should not be hard-coded."
+
+	^ aCharacter gtDefaultInspectorTool title
+]
+
 { #category : #'examples - model' }
 GtTreePagerExamples >> topPreviousPaneIsPager [
 	<gtExample>
 	| aPager aPane |
 	aPager := self pagerWithSevenPanesInFiveColumns.
-	aPane := aPager detectPaneModel: [ :each | each title endsWith: '($F)' ].
+	aPane := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $F) ].
 	self assert: aPane topPreviousPane equals: aPager.
-	aPane := aPager detectPaneModel: [ :each | each title endsWith: '($A)' ].
+	aPane := aPager detectPaneModel: [ :each | each title = (self paneTitleFor: $A) ].
 	self assert: aPane topPreviousPane equals: aPager.
 
 	^ aPager
