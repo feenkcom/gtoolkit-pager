@@ -653,6 +653,7 @@ GtTreePagerWithScripterExamples >> pagerWithOnePane_spawnFilterObject_spawnThird
 	"See https://github.com/feenkcom/gtoolkit/issues/5136"
 
 	<gtExample>
+	<timeLimit: 120000>
 	| aPager aScripter aPaneB |
 	aScripter := self pagerWithOnePane_spawnFilterObject.
 	aPager := aScripter model.
