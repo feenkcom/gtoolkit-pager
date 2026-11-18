@@ -11,7 +11,7 @@ Class {
 { #category : #printing }
 GtTreePagerHorizontalTreeFlowNode >> gtDisplayOn: stream [
 	stream nextPutAll: 'Node: '.
-	stream nextPutAll: (self linkModel ifNotNil: #title) asString
+	stream nextPutAll: (self linkModel ifNotNil: [ :v | v title ]) asString
 ]
 
 { #category : #accessing }
@@ -28,7 +28,7 @@ GtTreePagerHorizontalTreeFlowNode >> linkModel: aPaneModel [
 GtTreePagerHorizontalTreeFlowNode >> printOn: aStream [
 	super printOn: aStream.
 	aStream nextPut: $(.
-	aStream nextPutAll: (self linkModel ifNotNil: #title) asString.
+	aStream nextPutAll: (self linkModel ifNotNil: [ :v | v title ]) asString.
 	aStream nextPut: $)
 ]
 

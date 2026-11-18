@@ -101,7 +101,7 @@ GtTreePagerModelLinkAdaptor >> pagerSettings [
 	"Note: it is usually a pager model"
 
 	<return: #GtTreePagerModelSettings or: nil>
-	^ self previousPane ifNotNil: #pagerSettings
+	^ self previousPane ifNotNil: [ :v | v pagerSettings ]
 ]
 
 { #category : #accessing }

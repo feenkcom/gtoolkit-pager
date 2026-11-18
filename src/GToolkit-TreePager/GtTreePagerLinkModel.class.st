@@ -498,7 +498,7 @@ GtTreePagerLinkModel >> pagerSettings [
 	"Note: it is usually a pager model"
 
 	<return: #GtTreePagerModelSettings or: nil>
-	^ self previousPane ifNotNil: #pagerSettings
+	^ self previousPane ifNotNil: [ :v | v pagerSettings ]
 ]
 
 { #category : #accessing }
@@ -524,7 +524,7 @@ GtTreePagerLinkModel >> postSimilarLinkCopy [
 { #category : #'api - pane model' }
 GtTreePagerLinkModel >> previousLink [
 	<return: #TGtTreePagerLinkModel or: nil>
-	^ self previousPane ifNotNil: #previousLink
+	^ self previousPane ifNotNil: [ :v | v previousLink ]
 ]
 
 { #category : #accessing }

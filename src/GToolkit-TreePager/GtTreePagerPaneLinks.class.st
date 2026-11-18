@@ -19,10 +19,9 @@ GtTreePagerPaneLinks >> activeLink: aNewLinkModel [
 	self assert: [ links includes: aNewLinkModel ].
 	anOldLinkModel := self activeLink.
 	anOldLinkModel = aNewLinkModel ifTrue: [ ^ self ].
-	
-	anOldLinkModel ifNotNil: #inactivate.
+	anOldLinkModel ifNotNil: [ :v | v inactivate ].
 	aNewLinkModel activate.
-	
+
 	self notifyActiveLinkChangedFrom: anOldLinkModel to: aNewLinkModel
 ]
 

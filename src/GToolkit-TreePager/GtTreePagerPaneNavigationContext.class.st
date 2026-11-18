@@ -33,6 +33,11 @@ GtTreePagerPaneNavigationContext >> findPreviousContext [
 	^ nil
 ]
 
+{ #category : #'api - phlow' }
+GtTreePagerPaneNavigationContext >> object [
+	^ self phlowViewModel ifNotNil: [ :v | v object ]
+]
+
 { #category : #accessing }
 GtTreePagerPaneNavigationContext >> pagerElement [
 	^ pagerElement
@@ -71,4 +76,19 @@ GtTreePagerPaneNavigationContext >> phlowViewModel [
 GtTreePagerPaneNavigationContext >> previousContext [
 	<return: #GtTreePagerPaneNavigationContext or: nil>
 	^ previousContext ifNil: [ self findPreviousContext ]
+]
+
+{ #category : #'api - phlow' }
+GtTreePagerPaneNavigationContext >> toolElement [
+	^ self phlowViewModel ifNotNil: [ :v | v element ]
+]
+
+{ #category : #'api - phlow' }
+GtTreePagerPaneNavigationContext >> toolType [
+	^ self phlowViewModel ifNotNil: [ :v | v type ]
+]
+
+{ #category : #'api - phlow' }
+GtTreePagerPaneNavigationContext >> toolViewModel [
+	^ self phlowViewModel ifNotNil: [ :v | v viewModel ]
 ]

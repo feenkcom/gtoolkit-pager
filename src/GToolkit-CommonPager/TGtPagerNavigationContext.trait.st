@@ -66,7 +66,7 @@ TGtPagerNavigationContext >> gtOverviewFor: aView [
 
 { #category : #'api - phlow' }
 TGtPagerNavigationContext >> object [
-	^ self phlowViewModel ifNotNil: #object
+	^ self phlowViewModel ifNotNil: [ :v | v object ]
 ]
 
 { #category : #'api - phlow' }
@@ -122,17 +122,17 @@ TGtPagerNavigationContext >> previousProcessContextSuchThat: aConditionBlock do:
 
 { #category : #'api - phlow' }
 TGtPagerNavigationContext >> toolElement [
-	^ self phlowViewModel ifNotNil: #element
+	^ self phlowViewModel ifNotNil: [ :v | v element ]
 ]
 
 { #category : #'api - phlow' }
 TGtPagerNavigationContext >> toolType [
-	^ self phlowViewModel ifNotNil: #type
+	^ self phlowViewModel ifNotNil: [ :v | v type ]
 ]
 
 { #category : #'api - phlow' }
 TGtPagerNavigationContext >> toolViewModel [
-	^ self phlowViewModel ifNotNil: #viewModel
+	^ self phlowViewModel ifNotNil: [ :v | v viewModel ]
 ]
 
 { #category : #'api - navigation' }
