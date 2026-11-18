@@ -617,7 +617,7 @@ GtTreePagerPaneModel >> hasFollowingLinks [
 
 { #category : #'api - visibility' }
 GtTreePagerPaneModel >> hide [
-	self previousLink ifNotNil: #hide
+	self previousLink ifNotNil: [ :v | v hide ]
 ]
 
 { #category : #accessing }
@@ -704,7 +704,7 @@ GtTreePagerPaneModel >> pagerSettings [
 	"Note: it is usually a pager model"
 
 	<return: #GtTreePagerModelSettings or: nil>
-	^ self previousPane ifNotNil: #pagerSettings
+	^ self previousPane ifNotNil: [ :v | v pagerSettings ]
 ]
 
 { #category : #accessing }
@@ -726,7 +726,7 @@ GtTreePagerPaneModel >> postSimilarPaneCopy [
 			collect: [ :eachLink | eachLink similarLinkCopy ].
 	followingLinks := GtTreePagerPaneLinks new paneModel: self.
 	self followingLinks: newLinks reason: GtTreePagerCopyReason default.
-	phlowTool := phlowTool ifNotNil: #similarToolCopy
+	phlowTool := phlowTool ifNotNil: [ :v | v similarToolCopy ]
 ]
 
 { #category : #'api - phlow' }
@@ -756,7 +756,7 @@ GtTreePagerPaneModel >> previousLink: aLinkModel [
 
 { #category : #'api - previous panes' }
 GtTreePagerPaneModel >> previousPane [
-	^ previousLink ifNotNil: #previousPane
+	^ previousLink ifNotNil: [ :v | v previousPane ]
 ]
 
 { #category : #printing }

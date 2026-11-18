@@ -114,7 +114,7 @@ GtTreePagerPanesEdgesBuilder >> displayedPaneElements: someElements [
 
 { #category : #accessing }
 GtTreePagerPanesEdgesBuilder >> pagerModel [
-	^ pagerModel ifNil: [ self panesElement ifNotNil: #pagerModel ]
+	^ pagerModel ifNil: [ self panesElement ifNotNil: [ :v | v pagerModel ] ]
 ]
 
 { #category : #accessing }

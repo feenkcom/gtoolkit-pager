@@ -29,7 +29,7 @@ GtTreePagerSelectionStateRegistryItem >> description: anObject [
 { #category : #accessing }
 GtTreePagerSelectionStateRegistryItem >> element [
 	^ self stencil
-		selectionStateHandler: (selectionStateStencil ifNotNil: #create);
+		selectionStateHandler: (selectionStateStencil ifNotNil: [ :v | v create ]);
 		asElement
 ]
 

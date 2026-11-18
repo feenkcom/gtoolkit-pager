@@ -805,5 +805,5 @@ GtTreePagerWithScripterExamples >> paneTitleFor: aCharacter [
 
 { #category : #support }
 GtTreePagerWithScripterExamples >> signalSemaphor [
-	semaphore ifNotNil: #signal
+	semaphore ifNotNil: [ :v | v signal ]
 ]

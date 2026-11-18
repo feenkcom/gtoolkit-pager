@@ -366,8 +366,7 @@ GtTreePagerScrollbarElement >> onPaneElementClick: anEvent paneElement: aPaneEle
 							ifFalse: [ aPaneElement ] ]
 					ifNil: [ aPaneElement ] ]
 			ifAbsent: [ aPaneElement ].
-
-	aFocusTarget ifNotNil: #requestFocus
+	aFocusTarget ifNotNil: [ :v | v requestFocus ]
 ]
 
 { #category : #accessing }
