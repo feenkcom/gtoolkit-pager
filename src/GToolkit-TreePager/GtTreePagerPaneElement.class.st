@@ -207,7 +207,6 @@ GtTreePagerPaneElement >> navigationContext [
 { #category : #initialization }
 GtTreePagerPaneElement >> newBasicDropdownMenuElement [
 	^ GtInspectorRoundButtonStencil new asElement
-		id: #'tree-pager--dropdown-menu-button';
 		exact: GtTreePagerConstants cornerButtonSize;
 		icon: self newDropdownDownwardsIcon
 ]
@@ -227,33 +226,25 @@ GtTreePagerPaneElement >> newBasicToolbarElement [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newDropdownDownwardsIcon [
-	^ BrGlamorousVectorIcons downwards asElement asScalableElement
-		size: GtTreePagerConstants cornerButtonSize
+	^ BrGlamorousVectorIcons downwards asElement margin: (BlInsets top: 2)
 ]
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newDropdownMaximizeIcon [
-	^ BrPlusIconStencil new radius: 4
+	^ BrGlamorousVectorIcons add
 ]
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newDropdownMenuElement [
-	^ self newBasicDropdownMenuElement
+	^ (self
+		newPaneDropdownMenuButtonWithId: #'tree-pager--dropdown-menu-button'
+		menu: [ self newDropdownMenuModel ])
 		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDropdownWithModifiersCollapseClick: anEvent ];
 		actionWithModifiers: [ :aButton :aButtonModel :anEvent | self onDropdownWithModifiersRemoveClick: anEvent ];
-		addAptitude: (BrGlamorousWithExplicitDropdownAptitude new
-				handle: [ BrButton new
-							exact: GtTreePagerConstants cornerButtonSize;
-							background: Color white;
-							aptitude: BrIconAptitude;
-							geometry: BlEllipseGeometry new;
-							layout: BlLinearLayout horizontal alignCenter;
-							icon: self newDropdownDownwardsIcon ]
-					menu: [ self newDropdownMenuModel ]);
-			addAptitude: (GtPhlowBrowseDefinitionAptitude new
-				definition: [ GtMethodCoderTool 
-					compiledMethod: (GtTreePagerPaneElement>>#newDropdownMenuElement) 
-					selfObjectHolder: (GtPhlowObject forValue: self) ])
+		addAptitude: (GtPhlowBrowseDefinitionAptitude new
+				definition: [ GtMethodCoderTool
+						compiledMethod: GtTreePagerPaneElement >> #newDropdownMenuElement
+						selfObjectHolder: (GtPhlowObject forValue: self) ])
 ]
 
 { #category : #initialization }
@@ -282,17 +273,9 @@ GtTreePagerPaneElement >> newDropdownRemoveIcon [
 
 { #category : #initialization }
 GtTreePagerPaneElement >> newMaximizedDropdownMenuElement [
-	^ self newBasicDropdownMenuElement
-		id: #'tree-pager--maximized-dropdown-menu-button';
-		addAptitude: (BrGlamorousWithExplicitDropdownAptitude new
-				handle: [ BrButton new
-							exact: GtTreePagerConstants cornerButtonSize;
-							background: Color white;
-							aptitude: BrIconAptitude;
-							geometry: BlEllipseGeometry new;
-							layout: BlLinearLayout horizontal alignCenter;
-							icon: self newDropdownDownwardsIcon ]
-					menu: [ self newMaximizedDropdownMenuModel ])
+	^ self
+		newPaneDropdownMenuButtonWithId: #'tree-pager--maximized-dropdown-menu-button'
+		menu: [ self newMaximizedDropdownMenuModel ]
 ]
 
 { #category : #initialization }
@@ -334,6 +317,22 @@ GtTreePagerPaneElement >> newMaximizedToolbarElement [
 			addItems: lt100Elements;
 			addItem: self newMaximizedDropdownMenuElement;
 			addItems: gt100Elements
+]
+
+{ #category : #initialization }
+GtTreePagerPaneElement >> newPaneDropdownMenuButtonWithId: anId menu: aMenuBlock [
+	| aButton aRoundAptitude |
+	aButton := self newBasicDropdownMenuElement.
+	aRoundAptitude := aButton aptitude.
+	^ aButton
+		id: anId;
+		addAptitude: (BrGlamorousWithExplicitDropdownAptitude new
+				handle: [ self newBasicDropdownMenuElement
+							aptitudeDo: [ :aHandleAptitude | aHandleAptitude shadowEnabled: false ];
+							yourself ]
+					menu: aMenuBlock;
+				when: BrDropdownIsVisible do: [ aRoundAptitude shadowEnabled: false ];
+				when: BrDropdownIsHidden do: [ aRoundAptitude shadowEnabled: true ])
 ]
 
 { #category : #'private - event handling' }
