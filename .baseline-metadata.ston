@@ -1,6 +1,6 @@
 {
 	"repositories" : {
 		"github://feenkcom/gtoolkit-utility/src" : "v0.9.73",
-		"github://feenkcom/gtoolkit-phlow/src" : "v0.9.230"
+		"github://feenkcom/gtoolkit-phlow/src" : "v0.9.231"
 	}
 }
