@@ -49,7 +49,7 @@ GtTreePagerLinkState class >> gtAllStates [
 	^ (GtTreePagerLinkState class methods
 		select: [ :eachMethod | 
 			eachMethod numArgs isZero
-				and: [ eachMethod protocol = 'api - accessing'
+				and: [ (eachMethod protocolName sameContentAs: 'api - accessing')
 						and: [ (GtTreePagerLinkState perform: eachMethod selector)
 								isKindOf: GtTreePagerLinkState ] ] ]
 		thenCollect: [ :eachMethod | GtTreePagerLinkState perform: eachMethod selector ]) 
